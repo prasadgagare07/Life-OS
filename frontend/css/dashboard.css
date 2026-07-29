@@ -1,1 +1,17 @@
+.quote-banner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.75rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.1rem;
+  border-left: 3px solid var(--accent-1);
+}
 
+.overview-card {
+  text-align: center;
+}
+
+.overview-card .stat-label { margin-top: 0.5rem; }
