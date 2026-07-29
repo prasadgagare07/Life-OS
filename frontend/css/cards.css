@@ -1,1 +1,108 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
 
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.card-title h3 { margin: 0; }
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* --- Signature element: Sunrise Arc ---
+   A half-arc progress ring evoking a rising sun over
+   the horizon. Used for the standards score, finance
+   goal %, and fitness goal % — anywhere progress
+   toward a target is the point. */
+.sunrise-arc {
+  --pct: 0; /* 0-100, set inline via style */
+  position: relative;
+  width: 140px;
+  height: 84px;
+  margin: 0 auto;
+}
+
+.sunrise-arc svg { width: 100%; height: 100%; overflow: visible; }
+
+.sunrise-arc .track {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.sunrise-arc .fill {
+  fill: none;
+  stroke: url(#sunriseGradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 220;
+  stroke-dashoffset: calc(220 - (220 * var(--pct) / 100));
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sunrise-arc .sun {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  box-shadow: 0 0 12px rgba(255, 160, 80, 0.7);
+  transform-origin: 70px 78px;
+}
+
+.sunrise-arc .arc-label {
+  position: absolute;
+  bottom: -6px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge.good { background: rgba(62, 207, 142, 0.14); color: var(--good); }
+.badge.warn { background: rgba(242, 184, 75, 0.14); color: var(--warn); }
+.badge.bad  { background: rgba(242, 85, 90, 0.14); color: var(--bad); }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 1.25rem 0;
+  border: none;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+.empty-state .icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
