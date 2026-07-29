@@ -1,1 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS — Settings</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
 
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header fade-up">
+      <div>
+        <div class="eyebrow">Account</div>
+        <h1>Settings</h1>
+      </div>
+    </div>
+
+    <div class="card fade-up fade-up-1">
+      <div class="settings-list">
+        <div class="settings-row">
+          <div>
+            <h3>Passcode</h3>
+            <p>Change it by regenerating the hash — see README for the command.</p>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <h3>Version</h3>
+            <p>LifeOS v1.0 — Core app</p>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <h3>Log out</h3>
+            <p>End your current session on this device.</p>
+          </div>
+          <button class="btn-secondary" id="logout-btn">Log out</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/settings.js"></script>
+</body>
+</html>
