@@ -1,185 +1,174 @@
-:root{
---bg:#0A0E1A;
---card:#141C2F;
---text:#fff;
---muted:#94A3B8;
---radius:22px;
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-}
-
-body{
-background:var(--bg);
-color:white;
-padding:20px;
-}
-
-.container{
-max-width:480px;
-margin:auto;
-}
-
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:25px;
-}
-
-.title{
-text-align:center;
-flex:1;
-}
-
-.title h1{
-font-size:30px;
-font-weight:800;
-}
-
-.title p{
-margin-top:6px;
-color:#94A3B8;
-font-size:14px;
-}
-
-.icon-btn{
-width:46px;
-height:46px;
-border-radius:15px;
-background:#111827;
-border:1px solid #293248;
-color:white;
-font-size:18px;
-}
-
-.actions{
-display:flex;
-gap:10px;
-}
-
-.habit-card{
-background:#111827;
-border-radius:22px;
-padding:18px;
-margin-bottom:18px;
-box-shadow:0 0 18px rgba(255,255,255,.04);
-}
-
-.habit-top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:15px;
-}
-
-.left{
-display:flex;
-align-items:center;
-gap:14px;
-}
-
-.badge{
-width:50px;
-height:50px;
-border-radius:16px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:24px;
-color:white;
-}
-
-.name{
-font-size:17px;
-font-weight:700;
-}
-
-.score{
-font-size:28px;
-font-weight:800;
-}
-
-.score span{
-font-size:14px;
-color:#94A3B8;
-}
+/* ---------- Premium Slider ---------- */
 
 .slider{
-width:100%;
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:8px;
+    border-radius:30px;
+    background:#222c43;
+    outline:none;
+    margin-top:18px;
 }
 
-.summary{
-margin-top:30px;
-display:grid;
-grid-template-columns:1fr 1.4fr 1fr;
-gap:12px;
-align-items:center;
+.slider::-webkit-slider-runnable-track{
+    height:8px;
+    border-radius:30px;
 }
 
-.mini-card,
-.ring-card{
-background:#141C2F;
-border-radius:24px;
-padding:18px;
-text-align:center;
+.slider::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    appearance:none;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:#fff;
+    border:3px solid currentColor;
+    margin-top:-7px;
+    cursor:pointer;
+    box-shadow:0 0 18px currentColor;
 }
+
+.slider::-moz-range-thumb{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:white;
+    border:none;
+}
+
+/* ---------- Habit Card Glow ---------- */
+
+.habit-card{
+    position:relative;
+    overflow:hidden;
+    transition:.25s;
+}
+
+.habit-card:hover{
+    transform:translateY(-3px);
+}
+
+.habit-card::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:0;
+
+width:5px;
+
+height:100%;
+
+background:var(--accent);
+
+box-shadow:0 0 20px var(--accent);
+
+}
+
+/* ---------- Score ---------- */
+
+.score{
+
+font-size:30px;
+
+font-weight:800;
+
+}
+
+/* ---------- Ring ---------- */
 
 .ring{
-width:170px;
-height:170px;
-margin:auto;
-border-radius:50%;
-background:
-conic-gradient(
-#ff4fd8,
-#8b5cf6,
-#3b82f6,
-#ff4fd8);
-display:flex;
-justify-content:center;
-align-items:center;
+
+animation:ringRotate 6s linear infinite;
+
 }
 
-.ring-center{
-width:140px;
-height:140px;
-background:#0A0E1A;
-border-radius:50%;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+@keyframes ringRotate{
+
+from{
+
+transform:rotate(0deg);
+
 }
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+/* ---------- Cards ---------- */
+
+.mini-card{
+
+transition:.25s;
+
+}
+
+.mini-card:hover{
+
+transform:scale(1.04);
+
+}
+
+/* ---------- Quote ---------- */
 
 .quote-card{
-margin-top:30px;
-padding:28px;
-border-radius:24px;
-background:#141C2F;
-text-align:center;
-overflow:hidden;
+
+position:relative;
+
 }
 
-.quote-card h2{
-font-size:22px;
-margin-top:15px;
-}
+.quote-card::before{
 
-.quote-card h1{
-margin-top:12px;
-font-size:28px;
-background:linear-gradient(90deg,#ff49d5,#7c5cff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
+content:"✦ ✦ ✦";
 
-.mountain{
-margin-top:22px;
-opacity:.65;
+position:absolute;
+
+top:18px;
+
+left:20px;
+
+color:#ffffff22;
+
 font-size:20px;
-  }
+
+}
+
+.quote-card::after{
+
+content:"🏔️";
+
+position:absolute;
+
+right:18px;
+
+bottom:14px;
+
+font-size:34px;
+
+opacity:.25;
+
+}
+
+/* ---------- Scroll ---------- */
+
+body::-webkit-scrollbar{
+
+width:7px;
+
+}
+
+body::-webkit-scrollbar-thumb{
+
+background:#3b4b70;
+
+border-radius:20px;
+
+}
