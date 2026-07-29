@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS — Fitness</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/fitness.css">
+</head>
+<body>
 
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header fade-up">
+      <div>
+        <div class="eyebrow">Body</div>
+        <h1>Fitness</h1>
+      </div>
+    </div>
+
+    <div class="card fitness-hero fade-up fade-up-1">
+      <div class="sunrise-arc" id="fitness-arc"></div>
+      <div class="stat-label" id="fitness-caption">Loading…</div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:1.25rem">
+      <form class="card fade-up fade-up-2" id="fitness-form">
+        <div class="card-title"><h3>Log today</h3></div>
+
+        <div class="field-row">
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" step="0.1" min="0" required>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="workout_done">
+          <label for="workout_done">Workout done today</label>
+        </div>
+
+        <div class="field-row">
+          <label for="notes">Notes</label>
+          <textarea id="notes" rows="2"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%">Save entry</button>
+      </form>
+
+      <div>
+        <form class="card fade-up fade-up-3" id="goal-form" style="margin-bottom:1.25rem">
+          <div class="card-title"><h3>Goal weight</h3></div>
+          <div class="field-row">
+            <label for="goal_weight">Target weight (kg)</label>
+            <input type="number" id="goal_weight" step="0.1" min="0">
+          </div>
+          <button type="submit" class="btn-secondary" style="width:100%">Update goal</button>
+        </form>
+
+        <div class="card fade-up fade-up-4">
+          <div class="card-title"><h3>Recent entries</h3></div>
+          <div id="fitness-history"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/fitness.js"></script>
+</body>
+</html>
