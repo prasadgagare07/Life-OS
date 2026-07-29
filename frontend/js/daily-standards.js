@@ -79,3 +79,27 @@ window.deleteHabit = function(index) {
     openManager();
 
 };
+
+  document.getElementById("addHabitBtn").addEventListener("click", () => {
+
+    const name = prompt("Habit name");
+    if (!name) return;
+
+    const icon = prompt("Emoji/Icon (Example: 💧 📚 🏃 🥗 🙏)", "⭐");
+    if (!icon) return;
+
+    const color = prompt("Color (Hex code)", "#7C5CFF");
+    if (!color) return;
+
+    habits.push({
+        name: name,
+        icon: icon,
+        color: color,
+        value: 5
+    });
+
+    createHabits();
+    updateSummary();
+    openManager();
+
+});
