@@ -1,1 +1,24 @@
+.fitness-hero {
+  text-align: center;
+  padding: 2rem 1rem;
+}
 
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.checkbox-row input { width: 18px; height: 18px; }
+
+.history-row {
+  display: grid;
+  grid-template-columns: 70px 60px 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+.history-row:last-child { border-bottom: none; }
