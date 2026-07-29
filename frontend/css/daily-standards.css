@@ -270,3 +270,36 @@ border-radius:20px;
     background:#0F172A;
     cursor:pointer;
 }
+
+/* ===== Emoji Picker ===== */
+
+.emoji-picker{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-top:16px;
+}
+
+.emoji-picker span{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:54px;
+    font-size:26px;
+    background:#0F172A;
+    border:2px solid #2E3A59;
+    border-radius:16px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.emoji-picker span:hover{
+    transform:scale(1.08);
+    border-color:#7C5CFF;
+}
+
+.emoji-picker span.selected{
+    border-color:#7C5CFF;
+    box-shadow:0 0 18px rgba(124,92,255,.5);
+    background:#1B2440;
+}
