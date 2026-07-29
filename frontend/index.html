@@ -1,1 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS — Log In</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/login.css">
+</head>
+<body>
 
+<div class="login-shell">
+  <div class="login-card fade-up">
+    <div class="login-mark">🌄</div>
+    <h1>LifeOS</h1>
+    <p class="subtitle">Enter your passcode to continue</p>
+
+    <form id="login-form">
+      <input type="password" id="passcode" inputmode="numeric" placeholder="••••••" required autofocus>
+      <div class="login-error" id="login-error"></div>
+      <button type="submit" class="btn-primary">Unlock</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>
