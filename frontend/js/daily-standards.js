@@ -80,26 +80,41 @@ window.deleteHabit = function(index) {
 
 };
 
-  document.getElementById("addHabitBtn").addEventListener("click", () => {
+  const addHabitForm = document.getElementById("addHabitForm");
 
-    const name = prompt("Habit name");
-    if (!name) return;
+document.getElementById("addHabitBtn").addEventListener("click", () => {
 
-    const icon = prompt("Emoji/Icon (Example: 💧 📚 🏃 🥗 🙏)", "⭐");
-    if (!icon) return;
+    addHabitForm.style.display =
+        addHabitForm.style.display === "none" ? "block" : "none";
 
-    const color = prompt("Color (Hex code)", "#7C5CFF");
-    if (!color) return;
+});
+
+document.getElementById("saveHabitBtn").addEventListener("click", () => {
+
+    const name = document.getElementById("habitName").value.trim();
+    const icon = document.getElementById("habitIcon").value.trim();
+    const color = document.getElementById("habitColor").value;
+
+    if (!name || !icon) {
+        alert("Please enter both a habit name and an emoji.");
+        return;
+    }
 
     habits.push({
-        name: name,
-        icon: icon,
-        color: color,
+        name,
+        icon,
+        color,
         value: 5
     });
 
     createHabits();
     updateSummary();
     openManager();
+
+    document.getElementById("habitName").value = "";
+    document.getElementById("habitIcon").value = "";
+    document.getElementById("habitColor").value = "#7C5CFF";
+
+    addHabitForm.style.display = "none";
 
 });
