@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS — Finance</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/finance.css">
+</head>
+<body>
 
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header fade-up">
+      <div>
+        <div class="eyebrow">Wealth</div>
+        <h1>Finance</h1>
+      </div>
+    </div>
+
+    <div class="card finance-hero fade-up fade-up-1">
+      <div class="sunrise-arc" id="finance-arc"></div>
+      <div class="stat-value" id="total-wealth">—</div>
+      <div class="stat-label" id="goal-caption">Loading…</div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:1.25rem">
+      <form class="card fade-up fade-up-2" id="finance-form">
+        <div class="card-title"><h3>Update snapshot</h3></div>
+
+        <div class="field-row">
+          <label for="bank_balance">Bank balance</label>
+          <input type="number" id="bank_balance" min="0" step="1">
+        </div>
+        <div class="field-row">
+          <label for="market_funds">Market funds</label>
+          <input type="number" id="market_funds" min="0" step="1">
+        </div>
+        <div class="field-row">
+          <label for="emergency_fund">Emergency fund</label>
+          <input type="number" id="emergency_fund" min="0" step="1">
+        </div>
+        <div class="field-row">
+          <label for="goal_amount">Goal amount</label>
+          <input type="number" id="goal_amount" min="0" step="1">
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%">Save snapshot</button>
+      </form>
+
+      <div class="card fade-up fade-up-3">
+        <div class="card-title"><h3>Wealth timeline</h3></div>
+        <div id="timeline-list"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/finance.js"></script>
+</body>
+</html>
