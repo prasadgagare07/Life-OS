@@ -93,7 +93,7 @@ document.getElementById("saveHabitBtn").addEventListener("click", () => {
 
     const name = document.getElementById("habitName").value.trim();
     const icon = selectedEmoji;
-    const color = document.getElementById("habitColor").value;
+    const color = selectedColor;
 
     if (!name || !icon) {
         alert("Please enter both a habit name and an emoji.");
@@ -136,6 +136,27 @@ document.querySelectorAll("#emojiPicker span").forEach((emoji) => {
         selectedEmoji = emoji.textContent;
 
         document.getElementById("habitIcon").value = selectedEmoji;
+
+    });
+
+});
+// ===== Colour Picker =====
+
+let selectedColor = "#A855F7";
+
+document.querySelectorAll("#colorPicker .color").forEach((color) => {
+
+    color.addEventListener("click", () => {
+
+        document
+            .querySelectorAll("#colorPicker .color")
+            .forEach(c => c.classList.remove("selected"));
+
+        color.classList.add("selected");
+
+        selectedColor = color.dataset.color;
+
+        document.getElementById("habitColor").value = selectedColor;
 
     });
 
