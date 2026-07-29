@@ -118,3 +118,25 @@ document.getElementById("saveHabitBtn").addEventListener("click", () => {
     addHabitForm.style.display = "none";
 
 });
+
+  // ===== Emoji Picker =====
+
+let selectedEmoji = "⭐";
+
+document.querySelectorAll("#emojiPicker span").forEach((emoji) => {
+
+    emoji.addEventListener("click", () => {
+
+        document
+            .querySelectorAll("#emojiPicker span")
+            .forEach(e => e.classList.remove("selected"));
+
+        emoji.classList.add("selected");
+
+        selectedEmoji = emoji.textContent;
+
+        document.getElementById("habitIcon").value = selectedEmoji;
+
+    });
+
+});
