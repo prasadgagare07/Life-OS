@@ -136,8 +136,37 @@ extraordinary results.
     <div id="habitEditor"></div>
 
     <button id="addHabitBtn" class="primary-btn">
-      ➕ Add Habit
-    </button>
+  ➕ Add Habit
+</button>
+
+<div id="addHabitForm" style="display:none; margin-top:20px;">
+
+  <input
+    type="text"
+    id="habitName"
+    placeholder="Habit Name"
+    class="habit-input"
+  >
+
+  <input
+    type="text"
+    id="habitIcon"
+    placeholder="Emoji (🙏 📖 💧 🏃)"
+    class="habit-input"
+  >
+
+  <input
+    type="color"
+    id="habitColor"
+    value="#7C5CFF"
+    class="color-picker"
+  >
+
+  <button id="saveHabitBtn" class="primary-btn">
+    Save Habit
+  </button>
+
+</div>
 
     <button id="closeModal" class="secondary-btn">
       Done
