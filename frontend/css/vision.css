@@ -1,1 +1,28 @@
+#vision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
 
+.vision-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  min-height: 220px;
+  background: var(--surface) center/cover no-repeat;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.vision-card-overlay {
+  width: 100%;
+  padding: 1.25rem;
+  background: linear-gradient(180deg, transparent, rgba(11, 13, 18, 0.92) 60%);
+}
+
+.vision-card-overlay h3 { margin: 0.3rem 0; }
+.vision-card-overlay p { font-size: 0.85rem; margin-bottom: 0.75rem; }
+
+.vision-form-card .field-row { margin-bottom: 1rem; }
