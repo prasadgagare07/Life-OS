@@ -1,1 +1,44 @@
+.finance-hero {
+  text-align: center;
+  padding: 2rem 1rem;
+}
 
+#total-wealth {
+  font-size: 2.6rem;
+}
+
+.field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.field-row label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 90px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+}
+
+.timeline-date { color: var(--text-muted); }
+
+.timeline-bar-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.timeline-bar {
+  height: 100%;
+  background: var(--accent-gradient);
+  border-radius: 999px;
+}
