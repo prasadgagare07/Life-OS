@@ -33,7 +33,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <div class="actions">
 
-<button class="icon-btn">
+<button class="icon-btn" id="manageHabitsBtn">
 <i class="fa-solid fa-pen"></i>
 </button>
 
@@ -126,6 +126,26 @@ extraordinary results.
 </div>
 
 <script src="js/daily-standards.js"></script>
+
+<div id="habitModal" class="modal">
+
+  <div class="modal-content">
+
+    <h2>Manage Habits</h2>
+
+    <div id="habitEditor"></div>
+
+    <button id="addHabitBtn" class="primary-btn">
+      ➕ Add Habit
+    </button>
+
+    <button id="closeModal" class="secondary-btn">
+      Done
+    </button>
+
+  </div>
+
+</div>
 
 </body>
 </html>
