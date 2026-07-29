@@ -92,7 +92,7 @@ document.getElementById("addHabitBtn").addEventListener("click", () => {
 document.getElementById("saveHabitBtn").addEventListener("click", () => {
 
     const name = document.getElementById("habitName").value.trim();
-    const icon = document.getElementById("habitIcon").value.trim();
+    const icon = selectedEmoji;
     const color = document.getElementById("habitColor").value;
 
     if (!name || !icon) {
