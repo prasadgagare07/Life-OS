@@ -32,3 +32,36 @@ function createHabits() {
   habits.forEach((habit, index) => {
 
     const card = document
+
+    // ===== Manage Habits Popup =====
+
+const modal = document.getElementById("habitModal");
+const editor = document.getElementById("habitEditor");
+
+document.getElementById("manageHabitsBtn").addEventListener("click", openManager);
+
+document.getElementById("closeModal").addEventListener("click", () => {
+    modal.style.display = "none";
+});
+
+function openManager() {
+
+    editor.innerHTML = "";
+
+    habits.forEach((habit, index) => {
+
+        const row = document.createElement("div");
+
+        row.className = "editor-row";
+
+        row.innerHTML = `
+            <span>${habit.icon} ${habit.name}</span>
+            <button onclick="deleteHabit(${index})">🗑️</button>
+        `;
+
+        editor.appendChild(row);
+
+    });
+
+    modal.style.display = "flex";
+}
