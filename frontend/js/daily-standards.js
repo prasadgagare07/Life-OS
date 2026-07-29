@@ -65,3 +65,17 @@ function openManager() {
 
     modal.style.display = "flex";
 }
+// Delete Habit
+window.deleteHabit = function(index) {
+
+    if (!confirm("Delete this habit?")) return;
+
+    habits.splice(index, 1);
+
+    createHabits();
+
+    updateSummary();
+
+    openManager();
+
+};
