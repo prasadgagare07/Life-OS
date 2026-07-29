@@ -1,1 +1,48 @@
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
 
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.login-mark {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: var(--accent-gradient);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  margin: 0 auto 1rem;
+}
+
+.login-card h1 { font-size: 1.5rem; margin-bottom: 0.2rem; }
+.login-card .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.75rem; }
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-card input {
+  text-align: center;
+  letter-spacing: 0.3em;
+  font-size: 1.1rem;
+}
+
+.login-error {
+  color: var(--bad);
+  font-size: 0.85rem;
+  min-height: 1.2em;
+}
