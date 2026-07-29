@@ -1,30 +1,37 @@
-const fs = require('fs');
+const express = require('express');
+const cors = require('cors');
 const path = require('path');
 
-const app = require('./app');
-const config = require('./config/config');
-const pool = require('./config/db');
+const authRoutes = require('./routes/auth.routes');
+const standardsRoutes = require('./routes/standards.routes');
+const financeRoutes = require('./routes/finance.routes');
+const fitnessRoutes = require('./routes/fitness.routes');
+const visionRoutes = require('./routes/vision.routes');
 
-async function startServer() {
-  try {
-    // Read schema.sql
-    const schema = fs.readFileSync(
-      path.join(__dirname, 'database', 'schema.sql'),
-      'utf8'
-    );
+const app = express();
 
-    // Create tables if they don't exist
-    await pool.query(schema);
+app.use(cors());
+app.use(express.json());
 
-    console.log('✅ Database initialized');
+app.use('/api/auth', authRoutes);
+app.use('/api/standards', standardsRoutes);
+app.use('/api/finance', financeRoutes);
+app.use('/api/fitness', fitnessRoutes);
+app.use('/api/vision', visionRoutes);
 
-    app.listen(config.port, () => {
-      console.log(`🚀 LifeOS server running on port ${config.port}`);
-    });
-  } catch (err) {
-    console.error('❌ Failed to initialize database:', err);
-    process.exit(1);
-  }
-}
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
+});
 
-startServer();
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+module.exports = app;
