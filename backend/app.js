@@ -3,7 +3,7 @@ const path = require('path');
 
 const app = require('./app');
 const config = require('./config/config');
-const pool = require('./database/db');
+const pool = require('./config/db');
 
 async function startServer() {
   try {
