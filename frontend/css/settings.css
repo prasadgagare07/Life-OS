@@ -1,1 +1,17 @@
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row:last-child { border-bottom: none; }
+
+.settings-row h3 { margin: 0 0 0.2rem; font-size: 1rem; }
+.settings-row p { margin: 0; font-size: 0.85rem; }
