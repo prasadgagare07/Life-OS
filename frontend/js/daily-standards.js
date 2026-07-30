@@ -19,6 +19,7 @@ const defaultHabits = [
 let habits =
 JSON.parse(localStorage.getItem("lifeos_habits"))
 || defaultHabits;
+
 // --- Daily lock: once saved, sliders are frozen until the next day (12:00 AM–11:59 PM) ---
 function getTodayKey(){
   const d = new Date();
@@ -141,22 +142,26 @@ class="slider">
 
 const slider =
 card.querySelector(".slider");
-  
+
 if (isLockedToday()) {
   slider.disabled = true;
 }
-  
+
 slider.style.accentColor =
 habit.color;
-
 slider.style.background =
-`radial-gradient(circle, #ffffff80 2px, transparent 2.5px) left center/10% 100% repeat-x,
-linear-gradient(to right,
+`linear-gradient(to right,
 ${habit.color} 0%,
 ${habit.color} ${habit.value*10}%,
 #222C43 ${habit.value*10}%,
 #222C43 100%)`;
 
+slider.style.background =
+`linear-gradient(to right,
+${habit.color} 0%,
+${habit.color} ${habit.value*10}%,
+#222C43 ${habit.value*10}%,
+#222C43 100%)`;
 slider.oninput = ()=>{
 
 habit.value =
