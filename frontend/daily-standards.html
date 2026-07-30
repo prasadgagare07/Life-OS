@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Daily Standards</title>
 
-<link rel="stylesheet" href="css/daily-standards.css">
+<link rel="stylesheet"
+href="css/daily-standards.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+rel="stylesheet">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
 
 <body>
@@ -20,7 +35,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 <header>
 
 <button class="icon-btn">
+
 <i class="fa-solid fa-bars"></i>
+
 </button>
 
 <div class="title">
@@ -33,12 +50,18 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <div class="actions">
 
-<button class="icon-btn" id="manageHabitsBtn">
+<button
+class="icon-btn"
+id="manageHabitsBtn">
+
 <i class="fa-solid fa-pen"></i>
+
 </button>
 
 <button class="icon-btn">
+
 <i class="fa-solid fa-calendar"></i>
+
 </button>
 
 </div>
@@ -47,11 +70,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <div id="habitList"></div>
 
-<section class="summary">
+  <section class="summary">
 
 <div class="mini-card">
 
+<div class="mini-icon purple">
+
 <i class="fa-solid fa-arrow-trend-up"></i>
+
+</div>
 
 <p>Best Score</p>
 
@@ -69,8 +96,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <h2 id="averageScore">8.3/10</h2>
 
-<div class="pill" id="averagePercent">
+<div
+class="percent-pill"
+id="averagePercent">
+
 83%
+
 </div>
 
 </div>
@@ -81,12 +112,18 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <div class="mini-card">
 
-<i class="fa-solid fa-fire"></i>
+<div class="mini-icon orange">
+
+🔥
+
+</div>
 
 <p>Current Streak</p>
 
-<h2 id="streak">
+<h2>
+
 17
+
 </h2>
 
 <span>days</span>
@@ -97,35 +134,26 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <section class="quote-card">
 
-<div class="quote-icon">
+<div class="quote-mark">
 
 ❝
 
 </div>
 
-<h2>
+<h3>
 
 Small improvements every day create
 
-</h2>
+</h3>
 
-<h1>
+<h2>
 
 extraordinary results.
 
-</h1>
-
-<div class="mountain">
-
-🏔️────────────🚩
-
-</div>
+</h2>
 
 </section>
-
-</div>
-
-<script src="js/daily-standards.js"></script>
+<!-- Manage Habits Modal -->
 
 <div id="habitModal" class="modal">
 
@@ -136,83 +164,103 @@ extraordinary results.
     <div id="habitEditor"></div>
 
     <button id="addHabitBtn" class="primary-btn">
-  ➕ Add Habit
-</button>
+      ➕ Add Habit
+    </button>
 
-<div id="addHabitForm" style="display:none; margin-top:20px;">
+    <div id="addHabitForm" style="display:none;">
 
-  <input
-    type="text"
-    id="habitName"
-    placeholder="Habit Name"
-    class="habit-input"
-  >
+      <input
+        id="habitName"
+        class="habit-input"
+        placeholder="Habit Name">
 
-  <div class="emoji-picker" id="emojiPicker">
+      <div class="emoji-picker" id="emojiPicker">
 
-<span>🙏</span>
-<span>🧘</span>
-<span>🌅</span>
-<span>🌙</span>
-<span>👓</span>
-<span>✨</span>
-<span>📖</span>
-<span>📱</span>
-<span>🗣️</span>
-<span>📝</span>
-<span>💧</span>
-<span>🏃</span>
-<span>🥗</span>
-<span>❤️</span>
-<span>🎯</span>
-<span>⭐</span>
+        <span>🙏</span>
+        <span>🧘</span>
+        <span>🌅</span>
+        <span>🌙</span>
 
-</div>
+        <span>👓</span>
+        <span>✨</span>
+        <span>📖</span>
+        <span>📱</span>
 
-<input
-type="hidden"
-id="habitIcon"
-value="⭐">
+        <span>🗣️</span>
+        <span>📝</span>
+        <span>💧</span>
+        <span>🏃</span>
 
-  <div class="color-picker" id="colorPicker">
+        <span>🥗</span>
+        <span>❤️</span>
+        <span>🎯</span>
+        <span>⭐</span>
 
-<div class="color selected" data-color="#A855F7" style="background:#A855F7"></div>
+      </div>
 
-<div class="color" data-color="#3B82F6" style="background:#3B82F6"></div>
+      <input
+        type="hidden"
+        id="habitIcon">
 
-<div class="color" data-color="#14B8A6" style="background:#14B8A6"></div>
+      <div class="color-picker" id="colorPicker">
 
-<div class="color" data-color="#22C55E" style="background:#22C55E"></div>
+        <div class="color selected"
+             data-color="#A855F7"
+             style="background:#A855F7"></div>
 
-<div class="color" data-color="#EAB308" style="background:#EAB308"></div>
+        <div class="color"
+             data-color="#3B82F6"
+             style="background:#3B82F6"></div>
 
-<div class="color" data-color="#F97316" style="background:#F97316"></div>
+        <div class="color"
+             data-color="#14B8A6"
+             style="background:#14B8A6"></div>
 
-<div class="color" data-color="#EF4444" style="background:#EF4444"></div>
+        <div class="color"
+             data-color="#22C55E"
+             style="background:#22C55E"></div>
 
-<div class="color" data-color="#EC4899" style="background:#EC4899"></div>
+        <div class="color"
+             data-color="#EAB308"
+             style="background:#EAB308"></div>
 
-</div>
+        <div class="color"
+             data-color="#F97316"
+             style="background:#F97316"></div>
 
-<input
-type="hidden"
-id="habitColor"
-value="#A855F7">
+        <div class="color"
+             data-color="#EF4444"
+             style="background:#EF4444"></div>
 
-  <button id="saveHabitBtn" class="primary-btn">
-    Save Habit
-  </button>
+        <div class="color"
+             data-color="#EC4899"
+             style="background:#EC4899"></div>
 
-</div>
+      </div>
 
-    <button id="closeModal" class="secondary-btn">
+      <button
+        id="saveHabitBtn"
+        class="primary-btn">
+
+        Save Habit
+
+      </button>
+
+    </div>
+
+    <button
+      id="closeModal"
+      class="secondary-btn">
+
       Done
+
     </button>
 
   </div>
 
 </div>
+
 <script src="js/daily-standards.js"></script>
-</body>
+
 </body>
 </html>
