@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, '..', 'frontend'), {
   lastModified: false,
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
-      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Cache-Control', 'no-store');
     }
   }
 }));
