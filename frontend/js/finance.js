@@ -20,6 +20,73 @@ const FINANCE_THOUGHTS = [
 let hideSavings=true;
 let hideGrowth=true;
 let hideEmergency=true;
+let goals=JSON.parse(localStorage.getItem("lifeos_goals"))||[
+{
+name:"🏍 Bike",
+target:250000
+},
+{
+name:"💍 Gold Jewellery",
+target:400000
+},
+{
+name:"📦 Others",
+target:300000
+},
+{
+name:"💰 Savings",
+target:1000000
+}
+];
+function saveGoals(){
+
+localStorage.setItem(
+"lifeos_goals",
+JSON.stringify(goals)
+);
+
+}
+
+function renderGoals(){
+
+const list=document.getElementById("goalList");
+
+if(!list) return;
+
+list.innerHTML=goals.map((goal,index)=>`
+
+<div class="goal-item">
+
+<div class="goal-left">
+
+<h4>${goal.name}</h4>
+
+<p>${formatINR(goal.target)}</p>
+
+</div>
+
+<div class="goal-right">
+
+<button onclick="deleteGoal(${index})">🗑</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+window.deleteGoal=function(index){
+
+if(!confirm("Delete this goal?")) return;
+
+goals.splice(index,1);
+
+saveGoals();
+
+renderGoals();
+
+};
 async function loadFinance(){
 
 try{
@@ -41,6 +108,8 @@ const timeline=await api.get("/finance/timeline?limit=365");
 renderTimeline(timeline);
 
 renderWealthCalendar(timeline);
+
+renderGoals();
 
 }catch(err){
 
@@ -506,6 +575,30 @@ market_funds:Number(document.getElementById("market_funds").value)||0,
 emergency_fund:Number(document.getElementById("emergency_fund").value)||0,
 goal_amount:Number(document.getElementById("goal_amount").value)||0
 });
+
+});
+
+document.getElementById("addGoalBtn").addEventListener("click",()=>{
+
+const name=prompt("Goal name");
+
+if(!name) return;
+
+const amount=Number(prompt("Target amount"));
+
+if(!amount || amount<=0) return;
+
+goals.push({
+
+name:name,
+
+target:amount
+
+});
+
+saveGoals();
+
+renderGoals();
 
 });
 loadFinance();
