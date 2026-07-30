@@ -1,4 +1,3 @@
-alert("NEW CODE IS RUNNING");
 // =======================================
 // LifeOS Daily Standards
 // Part 1
@@ -78,8 +77,19 @@ avg.toFixed(1)+"/10";
 document.getElementById("averagePercent").innerText =
 Math.round(avg*10)+"%";
 
+const todaysMax =
+Math.max(...habits.map(h=>h.value));
+
+const storedBest =
+Number(localStorage.getItem("lifeos_best_score")) || 0;
+
+const bestScore =
+Math.max(todaysMax, storedBest);
+
+localStorage.setItem("lifeos_best_score", bestScore);
+
 document.getElementById("bestScore").innerText =
-Math.max(...habits.map(h=>h.value))+"/10";
+bestScore+"/10";
 
 saveHabits();
 
