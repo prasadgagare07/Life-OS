@@ -125,19 +125,15 @@ card.querySelector(".slider");
 
 slider.style.accentColor =
 habit.color;
+
 slider.style.background =
-`linear-gradient(to right,
+`radial-gradient(circle, #ffffff80 2px, transparent 2.5px) left center/10% 100% repeat-x,
+linear-gradient(to right,
 ${habit.color} 0%,
 ${habit.color} ${habit.value*10}%,
 #222C43 ${habit.value*10}%,
 #222C43 100%)`;
 
-slider.style.background =
-`linear-gradient(to right,
-${habit.color} 0%,
-${habit.color} ${habit.value*10}%,
-#222C43 ${habit.value*10}%,
-#222C43 100%)`;
 slider.oninput = ()=>{
 
 habit.value =
