@@ -502,3 +502,4 @@ saveBtn.addEventListener("click", () => {
 refreshSaveButton();
 refreshStreak();
 renderHistory();
+
