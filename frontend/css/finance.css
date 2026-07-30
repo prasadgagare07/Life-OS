@@ -528,3 +528,74 @@ border-radius:999px;
 ::-webkit-scrollbar-track{
 background:#111827;
 }
+/* ===========================
+   Goal Modal
+=========================== */
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.modal.hidden{
+display:none;
+}
+
+.modal-content{
+width:90%;
+max-width:420px;
+background:#111827;
+border-radius:24px;
+padding:24px;
+border:1px solid rgba(255,255,255,.08);
+box-shadow:0 20px 50px rgba(0,0,0,.45);
+}
+
+.modal-content h2{
+margin-bottom:20px;
+font-size:24px;
+font-weight:700;
+}
+
+.modal-content input{
+width:100%;
+padding:14px;
+margin-bottom:16px;
+border:none;
+border-radius:12px;
+background:#1E293B;
+color:#fff;
+font-size:16px;
+outline:none;
+}
+
+.modal-buttons{
+display:flex;
+gap:12px;
+margin-top:10px;
+}
+
+.modal-buttons button{
+flex:1;
+padding:14px;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+}
+
+#saveGoalBtn{
+background:#10B981;
+color:#fff;
+}
+
+#cancelGoalBtn{
+background:#374151;
+color:#fff;
+}
