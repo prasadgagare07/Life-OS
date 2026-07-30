@@ -77,19 +77,16 @@ avg.toFixed(1)+"/10";
 document.getElementById("averagePercent").innerText =
 Math.round(avg*10)+"%";
 
-const todaysMax =
-Math.max(...habits.map(h=>h.value));
-
 const storedBest =
 Number(localStorage.getItem("lifeos_best_score")) || 0;
 
 const bestScore =
-Math.max(todaysMax, storedBest);
+Math.max(avg, storedBest);
 
 localStorage.setItem("lifeos_best_score", bestScore);
 
 document.getElementById("bestScore").innerText =
-bestScore+"/10";
+bestScore.toFixed(1)+"/10";
 
 saveHabits();
 
@@ -104,7 +101,7 @@ habits.forEach((habit,index)=>{
 const card =
 document.createElement("div");
 
-card.className="habit-card";
+card.className="habit-card"+(isLockedToday()?" locked":"");
 
 card.style.setProperty("--accent",habit.color);
 
@@ -127,7 +124,7 @@ ${habit.icon}
 
 <div class="name">
 
-${habit.name}
+${habit.name} ${isLockedToday() ? '<span class="lock-icon">🔒</span>' : ''}
 
 </div>
 
@@ -409,10 +406,84 @@ function refreshSaveButton(){
   if (isLockedToday()) {
     saveBtn.textContent = "✅ Saved for Today";
     saveBtn.disabled = true;
+    saveBtn.classList.add("saved");
   } else {
     saveBtn.textContent = "💾 Save Today's Ratings";
     saveBtn.disabled = false;
+    saveBtn.classList.remove("saved");
   }
+}
+
+// --- History (last 30 days) + real streak ---
+function getHistory(){
+  return JSON.parse(localStorage.getItem("lifeos_history")) || [];
+}
+
+function saveTodayToHistory(){
+  const history = getHistory();
+  const key = getTodayKey();
+  const total = habits.reduce((a,b)=>a+b.value,0);
+  const avg = total / habits.length;
+
+  const existing = history.find(h => h.date === key);
+  if (existing) {
+    existing.avg = avg;
+  } else {
+    history.push({ date: key, avg: avg });
+  }
+
+  const trimmed = history.slice(-30);
+  localStorage.setItem("lifeos_history", JSON.stringify(trimmed));
+}
+
+function computeStreak(){
+  const history = getHistory();
+  const dates = new Set(history.map(h => h.date));
+  let streak = 0;
+  let d = new Date();
+
+  if (!dates.has(getTodayKey())) {
+    d.setDate(d.getDate()-1);
+  }
+
+  while (true) {
+    const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    if (dates.has(key)) {
+      streak++;
+      d.setDate(d.getDate()-1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+function refreshStreak(){
+  const streakEl = document.getElementById("currentStreak");
+  if (streakEl) streakEl.innerText = computeStreak();
+}
+
+function renderHistory(){
+  const bars = document.getElementById("historyBars");
+  if (!bars) return;
+
+  const last7 = getHistory().slice(-7);
+  bars.innerHTML = "";
+
+  last7.forEach(day => {
+    const label = new Date(day.date).toLocaleDateString("en-US", { weekday: "short" });
+    const isToday = day.date === getTodayKey();
+
+    const col = document.createElement("div");
+    col.className = "bar-col";
+    col.innerHTML = `
+      <div class="bar${isToday ? " today" : ""}" style="height:${Math.max(day.avg*10,4)}%"></div>
+      <div class="bar-val">${day.avg.toFixed(1)}</div>
+      <div class="bar-label">${label}</div>
+    `;
+    bars.appendChild(col);
+  });
 }
 
 saveBtn.addEventListener("click", () => {
@@ -421,8 +492,13 @@ saveBtn.addEventListener("click", () => {
 
   localStorage.setItem("lifeos_habits_locked", "true");
   saveHabits();
+  saveTodayToHistory();
   createHabits();
   refreshSaveButton();
+  refreshStreak();
+  renderHistory();
 });
 
 refreshSaveButton();
+refreshStreak();
+renderHistory();
