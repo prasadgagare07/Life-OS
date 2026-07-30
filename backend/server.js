@@ -14,6 +14,13 @@ async function start() {
 
     await pool.query(schema);
 
+    const dailyEntriesMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '001_daily_entries.sql'),
+      'utf8'
+    );
+
+    await pool.query(dailyEntriesMigration);
+
     console.log('✅ Database initialized');
 
     app.listen(config.port, () => {
