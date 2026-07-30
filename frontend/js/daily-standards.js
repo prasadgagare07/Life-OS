@@ -1,3 +1,4 @@
+alert("NEW CODE IS RUNNING");
 // =======================================
 // LifeOS Daily Standards
 // Part 1
