@@ -621,3 +621,13 @@ width:0%;
 background:linear-gradient(90deg,#10B981,#34D399);
 transition:.4s;
 }
+.goal-complete{
+margin-left:8px;
+font-size:18px;
+color:#10B981;
+}
+
+.goal-item.completed{
+border:2px solid #10B981;
+box-shadow:0 0 18px rgba(16,185,129,.35);
+}
