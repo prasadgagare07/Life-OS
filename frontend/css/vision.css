@@ -1,28 +1,242 @@
+/* ===========================
+   Vision Hero
+=========================== */
+
+.vision-hero {
+  text-align: center;
+  padding: 2.5rem 1.5rem 2rem;
+  margin-bottom: 2rem;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(700px 300px at 50% 0%, rgba(255, 193, 94, 0.12), transparent 70%),
+    var(--surface);
+  border: 1px solid var(--border);
+}
+
+.vision-crown {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.vision-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 3rem;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.mission-badge {
+  display: inline-block;
+  padding: 0.35em 1em;
+  border-radius: 999px;
+  background: rgba(255, 138, 76, 0.12);
+  color: var(--accent-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.mission-text {
+  max-width: 560px;
+  margin: 0 auto;
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.mission-text strong {
+  color: var(--accent-2);
+  font-weight: 600;
+}
+
+/* ===========================
+   Category Cards
+=========================== */
+
 #vision-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.25rem;
   margin-bottom: 1.75rem;
 }
 
 .vision-card {
-  position: relative;
   border-radius: var(--radius-md);
-  min-height: 220px;
-  background: var(--surface) center/cover no-repeat;
   border: 1px solid var(--border);
+  background: var(--surface);
   overflow: hidden;
+  box-shadow: var(--shadow-card);
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
 }
 
-.vision-card-overlay {
-  width: 100%;
-  padding: 1.25rem;
-  background: linear-gradient(180deg, transparent, rgba(11, 13, 18, 0.92) 60%);
+.vision-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #1A1200;
 }
 
-.vision-card-overlay h3 { margin: 0.3rem 0; }
-.vision-card-overlay p { font-size: 0.85rem; margin-bottom: 0.75rem; }
+.vision-card-header .cat-icon { font-size: 1.15rem; }
+
+.vision-card-image {
+  height: 140px;
+  background: var(--surface-raised) center/cover no-repeat;
+  position: relative;
+}
+
+.vision-card-image .check-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--good);
+  color: #06210F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.vision-card-body {
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.vision-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.vision-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.vision-checklist .tick {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--good);
+  color: #06210F;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.1rem;
+}
+
+.vision-checklist .item-text { flex: 1; }
+.vision-checklist .item-desc {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+.vision-checklist .remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+}
+
+.vision-checklist li:hover .remove-btn { opacity: 1; }
+.vision-checklist .remove-btn:hover { color: var(--bad); }
+
+/* ===========================
+   Add-to-board form
+=========================== */
 
 .vision-form-card .field-row { margin-bottom: 1rem; }
+.vision-form-card label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+.vision-form-card input, .vision-form-card textarea { width: 100%; }
+
+/* ===========================
+   Footer icon strip
+=========================== */
+
+.vision-footer-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+  text-align: center;
+  margin: 2.25rem 0 1.5rem;
+}
+
+.footer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.footer-item .icon { font-size: 1.5rem; }
+
+@media (max-width: 900px) {
+  .vision-footer-strip { grid-template-columns: repeat(3, 1fr); }
+  .vision-title { font-size: 2.2rem; }
+}
+
+/* ===========================
+   Closing banner
+=========================== */
+
+.vision-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 1.5rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #123321, #0B0D12);
+  border: 1px solid rgba(62, 207, 142, 0.3);
+  color: var(--good);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.vision-banner strong { color: #fff; }
+.crown-sm, .infinity { font-size: 1.4rem; flex-shrink: 0; }
+
+@media (max-width: 600px) {
+  .vision-banner { flex-direction: column; gap: 0.5rem; }
+}
