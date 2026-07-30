@@ -3,6 +3,16 @@
 // Part 1
 // =======================================
 
+const API_BASE = "/api/standards";
+
+function authHeaders(){
+  const token = localStorage.getItem("lifeos_token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": token ? `Bearer ${token}` : ""
+  };
+}
+
 const defaultHabits = [
 { name:"Naam Jap", icon:"🙏", color:"#A855F7", value:9 },
 { name:"Meditation", icon:"🧘", color:"#3B82F6", value:8 },
@@ -29,15 +39,18 @@ function getTodayKey(){
 const todayKey = getTodayKey();
 const storedDate = localStorage.getItem("lifeos_habits_date");
 
+let locked = localStorage.getItem("lifeos_habits_locked") === "true";
+
 if (storedDate !== todayKey) {
   habits = habits.map(h => ({ ...h, value: 0 }));
+  locked = false;
   localStorage.setItem("lifeos_habits_date", todayKey);
   localStorage.setItem("lifeos_habits_locked", "false");
   localStorage.setItem("lifeos_habits", JSON.stringify(habits));
 }
 
 function isLockedToday(){
-  return localStorage.getItem("lifeos_habits_locked") === "true";
+  return locked;
 }
 
 const habitList =
@@ -54,7 +67,7 @@ month:"long",
 year:"numeric"
 });
 
-function saveHabits(){
+function saveHabitsLocal(){
 
 localStorage.setItem(
 "lifeos_habits",
@@ -88,7 +101,7 @@ localStorage.setItem("lifeos_best_score", bestScore);
 document.getElementById("bestScore").innerText =
 bestScore.toFixed(1)+"/10";
 
-saveHabits();
+saveHabitsLocal();
 
 }
 
@@ -164,12 +177,6 @@ ${habit.color} ${habit.value*10}%,
 #222C43 ${habit.value*10}%,
 #222C43 100%)`;
 
-slider.style.background =
-`linear-gradient(to right,
-${habit.color} 0%,
-${habit.color} ${habit.value*10}%,
-#222C43 ${habit.value*10}%,
-#222C43 100%)`;
 slider.oninput = ()=>{
 
 habit.value =
@@ -256,7 +263,7 @@ if(!confirm("Delete this habit?")) return;
 
 habits.splice(index,1);
 
-saveHabits();
+saveHabitsLocal();
 
 createHabits();
 
@@ -319,7 +326,7 @@ document
 .getElementById("habitName")
 .value="";
 
-saveHabits();
+saveHabitsLocal();
 
 createHabits();
 
@@ -395,10 +402,6 @@ modal.style.display="none";
 
 });
 
-// Initialise page
-createHabits();
-updateSummary();
-
 // --- Save button ---
 const saveBtn = document.getElementById("saveHabitsBtn");
 
@@ -414,12 +417,12 @@ function refreshSaveButton(){
   }
 }
 
-// --- History (last 30 days) + real streak ---
+// --- History (last 30 days, local fallback) + real streak ---
 function getHistory(){
   return JSON.parse(localStorage.getItem("lifeos_history")) || [];
 }
 
-function saveTodayToHistory(){
+function saveTodayToHistoryLocal(){
   const history = getHistory();
   const key = getTodayKey();
   const total = habits.reduce((a,b)=>a+b.value,0);
@@ -486,20 +489,91 @@ function renderHistory(){
   });
 }
 
-saveBtn.addEventListener("click", () => {
+// --- Backend sync ---
+async function loadTodayFromServer(){
+  try {
+    const res = await fetch(`${API_BASE}/today`, { headers: authHeaders() });
+    if (!res.ok) return;
+    const data = await res.json();
+
+    if (data.entry) {
+      habits = data.entry.habits;
+      locked = !!data.entry.locked;
+      localStorage.setItem("lifeos_habits", JSON.stringify(habits));
+      localStorage.setItem("lifeos_habits_locked", locked ? "true" : "false");
+    }
+
+    if (typeof data.best === "number") {
+      const storedBest = Number(localStorage.getItem("lifeos_best_score")) || 0;
+      localStorage.setItem("lifeos_best_score", Math.max(data.best, storedBest));
+    }
+
+    createHabits();
+    updateSummary();
+    refreshSaveButton();
+  } catch (err) {
+    console.warn("Could not reach server, using local data:", err);
+  }
+}
+
+async function loadHistoryFromServer(){
+  try {
+    const res = await fetch(`${API_BASE}?limit=7`, { headers: authHeaders() });
+    if (!res.ok) return;
+    const entries = await res.json();
+
+    const ascending = entries.slice().reverse();
+    localStorage.setItem("lifeos_history", JSON.stringify(
+      ascending.map(e => ({ date: e.entry_date, avg: Number(e.avg_score) }))
+    ));
+
+    renderHistory();
+    refreshStreak();
+  } catch (err) {
+    console.warn("Could not load history from server:", err);
+  }
+}
+
+saveBtn.addEventListener("click", async () => {
   if (isLockedToday()) return;
   if (!confirm("Once saved, you can't change today's ratings. Continue?")) return;
 
+  locked = true;
   localStorage.setItem("lifeos_habits_locked", "true");
-  saveHabits();
-  saveTodayToHistory();
+  saveHabitsLocal();
+  saveTodayToHistoryLocal();
+
   createHabits();
   refreshSaveButton();
   refreshStreak();
   renderHistory();
+
+  try {
+    const res = await fetch(API_BASE, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ habits, locked: true })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const storedBest = Number(localStorage.getItem("lifeos_best_score")) || 0;
+      const best = Math.max(data.best, storedBest);
+      localStorage.setItem("lifeos_best_score", best);
+      document.getElementById("bestScore").innerText = best.toFixed(1)+"/10";
+      await loadHistoryFromServer();
+    }
+  } catch (err) {
+    console.warn("Saved locally, but could not sync to server:", err);
+  }
 });
 
+// Initialise page (instant local render, then sync with server)
+createHabits();
+updateSummary();
 refreshSaveButton();
 refreshStreak();
 renderHistory();
 
+loadTodayFromServer();
+loadHistoryFromServer();
