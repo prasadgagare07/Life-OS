@@ -599,3 +599,25 @@ color:#fff;
 background:#374151;
 color:#fff;
 }
+.goal-item{
+padding:16px;
+border-radius:18px;
+background:#151D2D;
+margin-bottom:14px;
+border:1px solid rgba(255,255,255,.05);
+}
+
+.goal-progress{
+height:8px;
+background:#1E293B;
+border-radius:999px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.goal-progress-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#10B981,#34D399);
+transition:.4s;
+}
