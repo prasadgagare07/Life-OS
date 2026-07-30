@@ -17,9 +17,16 @@ const FINANCE_THOUGHTS = [
 "Skills create income.",
 "Wealth grows patiently."
 ];
-let hideSavings=true;
-let hideGrowth=true;
-let hideEmergency=true;
+
+let hideSavings=
+JSON.parse(localStorage.getItem("hideSavings")) ?? true;
+
+let hideGrowth=
+JSON.parse(localStorage.getItem("hideGrowth")) ?? true;
+
+let hideEmergency=
+JSON.parse(localStorage.getItem("hideEmergency")) ?? true;
+
 let goals=JSON.parse(localStorage.getItem("lifeos_goals"))||[
 {
 name:"🏍 Bike",
@@ -243,6 +250,15 @@ document.getElementById("financeThought").textContent=
 FINANCE_THOUGHTS[today.getDate()%FINANCE_THOUGHTS.length];
 
 renderMilestones(freedom);
+
+document.getElementById("toggleSavings").textContent=
+hideSavings ? "👁" : "🙈";
+
+document.getElementById("toggleGrowth").textContent=
+hideGrowth ? "👁" : "🙈";
+
+document.getElementById("toggleEmergency").textContent=
+hideEmergency ? "👁" : "🙈";
 
 }
 
@@ -617,6 +633,12 @@ document.getElementById("toggleSavings").addEventListener("click",()=>{
 
 hideSavings=!hideSavings;
 
+
+localStorage.setItem(
+"hideSavings",
+JSON.stringify(hideSavings)
+);
+  
 renderSummary({
 bank_balance:Number(document.getElementById("bank_balance").value)||0,
 market_funds:Number(document.getElementById("market_funds").value)||0,
@@ -630,6 +652,13 @@ document.getElementById("toggleGrowth").addEventListener("click",()=>{
 
 hideGrowth=!hideGrowth;
 
+localStorage.setItem(
+"hideGrowth",
+JSON.stringify(hideGrowth)
+);
+document.getElementById("toggleGrowth").textContent=
+hideGrowth ? "👁" : "🙈";
+  
 renderSummary({
 bank_balance:Number(document.getElementById("bank_balance").value)||0,
 market_funds:Number(document.getElementById("market_funds").value)||0,
@@ -643,6 +672,14 @@ document.getElementById("toggleEmergency").addEventListener("click",()=>{
 
 hideEmergency=!hideEmergency;
 
+localStorage.setItem(
+"hideEmergency",
+JSON.stringify(hideEmergency)
+);
+
+document.getElementById("toggleEmergency").textContent=
+hideEmergency ? "👁" : "🙈";
+  
 renderSummary({
 bank_balance:Number(document.getElementById("bank_balance").value)||0,
 market_funds:Number(document.getElementById("market_funds").value)||0,
@@ -650,6 +687,10 @@ emergency_fund:Number(document.getElementById("emergency_fund").value)||0,
 goal_amount:Number(document.getElementById("goal_amount").value)||0
 });
 
+
+document.getElementById("toggleSavings").textContent=
+hideSavings ? "👁" : "🙈";
+  
 });
 
 const goalModal=document.getElementById("goalModal");
