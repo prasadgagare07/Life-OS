@@ -76,6 +76,8 @@ document.getElementById("goalPercent").textContent=Math.round(percent)+"%";
 
 document.getElementById("goalBar").style.width=percent+"%";
 
+drawGoalRing(percent);
+
 const today=new Date();
 
 const target=new Date("2027-03-30");
@@ -95,6 +97,53 @@ document.getElementById("financeThought").textContent=
 FINANCE_THOUGHTS[today.getDate()%FINANCE_THOUGHTS.length];
 
 renderMilestones(freedom);
+
+}
+
+function drawGoalRing(percent){
+
+const canvas=document.getElementById("goalRing");
+
+if(!canvas) return;
+
+const ctx=canvas.getContext("2d");
+
+const w=canvas.width;
+const h=canvas.height;
+
+const cx=w/2;
+const cy=h/2;
+
+const r=75;
+
+ctx.clearRect(0,0,w,h);
+
+// Background Ring
+ctx.beginPath();
+ctx.arc(cx,cy,r,0,Math.PI*2);
+ctx.lineWidth=14;
+ctx.strokeStyle="#1E293B";
+ctx.stroke();
+
+// Progress Ring
+ctx.beginPath();
+ctx.arc(
+cx,
+cy,
+r,
+-Math.PI/2,
+(-Math.PI/2)+(Math.PI*2*(percent/100))
+);
+
+ctx.lineWidth=14;
+ctx.lineCap="round";
+
+const gradient=ctx.createLinearGradient(0,0,w,0);
+gradient.addColorStop(0,"#10B981");
+gradient.addColorStop(1,"#34D399");
+
+ctx.strokeStyle=gradient;
+ctx.stroke();
 
 }
 // ===============================
