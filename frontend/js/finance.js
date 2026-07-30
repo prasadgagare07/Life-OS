@@ -63,6 +63,15 @@ list.innerHTML=goals.map((goal,index)=>`
 
 <p>${formatINR(goal.target)}</p>
 
+<div class="goal-progress">
+
+<div
+class="goal-progress-fill"
+style="width:${Math.min(100,(Number(document.getElementById("wealthAmount")?.textContent.replace(/[₹,]/g,""))||0)/goal.target*100)}%">
+</div>
+
+</div>
+
 </div>
 
 <div class="goal-right">
