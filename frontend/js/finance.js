@@ -53,13 +53,22 @@ const list=document.getElementById("goalList");
 
 if(!list) return;
 
-list.innerHTML=goals.map((goal,index)=>`
+const wealth=
+(Number(document.getElementById("wealthAmount")?.textContent.replace(/[₹,]/g,""))||0);
+list.innerHTML=goals.map((goal,index)=>{
+
+const completed = wealth >= goal.target;
+
+return `
 
 <div class="goal-item">
 
 <div class="goal-left">
 
-<h4>${goal.name}</h4>
+<h4>
+${goal.name}
+${completed ? '<span class="goal-complete">✅</span>' : ''}
+</h4>
 
 <p>${formatINR(goal.target)}</p>
 
@@ -74,7 +83,10 @@ style="width:${Math.min(100,(Number(document.getElementById("wealthAmount")?.tex
 
 </div>
 
+
 <div class="goal-right">
+
+<button onclick="editGoal(${index})">✏️</button>
 
 <button onclick="deleteGoal(${index})">🗑</button>
 
@@ -82,7 +94,9 @@ style="width:${Math.min(100,(Number(document.getElementById("wealthAmount")?.tex
 
 </div>
 
-`).join("");
+`;
+
+}).join("");
 
 }
 window.deleteGoal=function(index){
@@ -96,6 +110,57 @@ saveGoals();
 renderGoals();
 
 };
+
+window.editGoal=function(index){
+
+const goal=goals[index];
+
+document.getElementById("goalNameInput").value=goal.name;
+
+document.getElementById("goalAmountInput").value=goal.target;
+
+goalModal.classList.remove("hidden");
+
+document.getElementById("saveGoalBtn").onclick=function(){
+
+const name=document.getElementById("goalNameInput").value.trim();
+
+const amount=Number(document.getElementById("goalAmountInput").value);
+
+if(name===""){
+
+alert("Enter goal name");
+
+return;
+
+}
+
+if(amount<=0){
+
+alert("Enter valid amount");
+
+return;
+
+}
+
+goals[index]={
+
+name,
+
+target:amount
+
+};
+
+saveGoals();
+
+renderGoals();
+
+goalModal.classList.add("hidden");
+
+};
+
+};
+
 async function loadFinance(){
 
 try{
