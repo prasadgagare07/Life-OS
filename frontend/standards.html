@@ -1,53 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LifeOS — Daily Standards</title>
-<link rel="stylesheet" href="css/global.css">
-<link rel="stylesheet" href="css/navbar.css">
-<link rel="stylesheet" href="css/cards.css">
-<link rel="stylesheet" href="css/animations.css">
-<link rel="stylesheet" href="css/standards.css">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Daily Standards</title>
+
+<link rel="stylesheet"
+href="css/daily-standards.css">
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
+
 <body>
 
-<div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
+<div class="container">
 
-  <main class="main-content">
-    <div class="page-header fade-up">
-      <div>
-        <div class="eyebrow">Discipline</div>
-        <h1>Daily Standards</h1>
-      </div>
-    </div>
+<header>
 
-    <div class="grid grid-2">
-      <form class="card fade-up fade-up-1" id="standards-form">
-        <div class="card-title"><h3>Rate today (0–10)</h3></div>
-        <div id="sliders"></div>
+<button class="icon-btn">
 
-        <div class="live-average-row">
-          <span class="stat-label">Today's average</span>
-          <span class="numeric" id="live-average">—</span>
-        </div>
+<i class="fa-solid fa-bars"></i>
 
-        <button type="submit" class="btn-primary" style="width:100%">Save today's standards</button>
-      </form>
+</button>
 
-      <div class="card fade-up fade-up-2">
-        <div class="card-title"><h3>Last 14 days</h3></div>
-        <div id="history-list"></div>
-      </div>
-    </div>
-  </main>
+<div class="title">
+
+<h1>Daily Standards</h1>
+
+<p id="todayDate"></p>
+
 </div>
 
-<script src="js/api.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/app.js"></script>
-<script src="js/standards.js"></script>
+<div class="actions">
+
+<button
+class="icon-btn"
+id="manageHabitsBtn">
+
+<i class="fa-solid fa-pen"></i>
+
+</button>
+
+<button class="icon-btn">
+
+<i class="fa-solid fa-calendar"></i>
+
+</button>
+
+</div>
+
+</header>
+
+<div id="habitList"></div>
+
+  <section class="summary">
+
+<div class="mini-card">
+
+<div class="mini-icon purple">
+
+<i class="fa-solid fa-arrow-trend-up"></i>
+
+</div>
+
+<p>Best Score</p>
+
+<h2 id="bestScore">10/10</h2>
+
+</div>
+
+<div class="ring-card">
+
+<div class="ring">
+
+<div class="ring-center">
+
+<span>TODAY'S AVERAGE</span>
+
+<h2 id="averageScore">8.3/10</h2>
+
+<div
+class="percent-pill"
+id="averagePercent">
+
+83%
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mini-card">
+
+<div class="mini-icon orange">
+
+🔥
+
+</div>
+
+<p>Current Streak</p>
+
+<h2>
+
+17
+
+</h2>
+
+<span>days</span>
+
+</div>
+
+</section>
+
+<section class="quote-card">
+
+<div class="quote-mark">
+
+❝
+
+</div>
+
+<h3>
+
+Small improvements every day create
+
+</h3>
+
+<h2>
+
+extraordinary results.
+
+</h2>
+
+</section>
+<!-- Manage Habits Modal -->
+
+<div id="habitModal" class="modal">
+
+  <div class="modal-content">
+
+    <h2>Manage Habits</h2>
+
+    <div id="habitEditor"></div>
+
+    <button id="addHabitBtn" class="primary-btn">
+      ➕ Add Habit
+    </button>
+
+    <div id="addHabitForm" style="display:none;">
+
+      <input
+        id="habitName"
+        class="habit-input"
+        placeholder="Habit Name">
+
+      <div class="emoji-picker" id="emojiPicker">
+
+        <span>🙏</span>
+        <span>🧘</span>
+        <span>🌅</span>
+        <span>🌙</span>
+
+        <span>👓</span>
+        <span>✨</span>
+        <span>📖</span>
+        <span>📱</span>
+
+        <span>🗣️</span>
+        <span>📝</span>
+        <span>💧</span>
+        <span>🏃</span>
+
+        <span>🥗</span>
+        <span>❤️</span>
+        <span>🎯</span>
+        <span>⭐</span>
+
+      </div>
+
+      <input
+        type="hidden"
+        id="habitIcon">
+
+      <div class="color-picker" id="colorPicker">
+
+        <div class="color selected"
+             data-color="#A855F7"
+             style="background:#A855F7"></div>
+
+        <div class="color"
+             data-color="#3B82F6"
+             style="background:#3B82F6"></div>
+
+        <div class="color"
+             data-color="#14B8A6"
+             style="background:#14B8A6"></div>
+
+        <div class="color"
+             data-color="#22C55E"
+             style="background:#22C55E"></div>
+
+        <div class="color"
+             data-color="#EAB308"
+             style="background:#EAB308"></div>
+
+        <div class="color"
+             data-color="#F97316"
+             style="background:#F97316"></div>
+
+        <div class="color"
+             data-color="#EF4444"
+             style="background:#EF4444"></div>
+
+        <div class="color"
+             data-color="#EC4899"
+             style="background:#EC4899"></div>
+
+      </div>
+
+      <button
+        id="saveHabitBtn"
+        class="primary-btn">
+
+        Save Habit
+
+      </button>
+
+    </div>
+
+    <button
+      id="closeModal"
+      class="secondary-btn">
+
+      Done
+
+    </button>
+
+  </div>
+
+</div>
+
+<script src="js/daily-standards.js"></script>
+
 </body>
 </html>
