@@ -1,332 +1,464 @@
-/* ---------- Premium Slider ---------- */
+/* ===========================
+   LifeOS Premium Theme
+=========================== */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:#0A0E1A;
+color:#fff;
+min-height:100vh;
+}
+
+.container{
+max-width:480px;
+margin:auto;
+padding:20px 18px 40px;
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+}
+
+.title{
+text-align:center;
+flex:1;
+}
+
+.title h1{
+font-size:28px;
+font-weight:800;
+}
+
+.title p{
+margin-top:6px;
+color:#94A3B8;
+font-size:14px;
+}
+
+.actions{
+display:flex;
+gap:10px;
+}
+
+.icon-btn{
+width:46px;
+height:46px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,.08);
+background:#111827;
+color:white;
+cursor:pointer;
+transition:.25s;
+}
+
+.icon-btn:hover{
+background:#1E293B;
+}
+
+#habitList{
+display:flex;
+flex-direction:column;
+gap:18px;
+margin-top:24px;
+}
+
+.habit-card{
+background:#111827;
+border-radius:22px;
+padding:18px;
+border:2px solid var(--accent);
+box-shadow:0 0 22px rgba(255,255,255,.04);
+}
+
+.habit-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.badge{
+width:52px;
+height:52px;
+border-radius:16px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:24px;
+}
+
+.name{
+font-size:17px;
+font-weight:700;
+}
+
+.score{
+font-size:28px;
+font-weight:800;
+}
+
+.score span{
+font-size:14px;
+color:#94A3B8;
+}
+/* ===========================
+   Premium Slider
+=========================== */
 
 .slider{
-    -webkit-appearance:none;
-    appearance:none;
-    width:100%;
-    height:8px;
-    border-radius:30px;
-    background:#222c43;
-    outline:none;
-    margin-top:18px;
+-webkit-appearance:none;
+appearance:none;
+width:100%;
+height:8px;
+border-radius:999px;
+background:#222C43;
+outline:none;
 }
 
 .slider::-webkit-slider-runnable-track{
-    height:8px;
-    border-radius:30px;
+height:8px;
+border-radius:999px;
 }
 
 .slider::-webkit-slider-thumb{
-    -webkit-appearance:none;
-    appearance:none;
-    width:22px;
-    height:22px;
-    border-radius:50%;
-    background:#fff;
-    border:3px solid currentColor;
-    margin-top:-7px;
-    cursor:pointer;
-    box-shadow:0 0 18px currentColor;
+-webkit-appearance:none;
+appearance:none;
+width:22px;
+height:22px;
+border-radius:50%;
+background:#fff;
+border:3px solid currentColor;
+margin-top:-7px;
+cursor:pointer;
+box-shadow:0 0 18px currentColor;
 }
 
-.slider::-moz-range-thumb{
-    width:22px;
-    height:22px;
-    border-radius:50%;
-    background:white;
-    border:none;
+/* ===========================
+   Summary
+=========================== */
+
+.summary{
+margin-top:30px;
+display:grid;
+grid-template-columns:1fr 1.3fr 1fr;
+gap:14px;
+align-items:center;
 }
 
-/* ---------- Habit Card Glow ---------- */
-
-.habit-card{
-    position:relative;
-    overflow:hidden;
-    transition:.25s;
+.mini-card{
+background:#111827;
+border-radius:22px;
+padding:18px;
+text-align:center;
 }
 
-.habit-card:hover{
-    transform:translateY(-3px);
+.mini-card p{
+font-size:13px;
+color:#94A3B8;
+margin-top:10px;
 }
 
-.habit-card::before{
-
-content:"";
-
-position:absolute;
-
-top:0;
-
-left:0;
-
-width:5px;
-
-height:100%;
-
-background:var(--accent);
-
-box-shadow:0 0 20px var(--accent);
-
-}
-
-/* ---------- Score ---------- */
-
-.score{
-
-font-size:30px;
-
+.mini-card h2{
+margin-top:8px;
+font-size:26px;
 font-weight:800;
-
 }
 
-/* ---------- Ring ---------- */
+.mini-card span{
+color:#94A3B8;
+font-size:13px;
+}
+
+.mini-icon{
+width:46px;
+height:46px;
+border-radius:14px;
+display:flex;
+justify-content:center;
+align-items:center;
+margin:auto;
+font-size:22px;
+}
+
+.purple{
+background:#A855F722;
+color:#A855F7;
+}
+
+.orange{
+background:#F9731622;
+color:#F97316;
+}
+
+/* ===========================
+   Progress Ring
+=========================== */
+
+.ring-card{
+display:flex;
+justify-content:center;
+}
 
 .ring{
+width:190px;
+height:190px;
+border-radius:50%;
+padding:10px;
+background:conic-gradient(
+#EC4899,
+#A855F7,
+#3B82F6,
+#EC4899
+);
+animation:ringRotate 8s linear infinite;
+}
 
-animation:ringRotate 6s linear infinite;
+.ring-center{
+width:100%;
+height:100%;
+background:#0F172A;
+border-radius:50%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
 
+.ring-center span{
+font-size:11px;
+letter-spacing:1px;
+color:#94A3B8;
+}
+
+.ring-center h2{
+font-size:30px;
+margin:10px 0;
+font-weight:800;
+}
+
+.percent-pill{
+padding:8px 18px;
+background:#172554;
+border-radius:999px;
+font-weight:700;
 }
 
 @keyframes ringRotate{
 
-from{
-
+0%{
 transform:rotate(0deg);
-
 }
 
-to{
-
+100%{
 transform:rotate(360deg);
-
 }
 
 }
 
-/* ---------- Cards ---------- */
-
-.mini-card{
-
-transition:.25s;
-
-}
-
-.mini-card:hover{
-
-transform:scale(1.04);
-
-}
-
-/* ---------- Quote ---------- */
+/* ===========================
+   Quote Card
+=========================== */
 
 .quote-card{
-
+margin-top:28px;
+background:linear-gradient(180deg,#111827,#0F172A);
+border-radius:28px;
+padding:30px 24px;
+text-align:center;
 position:relative;
-
+overflow:hidden;
 }
 
 .quote-card::before{
-
-content:"✦ ✦ ✦";
-
+content:"";
 position:absolute;
-
-top:18px;
-
-left:20px;
-
-color:#ffffff22;
-
-font-size:20px;
-
-}
-
-.quote-card::after{
-
-content:"🏔️";
-
-position:absolute;
-
-right:18px;
-
-bottom:14px;
-
-font-size:34px;
-
+inset:0;
+background:
+radial-gradient(circle at top,#ffffff15 1px,transparent 1px);
+background-size:28px 28px;
 opacity:.25;
-
+pointer-events:none;
 }
 
-/* ---------- Scroll ---------- */
-
-body::-webkit-scrollbar{
-
-width:7px;
-
+.quote-mark{
+font-size:42px;
+color:#A855F7;
+margin-bottom:12px;
 }
 
-body::-webkit-scrollbar-thumb{
-
-background:#3b4b70;
-
-border-radius:20px;
-
+.quote-card h3{
+font-size:20px;
+font-weight:700;
+line-height:1.5;
 }
 
-/* ===== Manage Habits Modal ===== */
+.quote-card h2{
+margin-top:10px;
+font-size:24px;
+font-weight:800;
+background:linear-gradient(90deg,#EC4899,#A855F7,#3B82F6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+/* ===========================
+   Modal
+=========================== */
 
 .modal{
-    position:fixed;
-    inset:0;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    background:rgba(0,0,0,.75);
-    backdrop-filter:blur(8px);
-    z-index:999;
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+justify-content:center;
+align-items:center;
+z-index:999;
 }
 
 .modal-content{
-    width:92%;
-    max-width:420px;
-    background:#141C2F;
-    border-radius:24px;
-    padding:22px;
-}
-
-.modal-content h2{
-    margin-bottom:18px;
-    font-size:24px;
-    font-weight:700;
+width:92%;
+max-width:420px;
+background:#111827;
+border-radius:24px;
+padding:22px;
 }
 
 .editor-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 0;
-    border-bottom:1px solid #26334F;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 0;
+border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .editor-row button{
-    background:none;
-    border:none;
-    color:#ff5b5b;
-    font-size:20px;
-    cursor:pointer;
-}
-
-.primary-btn,
-.secondary-btn{
-    width:100%;
-    border:none;
-    border-radius:16px;
-    padding:15px;
-    font-size:16px;
-    font-weight:700;
-    margin-top:15px;
+background:#EF4444;
+border:none;
+color:#fff;
+padding:8px 12px;
+border-radius:10px;
+cursor:pointer;
 }
 
 .primary-btn{
-    background:#7C5CFF;
-    color:white;
+width:100%;
+margin-top:16px;
+padding:14px;
+border:none;
+border-radius:14px;
+background:#7C3AED;
+color:#fff;
+font-weight:700;
+cursor:pointer;
 }
 
 .secondary-btn{
-    background:#26334F;
-    color:white;
+width:100%;
+margin-top:12px;
+padding:14px;
+border-radius:14px;
+background:#1E293B;
+border:none;
+color:#fff;
+cursor:pointer;
 }
-
-/* ===== Add Habit Form ===== */
 
 .habit-input{
-    width:100%;
-    margin-top:14px;
-    padding:15px 18px;
-    background:#0F172A;
-    border:1px solid #2E3A59;
-    border-radius:16px;
-    color:#fff;
-    font-size:16px;
-    outline:none;
-    transition:.25s;
+width:100%;
+margin-top:14px;
+padding:14px;
+border-radius:14px;
+border:none;
+background:#1E293B;
+color:#fff;
 }
 
-.habit-input:focus{
-    border-color:#7C5CFF;
-    box-shadow:0 0 15px rgba(124,92,255,.35);
-}
-
-.habit-input::placeholder{
-    color:#94A3B8;
-}
-
-.color-picker{
-    width:100%;
-    height:52px;
-    margin-top:14px;
-    border:none;
-    border-radius:16px;
-    background:#0F172A;
-    cursor:pointer;
-}
-
-/* ===== Emoji Picker ===== */
+/* ===========================
+   Emoji & Colour Picker
+=========================== */
 
 .emoji-picker{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-    margin-top:16px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-top:18px;
 }
 
 .emoji-picker span{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:54px;
-    font-size:26px;
-    background:#0F172A;
-    border:2px solid #2E3A59;
-    border-radius:16px;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.emoji-picker span:hover{
-    transform:scale(1.08);
-    border-color:#7C5CFF;
+font-size:28px;
+padding:10px;
+border-radius:12px;
+background:#1E293B;
+cursor:pointer;
+text-align:center;
 }
 
 .emoji-picker span.selected{
-    border-color:#7C5CFF;
-    box-shadow:0 0 18px rgba(124,92,255,.5);
-    background:#1B2440;
+outline:2px solid #A855F7;
 }
-/* ===== Colour Picker ===== */
 
 .color-picker{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px;
-    margin-top:16px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin-top:18px;
 }
 
 .color{
-    width:54px;
-    height:54px;
-    border-radius:50%;
-    margin:auto;
-    border:3px solid transparent;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.color:hover{
-    transform:scale(1.12);
+width:42px;
+height:42px;
+border-radius:50%;
+margin:auto;
+cursor:pointer;
+border:3px solid transparent;
 }
 
 .color.selected{
-    border-color:#ffffff;
-    box-shadow:0 0 18px currentColor;
+border-color:#fff;
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media(max-width:480px){
+
+.summary{
+grid-template-columns:1fr;
+}
+
+.ring{
+width:170px;
+height:170px;
+margin:auto;
+}
+
+.title h1{
+font-size:24px;
+}
+
+.name{
+font-size:16px;
+}
+
+.score{
+font-size:24px;
+}
+
 }
