@@ -1,5 +1,9 @@
 const Standards = require('../models/standards.model');
 
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 async function list(req, res) {
   const limit = Number(req.query.limit) || 30;
   const entries = await Standards.getRecent(limit);
@@ -7,23 +11,31 @@ async function list(req, res) {
 }
 
 async function getToday(req, res) {
-  const today = new Date().toISOString().slice(0, 10);
-  const entry = await Standards.getByDate(today);
-  res.json(entry);
+  const entry = await Standards.getByDate(todayKey());
+  const best = await Standards.getBest();
+  res.json({ entry: entry || null, best });
 }
 
 async function save(req, res) {
-  const date = req.body.date || new Date().toISOString().slice(0, 10);
+  const { habits, locked } = req.body;
 
-  for (const field of Standards.FIELDS) {
-    const val = req.body[field];
-    if (val === undefined || val < 0 || val > 10) {
-      return res.status(400).json({ error: `Field "${field}" must be a number between 0 and 10` });
+  if (!Array.isArray(habits) || habits.length === 0) {
+    return res.status(400).json({ error: '"habits" must be a non-empty array' });
+  }
+
+  for (const h of habits) {
+    if (typeof h.value !== 'number' || h.value < 0 || h.value > 10) {
+      return res.status(400).json({ error: `Habit "${h.name || '?'}" must have a value between 0 and 10` });
     }
   }
 
-  const entry = await Standards.upsert(date, req.body);
-  res.json(entry);
+  const total = habits.reduce((a, b) => a + b.value, 0);
+  const avgScore = Number((total / habits.length).toFixed(2));
+
+  const entry = await Standards.upsert(todayKey(), habits, avgScore, !!locked);
+  const best = await Standards.getBest();
+
+  res.json({ entry, best });
 }
 
 module.exports = { list, getToday, save };
