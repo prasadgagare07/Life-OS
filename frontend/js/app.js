@@ -2,7 +2,7 @@
 // highlighting the current page.
 const NAV_ITEMS = [
   { href: 'dashboard.html', icon: '🏠', label: 'Dashboard' },
-  { href: 'standards.html', icon: '🌱', label: 'Daily Standards' },
+  { href: 'daily-standards.html', icon: '🌱', label: 'Daily Standards' },
   { href: 'finance.html', icon: '💰', label: 'Finance' },
   { href: 'fitness.html', icon: '💪', label: 'Fitness' },
   { href: 'vision.html', icon: '🌟', label: 'Vision Board' },
