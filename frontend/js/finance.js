@@ -578,19 +578,49 @@ goal_amount:Number(document.getElementById("goal_amount").value)||0
 
 });
 
+const goalModal=document.getElementById("goalModal");
+
 document.getElementById("addGoalBtn").addEventListener("click",()=>{
 
-const name=prompt("Goal name");
+document.getElementById("goalNameInput").value="";
 
-if(!name) return;
+document.getElementById("goalAmountInput").value="";
 
-const amount=Number(prompt("Target amount"));
+goalModal.classList.remove("hidden");
 
-if(!amount || amount<=0) return;
+});
+
+document.getElementById("cancelGoalBtn").addEventListener("click",()=>{
+
+goalModal.classList.add("hidden");
+
+});
+
+document.getElementById("saveGoalBtn").addEventListener("click",()=>{
+
+const name=document.getElementById("goalNameInput").value.trim();
+
+const amount=Number(document.getElementById("goalAmountInput").value);
+
+if(name===""){
+
+alert("Enter goal name");
+
+return;
+
+}
+
+if(amount<=0){
+
+alert("Enter valid amount");
+
+return;
+
+}
 
 goals.push({
 
-name:name,
+name,
 
 target:amount
 
@@ -600,5 +630,8 @@ saveGoals();
 
 renderGoals();
 
+goalModal.classList.add("hidden");
+
 });
+
 loadFinance();
