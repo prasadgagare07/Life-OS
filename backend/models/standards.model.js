@@ -1,10 +1,11 @@
 const pool = require('../config/db');
 
-const FIELDS = ['sleep', 'workout', 'diet', 'reading', 'meditation', 'no_junk'];
-
 async function getRecent(limit = 30) {
   const { rows } = await pool.query(
-    `SELECT * FROM standards_entries ORDER BY entry_date DESC LIMIT $1`,
+    `SELECT entry_date::text AS entry_date, habits, avg_score, locked
+     FROM daily_entries
+     ORDER BY entry_date DESC
+     LIMIT $1`,
     [limit]
   );
   return rows;
@@ -12,29 +13,34 @@ async function getRecent(limit = 30) {
 
 async function getByDate(date) {
   const { rows } = await pool.query(
-    `SELECT * FROM standards_entries WHERE entry_date = $1`,
+    `SELECT entry_date::text AS entry_date, habits, avg_score, locked
+     FROM daily_entries
+     WHERE entry_date = $1`,
     [date]
   );
   return rows[0] || null;
 }
 
-async function upsert(date, values) {
-  const cols = FIELDS.map((f) => values[f]);
-
+async function getBest() {
   const { rows } = await pool.query(
-    `INSERT INTO standards_entries (entry_date, sleep, workout, diet, reading, meditation, no_junk)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `SELECT MAX(avg_score) AS best FROM daily_entries`
+  );
+  return rows[0]?.best ? Number(rows[0].best) : 0;
+}
+
+async function upsert(date, habits, avgScore, locked) {
+  const { rows } = await pool.query(
+    `INSERT INTO daily_entries (entry_date, habits, avg_score, locked, updated_at)
+     VALUES ($1, $2, $3, $4, now())
      ON CONFLICT (entry_date) DO UPDATE SET
-       sleep = EXCLUDED.sleep,
-       workout = EXCLUDED.workout,
-       diet = EXCLUDED.diet,
-       reading = EXCLUDED.reading,
-       meditation = EXCLUDED.meditation,
-       no_junk = EXCLUDED.no_junk
-     RETURNING *`,
-    [date, ...cols]
+       habits = EXCLUDED.habits,
+       avg_score = EXCLUDED.avg_score,
+       locked = EXCLUDED.locked,
+       updated_at = now()
+     RETURNING entry_date::text AS entry_date, habits, avg_score, locked`,
+    [date, JSON.stringify(habits), avgScore, locked]
   );
   return rows[0];
 }
 
-module.exports = { getRecent, getByDate, upsert, FIELDS };
+module.exports = { getRecent, getByDate, getBest, upsert };
