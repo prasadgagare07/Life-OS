@@ -21,6 +21,13 @@ async function start() {
 
     await pool.query(dailyEntriesMigration);
 
+    const visionSeed = fs.readFileSync(
+      path.join(__dirname, 'database', 'seed_vision.sql'),
+      'utf8'
+    );
+
+    await pool.query(visionSeed);
+
     console.log('✅ Database initialized');
 
     app.listen(config.port, () => {
