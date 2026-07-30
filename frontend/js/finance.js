@@ -17,7 +17,9 @@ const FINANCE_THOUGHTS = [
 "Skills create income.",
 "Wealth grows patiently."
 ];
-
+let hideSavings=true;
+let hideGrowth=true;
+let hideEmergency=true;
 async function loadFinance(){
 
 try{
@@ -58,13 +60,14 @@ const emergency=Number(snapshot.emergency_fund)||0;
 
 const freedom=Number(snapshot.goal_amount)||0;
 
-const wealth=savings+growth+emergency;
+document.getElementById("savingAmount").textContent=
+hideSavings ? "••••••" : formatINR(savings);
 
-document.getElementById("savingAmount").textContent=formatINR(savings);
+document.getElementById("growthAmount").textContent=
+hideGrowth ? "••••••" : formatINR(growth);
 
-document.getElementById("growthAmount").textContent=formatINR(growth);
-
-document.getElementById("emergencyAmount").textContent=formatINR(emergency);
+document.getElementById("emergencyAmount").textContent=
+hideEmergency ? "••••••" : formatINR(emergency);
 
 document.getElementById("wealthAmount").textContent=formatINR(wealth);
 
