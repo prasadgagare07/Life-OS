@@ -16,49 +16,178 @@
   <aside class="sidebar" id="sidebar"></aside>
 
   <main class="main-content">
-    <div class="page-header fade-up">
-      <div>
-        <div class="eyebrow">Wealth</div>
+
+<div class="page-header fade-up">
+    <div>
+        <div class="eyebrow">WEALTH</div>
         <h1>Finance</h1>
-      </div>
+    </div>
+</div>
+
+<!-- Freedom Fund -->
+<section class="card finance-hero fade-up">
+
+    <div class="goal-ring" id="goal-ring"></div>
+
+    <div class="goal-info">
+
+        <h2>Freedom Fund</h2>
+
+        <h1 id="freedomAmount">₹0</h1>
+
+        <p>Goal ₹50,00,000</p>
+
+        <p>Target: 30 Mar 2027</p>
+
+        <div id="goalCountdown"></div>
+
     </div>
 
-    <div class="card finance-hero fade-up fade-up-1">
-      <div class="sunrise-arc" id="finance-arc"></div>
-      <div class="stat-value" id="total-wealth">—</div>
-      <div class="stat-label" id="goal-caption">Loading…</div>
-    </div>
+</section>
 
-    <div class="grid grid-2" style="margin-top:1.25rem">
-      <form class="card fade-up fade-up-2" id="finance-form">
-        <div class="card-title"><h3>Update snapshot</h3></div>
+<!-- Funds -->
 
-        <div class="field-row">
-          <label for="bank_balance">Bank balance</label>
-          <input type="number" id="bank_balance" min="0" step="1">
-        </div>
-        <div class="field-row">
-          <label for="market_funds">Market funds</label>
-          <input type="number" id="market_funds" min="0" step="1">
-        </div>
-        <div class="field-row">
-          <label for="emergency_fund">Emergency fund</label>
-          <input type="number" id="emergency_fund" min="0" step="1">
-        </div>
-        <div class="field-row">
-          <label for="goal_amount">Goal amount</label>
-          <input type="number" id="goal_amount" min="0" step="1">
-        </div>
+<div class="grid grid-2">
 
-        <button type="submit" class="btn-primary" style="width:100%">Save snapshot</button>
-      </form>
+<div class="card">
 
-      <div class="card fade-up fade-up-3">
-        <div class="card-title"><h3>Wealth timeline</h3></div>
-        <div id="timeline-list"></div>
-      </div>
-    </div>
-  </main>
+<h3>💰 Savings</h3>
+
+<div id="savingAmount">••••••</div>
+
+<button>👁 Show</button>
+
+</div>
+
+<div class="card">
+
+<h3>🌱 Growth Fund</h3>
+
+<div id="growthAmount">••••••</div>
+
+<button>👁 Show</button>
+
+</div>
+
+<div class="card">
+
+<h3>🛡 Emergency Fund</h3>
+
+<div id="emergencyAmount">••••••</div>
+
+<button>👁 Show</button>
+
+</div>
+
+<div class="card">
+
+<h3>💎 Total Wealth</h3>
+
+<h2 id="wealthAmount">₹0</h2>
+
+<p>Savings + Growth Fund + Emergency Fund</p>
+
+</div>
+
+</div>
+
+<!-- Statistics -->
+
+<div class="grid grid-2">
+
+<div class="card">
+
+<h3>📈 Monthly Growth</h3>
+
+<h2 id="monthlyGrowth">₹0</h2>
+
+</div>
+
+<div class="card">
+
+<h3>🏆 Highest Ever Net Worth</h3>
+
+<h2 id="highestWealth">₹0</h2>
+
+</div>
+
+<div class="card">
+
+<h3>⭐ Best Wealth Day</h3>
+
+<h2 id="bestDay">₹0</h2>
+
+<p id="bestDate">--</p>
+
+</div>
+
+<div class="card">
+
+<h3>💭 Daily Financial Thought</h3>
+
+<p id="financeThought"></p>
+
+</div>
+
+</div>
+
+<!-- Milestones -->
+
+<div class="card">
+
+<h3>🏅 Freedom Fund Milestones</h3>
+
+<div id="milestones"></div>
+
+</div>
+
+<!-- Calendar -->
+
+<div class="card">
+
+<h3>📅 Wealth Calendar</h3>
+
+<div id="wealthCalendar"></div>
+
+</div>
+
+<!-- Timeline -->
+
+<div class="card">
+
+<h3>📜 Wealth Timeline</h3>
+
+<div id="timeline-list"></div>
+
+</div>
+
+<!-- Goals -->
+
+<div class="card">
+
+<div class="card-title">
+
+<h3>🎯 Upcoming Goals</h3>
+
+<button id="addGoalBtn">＋</button>
+
+</div>
+
+<div id="goalList"></div>
+
+</div>
+
+<!-- Celebration -->
+
+<div id="celebrationModal" class="celebration hidden">
+
+<h1>🎉 Congratulations!</h1>
+
+<p id="celebrationText"></p>
+
+</div>
+
+</main>
 </div>
 
 <script src="js/api.js"></script>
