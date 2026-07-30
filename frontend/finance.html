@@ -27,21 +27,65 @@
 <!-- Freedom Fund -->
 <section class="card finance-hero fade-up">
 
-    <div class="goal-ring" id="goal-ring"></div>
+    <div class="hero-left">
 
-    <div class="goal-info">
+<canvas id="goalRing" width="180" height="180"></canvas>
 
-        <h2>Freedom Fund</h2>
+<div class="ring-center">
 
-        <h1 id="freedomAmount">₹0</h1>
+<h2 id="goalPercent">0%</h2>
 
-        <p>Goal ₹50,00,000</p>
+<p>Freedom Fund</p>
 
-        <p>Target: 30 Mar 2027</p>
+</div>
 
-        <div id="goalCountdown"></div>
+  </div>
 
-    </div>
+    <div class="hero-right">
+
+<h2>Freedom Fund</h2>
+
+<h1 id="freedomFund">₹0</h1>
+
+<p>Goal ₹50,00,000</p>
+
+<p>Target: 30 March 2027</p>
+
+<div class="progress-track">
+
+<div id="goalBar" class="progress-fill"></div>
+
+</div>
+
+<div class="goal-grid">
+
+<div>
+
+<h3 id="daysRemaining">0</h3>
+
+<span>Days Left</span>
+
+</div>
+
+<div>
+
+<h3 id="remainingAmount">₹0</h3>
+
+<span>Remaining</span>
+
+</div>
+
+<div>
+
+<h3 id="perDayNeed">₹0</h3>
+
+<span>Need / Day</span>
+
+</div>
+
+</div>
+
+</div>
 
 </section>
 
@@ -55,7 +99,7 @@
 
 <div id="savingAmount">••••••</div>
 
-<button>👁 Show</button>
+<button class="eye-btn">👁</button>
 
 </div>
 
@@ -65,7 +109,7 @@
 
 <div id="growthAmount">••••••</div>
 
-<button>👁 Show</button>
+<button class="eye-btn">👁</button>
 
 </div>
 
@@ -75,7 +119,7 @@
 
 <div id="emergencyAmount">••••••</div>
 
-<button>👁 Show</button>
+<button class="eye-btn">👁</button>
 
 </div>
 
