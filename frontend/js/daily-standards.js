@@ -19,6 +19,25 @@ const defaultHabits = [
 let habits =
 JSON.parse(localStorage.getItem("lifeos_habits"))
 || defaultHabits;
+// --- Daily lock: once saved, sliders are frozen until the next day (12:00 AM–11:59 PM) ---
+function getTodayKey(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+const todayKey = getTodayKey();
+const storedDate = localStorage.getItem("lifeos_habits_date");
+
+if (storedDate !== todayKey) {
+  habits = habits.map(h => ({ ...h, value: 0 }));
+  localStorage.setItem("lifeos_habits_date", todayKey);
+  localStorage.setItem("lifeos_habits_locked", "false");
+  localStorage.setItem("lifeos_habits", JSON.stringify(habits));
+}
+
+function isLockedToday(){
+  return localStorage.getItem("lifeos_habits_locked") === "true";
+}
 
 const habitList =
 document.getElementById("habitList");
@@ -122,7 +141,11 @@ class="slider">
 
 const slider =
 card.querySelector(".slider");
-
+  
+if (isLockedToday()) {
+  slider.disabled = true;
+}
+  
 slider.style.accentColor =
 habit.color;
 
@@ -362,3 +385,28 @@ modal.style.display="none";
 // Initialise page
 createHabits();
 updateSummary();
+
+// --- Save button ---
+const saveBtn = document.getElementById("saveHabitsBtn");
+
+function refreshSaveButton(){
+  if (isLockedToday()) {
+    saveBtn.textContent = "✅ Saved for Today";
+    saveBtn.disabled = true;
+  } else {
+    saveBtn.textContent = "💾 Save Today's Ratings";
+    saveBtn.disabled = false;
+  }
+}
+
+saveBtn.addEventListener("click", () => {
+  if (isLockedToday()) return;
+  if (!confirm("Once saved, you can't change today's ratings. Continue?")) return;
+
+  localStorage.setItem("lifeos_habits_locked", "true");
+  saveHabits();
+  createHabits();
+  refreshSaveButton();
+});
+
+refreshSaveButton();
