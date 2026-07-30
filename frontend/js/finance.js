@@ -220,3 +220,203 @@ ${formatINR(item.total_wealth)}
 }).join("");
 
 }
+// ===============================
+// Part 3
+// Timeline + Statistics
+// ===============================
+
+function renderTimeline(entries){
+
+const el=document.getElementById("timeline-list");
+
+if(!el) return;
+
+if(!entries || entries.length===0){
+
+el.innerHTML=`
+<div class="empty-state">
+📈 No history yet
+</div>
+`;
+
+document.getElementById("highestWealth").textContent="₹0";
+document.getElementById("monthlyGrowth").textContent="₹0";
+document.getElementById("bestDay").textContent="₹0";
+document.getElementById("bestDate").textContent="--";
+
+return;
+
+}
+
+const history=entries.slice().reverse();
+
+const highest=Math.max(...history.map(e=>Number(e.total_wealth)));
+
+const first=Number(history[0].total_wealth);
+
+const last=Number(history[history.length-1].total_wealth);
+
+const growth=last-first;
+
+const best=history.reduce((a,b)=>
+Number(a.total_wealth)>Number(b.total_wealth)?a:b
+);
+
+document.getElementById("highestWealth").textContent=
+formatINR(highest);
+
+document.getElementById("monthlyGrowth").textContent=formatINR(highest);
+
+document.getElementById("monthlyGrowth").textContent=
+formatINR(growth);
+
+document.getElementById("bestDay").textContent=
+formatINR(best.total_wealth);
+
+document.getElementById("bestDate").textContent=
+new Date(best.recorded_on).toLocaleDateString(
+"en-IN",
+{
+day:"numeric",
+month:"long",
+year:"numeric"
+}
+);
+
+const max=Math.max(...history.map(e=>Number(e.total_wealth)));
+
+el.innerHTML=history.map(item=>`
+
+<div class="timeline-row">
+
+<div class="timeline-date">
+
+${new Date(item.recorded_on).toLocaleDateString(
+"en-IN",
+{
+day:"numeric",
+month:"short"
+}
+)}
+
+</div>
+
+<div class="timeline-bar-track">
+
+<div
+class="timeline-bar"
+style="width:${max?(Number(item.total_wealth)/max)*100:0}%">
+
+</div>
+
+</div>
+
+<div class="numeric">
+
+${formatINR(item.total_wealth)}
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+// ===============================
+// Part 4
+// Save + Refresh + Initialize
+// ===============================
+
+document.getElementById("finance-form").addEventListener("submit",async(e)=>{
+
+e.preventDefault();
+
+const payload={
+
+bank_balance:Number(document.getElementById("bank_balance").value)||0,
+
+market_funds:Number(document.getElementById("market_funds").value)||0,
+
+emergency_fund:Number(document.getElementById("emergency_fund").value)||0,
+
+goal_amount:Number(document.getElementById("goal_amount").value)||0
+
+};
+
+try{
+
+const updated=await api.put("/finance",payload);
+
+renderSummary(updated);
+
+const timeline=await api.get("/finance/timeline?limit=365");
+
+renderTimeline(timeline);
+
+renderWealthCalendar(timeline);
+
+checkCelebration(updated.goal_amount);
+
+showToast("Finance updated successfully","success");
+
+}catch(err){
+
+showToast(err.message,"error");
+
+}
+
+});
+
+function checkCelebration(freedom){
+
+const milestones=[
+10000,
+25000,
+50000,
+100000,
+200000,
+500000,
+1000000,
+1500000,
+2000000,
+2500000,
+3000000,
+3500000,
+4000000,
+4500000,
+5000000
+];
+
+const reached=milestones.findLast(v=>freedom>=v);
+
+if(!reached) return;
+
+const key="lifeos_last_milestone";
+
+const last=Number(localStorage.getItem(key)||0);
+
+if(reached<=last) return;
+
+localStorage.setItem(key,reached);
+
+const modal=document.getElementById("celebrationModal");
+
+const text=document.getElementById("celebrationText");
+
+if(modal && text){
+
+text.textContent=`You reached ${formatINR(reached)} in your Freedom Fund!`;
+
+modal.classList.remove("hidden");
+
+setTimeout(()=>{
+
+modal.classList.add("hidden");
+
+},3500);
+
+}
+
+}
+
+loadFinance();
