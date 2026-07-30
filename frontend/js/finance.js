@@ -119,6 +119,64 @@ document.getElementById("financeThought").textContent=FINANCE_THOUGHTS[thought];
 
 renderMilestones(freedom);
 
+function renderWealthCalendar(entries){
+
+const cal=document.getElementById("wealthCalendar");
+
+if(!cal) return;
+
+if(!entries.length){
+
+cal.innerHTML="No history";
+
+return;
+
+}
+
+const data=entries.slice().reverse();
+
+cal.innerHTML=data.map((item,index)=>{
+
+let icon="⚪";
+
+if(index>0){
+
+const prev=Number(data[index-1].total_wealth);
+
+const curr=Number(item.total_wealth);
+
+if(curr>prev) icon="🟢";
+
+else if(curr<prev) icon="🔴";
+
+}
+
+return `
+
+<div class="calendar-day">
+
+<div class="calendar-icon">
+
+${icon}
+
+</div>
+
+<div class="calendar-date">
+
+${new Date(item.recorded_on).toLocaleDateString("en-IN",{
+day:"numeric",
+month:"short"
+})}
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+}
 }
 
 function renderTimeline(entries) {
