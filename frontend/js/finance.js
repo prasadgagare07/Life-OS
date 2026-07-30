@@ -10,19 +10,115 @@ async function loadFinance() {
     renderSummary(snapshot);
 
     const timeline = await api.get('/finance/timeline?limit=30');
+
+    function renderMilestones(freedom){
+
+const levels=[
+100000,
+500000,
+1000000,
+1500000,
+2000000,
+2500000,
+3000000,
+3500000,
+4000000,
+4500000,
+5000000
+];
+
+const box=document.getElementById("milestones");
+
+if(!box) return;
+
+box.innerHTML=levels.map(level=>{
+
+const done=freedom>=level;
+
+return `
+
+<div class="milestone ${done?"done":""}">
+
+<div class="dot">
+${done?"✓":""}
+</div>
+
+<span>${formatINR(level)}</span>
+
+</div>
+
+`;
+
+}).join("");
+
+    }
     renderTimeline(timeline);
   } catch (err) {
     showToast(err.message, 'error');
   }
 }
 
-function renderSummary(snapshot) {
-  const total = Number(snapshot.bank_balance) + Number(snapshot.market_funds) + Number(snapshot.emergency_fund);
-  const pct = (total / Number(snapshot.goal_amount)) * 100;
+const FINANCE_THOUGHTS = [
+"₹2,000/day = ₹60,000/month.",
+"₹1,000/day = ₹30,000/month.",
+"Assets make money. Liabilities cost money.",
+"Small savings become big wealth.",
+"Every rupee should have a purpose.",
+"Pay yourself before paying others.",
+"Wealth grows quietly.",
+"Income grows when skills grow.",
+"Spend less than you earn.",
+"Consistency beats intensity."
+];
 
-  document.getElementById('total-wealth').textContent = formatINR(total);
-  document.getElementById('goal-caption').textContent = `${Math.min(100, Math.round(pct))}% of ${formatINR(snapshot.goal_amount)} goal`;
-  renderSunriseArc(document.getElementById('finance-arc'), pct, Math.round(pct) + '%');
+function renderSummary(snapshot){
+
+const savings=Number(snapshot.bank_balance)||0;
+
+const growth=Number(snapshot.market_funds)||0;
+
+const emergency=Number(snapshot.emergency_fund)||0;
+
+const freedom=Number(snapshot.goal_amount)||0;
+
+const wealth=savings+growth+emergency;
+
+document.getElementById("wealthAmount").textContent=formatINR(wealth);
+
+document.getElementById("savingAmount").textContent=formatINR(savings);
+
+document.getElementById("growthAmount").textContent=formatINR(growth);
+
+document.getElementById("emergencyAmount").textContent=formatINR(emergency);
+
+document.getElementById("freedomFund").textContent=formatINR(freedom);
+
+const percent=Math.min(100,(freedom/5000000)*100);
+
+document.getElementById("goalPercent").textContent=Math.round(percent)+"%";
+
+document.getElementById("goalBar").style.width=percent+"%";
+
+const today=new Date();
+
+const target=new Date("2027-03-30");
+
+const days=Math.max(0,Math.ceil((target-today)/86400000));
+
+document.getElementById("daysRemaining").textContent=days;
+
+const remain=Math.max(0,5000000-freedom);
+
+document.getElementById("remainingAmount").textContent=formatINR(remain);
+
+document.getElementById("perDayNeed").textContent=formatINR(Math.ceil(remain/Math.max(days,1)));
+
+const thought=today.getDate()%FINANCE_THOUGHTS.length;
+
+document.getElementById("financeThought").textContent=FINANCE_THOUGHTS[thought];
+
+renderMilestones(freedom);
+
 }
 
 function renderTimeline(entries) {
