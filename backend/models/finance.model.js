@@ -44,7 +44,73 @@ async function getTimeline(limit = 90) {
     `SELECT * FROM finance_history ORDER BY recorded_on DESC LIMIT $1`,
     [limit]
   );
+  async function getStatistics() {
+
+const { rows: history } = await pool.query(
+`SELECT recorded_on,total_wealth
+FROM finance_history
+ORDER BY recorded_on ASC`
+);
+
+if(history.length===0){
+
+return{
+
+highestWealth:0,
+bestDay:0,
+bestDate:null,
+monthlyGrowth:0,
+wealthDays:0,
+averageGrowth:0
+
+};
+
+}
+
+const highest=Math.max(
+...history.map(x=>Number(x.total_wealth))
+);
+
+const best=history.reduce(
+(a,b)=>
+Number(a.total_wealth)>Number(b.total_wealth)
+?a:b
+);
+
+const first=Number(history[0].total_wealth);
+
+const last=Number(history[history.length-1].total_wealth);
+
+const monthlyGrowth=last-first;
+
+const averageGrowth=
+history.length>1
+?Math.round((last-first)/(history.length-1))
+:0;
+
+return{
+
+highestWealth:highest,
+
+bestDay:Number(best.total_wealth),
+
+bestDate:best.recorded_on,
+
+monthlyGrowth,
+
+wealthDays:history.length,
+
+averageGrowth
+
+};
+
+  }
   return rows;
 }
 
-module.exports = { getSnapshot, updateSnapshot, getTimeline };
+module.exports = {
+getSnapshot,
+updateSnapshot,
+getTimeline,
+getStatistics
+};
