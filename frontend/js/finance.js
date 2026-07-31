@@ -289,6 +289,18 @@ wealth,
 800
 );
 renderWealthLevel(wealth);
+
+renderAssetChart(
+savings,
+growth,
+emergency
+);
+
+renderBreakdown(
+savings,
+growth,
+emergency
+);
   
 document.getElementById("freedomFund").textContent=formatINR(freedom);
 
@@ -810,6 +822,97 @@ el.textContent="🌿 Beginner";
 }
 
 }
+
+function renderAssetChart(savings,growth,emergency){
+
+const canvas=document.getElementById("assetChart");
+
+if(!canvas) return;
+
+const ctx=canvas.getContext("2d");
+
+ctx.clearRect(0,0,300,300);
+
+const total=savings+growth+emergency;
+
+if(total===0) return;
+
+const colors=["#3B82F6","#10B981","#F59E0B"];
+
+const values=[savings,growth,emergency];
+
+let start=-Math.PI/2;
+
+values.forEach((value,index)=>{
+
+const angle=(value/total)*Math.PI*2;
+
+ctx.beginPath();
+
+ctx.moveTo(150,150);
+
+ctx.arc(150,150,110,start,start+angle);
+
+ctx.closePath();
+
+ctx.fillStyle=colors[index];
+
+ctx.fill();
+
+start+=angle;
+
+});
+
+}
+
+function renderBreakdown(savings,growth,emergency){
+
+const total=savings+growth+emergency;
+
+const box=document.getElementById("wealthBreakdown");
+
+if(!box) return;
+
+box.innerHTML=`
+
+<div class="breakdown-row">
+
+<span>💰 Savings</span>
+
+<b>${formatINR(savings)}</b>
+
+</div>
+
+<div class="breakdown-row">
+
+<span>🌱 Growth Fund</span>
+
+<b>${formatINR(growth)}</b>
+
+</div>
+
+<div class="breakdown-row">
+
+<span>🛡 Emergency Fund</span>
+
+<b>${formatINR(emergency)}</b>
+
+</div>
+
+<hr>
+
+<div class="breakdown-row total">
+
+<span>Total</span>
+
+<b>${formatINR(total)}</b>
+
+</div>
+
+`;
+
+}
+
 function renderDailyChange(entries){
 
 const el=document.getElementById("dailyChange");
