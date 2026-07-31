@@ -245,6 +245,8 @@ renderTimeline(timeline);
 
 renderWealthCalendar(timeline);
 
+renderDailyChange(timeline);
+
 renderGoals();
 
 renderStatistics(stats);
@@ -777,6 +779,26 @@ stats.averageGrowth>0
 ?"#EF4444"
 :"#FFFFFF";
 }
+
+function renderDailyChange(entries){
+
+const el=document.getElementById("dailyChange");
+
+if(!el||entries.length<2) return;
+
+const today=Number(entries[0].total_wealth);
+
+const yesterday=Number(entries[1].total_wealth);
+
+const diff=today-yesterday;
+
+const icon=diff>0?"🟢":diff<0?"🔴":"⚪";
+
+el.textContent=
+`${icon} ${diff>=0?"+":""}${formatINR(diff)}`;
+
+}
+
 function animateValue(element,start,end,duration){
 
 let startTime=null;
@@ -859,6 +881,8 @@ renderStatistics(stats);
 showToast("Finance updated successfully","success");
 
 renderGoals();
+
+renderDailyChange(timeline);
 
 renderWealthCalendar(timeline);
 
