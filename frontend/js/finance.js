@@ -921,17 +921,20 @@ box.innerHTML=`
 `;
 
 }
+
 function renderWealthChart(entries){
 
 const canvas=document.getElementById("wealthChart");
 
-if(!canvas||entries.length<2) return;
+if(!canvas || !entries || entries.length===0) return;
 
 const ctx=canvas.getContext("2d");
 
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
 const data=entries.slice().reverse();
+
+if(data.length<2) return;
 
 const max=Math.max(...data.map(x=>Number(x.total_wealth)));
 
@@ -941,13 +944,12 @@ ctx.strokeStyle="#10B981";
 
 ctx.lineWidth=3;
 
+const step=(canvas.width-40)/(data.length-1);
+
 data.forEach((item,index)=>{
 
-const step = (canvas.width - 40) / Math.max(data.length - 1, 1);
-const x = 20 + index * step;
-   
-if (data.length === 1) return;
-   
+const x=20+(index*step);
+
 const y=canvas.height-20-
 ((Number(item.total_wealth)/max)*(canvas.height-40));
 
@@ -966,6 +968,7 @@ ctx.lineTo(x,y);
 ctx.stroke();
 
 }
+
 function renderHealthScore(savings,growth,emergency,goal){
 
 const wealth=savings+growth+emergency;
