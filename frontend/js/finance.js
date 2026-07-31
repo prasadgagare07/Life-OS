@@ -288,6 +288,8 @@ document.getElementById("wealthAmount"),
 wealth,
 800
 );
+renderWealthLevel(wealth);
+  
 document.getElementById("freedomFund").textContent=formatINR(freedom);
 
 const goal =
@@ -779,7 +781,35 @@ stats.averageGrowth>0
 ?"#EF4444"
 :"#FFFFFF";
 }
+function renderWealthLevel(wealth){
 
+const el=document.getElementById("wealthLevel");
+
+if(!el) return;
+
+if(wealth>=5000000){
+
+el.textContent="👑 Financial Freedom";
+
+}else if(wealth>=2500000){
+
+el.textContent="💎 Wealth Builder";
+
+}else if(wealth>=1000000){
+
+el.textContent="🚀 Investor";
+
+}else if(wealth>=500000){
+
+el.textContent="🌱 Growing";
+
+}else{
+
+el.textContent="🌿 Beginner";
+
+}
+
+}
 function renderDailyChange(entries){
 
 const el=document.getElementById("dailyChange");
