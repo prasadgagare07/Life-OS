@@ -661,3 +661,9 @@ font-size:18px;
 font-weight:700;
 
 }
+#wealthChart{
+    width:100%;
+    height:250px;
+    display:block;
+    overflow:hidden;
+}
