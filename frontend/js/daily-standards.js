@@ -500,6 +500,47 @@ saveBtn.addEventListener("click", () => {
   renderHistory();
 });
 
+// --- Full History Modal ---
+const historyModal = document.getElementById("historyModal");
+const historyListEl = document.getElementById("historyList");
+
+function renderFullHistory(){
+  const all = getHistory().slice().reverse(); // newest first
+
+  if (all.length === 0) {
+    historyListEl.innerHTML = `<div class="history-empty">No history yet — save your first day to see it here.</div>`;
+    return;
+  }
+
+  historyListEl.innerHTML = all.map(day => {
+    const [yy, mm, dd] = day.date.split('-').map(Number);
+    const d = new Date(yy, mm - 1, dd);
+    const dateLabel = d.toLocaleDateString("en-GB", { day:"numeric", month:"short", year:"numeric" });
+    const dayLabel = d.toLocaleDateString("en-US", { weekday:"short" });
+    const color = day.avg >= 8 ? "#22C55E" : day.avg >= 5 ? "#EAB308" : "#EF4444";
+    return `
+      <div class="history-row">
+        <span class="h-date">${dateLabel}<span class="h-day">${dayLabel}</span></span>
+        <span class="h-score" style="color:${color}">${day.avg.toFixed(1)}/10</span>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById("viewAllHistoryBtn").addEventListener("click", () => {
+  renderFullHistory();
+  historyModal.style.display = "flex";
+});
+
+document.getElementById("closeHistoryModal").addEventListener("click", () => {
+  historyModal.style.display = "none";
+});
+
+window.addEventListener("click", (e) => {
+  if (e.target === historyModal) {
+    historyModal.style.display = "none";
+  }
+});
+
 refreshSaveButton();
 refreshStreak();
 renderHistory();
