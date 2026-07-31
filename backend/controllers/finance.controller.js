@@ -15,5 +15,17 @@ async function getTimeline(req, res) {
   const timeline = await Finance.getTimeline(limit);
   res.json(timeline);
 }
+async function getStatistics(req, res) {
 
-module.exports = { getSnapshot, updateSnapshot, getTimeline };
+const stats = await Finance.getStatistics();
+
+res.json(stats);
+
+}
+
+module.exports = {
+getSnapshot,
+updateSnapshot,
+getTimeline,
+getStatistics
+};
