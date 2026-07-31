@@ -943,8 +943,11 @@ ctx.lineWidth=3;
 
 data.forEach((item,index)=>{
 
-const x=(index/(data.length-1))*(canvas.width-40)+20;
-
+const step = (canvas.width - 40) / Math.max(data.length - 1, 1);
+const x = 20 + index * step;
+   
+if (data.length === 1) return;
+   
 const y=canvas.height-20-
 ((Number(item.total_wealth)/max)*(canvas.height-40));
 
