@@ -106,6 +106,8 @@ style="width:${Math.min(100,(Number(document.getElementById("wealthAmount")?.tex
 }).join("");
 
 }
+
+
 window.deleteGoal=function(index){
 
 if(!confirm("Delete this goal?")) return;
@@ -117,7 +119,23 @@ saveGoals();
 renderGoals();
 
 };
+function showCelebration(message){
 
+const modal=document.getElementById("celebrationModal");
+
+const text=document.getElementById("celebrationText");
+
+text.textContent=message;
+
+modal.classList.remove("hidden");
+
+setTimeout(()=>{
+
+modal.classList.add("hidden");
+
+},4000);
+
+}
 window.editGoal=function(index){
 
 const goal=goals[index];
@@ -168,6 +186,39 @@ goalModal.classList.add("hidden");
 
 };
 
+async function saveWealthHistory(snapshot){
+
+const wealth=
+Number(snapshot.bank_balance||0)+
+Number(snapshot.market_funds||0)+
+Number(snapshot.emergency_fund||0);
+
+const today=new Date().toISOString().split("T")[0];
+
+const lastDate=localStorage.getItem("wealthHistoryDate");
+
+if(lastDate===today) return;
+
+localStorage.setItem("wealthHistoryDate",today);
+
+try{
+
+await api.post("/finance/history",{
+
+date:today,
+
+wealth
+
+});
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
+
 async function loadFinance(){
 
 try{
@@ -183,6 +234,7 @@ document.getElementById("emergency_fund").value=snapshot.emergency_fund;
 document.getElementById("goal_amount").value=snapshot.goal_amount;
 
 renderSummary(snapshot);
+await saveWealthHistory(snapshot);
 
 const timeline=await api.get("/finance/timeline?limit=365");
 
@@ -336,6 +388,18 @@ if(!box) return;
 box.innerHTML=levels.map(level=>{
 
 const done=freedom>=level;
+
+const key="milestone_"+level;
+
+if(done && !localStorage.getItem(key)){
+
+showCelebration(
+`🎉 Congratulations!\nFreedom Fund reached ${formatINR(level)}`
+);
+
+localStorage.setItem(key,"true");
+
+}
 
 return `
 
