@@ -475,7 +475,8 @@ function renderHistory(){
   bars.innerHTML = "";
 
   last7.forEach(day => {
-    const label = new Date(day.date).toLocaleDateString("en-US", { weekday: "short" });
+    const [yy, mm, dd] = day.date.split('-').map(Number);
+const label = new Date(yy, mm - 1, dd).toLocaleDateString("en-US", { weekday: "short" });
     const isToday = day.date === getTodayKey();
 
     const col = document.createElement("div");
