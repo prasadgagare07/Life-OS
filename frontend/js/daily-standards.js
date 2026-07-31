@@ -1,3 +1,4 @@
+alert('history: ' + localStorage.getItem('lifeos_history') + '\n\ndate: ' + localStorage.getItem('lifeos_habits_date') + '\n\nlocked: ' + localStorage.getItem('lifeos_habits_locked'));
 // =======================================
 // LifeOS Daily Standards
 // Part 1
