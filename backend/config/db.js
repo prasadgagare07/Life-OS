@@ -19,6 +19,8 @@ const pool = process.env.DATABASE_URL
 pool.on('error', (err) => {
   console.error('Unexpected error on idle Postgres client', err);
 });
+
+
 (async () => {
   try {
     await pool.query(`
@@ -26,9 +28,9 @@ pool.on('error', (err) => {
       ADD CONSTRAINT finance_history_recorded_on_key
       UNIQUE (recorded_on);
     `);
-    console.log("finance_history unique constraint created.");
+    console.log("✅ finance_history unique constraint created.");
   } catch (err) {
-    console.log("Constraint already exists or could not be created.");
+    console.error("❌ Constraint error:", err.message);
   }
 })();
 
