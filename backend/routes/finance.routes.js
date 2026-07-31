@@ -8,5 +8,6 @@ router.use(requireAuth);
 router.get('/', financeController.getSnapshot);
 router.put('/', financeController.updateSnapshot);
 router.get('/timeline', financeController.getTimeline);
+router.get('/statistics', financeController.getStatistics);
 
 module.exports = router;
