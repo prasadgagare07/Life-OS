@@ -23,15 +23,24 @@ async function updateSnapshot({ bank_balance, market_funds, emergency_fund, goal
   const updated = rows[0];
   const total = Number(updated.bank_balance) + Number(updated.market_funds) + Number(updated.emergency_fund);
 
-  await pool.query(
-`INSERT INTO finance_history
-(recorded_on,total_wealth)
-VALUES(CURRENT_DATE,$1)
-ON CONFLICT(recorded_on)
-DO UPDATE SET
-total_wealth=EXCLUDED.total_wealth`,
-[total]
+  const existing = await pool.query(
+  `SELECT 1 FROM finance_history WHERE recorded_on = CURRENT_DATE`
 );
+
+if (existing.rows.length > 0) {
+  await pool.query(
+    `UPDATE finance_history
+     SET total_wealth = $1
+     WHERE recorded_on = CURRENT_DATE`,
+    [total]
+  );
+} else {
+  await pool.query(
+    `INSERT INTO finance_history (recorded_on, total_wealth)
+     VALUES (CURRENT_DATE, $1)`,
+    [total]
+  );
+}
 
   return updated;
 }
