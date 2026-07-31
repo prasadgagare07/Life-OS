@@ -642,3 +642,22 @@ transform:scale(1.05);
 transition:.3s;
 
 }
+.breakdown-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:10px 0;
+
+}
+
+.breakdown-row.total{
+
+font-size:18px;
+
+font-weight:700;
+
+}
