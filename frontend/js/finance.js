@@ -244,7 +244,7 @@ const stats = await api.get("/finance/statistics");
 renderTimeline(timeline);
 
 renderWealthCalendar(timeline);
-
+renderWealthChart(timeline);
 renderDailyChange(timeline);
 
 renderGoals();
@@ -910,6 +910,85 @@ box.innerHTML=`
 </div>
 
 `;
+
+}
+function renderWealthChart(entries){
+
+const canvas=document.getElementById("wealthChart");
+
+if(!canvas||entries.length<2) return;
+
+const ctx=canvas.getContext("2d");
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+const data=entries.slice().reverse();
+
+const max=Math.max(...data.map(x=>Number(x.total_wealth)));
+
+ctx.beginPath();
+
+ctx.strokeStyle="#10B981";
+
+ctx.lineWidth=3;
+
+data.forEach((item,index)=>{
+
+const x=(index/(data.length-1))*(canvas.width-40)+20;
+
+const y=canvas.height-20-
+((Number(item.total_wealth)/max)*(canvas.height-40));
+
+if(index===0){
+
+ctx.moveTo(x,y);
+
+}else{
+
+ctx.lineTo(x,y);
+
+}
+
+});
+
+ctx.stroke();
+
+}
+function renderHealthScore(savings,growth,emergency,goal){
+
+const wealth=savings+growth+emergency;
+
+const score=Math.min(100,Math.round((wealth/goal)*100));
+
+document.getElementById("healthScore").textContent=score+"%";
+
+const msg=document.getElementById("healthMessage");
+
+if(score>=100){
+
+msg.textContent="🏆 Financial Freedom Achieved";
+
+}else if(score>=80){
+
+msg.textContent="🚀 Excellent financial progress";
+
+}else if(score>=60){
+
+msg.textContent="💪 Strong financial position";
+
+}else if(score>=40){
+
+msg.textContent="📈 Building wealth steadily";
+
+}else if(score>=20){
+
+msg.textContent="🌱 Good start. Keep investing.";
+
+}else{
+
+msg.textContent="💰 Focus on saving consistently.";
+
+}
 
 }
 
