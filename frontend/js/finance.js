@@ -234,15 +234,20 @@ document.getElementById("emergency_fund").value=snapshot.emergency_fund;
 document.getElementById("goal_amount").value=snapshot.goal_amount;
 
 renderSummary(snapshot);
+
 await saveWealthHistory(snapshot);
 
-const timeline=await api.get("/finance/timeline?limit=365");
+const timeline = await api.get("/finance/timeline?limit=365");
+
+const stats = await api.get("/finance/statistics");
 
 renderTimeline(timeline);
 
 renderWealthCalendar(timeline);
 
 renderGoals();
+
+renderStatistics(stats);
 
 }catch(err){
 
@@ -597,6 +602,32 @@ ${formatINR(item.total_wealth)}
 `).join("");
 
 }
+
+function renderStatistics(stats){
+
+document.getElementById("monthlyGrowth").textContent=
+formatINR(stats.monthlyGrowth);
+
+document.getElementById("highestWealth").textContent=
+formatINR(stats.highestWealth);
+
+document.getElementById("bestDay").textContent=
+formatINR(stats.bestDay);
+
+document.getElementById("bestDate").textContent=
+stats.bestDate
+?new Date(stats.bestDate).toLocaleDateString(
+"en-IN",
+{
+day:"numeric",
+month:"short",
+year:"numeric"
+}
+)
+:"--";
+
+}
+
 // ===============================
 // Part 4
 // Save + Refresh + Initialize
