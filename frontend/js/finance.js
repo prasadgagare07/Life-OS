@@ -927,32 +927,29 @@ function renderWealthChart(entries) {
   const canvas = document.getElementById("wealthChart");
   if (!canvas) return;
 
-  const ctx = canvas.getContext("2d");
+  canvas.width = 600;
+  canvas.height = 250;
 
+  const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   if (entries.length < 2) return;
 
   const data = entries.slice().reverse();
 
-  const values = data.map(e => Number(e.total_wealth ?? e.wealth ?? 0));
-  alert(JSON.stringify(data));
-   
+  const values = data.map(e => Number(e.total_wealth));
+
   const max = Math.max(...values);
   const min = Math.min(...values);
-
   const range = Math.max(max - min, 1);
 
-  const padding = 20;
+  const padding = 30;
 
   ctx.beginPath();
 
   data.forEach((item, index) => {
 
-    const x =
-      padding +
-      (index * (canvas.width - padding * 2)) /
-      (data.length - 1);
+    const x = padding + (index * (canvas.width - padding * 2)) / (data.length - 1);
 
     const y =
       canvas.height -
@@ -960,16 +957,13 @@ function renderWealthChart(entries) {
       ((Number(item.total_wealth) - min) / range) *
       (canvas.height - padding * 2);
 
-    if (index === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-    }
+    if (index === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
 
   });
 
-  ctx.lineWidth = 3;
   ctx.strokeStyle = "#10B981";
+  ctx.lineWidth = 4;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.stroke();
