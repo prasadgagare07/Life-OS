@@ -922,51 +922,56 @@ box.innerHTML=`
 
 }
 
-function renderWealthChart(entries){
+function renderWealthChart(entries) {
 
-const canvas=document.getElementById("wealthChart");
+  const canvas = document.getElementById("wealthChart");
+  if (!canvas) return;
 
-if(!canvas || !entries || entries.length===0) return;
+  const ctx = canvas.getContext("2d");
 
-const ctx=canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+  if (entries.length < 2) return;
 
-const data=entries.slice().reverse();
+  const data = entries.slice().reverse();
 
-if(data.length<2) return;
+  const values = data.map(e => Number(e.total_wealth) || 0);
 
-const max=Math.max(...data.map(x=>Number(x.total_wealth)));
+  const max = Math.max(...values);
+  const min = Math.min(...values);
 
-ctx.beginPath();
+  const range = Math.max(max - min, 1);
 
-ctx.strokeStyle="#10B981";
+  const padding = 20;
 
-ctx.lineWidth=3;
+  ctx.beginPath();
 
-const step=(canvas.width-40)/(data.length-1);
+  data.forEach((item, index) => {
 
-data.forEach((item,index)=>{
+    const x =
+      padding +
+      (index * (canvas.width - padding * 2)) /
+      (data.length - 1);
 
-const x=20+(index*step);
+    const y =
+      canvas.height -
+      padding -
+      ((Number(item.total_wealth) - min) / range) *
+      (canvas.height - padding * 2);
 
-const y=canvas.height-20-
-((Number(item.total_wealth)/max)*(canvas.height-40));
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
 
-if(index===0){
+  });
 
-ctx.moveTo(x,y);
-
-}else{
-
-ctx.lineTo(x,y);
-
-}
-
-});
-
-ctx.stroke();
-
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#10B981";
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.stroke();
 }
 
 function renderHealthScore(savings,growth,emergency,goal){
