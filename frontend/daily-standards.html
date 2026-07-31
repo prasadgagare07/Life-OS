@@ -136,7 +136,7 @@ id="averagePercent">
 
 <div class="history" id="historySection">
 
-<h3>Last 7 Days <span>This Week</span></h3>
+<h3>Last 7 Days <span id="viewAllHistoryBtn" style="cursor:pointer;text-decoration:underline;">View All</span></h3>
 
 <div class="bars" id="historyBars"></div>
 
@@ -270,7 +270,29 @@ extraordinary results.
 
 </div>
 
+<!-- Full History Modal -->
+
+<div id="historyModal" class="modal">
+
+  <div class="modal-content">
+
+    <h2>Full History</h2>
+
+    <div id="historyList" class="history-list"></div>
+
+    <button
+      id="closeHistoryModal"
+      class="secondary-btn">
+
+      Done
+
+    </button>
+
+  </div>
+
+</div>
+
 <script src="js/daily-standards.js"></script>
 
 </body>
-        </html>
+  </html>
