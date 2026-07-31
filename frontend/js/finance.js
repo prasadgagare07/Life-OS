@@ -279,8 +279,13 @@ hideGrowth ? "••••••" : formatINR(growth);
 document.getElementById("emergencyAmount").textContent =
 hideEmergency ? "••••••" : formatINR(emergency);
 
-document.getElementById("wealthAmount").textContent=formatINR(wealth);
 
+animateValue(
+document.getElementById("wealthAmount"),
+0,
+wealth,
+800
+);
 document.getElementById("freedomFund").textContent=formatINR(freedom);
 
 const goal =
@@ -319,7 +324,7 @@ goalText.textContent="🌱 Every rupee invested builds your future.";
 }
 
 }
-document.getElementById("goalBar").style.width=percent+"%";
+animateProgressBar(percent);
 
 renderGoalRing(percent);
 
@@ -397,6 +402,10 @@ const size=canvas.width;
 
 const r=70;
 
+let current=0;
+
+function draw(){
+
 ctx.clearRect(0,0,size,size);
 
 ctx.lineWidth=12;
@@ -418,10 +427,22 @@ size/2,
 size/2,
 r,
 -Math.PI/2,
-(-Math.PI/2)+(Math.PI*2*(percent/100))
+(-Math.PI/2)+(Math.PI*2*(current/100))
 );
 
 ctx.stroke();
+
+if(current<percent){
+
+current+=1;
+
+requestAnimationFrame(draw);
+
+}
+
+}
+
+draw();
 
 }
 
@@ -576,7 +597,10 @@ icon="🔴";
 
 return `
 
-<div class="calendar-day">
+<div class="calendar-day ${
+new Date(item.recorded_on).toDateString()===new Date().toDateString()
+?"today":""
+}">
 
 <div class="calendar-icon">
 
@@ -753,8 +777,48 @@ stats.averageGrowth>0
 ?"#EF4444"
 :"#FFFFFF";
 }
+function animateValue(element,start,end,duration){
 
+let startTime=null;
 
+function step(timestamp){
+
+if(!startTime) startTime=timestamp;
+
+const progress=Math.min((timestamp-startTime)/duration,1);
+
+const value=Math.floor(start+(end-start)*progress);
+
+element.textContent=formatINR(value);
+
+if(progress<1){
+
+requestAnimationFrame(step);
+
+}
+
+}
+
+requestAnimationFrame(step);
+
+}
+function animateProgressBar(percent){
+
+const bar=document.getElementById("goalBar");
+
+if(!bar) return;
+
+bar.style.width="0%";
+
+requestAnimationFrame(()=>{
+
+bar.style.transition="width 1s ease";
+
+bar.style.width=percent+"%";
+
+});
+
+}
 // ==============================
 // Part 4
 // Save + Refresh + Initialize
