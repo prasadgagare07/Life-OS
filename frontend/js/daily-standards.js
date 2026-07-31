@@ -157,15 +157,15 @@ if (isLockedToday()) {
 
 slider.style.accentColor =
 habit.color;
-slider.style.background =
-`linear-gradient(to right,
-${habit.color} 0%,
-${habit.color} ${habit.value*10}%,
-#222C43 ${habit.value*10}%,
-#222C43 100%)`;
+
+// 11 evenly-spaced white tick dots (values 0–10), layered over the color fill
+const dotLayers = [0,10,20,30,40,50,60,70,80,90,100]
+  .map(p => `radial-gradient(circle, #ffffffcc 2px, transparent 2.5px) ${p}% center/6px 6px no-repeat`)
+  .join(', ');
 
 slider.style.background =
-`linear-gradient(to right,
+`${dotLayers},
+linear-gradient(to right,
 ${habit.color} 0%,
 ${habit.color} ${habit.value*10}%,
 #222C43 ${habit.value*10}%,
