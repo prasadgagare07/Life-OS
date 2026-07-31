@@ -935,8 +935,9 @@ function renderWealthChart(entries) {
 
   const data = entries.slice().reverse();
 
-  const values = data.map(e => Number(e.total_wealth) || 0);
-
+  const values = data.map(e => Number(e.total_wealth ?? e.wealth ?? 0));
+  alert(JSON.stringify(data));
+   
   const max = Math.max(...values);
   const min = Math.min(...values);
 
