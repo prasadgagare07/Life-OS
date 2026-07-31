@@ -605,8 +605,16 @@ ${formatINR(item.total_wealth)}
 
 function renderStatistics(stats){
 
-document.getElementById("monthlyGrowth").textContent=
-formatINR(stats.monthlyGrowth);
+const growthEl=document.getElementById("monthlyGrowth");
+
+growthEl.textContent=formatINR(stats.monthlyGrowth);
+
+growthEl.style.color=
+stats.monthlyGrowth>0
+?"#22C55E"
+:stats.monthlyGrowth<0
+?"#EF4444"
+:"#FFFFFF";
 
 document.getElementById("highestWealth").textContent=
 formatINR(stats.highestWealth);
@@ -625,10 +633,23 @@ year:"numeric"
 }
 )
 :"--";
+document.getElementById("wealthDays").textContent =
+`${stats.wealthDays} Days`;
 
+const avgEl=document.getElementById("averageGrowth");
+
+avgEl.textContent=formatINR(stats.averageGrowth);
+
+avgEl.style.color=
+stats.averageGrowth>0
+?"#22C55E"
+:stats.averageGrowth<0
+?"#EF4444"
+:"#FFFFFF";
 }
 
-// ===============================
+
+// ==============================
 // Part 4
 // Save + Refresh + Initialize
 // ===============================
