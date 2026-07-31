@@ -4,75 +4,146 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LifeOS — Fitness</title>
-<link rel="stylesheet" href="css/global.css">
-<link rel="stylesheet" href="css/navbar.css">
-<link rel="stylesheet" href="css/cards.css">
-<link rel="stylesheet" href="css/animations.css">
 <link rel="stylesheet" href="css/fitness.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
+<div class="container">
 
-  <main class="main-content">
-    <div class="page-header fade-up">
-      <div>
-        <div class="eyebrow">Body</div>
-        <h1>Fitness</h1>
+  <header>
+    <button class="icon-btn" onclick="window.location.href='dashboard.html'">☰</button>
+    <div class="app-title">FITNESS <span class="arm">💪</span></div>
+    <button class="icon-btn" id="calendarBtn">📅</button>
+  </header>
+
+  <section class="top-card">
+    <div class="figure-wrap">
+      <img src="https://images.unsplash.com/photo-1597452485683-0e0bde820f87?auto=format&fit=crop&w=800&q=80" alt="man doing dumbbell curl">
+    </div>
+    <div class="top-grid">
+      <div class="col">
+        <div class="lbl">WORKOUT STREAK</div>
+        <div class="flame">🔥</div>
+        <div class="big-num" id="streakNum">0</div>
+        <div style="font-size:10px;color:var(--muted);">Days</div>
+        <div class="best" id="bestStreak">Best: 0 Days</div>
       </div>
-    </div>
-
-    <div class="card fitness-hero fade-up fade-up-1">
-      <div class="sunrise-arc" id="fitness-arc"></div>
-      <div class="stat-label" id="fitness-caption">Loading…</div>
-    </div>
-
-    <div class="grid grid-2" style="margin-top:1.25rem">
-      <form class="card fade-up fade-up-2" id="fitness-form">
-        <div class="card-title"><h3>Log today</h3></div>
-
-        <div class="field-row">
-          <label for="weight">Weight (kg)</label>
-          <input type="number" id="weight" step="0.1" min="0" required>
-        </div>
-
-        <div class="checkbox-row">
-          <input type="checkbox" id="workout_done">
-          <label for="workout_done">Workout done today</label>
-        </div>
-
-        <div class="field-row">
-          <label for="notes">Notes</label>
-          <textarea id="notes" rows="2"></textarea>
-        </div>
-
-        <button type="submit" class="btn-primary" style="width:100%">Save entry</button>
-      </form>
-
-      <div>
-        <form class="card fade-up fade-up-3" id="goal-form" style="margin-bottom:1.25rem">
-          <div class="card-title"><h3>Goal weight</h3></div>
-          <div class="field-row">
-            <label for="goal_weight">Target weight (kg)</label>
-            <input type="number" id="goal_weight" step="0.1" min="0">
-          </div>
-          <button type="submit" class="btn-secondary" style="width:100%">Update goal</button>
-        </form>
-
-        <div class="card fade-up fade-up-4">
-          <div class="card-title"><h3>Recent entries</h3></div>
-          <div id="fitness-history"></div>
+      <div class="col">
+        <div class="lbl">FITNESS SCORE</div>
+        <div class="ring-mini">
+          <svg viewBox="0 0 80 80" width="70" height="70">
+            <circle class="bgc" cx="40" cy="40" r="35"/>
+            <circle class="fgc" id="scoreRing" cx="40" cy="40" r="35"/>
+          </svg>
+          <div class="num"><b id="scoreNum">0</b><span>/100</span></div>
         </div>
       </div>
+      <div class="col">
+        <div class="lbl">CURRENT WEIGHT</div>
+        <div class="weight-num editable" id="weightVal" title="Tap to update">—<sub>kg</sub></div>
+        <div class="goal-txt editable" id="goalVal" title="Tap to update">GOAL: — kg</div>
+        <div class="goal-bar"><i id="goalBar" style="width:0%"></i></div>
+      </div>
     </div>
-  </main>
+  </section>
+
+  <section>
+    <div class="sec-title"><h3>🏆 TRANSFORMATION</h3></div>
+    <div class="transform-card">
+      <div class="transform-left">
+        <div class="transform-row">
+          <div class="photo-slot" data-slot="before"><span>👤</span><span>BEFORE</span><span class="cam">📷</span></div>
+          <div class="photo-slot current" data-slot="current"><span>👤</span><span>CURRENT</span><span class="cam">📷</span></div>
+          <div class="photo-slot" data-slot="monthly"><span>👤</span><span>MONTHLY</span><span class="cam">📷</span></div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" style="display:none">
+        <button class="add-photos" id="addPhotosBtn">+ ADD / UPDATE PHOTOS</button>
+      </div>
+      <div class="quote-side">
+        <span class="mark tl">"</span>
+        <p>DISCIPLINE TODAY<br>STRENGTH TOMORROW</p>
+        <span class="bb-icon">🏋</span>
+        <span class="mark br">"</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title"><h3>📋 DAILY FITNESS RULES</h3></div>
+    <div class="rules-section">
+      <div class="rules-card">
+        <div class="rules-head"><span></span><span class="count" id="rulesCount">0/10</span></div>
+        <div id="rulesList"></div>
+      </div>
+      <div class="side-card">
+        <div class="plate-bg"></div>
+        <div class="grain"></div>
+        <div class="side-overlay"></div>
+        <h4>BE STRONGER<br>THAN YOUR<br><em>EXCUSES</em></h4>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title"><h3>TODAY'S SUMMARY</h3></div>
+    <div class="summary-grid">
+      <div class="sum-card steps">
+        <div class="top"><span class="ic">👟</span><span class="lbl">STEPS</span></div>
+        <div class="val editable" id="stepsVal">0<br><small>/ 10,000</small></div>
+        <div class="sum-bar"><i id="stepsBar" style="width:0%"></i></div>
+      </div>
+      <div class="sum-card workout" id="workoutCard">
+        <div class="top"><span class="ic">🏋</span><span class="lbl">WORKOUT</span></div>
+        <div class="val" id="workoutVal">Not Done<br><small>0 min</small></div>
+        <div class="sum-bar"><i id="workoutBar" style="width:0%"></i></div>
+      </div>
+      <div class="sum-card water">
+        <div class="top"><span class="ic">💧</span><span class="lbl">WATER</span></div>
+        <div class="val editable" id="waterVal">0 L<br><small>/ 5.0 L</small></div>
+        <div class="sum-bar"><i id="waterBar" style="width:0%"></i></div>
+      </div>
+      <div class="sum-card protein">
+        <div class="top"><span class="ic">🍗</span><span class="lbl">PROTEIN</span></div>
+        <div class="val editable" id="proteinVal">0 g<br><small>/ 140 g</small></div>
+        <div class="sum-bar"><i id="proteinBar" style="width:0%"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split">
+    <div class="panel">
+      <h5>📈 PROGRESS OVERVIEW</h5>
+      <div class="chart-area">
+        <div class="y-axis" id="yAxis"></div>
+        <svg class="mini-chart" id="weightChart" viewBox="0 0 200 100" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="x-axis" id="xAxis"></div>
+    </div>
+    <div class="panel">
+      <h5 id="calMonth">📅 CALENDAR</h5>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="legend"><span><i style="background:var(--green);"></i>Workout</span><span><i style="background:var(--red);"></i>Missed</span><span><i style="background:#3a3a3a;"></i>No Data</span></div>
+    </div>
+  </section>
+
+  <section class="split2">
+    <div class="ach-card">
+      <h5>🏆 ACHIEVEMENTS</h5>
+      <div class="ach-row" id="achRow"></div>
+    </div>
+    <div class="mot-card">
+      <div class="mot-bg"></div>
+      <div class="grain"></div>
+      <div class="mot-overlay"></div>
+      <div class="bolt">⚡ TODAY'S MOTIVATION</div>
+      <p>THE ONLY BAD<br>WORKOUT IS THE<br>ONE THAT DIDN'T<br><em>HAPPEN.</em></p>
+    </div>
+  </section>
+
 </div>
 
-<script src="js/api.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/app.js"></script>
 <script src="js/fitness.js"></script>
 </body>
 </html>
