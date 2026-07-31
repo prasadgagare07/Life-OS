@@ -265,26 +265,63 @@ const growth=Number(snapshot.market_funds)||0;
 
 const emergency=Number(snapshot.emergency_fund)||0;
 
-const freedom=Number(snapshot.goal_amount)||0;
+const freedom =
+Number(snapshot.bank_balance || 0) +
+Number(snapshot.market_funds || 0) +
+Number(snapshot.emergency_fund || 0) +
 
-document.getElementById("savingAmount").textContent=
+document.getElementById("savingAmount").textContent =
 hideSavings ? "••••••" : formatINR(savings);
 
-document.getElementById("growthAmount").textContent=
+document.getElementById("growthAmount").textContent =
 hideGrowth ? "••••••" : formatINR(growth);
 
-document.getElementById("emergencyAmount").textContent=
+document.getElementById("emergencyAmount").textContent =
 hideEmergency ? "••••••" : formatINR(emergency);
 
 document.getElementById("wealthAmount").textContent=formatINR(wealth);
 
 document.getElementById("freedomFund").textContent=formatINR(freedom);
 
-const percent=Math.min(100,(freedom/FINANCE_GOAL)*100);
+const goal =
+Number(snapshot.goal_amount) || 5000000;
+
+const percent =
+Math.min(100, (freedom / goal) * 100);
 
 document.getElementById("goalPercent").textContent=Math.round(percent)+"%";
 
+
+const goalText=document.getElementById("goalCaption");
+
+if(goalText){
+
+if(percent>=100){
+
+goalText.textContent="🎉 Financial Freedom Achieved!";
+
+}else if(percent>=75){
+
+goalText.textContent="🚀 Almost there! Keep going.";
+
+}else if(percent>=50){
+
+goalText.textContent="💪 Halfway to Financial Freedom.";
+
+}else if(percent>=25){
+
+goalText.textContent="📈 Great progress. Stay consistent.";
+
+}else{
+
+goalText.textContent="🌱 Every rupee invested builds your future.";
+
+}
+
+}
 document.getElementById("goalBar").style.width=percent+"%";
+
+renderGoalRing(percent);
 
 drawGoalRing(percent);
 
@@ -296,7 +333,8 @@ const days=Math.max(0,Math.ceil((target-today)/86400000));
 
 document.getElementById("daysRemaining").textContent=days;
 
-const remaining=Math.max(0,FINANCE_GOAL-freedom);
+const remain =
+Math.max(0, goal - freedom);
 
 document.getElementById("remainingAmount").textContent=formatINR(remaining);
 
@@ -306,7 +344,36 @@ document.getElementById("financeThought").textContent=
 
 FINANCE_THOUGHTS[today.getDate()%FINANCE_THOUGHTS.length];
 
+const hour = new Date().getHours();
+
+if(hour < 12){
+
+document.getElementById("financeThought").textContent +=
+" ☀️ Good morning! Build wealth today.";
+
+}else if(hour < 18){
+
+document.getElementById("financeThought").textContent +=
+" 💼 Keep investing in your future.";
+
+}else{
+
+document.getElementById("financeThought").textContent +=
+" 🌙 Review today's financial progress.";
+
+}
+
 renderMilestones(freedom);
+
+if(typeof renderStatistics==="function"){
+
+api.get("/finance/statistics")
+
+.then(renderStatistics)
+
+.catch(()=>{});
+
+}
 
 document.getElementById("toggleSavings").textContent=
 hideSavings ? "👁" : "🙈";
@@ -316,6 +383,45 @@ hideGrowth ? "👁" : "🙈";
 
 document.getElementById("toggleEmergency").textContent=
 hideEmergency ? "👁" : "🙈";
+
+}
+function renderGoalRing(percent){
+
+const canvas=document.getElementById("goalRing");
+
+if(!canvas) return;
+
+const ctx=canvas.getContext("2d");
+
+const size=canvas.width;
+
+const r=70;
+
+ctx.clearRect(0,0,size,size);
+
+ctx.lineWidth=12;
+
+ctx.strokeStyle="#1E293B";
+
+ctx.beginPath();
+
+ctx.arc(size/2,size/2,r,0,Math.PI*2);
+
+ctx.stroke();
+
+ctx.strokeStyle="#10B981";
+
+ctx.beginPath();
+
+ctx.arc(
+size/2,
+size/2,
+r,
+-Math.PI/2,
+(-Math.PI/2)+(Math.PI*2*(percent/100))
+);
+
+ctx.stroke();
 
 }
 
@@ -676,9 +782,19 @@ const updated=await api.put("/finance",payload);
 
 renderSummary(updated);
 
-const timeline=await api.get("/finance/timeline?limit=365");
+const timeline = await api.get('/finance/timeline?limit=365');
+
+const stats = await api.get('/finance/statistics');
 
 renderTimeline(timeline);
+
+renderWealthCalendar(timeline);
+
+renderStatistics(stats);
+
+showToast("Finance updated successfully","success");
+
+renderGoals();
 
 renderWealthCalendar(timeline);
 
