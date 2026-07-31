@@ -23,14 +23,24 @@ pool.on('error', (err) => {
 
 (async () => {
   try {
+    // Remove duplicate dates, keeping the newest row
+    await pool.query(`
+      DELETE FROM finance_history a
+      USING finance_history b
+      WHERE a.id < b.id
+      AND a.recorded_on = b.recorded_on;
+    `);
+
+    // Create unique constraint
     await pool.query(`
       ALTER TABLE finance_history
       ADD CONSTRAINT finance_history_recorded_on_key
       UNIQUE (recorded_on);
     `);
-    console.log("✅ finance_history unique constraint created.");
+
+    console.log("✅ finance_history fixed.");
   } catch (err) {
-    console.error("❌ Constraint error:", err.message);
+    console.error("❌ Database fix:", err.message);
   }
 })();
 
