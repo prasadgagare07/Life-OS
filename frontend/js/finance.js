@@ -270,7 +270,9 @@ const emergency=Number(snapshot.emergency_fund)||0;
 const freedom =
 Number(snapshot.bank_balance || 0) +
 Number(snapshot.market_funds || 0) +
-Number(snapshot.emergency_fund || 0) +
+Number(snapshot.emergency_fund || 0);
+
+const wealth = freedom;
 
 document.getElementById("savingAmount").textContent =
 hideSavings ? "••••••" : formatINR(savings);
@@ -301,6 +303,10 @@ savings,
 growth,
 emergency
 );
+
+const goal =
+Number(snapshot.goal_amount) || 5000000;
+   
 renderHealthScore(
   savings,
   growth,
@@ -309,9 +315,6 @@ renderHealthScore(
 );
   
 document.getElementById("freedomFund").textContent=formatINR(freedom);
-
-const goal =
-Number(snapshot.goal_amount) || 5000000;
 
 const percent =
 Math.min(100, (freedom / goal) * 100);
@@ -360,12 +363,12 @@ const days=Math.max(0,Math.ceil((target-today)/86400000));
 
 document.getElementById("daysRemaining").textContent=days;
 
-const remain =
-Math.max(0, goal - freedom);
+const remaining = Math.max(0, goal - freedom);
 
-document.getElementById("remainingAmount").textContent=formatINR(remaining);
+document.getElementById("remainingAmount").textContent = formatINR(remaining);
 
-document.getElementById("perDayNeed").textContent=formatINR(Math.ceil(remaining/Math.max(days,1)));
+document.getElementById("perDayNeed").textContent =
+formatINR(Math.ceil(remaining / Math.max(days,1)));
 
 document.getElementById("financeThought").textContent=
 
