@@ -301,6 +301,12 @@ savings,
 growth,
 emergency
 );
+renderHealthScore(
+  savings,
+  growth,
+  emergency,
+  goal
+);
   
 document.getElementById("freedomFund").textContent=formatINR(freedom);
 
