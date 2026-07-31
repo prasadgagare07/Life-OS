@@ -37,11 +37,19 @@ total_wealth=EXCLUDED.total_wealth`,
 }
 
 async function getTimeline(limit = 90) {
+
   const { rows } = await pool.query(
-    `SELECT * FROM finance_history ORDER BY recorded_on DESC LIMIT $1`,
+    `SELECT * FROM finance_history
+     ORDER BY recorded_on DESC
+     LIMIT $1`,
     [limit]
   );
-  async function getStatistics() {
+
+  return rows;
+
+}
+
+async function getStatistics() {
 
 const { rows: history } = await pool.query(
 `SELECT recorded_on,total_wealth
@@ -101,8 +109,6 @@ averageGrowth
 
 };
 
-  }
-  return rows;
 }
 
 module.exports = {
