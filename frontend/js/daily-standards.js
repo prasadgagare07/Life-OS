@@ -1,12 +1,3 @@
-(function resetTodayCleanly(){
-  const d = new Date();
-  const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-  const stored = JSON.parse(localStorage.getItem('lifeos_habits')) || [];
-  const resetHabits = stored.map(h => ({ ...h, value: 0 }));
-  localStorage.setItem('lifeos_habits', JSON.stringify(resetHabits));
-  localStorage.setItem('lifeos_habits_date', key);
-  localStorage.setItem('lifeos_habits_locked', 'false');
-})();
 // =======================================
 // LifeOS Daily Standards
 // Part 1
