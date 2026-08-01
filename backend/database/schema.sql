@@ -68,11 +68,9 @@ INSERT INTO finance_snapshot (
   bank_balance,
   market_funds,
   emergency_fund,
-  wealth_engine,
   goal_amount
 )
 SELECT
-  0,
   0,
   0,
   0,
