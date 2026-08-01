@@ -270,8 +270,7 @@ const savings=Number(snapshot.bank_balance)||0;
 const growth=Number(snapshot.market_funds)||0;
 
 const emergency=Number(snapshot.emergency_fund)||0;
-
-const freedom = Number(snapshot.wealth_engine || 0);
+ 
 const wealth =
   savings +
   growth +
@@ -306,8 +305,9 @@ growth,
 emergency
 );
 
-const goal =
-Number(snapshot.goal_amount) || 5000000;
+const freedom = Number(snapshot.goal_amount) || 0;
+
+const goal = 5000000;
    
 renderHealthScore(
   savings,
