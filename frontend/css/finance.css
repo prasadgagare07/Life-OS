@@ -667,3 +667,18 @@ font-weight:700;
     display:block;
     overflow:hidden;
 }
+
+#finance-form{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+#finance-form > div{
+display:flex;
+flex-direction:column;
+}
+
+#finance-form button{
+grid-column:1 / -1;
+}
