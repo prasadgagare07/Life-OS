@@ -5,19 +5,33 @@ async function getSnapshot() {
   return rows[0] || null;
 }
 
-async function updateSnapshot({ bank_balance, market_funds, emergency_fund, goal_amount }) {
+async function updateSnapshot({
+  bank_balance,
+  market_funds,
+  emergency_fund,
+  wealth_engine,
+  goal_amount
+}) {
   const current = await getSnapshot();
 
   const { rows } = await pool.query(
     `UPDATE finance_snapshot SET
        bank_balance = COALESCE($1, bank_balance),
-       market_funds = COALESCE($2, market_funds),
-       emergency_fund = COALESCE($3, emergency_fund),
-       goal_amount = COALESCE($4, goal_amount),
+market_funds = COALESCE($2, market_funds),
+emergency_fund = COALESCE($3, emergency_fund),
+wealth_engine = COALESCE($4, wealth_engine),
+goal_amount = COALESCE($5, goal_amount)
        updated_at = now()
      WHERE id = $5
      RETURNING *`,
-    [bank_balance, market_funds, emergency_fund, goal_amount, current.id]
+    [
+    bank_balance,
+    market_funds,
+    emergency_fund,
+    wealth_engine,
+    goal_amount,
+    current.id
+  ]
   );
 
   const updated = rows[0];
