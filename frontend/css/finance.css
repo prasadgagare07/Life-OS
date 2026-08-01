@@ -202,13 +202,19 @@ grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 }
 
 .card{
-background:#111827;
-border-radius:22px;
-padding:24px;
+background:#0F172A;
 border:1px solid rgba(255,255,255,.06);
-box-shadow:0 12px 35px rgba(0,0,0,.35);
-transition:.25s;
+border-radius:20px;
+padding:24px;
+box-shadow:0 8px 30px rgba(0,0,0,.25);
+transition:.25s ease;
 }
+
+.card:hover{
+transform:translateY(-4px);
+box-shadow:0 16px 40px rgba(0,0,0,.35);
+}
+
 
 .card:hover{
 transform:translateY(-4px);
