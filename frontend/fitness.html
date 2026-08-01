@@ -153,7 +153,7 @@
       </div>
     </div>
     <div class="panel" style="margin-top:10px;">
-      <h5>LAST 7 DAYS SCORE</h5>
+      <h5>LAST 7 DAYS SCORE <span id="viewAllScoresBtn" style="float:right;cursor:pointer;text-decoration:underline;color:var(--yellow);">View All</span></h5>
       <div class="bars" id="consistencyBars"></div>
     </div>
   </section>
@@ -172,6 +172,15 @@
     </div>
   </section>
 
+</div>
+
+<!-- Full Score History Modal -->
+<div id="scoreHistoryModal" class="modal">
+  <div class="modal-content">
+    <h2>Full Score History</h2>
+    <div id="scoreHistoryList" class="history-list"></div>
+    <button id="closeScoreHistoryModal" class="secondary-btn">Done</button>
+  </div>
 </div>
 
 <script src="js/fitness.js"></script>
