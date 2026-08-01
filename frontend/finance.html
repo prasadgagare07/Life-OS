@@ -102,32 +102,46 @@
 <div class="grid grid-4">
 
 <div class="card">
-
 <h3>💰 Savings</h3>
-
 <div id="savingAmount">••••••</div>
-
 <button class="eye-btn" id="toggleSavings">👁</button>
-
 </div>
 
 <div class="card">
-
 <h3>🌱 Growth Fund</h3>
-
 <div id="growthAmount">••••••</div>
-
 <button class="eye-btn" id="toggleGrowth">👁</button>
-
 </div>
 
 <div class="card">
+<h3>🛡 Emergency Fund</h3>
+<div id="emergencyAmount">••••••</div>
+<button class="eye-btn" id="toggleEmergency">👁</button>
+</div>
 
-<h3>🏅 Wealth Level</h3>
+<div class="card highlight-card">
 
-<h2 id="wealthLevel">🌿 Beginner</h2>
+<h3>💎 Net Worth</h3>
 
-</div>  
+<h2 id="wealthAmount">₹0</h2>
+
+<p>Savings + Growth + Emergency</p>
+
+<hr>
+
+<p id="wealthLevel">🌿 Beginner</p>
+
+<p id="healthMessage">
+❤️
+<span id="healthScore">0%</span>
+</p>
+
+</div>
+
+</div>
+
+<div class="grid grid-2">
+
 <div class="card">
 
 <h3>📊 Asset Allocation</h3>
@@ -136,7 +150,6 @@
 
 </div>
 
-
 <div class="card">
 
 <h3>💰 Net Worth Breakdown</h3>
@@ -144,85 +157,71 @@
 <div id="wealthBreakdown"></div>
 
 </div>
-  
-<div class="card">
-
-<h3>🛡 Emergency Fund</h3>
-
-<div id="emergencyAmount">••••••</div>
-
-<button class="eye-btn" id="toggleEmergency">👁</button>
 
 </div>
 
-<div class="card">
-
-<h3>💎 Total Wealth</h3>
-
-<h2 id="wealthAmount">₹0</h2>
-
-<p>Savings + Growth Fund + Emergency Fund</p>
-
-</div>
-<div class="card">
-
-<h3>❤️ Financial Health</h3>
-
-<h2 id="healthScore">0%</h2>
-
-<p id="healthMessage">Loading...</p>
-
-</div>
-  
-</div>
 <div class="card">
 
 <h3>✏️ Update Finance</h3>
 
 <form id="finance-form">
 
+<div class="finance-grid">
+
 <div>
+
 <label>Savings</label>
+
 <input
 type="number"
 id="bank_balance"
 placeholder="Savings">
+
 </div>
 
 <div>
+
 <label>Growth Fund</label>
 
 <input
 type="number"
 id="market_funds"
 placeholder="Growth Fund">
+
 </div>
 
 <div>
+
 <label>Emergency Fund</label>
 
 <input
 type="number"
 id="emergency_fund"
 placeholder="Emergency Fund">
+
 </div>
-  
+
 <div>
+
 <label>Freedom Fund</label>
 
 <input
 type="number"
 id="goal_amount"
 placeholder="Current Freedom Fund">
+
 </div>
 
-<button type="submit">
-💾 Save
+</div>
+
+<button class="save-btn" type="submit">
+💾 Save Finance
 </button>
 
 </form>
 
 </div>
+    
 <!-- Statistics -->
 
 <div class="grid grid-2">
