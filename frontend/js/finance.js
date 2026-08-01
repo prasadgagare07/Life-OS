@@ -53,7 +53,6 @@ JSON.stringify(goals)
 );
 
 }
-
 function renderGoals(){
 
 const list=document.getElementById("goalList");
@@ -62,9 +61,21 @@ if(!list) return;
 
 const wealth=
 (Number(document.getElementById("wealthAmount")?.textContent.replace(/[₹,]/g,""))||0);
+
+const totalGoals=
+goals.reduce((sum,g)=>sum+Number(g.target),0);
+
 list.innerHTML=goals.map((goal,index)=>{
 
-const completed = wealth >= goal.target;
+const progress=
+totalGoals>0
+?Math.min(100,(wealth/totalGoals)*100)
+:0;
+
+const saved=
+Math.round((progress/100)*goal.target);
+
+const completed=saved>=goal.target;
 
 return `
 
@@ -74,22 +85,25 @@ return `
 
 <h4>
 ${goal.name}
-${completed ? '<span class="goal-complete">✅</span>' : ''}
+${completed?'<span class="goal-complete">✅</span>':''}
 </h4>
 
-<p>${formatINR(goal.target)}</p>
+<p>
+${formatINR(saved)}
+ /
+${formatINR(goal.target)}
+</p>
 
 <div class="goal-progress">
 
 <div
 class="goal-progress-fill"
-style="width:${Math.min(100,(Number(document.getElementById("wealthAmount")?.textContent.replace(/[₹,]/g,""))||0)/goal.target*100)}%">
+style="width:${progress}%">
 </div>
 
 </div>
 
 </div>
-
 
 <div class="goal-right">
 
@@ -108,17 +122,7 @@ style="width:${Math.min(100,(Number(document.getElementById("wealthAmount")?.tex
 }
 
 
-window.deleteGoal=function(index){
 
-if(!confirm("Delete this goal?")) return;
-
-goals.splice(index,1);
-
-saveGoals();
-
-renderGoals();
-
-};
 function showCelebration(message){
 
 const modal=document.getElementById("celebrationModal");
