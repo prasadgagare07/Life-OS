@@ -1,6 +1,5 @@
 // =======================================
-// LifeOS — Fitness (localStorage-driven,
-// same pattern as daily-standards.js)
+// LifeOS — Fitness (localStorage-driven)
 // =======================================
 
 const RULES = [
@@ -16,15 +15,15 @@ const RULES = [
   { key:'screen_free',   label:'Screen-Free Before Bed',       icon:'📵', color:'#2FE0D0', type:'manual' },
 ];
 
-function todayKey(){
-  const d = new Date();
+function ymd(d){
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
+function todayKey(){ return ymd(new Date()); }
 
 function blankEntry(date){
   return {
     date, weight:null, steps:0, water_l:0, protein_g:0, sleep_hours:0,
-    workout_done:false, workout_minutes:0,
+    workout_done:false, workout_minutes:0, locked:false,
     rules:{ junk:false, clean_diet:false, no_sugar:false, late_night:false, calorie_goal:false, screen_free:false }
   };
 }
@@ -43,7 +42,7 @@ let photos = loadJSON('lifeos_fitness_photos', {});
 let today = loadJSON('lifeos_fitness_today', null);
 
 // Day rollover: if the stored "today" entry is from a previous day,
-// archive it into history and start a fresh one.
+// archive it into history and start a fresh (unlocked) one.
 (function rollover(){
   const key = todayKey();
   if (!today) { today = blankEntry(key); saveJSON('lifeos_fitness_today', today); return; }
@@ -58,14 +57,19 @@ let today = loadJSON('lifeos_fitness_today', null);
 
 function saveToday(){ saveJSON('lifeos_fitness_today', today); }
 
-function ruleCompleted(rule){
-  if (rule.type === 'derived') return (today[rule.field] || 0) >= rule.goal;
-  return !!today.rules[rule.key];
-}
+// ---------- Rules / scoring (generalised over any entry) ----------
 
-function completedCount(){
-  return RULES.filter(ruleCompleted).length;
+function ruleCompleted(entry, rule){
+  if (rule.type === 'derived') return (entry[rule.field] || 0) >= rule.goal;
+  return !!(entry.rules && entry.rules[rule.key]);
 }
+function completedCount(entry){
+  entry = entry || today;
+  return RULES.filter(r => ruleCompleted(entry, r)).length;
+}
+function scoreOf(entry){ return completedCount(entry) * 10; }
+
+// ---------- Toast / prompt helpers ----------
 
 function showToast(message, type=''){
   const existing = document.querySelector('.toast');
@@ -85,12 +89,21 @@ function promptNumber(label, current, unit){
   return n;
 }
 
+// today's data is locked once saved, until the next calendar day
+function checkLock(){
+  if (today.locked) {
+    showToast("Today is locked — come back tomorrow!", 'error');
+    return true;
+  }
+  return false;
+}
+
 // ---------- Rendering ----------
 
 function renderRules(){
   const list = document.getElementById('rulesList');
   list.innerHTML = RULES.map((r, i) => {
-    const done = ruleCompleted(r);
+    const done = ruleCompleted(today, r);
     const sub = r.type === 'derived'
       ? `<span class="sub">${today[r.field] || 0}${r.unit} / ${r.goal}${r.unit}</span>`
       : '';
@@ -105,6 +118,7 @@ function renderRules(){
 
   list.querySelectorAll('.rule-row').forEach(row => {
     row.addEventListener('click', () => {
+      if (checkLock()) return;
       const key = row.dataset.key;
       const type = row.dataset.type;
       if (type === 'manual') {
@@ -123,11 +137,12 @@ function renderRules(){
     });
   });
 
-  document.getElementById('rulesCount').textContent = `${completedCount()}/10`;
+  document.getElementById('rulesCount').textContent = `${completedCount(today)}/10`;
+  document.getElementById('lockIndicator').textContent = today.locked ? '🔒 Locked' : '';
 }
 
 function renderScoreAndStreak(){
-  const score = completedCount() * 10;
+  const score = scoreOf(today);
   document.getElementById('scoreNum').textContent = score;
   const ring = document.getElementById('scoreRing');
   const offset = 220 - (220 * score / 100);
@@ -148,7 +163,7 @@ function computeStreak(){
   if (!days.has(todayKey())) d.setDate(d.getDate() - 1);
 
   while (true) {
-    const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const key = ymd(d);
     if (days.has(key)) { streak++; d.setDate(d.getDate() - 1); }
     else break;
   }
@@ -185,12 +200,58 @@ function renderSummary(){
   document.getElementById('workoutBar').style.width = today.workout_done ? '100%' : '0%';
 }
 
-function allEntries(){
-  return [...history, today].filter(e => e.weight != null).sort((a,b) => a.date < b.date ? -1 : 1);
+// ---------- Save / lock button ----------
+
+function refreshSaveButton(){
+  const btn = document.getElementById('saveDayBtn');
+  if (today.locked) {
+    btn.textContent = '✅ Saved for Today';
+    btn.disabled = true;
+    btn.classList.add('saved');
+  } else {
+    btn.textContent = '💾 Save Today';
+    btn.disabled = false;
+    btn.classList.remove('saved');
+  }
+  document.body.classList.toggle('locked-day', !!today.locked);
+}
+
+document.getElementById('saveDayBtn').addEventListener('click', () => {
+  if (today.locked) return;
+  if (!confirm("Once saved, today's fitness data can't be edited until tomorrow. Continue?")) return;
+  today.locked = true;
+  saveToday();
+  renderAll();
+  showToast('Day saved — see you tomorrow!', 'success');
+});
+
+// ---------- Progress chart (Weight / Steps / Workout / Score) ----------
+
+let chartMetric = 'weight';
+
+const METRIC_CONFIG = {
+  weight:  { unit:'',  color:'#F5C542', requiresValue:true,  field:'weight' },
+  steps:   { unit:'',  color:'#34C759', requiresValue:false, field:'steps' },
+  workout: { unit:'m', color:'#F5C542', requiresValue:false, field:'workout_minutes' },
+  score:   { unit:'',  color:'#A56BFF', requiresValue:false, field:null },
+};
+
+function metricValue(entry, metric){
+  if (metric === 'score') return scoreOf(entry);
+  return entry[METRIC_CONFIG[metric].field] || 0;
+}
+
+function chartEntries(metric){
+  const all = [...history, today].sort((a,b) => a.date < b.date ? -1 : 1);
+  if (METRIC_CONFIG[metric].requiresValue) {
+    return all.filter(e => e.weight != null);
+  }
+  return all;
 }
 
 function renderChart(){
-  const entries = allEntries().slice(-8);
+  const cfg = METRIC_CONFIG[chartMetric];
+  const entries = chartEntries(chartMetric).slice(-8);
   const svg = document.getElementById('weightChart');
   const yAxis = document.getElementById('yAxis');
   const xAxis = document.getElementById('xAxis');
@@ -198,48 +259,70 @@ function renderChart(){
   if (entries.length < 1) {
     svg.innerHTML = '';
     yAxis.innerHTML = '';
-    xAxis.innerHTML = '<span style="margin:auto;">Log your weight to see progress</span>';
+    xAxis.innerHTML = `<span style="margin:auto;">No ${chartMetric} data yet</span>`;
     return;
   }
 
-  const weights = entries.map(e => e.weight);
-  let max = Math.ceil(Math.max(...weights)) + 1;
-  let min = Math.floor(Math.min(...weights)) - 1;
-  if (max === min) { max += 1; min -= 1; }
+  const values = entries.map(e => metricValue(e, chartMetric));
+  let max, min;
+  if (chartMetric === 'score') {
+    max = 100; min = 0;
+  } else {
+    max = Math.ceil(Math.max(...values, 1) * 1.15);
+    min = chartMetric === 'weight' ? Math.floor(Math.min(...values)) - 1 : 0;
+    if (max === min) max = min + 1;
+  }
 
-  yAxis.innerHTML = [4,3,2,1,0].map(i => `<span>${Math.round(min + (max-min)*i/4)}</span>`).join('');
+  yAxis.innerHTML = [4,3,2,1,0].map(i => {
+    const v = min + (max-min)*i/4;
+    return `<span>${chartMetric === 'weight' ? Math.round(v) : Math.round(v)}${cfg.unit}</span>`;
+  }).join('');
 
   const n = entries.length;
   const stepX = n > 1 ? 200 / (n - 1) : 0;
   const points = entries.map((e, i) => {
     const x = n > 1 ? i * stepX : 100;
-    const y = 90 - ((e.weight - min) / (max - min)) * 80;
-    return { x, y, weight: e.weight, date: e.date };
+    const v = metricValue(e, chartMetric);
+    const y = 90 - ((v - min) / (max - min)) * 80;
+    return { x, y, v, date: e.date };
   });
 
   let svgHtml = '';
   [10,32,54,76,98].forEach(y => {
     svgHtml += `<line x1="0" y1="${y}" x2="200" y2="${y}" stroke="#232323" stroke-width="1"/>`;
   });
-  svgHtml += `<polyline points="${points.map(p => `${p.x},${p.y}`).join(' ')}" fill="none" stroke="#F5C542" stroke-width="2.5"/>`;
+  svgHtml += `<polyline points="${points.map(p => `${p.x},${p.y}`).join(' ')}" fill="none" stroke="${cfg.color}" stroke-width="2.5"/>`;
   points.forEach((p, i) => {
     const isLast = i === points.length - 1;
-    svgHtml += `<circle cx="${p.x}" cy="${p.y}" r="${isLast ? 4 : 3}" fill="#F5C542" ${isLast ? 'stroke="#000" stroke-width="1"' : ''}/>`;
+    svgHtml += `<circle cx="${p.x}" cy="${p.y}" r="${isLast ? 4 : 3}" fill="${cfg.color}" ${isLast ? 'stroke="#000" stroke-width="1"' : ''}/>`;
   });
   svg.innerHTML = svgHtml;
 
   const labelPoints = n <= 5 ? points : [points[0], points[Math.floor(n/3)], points[Math.floor(2*n/3)], points[n-1]];
   xAxis.innerHTML = labelPoints.map((p, i) => {
-    const d = new Date(p.date + 'T00:00:00');
+    const [yy,mm,dd] = p.date.split('-').map(Number);
+    const d = new Date(yy, mm-1, dd);
     const label = i === labelPoints.length - 1 && p.date === todayKey() ? 'Today' : d.toLocaleDateString('en-US', { day:'numeric', month:'short' });
     return `<span>${label}</span>`;
   }).join('');
 }
 
+document.querySelectorAll('#chartTabs span').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#chartTabs span').forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+    chartMetric = tab.dataset.metric;
+    renderChart();
+  });
+});
+
+// ---------- Calendar (with month navigation) ----------
+
+let calView = (() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; })();
+
 function renderCalendar(){
-  const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth();
-  const monthName = now.toLocaleDateString('en-US', { month:'long', year:'numeric' }).toUpperCase();
+  const { y, m } = calView;
+  const monthName = new Date(y, m, 1).toLocaleDateString('en-US', { month:'long', year:'numeric' }).toUpperCase();
   document.getElementById('calMonth').textContent = `📅 ${monthName}`;
 
   const byDate = {};
@@ -247,7 +330,7 @@ function renderCalendar(){
   byDate[today.date] = today;
 
   const firstDay = new Date(y, m, 1);
-  const startOffset = (firstDay.getDay() + 6) % 7;
+  const startOffset = (firstDay.getDay() + 6) % 7; // Monday-first
   const daysInMonth = new Date(y, m + 1, 0).getDate();
   const todayStr = todayKey();
 
@@ -264,7 +347,66 @@ function renderCalendar(){
     html += `<span class="${cls}">${day}</span>`;
   }
   document.getElementById('calGrid').innerHTML = html;
+
+  const now = new Date();
+  const isCurrentMonth = (y === now.getFullYear() && m === now.getMonth());
+  document.getElementById('calNext').disabled = isCurrentMonth;
 }
+
+document.getElementById('calPrev').addEventListener('click', () => {
+  calView.m--;
+  if (calView.m < 0) { calView.m = 11; calView.y--; }
+  renderCalendar();
+});
+document.getElementById('calNext').addEventListener('click', () => {
+  const now = new Date();
+  if (calView.y === now.getFullYear() && calView.m === now.getMonth()) return;
+  calView.m++;
+  if (calView.m > 11) { calView.m = 0; calView.y++; }
+  renderCalendar();
+});
+
+// ---------- Consistency ----------
+
+function computeConsistency(days){
+  const all = [...history, today];
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - (days - 1));
+  const cutoffKey = ymd(cutoff);
+  const relevant = all.filter(e => e.date >= cutoffKey && e.date <= todayKey());
+  if (relevant.length === 0) return 0;
+  const avgScore = relevant.reduce((sum, e) => sum + scoreOf(e), 0) / relevant.length;
+  return Math.round(avgScore);
+}
+
+function renderConsistency(){
+  const byDate = {};
+  history.forEach(h => byDate[h.date] = h);
+  byDate[today.date] = today;
+
+  let html = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = ymd(d);
+    const entry = byDate[key];
+    const score = entry ? scoreOf(entry) : 0;
+    const label = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const isToday = key === todayKey();
+    html += `
+      <div class="bar-col">
+        <div class="bar${isToday ? ' today' : ''}" style="height:${Math.max(score, 4)}%"></div>
+        <div class="bar-val">${score}</div>
+        <div class="bar-label">${label}</div>
+      </div>`;
+  }
+  document.getElementById('consistencyBars').innerHTML = html;
+
+  document.getElementById('weekConsistency').textContent = computeConsistency(7) + '%';
+  document.getElementById('monthConsistency').textContent = computeConsistency(30) + '%';
+}
+
+// ---------- Achievements ----------
 
 function renderAchievements(){
   const allWorkoutDays = [...history, today].filter(e => e.workout_done);
@@ -285,6 +427,8 @@ function renderAchievements(){
   `).join('');
 }
 
+// ---------- Photos ----------
+
 function renderPhotos(){
   document.querySelectorAll('.photo-slot').forEach(slot => {
     const key = slot.dataset.slot;
@@ -295,19 +439,24 @@ function renderPhotos(){
   });
 }
 
+// ---------- Master render ----------
+
 function renderAll(){
+  refreshSaveButton();
   renderRules();
   renderScoreAndStreak();
   renderWeight();
   renderSummary();
   renderChart();
   renderCalendar();
+  renderConsistency();
   renderAchievements();
 }
 
 // ---------- Interactions ----------
 
 document.getElementById('weightVal').addEventListener('click', () => {
+  if (checkLock()) return;
   const val = promptNumber('Current weight', today.weight ?? '', 'kg');
   if (val === null) return;
   today.weight = val;
@@ -317,6 +466,7 @@ document.getElementById('weightVal').addEventListener('click', () => {
   showToast('Weight updated', 'success');
 });
 
+// Goal weight is a standing target, not part of the daily lock
 document.getElementById('goalVal').addEventListener('click', () => {
   const val = promptNumber('Goal weight', goalWeight, 'kg');
   if (val === null) return;
@@ -327,24 +477,28 @@ document.getElementById('goalVal').addEventListener('click', () => {
 });
 
 document.getElementById('stepsVal').addEventListener('click', () => {
+  if (checkLock()) return;
   const val = promptNumber('Steps today', today.steps, '');
   if (val === null) return;
   today.steps = val; saveToday(); renderAll();
 });
 
 document.getElementById('waterVal').addEventListener('click', () => {
+  if (checkLock()) return;
   const val = promptNumber('Water intake', today.water_l, 'L');
   if (val === null) return;
   today.water_l = val; saveToday(); renderAll();
 });
 
 document.getElementById('proteinVal').addEventListener('click', () => {
+  if (checkLock()) return;
   const val = promptNumber('Protein intake', today.protein_g, 'g');
   if (val === null) return;
   today.protein_g = val; saveToday(); renderAll();
 });
 
 document.getElementById('workoutCard').addEventListener('click', () => {
+  if (checkLock()) return;
   today.workout_done = !today.workout_done;
   if (today.workout_done) {
     const mins = promptNumber('Workout duration', today.workout_minutes || 30, 'min');
@@ -356,7 +510,7 @@ document.getElementById('workoutCard').addEventListener('click', () => {
   renderAll();
 });
 
-// Photo uploads
+// Photo uploads (not covered by the daily lock)
 const photoInput = document.getElementById('photoInput');
 let pendingSlot = 'current';
 
