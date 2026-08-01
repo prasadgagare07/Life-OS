@@ -35,7 +35,7 @@ current.id
 );
 
   const updated = rows[0];
-  const total = Number(updated.bank_balance) + Number(updated.market_funds) + Number(updated.emergency_fund);
+  const total = Number(updated.wealth_engine || 0);
 
   const existing = await pool.query(
   `SELECT 1 FROM finance_history WHERE recorded_on = CURRENT_DATE`
