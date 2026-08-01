@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS finance_snapshot (
   bank_balance    NUMERIC(14,2) NOT NULL DEFAULT 0,
   market_funds    NUMERIC(14,2) NOT NULL DEFAULT 0,
   emergency_fund  NUMERIC(14,2) NOT NULL DEFAULT 0,
-  wealth_engine   NUMERIC(14,2) NOT NULL DEFAULT 0,
   goal_amount     NUMERIC(14,2) NOT NULL DEFAULT 5000000, -- ₹50 lakh default
   updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
