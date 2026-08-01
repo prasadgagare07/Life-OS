@@ -217,3 +217,57 @@ body.locked-day #weightVal{opacity:.55;cursor:not-allowed;border-bottom-color:tr
 /* SECTION WRAP */
 section{margin-top:22px;}
 section:first-of-type{margin-top:0;}
+
+/* MODAL (Full Score History) */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+.modal-content{
+  width:90%;
+  max-width:420px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  max-height:80vh;
+  display:flex;
+  flex-direction:column;
+}
+.modal-content h2{
+  font-size:15px;
+  color:var(--yellow);
+  margin-bottom:10px;
+}
+.history-list{
+  overflow-y:auto;
+  flex:1;
+}
+.history-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:11px 2px;
+  border-bottom:1px solid var(--divider);
+}
+.history-row:last-child{border-bottom:none;}
+.history-row .h-date{font-size:13px;color:#e8e6e1;}
+.history-row .h-date .h-day{color:var(--muted);font-size:11px;margin-left:6px;font-family:monospace;}
+.history-row .h-score{font-size:14px;font-weight:800;}
+.history-empty{text-align:center;color:var(--muted);padding:24px 0;font-size:13px;}
+.secondary-btn{
+  width:100%;
+  margin-top:14px;
+  padding:13px;
+  border-radius:12px;
+  background:#1b1b1b;
+  border:1px solid var(--border);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+          }
