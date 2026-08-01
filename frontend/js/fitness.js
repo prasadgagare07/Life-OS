@@ -543,6 +543,46 @@ document.getElementById('calendarBtn').addEventListener('click', () => {
   document.querySelector('.split .panel:nth-child(2)').scrollIntoView({ behavior:'smooth', block:'center' });
 });
 
+// ---------- Full Score History Modal ----------
+
+const scoreHistoryModal = document.getElementById('scoreHistoryModal');
+const scoreHistoryListEl = document.getElementById('scoreHistoryList');
+
+function renderFullScoreHistory(){
+  const all = [...history, today].slice().sort((a,b) => a.date < b.date ? 1 : -1); // newest first
+
+  if (all.length === 0) {
+    scoreHistoryListEl.innerHTML = `<div class="history-empty">No history yet — save your first day to see it here.</div>`;
+    return;
+  }
+
+  scoreHistoryListEl.innerHTML = all.map(entry => {
+    const [yy, mm, dd] = entry.date.split('-').map(Number);
+    const d = new Date(yy, mm - 1, dd);
+    const dateLabel = d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+    const dayLabel = d.toLocaleDateString('en-US', { weekday:'short' });
+    const score = scoreOf(entry);
+    const color = score >= 80 ? '#34C759' : score >= 50 ? '#F5C542' : '#FF453A';
+    const isToday = entry.date === todayKey();
+    return `
+      <div class="history-row">
+        <span class="h-date">${dateLabel}${isToday ? ' (Today)' : ''}<span class="h-day">${dayLabel}</span></span>
+        <span class="h-score" style="color:${color}">${score}/100</span>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('viewAllScoresBtn').addEventListener('click', () => {
+  renderFullScoreHistory();
+  scoreHistoryModal.style.display = 'flex';
+});
+document.getElementById('closeScoreHistoryModal').addEventListener('click', () => {
+  scoreHistoryModal.style.display = 'none';
+});
+window.addEventListener('click', (e) => {
+  if (e.target === scoreHistoryModal) scoreHistoryModal.style.display = 'none';
+});
+
 // ---------- Init ----------
 renderAll();
 renderPhotos();
