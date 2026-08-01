@@ -271,13 +271,11 @@ const growth=Number(snapshot.market_funds)||0;
 
 const emergency=Number(snapshot.emergency_fund)||0;
 
-const freedom =
-Number(snapshot.bank_balance || 0) +
-Number(snapshot.market_funds || 0) +
-Number(snapshot.emergency_fund || 0);
-
-const wealth = freedom;
-
+const freedom = Number(snapshot.wealth_engine || 0);
+const wealth =
+  savings +
+  growth +
+  emergency;
 document.getElementById("savingAmount").textContent =
 hideSavings ? "••••••" : formatINR(savings);
 
