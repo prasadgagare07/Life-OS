@@ -14,6 +14,11 @@ async function start() {
 
     await pool.query(schema);
 
+    await pool.query(`
+ALTER TABLE finance_snapshot
+ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
+`);
+
     const dailyEntriesMigration = fs.readFileSync(
       path.join(__dirname, 'database', '001_daily_entries.sql'),
       'utf8'
