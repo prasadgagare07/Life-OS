@@ -64,9 +64,21 @@ CREATE TABLE IF NOT EXISTS vision_goals (
 
 -- Seed one finance snapshot and one fitness goal row so the app has
 -- something to show on first load.
-INSERT INTO finance_snapshot (bank_balance, market_funds, emergency_fund, goal_amount)
-  SELECT 0, 0, 0, 5000000
-  WHERE NOT EXISTS (SELECT 1 FROM finance_snapshot);
+
+INSERT INTO finance_snapshot (
+  bank_balance,
+  market_funds,
+  emergency_fund,
+  wealth_engine,
+  goal_amount
+)
+SELECT
+  0,
+  0,
+  0,
+  0,
+  5000000
+WHERE NOT EXISTS (SELECT 1 FROM finance_snapshot);
 
 INSERT INTO fitness_goal (goal_weight)
   SELECT 80
