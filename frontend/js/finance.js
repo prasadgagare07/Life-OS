@@ -967,6 +967,23 @@ function renderWealthChart(entries) {
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.stroke();
+
+data.forEach((item, index) => {
+
+  const x = 30 + (index * (canvas.width - 60)) / (data.length - 1);
+
+  const y =
+    canvas.height -
+    30 -
+    ((Number(item.total_wealth) - min) / range) *
+    (canvas.height - 60);
+
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fillStyle = "#10B981";
+  ctx.fill();
+
+});
 }
 
 function renderHealthScore(savings,growth,emergency,goal){
