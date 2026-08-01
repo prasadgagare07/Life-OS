@@ -74,7 +74,7 @@
     <div class="sec-title"><h3>📋 DAILY FITNESS RULES</h3></div>
     <div class="rules-section">
       <div class="rules-card">
-        <div class="rules-head"><span></span><span class="count" id="rulesCount">0/10</span></div>
+        <div class="rules-head"><span id="lockIndicator"></span><span class="count" id="rulesCount">0/10</span></div>
         <div id="rulesList"></div>
       </div>
       <div class="side-card">
@@ -110,11 +110,19 @@
         <div class="sum-bar"><i id="proteinBar" style="width:0%"></i></div>
       </div>
     </div>
+
+    <button class="save-day-btn" id="saveDayBtn">💾 Save Today</button>
   </section>
 
   <section class="split">
     <div class="panel">
       <h5>📈 PROGRESS OVERVIEW</h5>
+      <div class="chart-tabs" id="chartTabs">
+        <span class="on" data-metric="weight">WEIGHT</span>
+        <span data-metric="steps">STEPS</span>
+        <span data-metric="workout">WORKOUT</span>
+        <span data-metric="score">SCORE</span>
+      </div>
       <div class="chart-area">
         <div class="y-axis" id="yAxis"></div>
         <svg class="mini-chart" id="weightChart" viewBox="0 0 200 100" preserveAspectRatio="none"></svg>
@@ -122,9 +130,31 @@
       <div class="x-axis" id="xAxis"></div>
     </div>
     <div class="panel">
-      <h5 id="calMonth">📅 CALENDAR</h5>
+      <div class="cal-nav">
+        <button class="nav-arrow" id="calPrev">‹</button>
+        <h5 id="calMonth">📅 CALENDAR</h5>
+        <button class="nav-arrow" id="calNext">›</button>
+      </div>
       <div class="cal-grid" id="calGrid"></div>
       <div class="legend"><span><i style="background:var(--green);"></i>Workout</span><span><i style="background:var(--red);"></i>Missed</span><span><i style="background:#3a3a3a;"></i>No Data</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title"><h3>📊 CONSISTENCY</h3></div>
+    <div class="split">
+      <div class="panel" style="text-align:center;">
+        <h5>THIS WEEK</h5>
+        <div class="big-consistency" id="weekConsistency">0%</div>
+      </div>
+      <div class="panel" style="text-align:center;">
+        <h5>THIS MONTH</h5>
+        <div class="big-consistency" id="monthConsistency">0%</div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:10px;">
+      <h5>LAST 7 DAYS SCORE</h5>
+      <div class="bars" id="consistencyBars"></div>
     </div>
   </section>
 
