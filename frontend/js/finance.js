@@ -197,13 +197,13 @@ style="width:${progress}%">
 
 }
 
-
-
 function showCelebration(message){
 
 const modal=document.getElementById("celebrationModal");
 
 const text=document.getElementById("celebrationText");
+
+if(!modal || !text) return;
 
 text.textContent=message;
 
@@ -881,7 +881,11 @@ updateViewAllBtn("timelineViewAllBtn",rows.length,timelineExpanded);
 
 function renderStatistics(stats){
 
+if(!stats) return;
+
 const growthEl=document.getElementById("monthlyGrowth");
+
+if(growthEl){
 
 growthEl.textContent=formatINR(stats.monthlyGrowth);
 
@@ -892,13 +896,21 @@ stats.monthlyGrowth>0
 ?"#EF4444"
 :"#FFFFFF";
 
-document.getElementById("highestWealth").textContent=
-formatINR(stats.highestWealth);
+}
 
-document.getElementById("bestDay").textContent=
-formatINR(stats.bestDay);
+const highestEl=document.getElementById("highestWealth");
 
-document.getElementById("bestDate").textContent=
+if(highestEl) highestEl.textContent=formatINR(stats.highestWealth);
+
+const bestDayEl=document.getElementById("bestDay");
+
+if(bestDayEl) bestDayEl.textContent=formatINR(stats.bestDay);
+
+const bestDateEl=document.getElementById("bestDate");
+
+if(bestDateEl){
+
+bestDateEl.textContent=
 stats.bestDate
 ?new Date(stats.bestDate).toLocaleDateString(
 "en-IN",
@@ -909,10 +921,16 @@ year:"numeric"
 }
 )
 :"--";
-document.getElementById("wealthDays").textContent =
-`${stats.wealthDays} Days`;
+
+}
+
+const wealthDaysEl=document.getElementById("wealthDays");
+
+if(wealthDaysEl) wealthDaysEl.textContent = `${stats.wealthDays} Days`;
 
 const avgEl=document.getElementById("averageGrowth");
+
+if(avgEl){
 
 avgEl.textContent=formatINR(stats.averageGrowth);
 
@@ -922,7 +940,11 @@ stats.averageGrowth>0
 :stats.averageGrowth<0
 ?"#EF4444"
 :"#FFFFFF";
+
 }
+
+}
+
 function renderWealthLevel(wealth){
 
 const el=document.getElementById("wealthLevel");
@@ -1200,6 +1222,8 @@ el.textContent=
 
 function animateValue(element,start,end,duration){
 
+if(!element) return;
+
 let startTime=null;
 
 function step(timestamp){
@@ -1265,6 +1289,10 @@ try{
 
 const updated=await api.put("/finance",payload);
 
+localStorage.setItem(FINANCE_LOCK_KEY,getLocalDateKey());
+
+lockFinanceForm();
+
 renderSummary(updated);
 
 const timeline = await api.get('/finance/timeline?limit=365');
@@ -1278,10 +1306,6 @@ renderTimeline(timeline);
 renderWealthCalendar(timeline);
 
 renderStatistics(stats);
-
-localStorage.setItem(FINANCE_LOCK_KEY,getLocalDateKey());
-
-lockFinanceForm();
 
 showToast("Finance updated successfully","success");
 
