@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { href: 'finance.html', icon: '💰', label: 'Finance' },
   { href: 'fitness.html', icon: '💪', label: 'Fitness' },
   { href: 'vision.html', icon: '🌟', label: 'Vision Board' },
+  { href: 'trading.html', icon: '🛡️', label: 'Trade Guardian' },
   { href: 'settings.html', icon: '⚙️', label: 'Settings' },
 ];
 
