@@ -24,8 +24,10 @@
     </div>
 </div>
 
-<!-- Freedom Fund -->
-<!-- Freedom Fund -->
+<!-- =========================
+     Freedom Fund
+========================= -->
+
 <section class="card finance-hero fade-up">
 
 <h2 class="hero-title">💰 Freedom Fund</h2>
@@ -33,38 +35,40 @@
 <div class="hero-layout">
 
     <!-- LEFT -->
+
     <div class="hero-left-info">
 
-        <h1 id="freedomFund">₹0</h1>
+        <div>
 
-        <p class="hero-label">
-            Current Freedom Fund
-        </p>
+            <h1 id="freedomFund">₹0</h1>
 
-        <div class="hero-goal">
+            <p class="hero-label">
 
-            <p><strong>🎯 Goal</strong></p>
+                of <strong>₹50,00,000</strong>
 
-            <h3>₹50,00,000</h3>
+            </p>
 
         </div>
 
-        <div class="hero-date">
+        <div class="hero-date-only">
 
-            <p><strong>📅 Target</strong></p>
-
-            <h3>30 March 2027</h3>
+            📅 30 March 2027
 
         </div>
 
     </div>
 
     <!-- CENTER -->
+
     <div class="hero-center">
 
         <div class="ring-wrapper">
 
-            <canvas id="goalRing" width="220" height="220"></canvas>
+            <canvas
+                id="goalRing"
+                width="260"
+                height="260">
+            </canvas>
 
             <div class="ring-center">
 
@@ -79,6 +83,7 @@
     </div>
 
     <!-- RIGHT -->
+
     <div class="hero-right-info">
 
         <div class="hero-stat">
@@ -93,7 +98,7 @@
 
             <h3 id="dailyChange">₹0</h3>
 
-            <span>📉 Today's Change</span>
+            <span>📈 Today's Change</span>
 
         </div>
 
@@ -119,7 +124,10 @@
 
 <div class="progress-track">
 
-    <div id="goalBar" class="progress-fill"></div>
+    <div
+        id="goalBar"
+        class="progress-fill">
+    </div>
 
 </div>
 
@@ -127,6 +135,64 @@
 
 </section>
 
+<!-- =========================
+     Wealth Overview
+========================= -->
+
+<div class="grid grid-4">
+
+<div class="card">
+
+<h3>💰 Savings</h3>
+
+<div id="savingAmount">••••••</div>
+
+<button id="toggleSavings" class="eye-btn">👁</button>
+
+</div>
+
+<div class="card">
+
+<h3>🌱 Growth Fund</h3>
+
+<div id="growthAmount">••••••</div>
+
+<button id="toggleGrowth" class="eye-btn">👁</button>
+
+</div>
+
+<div class="card">
+
+<h3>🛡 Emergency Fund</h3>
+
+<div id="emergencyAmount">••••••</div>
+
+<button id="toggleEmergency" class="eye-btn">👁</button>
+
+</div>
+
+<div class="card highlight-card">
+
+<h3>💎 Net Worth</h3>
+
+<h2 id="wealthAmount">₹0</h2>
+
+<p>Savings + Growth + Emergency</p>
+
+<hr>
+
+<p id="wealthLevel">🌿 Beginner</p>
+
+<p id="healthMessage">
+
+❤️ <span id="healthScore">0%</span>
+
+</p>
+
+</div>
+
+</div>
+    
 <!-- Wealth Overview -->
 
 <div class="grid grid-4">
