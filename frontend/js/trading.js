@@ -238,6 +238,10 @@ function render() {
 
 async function addEntry() {
   const input = document.getElementById('entry-amount');
+  if (entries.some(e => isSameDay(e.date, new Date()))) {
+    showToast('🔒 Already logged today — locked until 12:00 AM.');
+    return;
+  }
   const val = parseFloat(input.value);
   if (isNaN(val)) { showToast('Enter a number first.'); return; }
 
@@ -250,11 +254,37 @@ async function addEntry() {
   // Best-effort sync to backend once the route exists — safe to fail silently for now.
   api.post('/trading/entries', { entry_date: today.toISOString().slice(0, 10), profit: val }).catch(() => {});
 
-  input.value = '';
   render();
+  updateEntryLockState();
   showToast(val >= TARGET ? '🎯 Target day logged — nice and steady.' : val < 0 ? 'Logged. Tomorrow is a clean slate.' : 'Logged — every entry builds the picture.');
 }
 
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function updateEntryLockState() {
+  const input = document.getElementById('entry-amount');
+  const btn = document.getElementById('entry-btn');
+  const hint = document.getElementById('entry-hint');
+  const today = new Date();
+
+  const todayEntry = entries.find(e => isSameDay(e.date, today));
+
+  if (todayEntry) {
+    input.value = todayEntry.profit;
+    input.disabled = true;
+    btn.disabled = true;
+    btn.textContent = 'Locked';
+    hint.textContent = `🔒 Today's result (${fmt(todayEntry.profit)}) is locked in — you can add a new entry after 12:00 AM.`;
+  } else {
+    input.value = '';
+    input.disabled = false;
+    btn.disabled = false;
+    btn.textContent = 'Add';
+    hint.textContent = "One entry per day — your net result after you're done trading. No live tracking needed.";
+  }
+}
 document.addEventListener('DOMContentLoaded', async () => {
   const dateEl = document.getElementById('today-date');
   if (dateEl) dateEl.textContent = dstr(new Date());
@@ -263,6 +293,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btn) btn.addEventListener('click', addEntry);
 
   entries = await loadEntries();
+  updateEntryLockState();
   if (entries.length === 0) {
     // First run — nothing logged yet. Leave the page in its empty state
     // rather than inventing fake history for a real user.
