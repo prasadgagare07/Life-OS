@@ -168,6 +168,7 @@
 <div class="card">
 <h3>📊 Asset Allocation</h3>
 <canvas id="assetChart" width="300" height="300"></canvas>
+<div id="assetLegend" class="asset-legend"></div>
 </div>
 
 <div class="card">
@@ -255,12 +256,18 @@
 <div class="bottom-grid fin-section">
 
     <div class="card">
-        <h3>📅 Wealth Calendar</h3>
+        <div class="card-title">
+            <h3>📅 Wealth Calendar</h3>
+            <button id="calendarViewAllBtn" class="view-all-btn">View All</button>
+        </div>
         <div id="wealthCalendar"></div>
     </div>
 
     <div class="card">
-        <h3>📜 Wealth Timeline</h3>
+        <div class="card-title">
+            <h3>📜 Wealth Timeline</h3>
+            <button id="timelineViewAllBtn" class="view-all-btn">View All</button>
+        </div>
         <div id="timeline-list"></div>
     </div>
 
