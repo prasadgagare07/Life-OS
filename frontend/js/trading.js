@@ -8,8 +8,8 @@
 // needed here — it already prefers the API when available.
 
 const TARGET = 5000;
-const INITIAL_CAPITAL = 8500;
-const START_DATE_STR = '2026-08-02'; // fixed baseline — change to your real start date
+const INITIAL_CAPITAL = 50000;
+const START_DATE_STR = '2026-06-15'; // fixed baseline — change to your real start date
 const STORAGE_KEY = 'lifeos_trading_entries';
 
 function dstr(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
@@ -43,12 +43,15 @@ function saveLocalEntries(list) {
 let entries = [];
 
 async function loadEntries() {
+  // Prefer the real backend once it exists; fall back to localStorage.
   try {
     const remote = await api.get('/trading/entries');
     if (Array.isArray(remote)) {
       return remote.map(e => ({ date: new Date(e.entry_date || e.date), profit: Number(e.profit) }));
     }
-  } catch (e) {}
+  } catch (e) {
+    // No backend route yet (or offline) — that's fine, use local data.
+  }
   return loadLocalEntries();
 }
 
@@ -163,6 +166,7 @@ function render() {
 
   document.getElementById('streak-num').textContent = Math.min(entries.length, 30);
 
+  // consistency
   const ci = computeConsistency();
   document.getElementById('ci-num').textContent = ci.score === null ? '—' : ci.score;
   document.getElementById('ci-msg').innerHTML = ci.msg;
@@ -173,6 +177,7 @@ function render() {
   fill.style.stroke = ci.score === null ? 'var(--border)' : ci.score >= 80 ? 'var(--good)' : ci.score >= 55 ? 'var(--accent-2)' : 'var(--bad)';
   if (ci.score !== null && ci.score >= 75) document.getElementById('badge-steady').classList.add('unlocked');
 
+  // ---- everything below here must work even with 0 entries ----
   const monthList = document.getElementById('month-list');
   monthList.innerHTML = '';
 
@@ -190,6 +195,7 @@ function render() {
     swTotalEl.textContent = fmt(0);
     actualPaceEl.textContent = '—';
 
+    // empty calendar for the real current month, all "future" cells
     const today = new Date();
     const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
     for (let d = 1; d <= daysInMonth; d++) {
@@ -200,6 +206,7 @@ function render() {
     return;
   }
 
+  // monthly summary
   const byMonth = {};
   entries.forEach(e => {
     const k = monthKey(e.date);
@@ -219,6 +226,7 @@ function render() {
     monthList.appendChild(row);
   });
 
+  // growth savings
   let totalSweep = 0, monthSweep = 0;
   const curMonthKey = monthKey(entries[entries.length - 1].date);
   entries.forEach(e => {
@@ -227,4 +235,116 @@ function render() {
     if (monthKey(e.date) === curMonthKey) monthSweep += over;
   });
   savingsAmountEl.textContent = fmt(totalSweep);
-  swMonthEl.textContent = fmt(monthSwe
+  swMonthEl.textContent = fmt(monthSweep);
+  swTotalEl.textContent = fmt(totalSweep);
+  if (totalSweep > 20000) document.getElementById('badge-savings').classList.add('unlocked');
+
+  // habit math
+  const avg = totalProfit / entries.length;
+  actualPaceEl.textContent = fmt(avg * 30);
+
+  // badges
+  const lastPoint = points[points.length - 1];
+  const steadyNow = INITIAL_CAPITAL + (points.length - 1) * TARGET;
+  if (lastPoint.capital >= steadyNow) document.getElementById('badge-pace').classList.add('unlocked');
+  if (entries.length >= 7) document.getElementById('badge-7').classList.add('unlocked');
+  for (let i = 1; i < entries.length; i++) {
+    if (entries[i - 1].profit < 0 && entries[i].profit > 0 && entries[i].profit <= TARGET * 1.3) {
+      document.getElementById('badge-comeback').classList.add('unlocked');
+      break;
+    }
+  }
+
+  // this-month calendar heatmap
+  const lastDate = entries[entries.length - 1].date;
+  const curEntries = entries.filter(e => monthKey(e.date) === curMonthKey);
+  const daysInMonth = new Date(lastDate.getFullYear(), lastDate.getMonth() + 1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const found = curEntries.find(e => e.date.getDate() === d);
+    const cell = document.createElement('div');
+    if (!found) cell.className = 'tg-cal-cell future';
+    else if (found.profit >= TARGET) cell.className = 'tg-cal-cell hit';
+    else if (found.profit >= 0) cell.className = 'tg-cal-cell pos';
+    else cell.className = 'tg-cal-cell neg';
+    grid.appendChild(cell);
+  }
+}
+
+function updateEntryLockState() {
+  const input = document.getElementById('entry-amount');
+  const btn = document.getElementById('entry-btn');
+  const hint = document.getElementById('entry-hint');
+  const today = new Date();
+
+  const todayEntry = entries.find(e => isSameDay(e.date, today));
+
+  if (todayEntry) {
+    input.value = todayEntry.profit;
+    input.disabled = true;
+    btn.disabled = true;
+    btn.textContent = 'Locked';
+    hint.textContent = `🔒 Today's result (${fmt(todayEntry.profit)}) is locked in — you can add a new entry after 12:00 AM.`;
+  } else {
+    input.value = '';
+    input.disabled = false;
+    btn.disabled = false;
+    btn.textContent = 'Add';
+    hint.textContent = "One entry per day — your net result after you're done trading. No live tracking needed.";
+  }
+}
+
+async function addEntry() {
+  const input = document.getElementById('entry-amount');
+  if (entries.some(e => isSameDay(e.date, new Date()))) {
+    showToast('🔒 Already logged today — locked until 12:00 AM.');
+    return;
+  }
+  const val = parseFloat(input.value);
+  if (isNaN(val)) { showToast('Enter a number first.'); return; }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  entries.push({ date: today, profit: val });
+  saveLocalEntries(entries);
+
+  // Best-effort sync to backend once the route exists — safe to fail silently for now.
+  api.post('/trading/entries', { entry_date: today.toISOString().slice(0, 10), profit: val }).catch(() => {});
+
+  render();
+  updateEntryLockState();
+  showToast(val >= TARGET ? '🎯 Target day logged — nice and steady.' : val < 0 ? 'Logged. Tomorrow is a clean slate.' : 'Logged — every entry builds the picture.');
+}
+
+function showFatalError(err) {
+  console.error('Trade Guardian failed to start:', err);
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999;background:#E23B3B;color:#fff;' +
+    'font-family:monospace;font-size:12px;padding:10px 14px;white-space:pre-wrap;';
+  banner.textContent = '⚠️ Trade Guardian script error: ' + (err && err.message ? err.message : err);
+  document.body.prepend(banner);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const dateEl = document.getElementById('today-date');
+    if (dateEl) dateEl.textContent = dstr(new Date());
+
+    const btn = document.getElementById('entry-btn');
+    if (btn) btn.addEventListener('click', () => addEntry().catch(showFatalError));
+
+    entries = await loadEntries();
+    render();
+    updateEntryLockState();
+  } catch (err) {
+    showFatalError(err);
+  }
+});
+
+// ---------------------------------------------------------------------
+// TODO (backend, when ready):
+//   Table:  trading_entries (id, user_id, entry_date DATE, profit NUMERIC, created_at)
+//   Routes: GET  /api/trading/entries      -> list current user's entries
+//           POST /api/trading/entries      -> { entry_date, profit }
+//   Mirrors backend/controllers/standards.controller.js pattern already
+//   used for daily-standards entries in this codebase.
+// ---------------------------------------------------------------------
