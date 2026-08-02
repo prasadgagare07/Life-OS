@@ -21,6 +21,10 @@ const FINANCE_THOUGHTS = [
 let hideSavings=
 JSON.parse(localStorage.getItem("hideSavings")) ?? true;
 
+let calendarExpanded=false;
+let timelineExpanded=false;
+let lastTimelineEntries=[];
+
 let hideGrowth=
 JSON.parse(localStorage.getItem("hideGrowth")) ?? true;
 
@@ -242,6 +246,8 @@ renderSummary(snapshot);
 await saveWealthHistory(snapshot);
 
 const timeline = await api.get("/finance/timeline?limit=365");
+
+lastTimelineEntries = timeline;
 
 const stats = await api.get("/finance/statistics");
 
@@ -594,13 +600,15 @@ cal.innerHTML=`
 </div>
 `;
 
+updateViewAllBtn("calendarViewAllBtn",0,calendarExpanded);
+
 return;
 
 }
 
 const data=entries.slice().reverse();
 
-cal.innerHTML=data.map((item,index)=>{
+const cards=data.map((item,index)=>{
 
 let icon="⚪";
 
@@ -654,7 +662,33 @@ ${formatINR(item.total_wealth)}
 
 `;
 
-}).join("");
+});
+
+const visible=calendarExpanded?cards:cards.slice(0,7);
+
+cal.innerHTML=visible.join("");
+
+updateViewAllBtn("calendarViewAllBtn",cards.length,calendarExpanded);
+
+}
+
+function updateViewAllBtn(btnId,total,expanded){
+
+const btn=document.getElementById(btnId);
+
+if(!btn) return;
+
+if(total<=7){
+
+btn.style.display="none";
+
+return;
+
+}
+
+btn.style.display="inline-flex";
+
+btn.textContent=expanded?"Show Less":"View All";
 
 }
 // ===============================
@@ -663,7 +697,6 @@ ${formatINR(item.total_wealth)}
 // ===============================
 
 function renderTimeline(entries){
-
 const el=document.getElementById("timeline-list");
 
 if(!el) return;
@@ -680,6 +713,8 @@ document.getElementById("highestWealth").textContent="₹0";
 document.getElementById("monthlyGrowth").textContent="₹0";
 document.getElementById("bestDay").textContent="₹0";
 document.getElementById("bestDate").textContent="--";
+
+updateViewAllBtn("timelineViewAllBtn",0,timelineExpanded);
 
 return;
 
@@ -722,7 +757,7 @@ year:"numeric"
 
 const max=Math.max(...history.map(e=>Number(e.total_wealth)));
 
-el.innerHTML=history.map(item=>`
+const rows=history.map(item=>`
 
 <div class="timeline-row">
 
@@ -756,7 +791,13 @@ ${formatINR(item.total_wealth)}
 
 </div>
 
-`).join("");
+`);
+
+const visible=timelineExpanded?rows:rows.slice(0,7);
+
+el.innerHTML=visible.join("");
+
+updateViewAllBtn("timelineViewAllBtn",rows.length,timelineExpanded);
 
 }
 
@@ -846,9 +887,19 @@ ctx.clearRect(0,0,300,300);
 
 const total=savings+growth+emergency;
 
-if(total===0) return;
+const legend=document.getElementById("assetLegend");
+
+if(total===0){
+
+if(legend) legend.innerHTML="";
+
+return;
+
+}
 
 const colors=["#3B82F6","#10B981","#F59E0B"];
+
+const labels=["Savings","Growth Fund","Emergency Fund"];
 
 const values=[savings,growth,emergency];
 
@@ -873,6 +924,30 @@ ctx.fill();
 start+=angle;
 
 });
+
+if(legend){
+
+legend.innerHTML=values.map((value,index)=>{
+
+const pct=total?((value/total)*100).toFixed(1):"0.0";
+
+return `
+
+<div class="legend-item">
+
+<span class="legend-dot" style="background:${colors[index]}"></span>
+
+<span class="legend-label">${labels[index]}</span>
+
+<span class="legend-pct">${pct}%</span>
+
+</div>
+
+`;
+
+}).join("");
+
+}
 
 }
 
@@ -1116,6 +1191,8 @@ renderSummary(updated);
 
 const timeline = await api.get('/finance/timeline?limit=365');
 
+lastTimelineEntries = timeline;
+
 const stats = await api.get('/finance/statistics');
 
 renderTimeline(timeline);
@@ -1312,6 +1389,22 @@ saveGoals();
 renderGoals();
 
 goalModal.classList.add("hidden");
+
+});
+
+document.getElementById("calendarViewAllBtn")?.addEventListener("click",()=>{
+
+calendarExpanded=!calendarExpanded;
+
+renderWealthCalendar(lastTimelineEntries);
+
+});
+
+document.getElementById("timelineViewAllBtn")?.addEventListener("click",()=>{
+
+timelineExpanded=!timelineExpanded;
+
+renderTimeline(lastTimelineEntries);
 
 });
 
