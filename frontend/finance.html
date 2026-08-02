@@ -25,110 +25,59 @@
 </div>
 
 <!-- =========================
-     Freedom Fund
+     1. Freedom Fund Hero
 ========================= -->
 
-<section class="card finance-hero fade-up">
+<section class="card finance-hero fin-section fade-up">
 
 <h2 class="hero-title">💰 Freedom Fund</h2>
 
 <div class="hero-layout">
 
     <!-- LEFT -->
-
     <div class="hero-left-info">
-
         <div>
-
             <h1 id="freedomFund">₹0</h1>
-
-            <p class="hero-label">
-
-                of <strong>₹50,00,000</strong>
-
-            </p>
-
+            <p class="hero-label">of <strong>₹50,00,000</strong></p>
         </div>
-
-        <div class="hero-date-only">
-
-            📅 30 March 2027
-
-        </div>
-
+        <div class="hero-date-only">📅 30 March 2027</div>
     </div>
 
     <!-- CENTER -->
-
     <div class="hero-center">
-
         <div class="ring-wrapper">
-
-            <canvas
-                id="goalRing"
-                width="260"
-                height="260">
-            </canvas>
-
+            <canvas id="goalRing" width="260" height="260"></canvas>
             <div class="ring-center">
-
                 <h1 id="goalPercent">0%</h1>
-
                 <p>Completed</p>
-
             </div>
-
         </div>
-
     </div>
 
     <!-- RIGHT -->
-
     <div class="hero-right-info">
-
         <div class="hero-stat">
-
             <h3 id="daysRemaining">0</h3>
-
             <span>⏳ Days Left</span>
-
         </div>
-
         <div class="hero-stat">
-
             <h3 id="dailyChange">₹0</h3>
-
             <span>📈 Today's Change</span>
-
         </div>
-
         <div class="hero-stat">
-
             <h3 id="remainingAmount">₹0</h3>
-
             <span>💰 Remaining</span>
-
         </div>
-
         <div class="hero-stat">
-
             <h3 id="perDayNeed">₹0</h3>
-
             <span>🚀 Need / Day</span>
-
         </div>
-
     </div>
 
 </div>
 
 <div class="progress-track">
-
-    <div
-        id="goalBar"
-        class="progress-fill">
-    </div>
-
+    <div id="goalBar" class="progress-fill"></div>
 </div>
 
 <p id="goalCaption"></p>
@@ -136,64 +85,85 @@
 </section>
 
 <!-- =========================
-     Wealth Overview
+     2. Wealth Overview
 ========================= -->
 
-<div class="grid grid-4">
+<div class="grid grid-4 fin-section">
 
 <div class="card">
-
 <h3>💰 Savings</h3>
-
 <div id="savingAmount">••••••</div>
-
 <button id="toggleSavings" class="eye-btn">👁</button>
-
 </div>
 
 <div class="card">
-
 <h3>🌱 Growth Fund</h3>
-
 <div id="growthAmount">••••••</div>
-
 <button id="toggleGrowth" class="eye-btn">👁</button>
-
 </div>
 
 <div class="card">
-
 <h3>🛡 Emergency Fund</h3>
-
 <div id="emergencyAmount">••••••</div>
-
 <button id="toggleEmergency" class="eye-btn">👁</button>
-
 </div>
 
 <div class="card highlight-card">
-
 <h3>💎 Net Worth</h3>
-
 <h2 id="wealthAmount">₹0</h2>
-
 <p>Savings + Growth + Emergency</p>
-
 <hr>
-
 <p id="wealthLevel">🌿 Beginner</p>
-
-<p id="healthMessage">
-
-❤️ <span id="healthScore">0%</span>
-
-</p>
-
+<p id="healthMessage">❤️ <span id="healthScore">0%</span></p>
 </div>
 
 </div>
 
-<div class="grid analytics-grid">
+<!-- =========================
+     3. Update Finance
+========================= -->
+
+<div class="card fin-section">
+
+<h3>✏️ Update Finance</h3>
+
+<form id="finance-form">
+
+<div class="finance-grid">
+
+<div>
+<label>Savings</label>
+<input type="number" id="bank_balance" placeholder="Savings">
+</div>
+
+<div>
+<label>Growth Fund</label>
+<input type="number" id="market_funds" placeholder="Growth Fund">
+</div>
+
+<div>
+<label>Emergency Fund</label>
+<input type="number" id="emergency_fund" placeholder="Emergency Fund">
+</div>
+
+<div>
+<label>Freedom Fund</label>
+<input type="number" id="goal_amount" placeholder="Current Freedom Fund">
+</div>
+
+</div>
+
+<button class="save-btn" type="submit">💾 Save Finance</button>
+
+</form>
+
+</div>
+
+<!-- =========================
+     4. Analytics
+========================= -->
+
+<div class="grid analytics-grid fin-section">
 
 <div class="card">
 <h3>📊 Asset Allocation</h3>
@@ -223,76 +193,11 @@
 
 </div>
 
-<div class="card">
+<!-- =========================
+     5. Statistics
+========================= -->
 
-<h3>✏️ Update Finance</h3>
-
-<form id="finance-form">
-
-<div class="finance-grid">
-
-<div>
-
-<label>Savings</label>
-
-<input
-type="number"
-id="bank_balance"
-placeholder="Savings">
-
-</div>
-
-<div>
-
-<label>Growth Fund</label>
-
-<input
-type="number"
-id="market_funds"
-placeholder="Growth Fund">
-
-</div>
-
-<div>
-
-<label>Emergency Fund</label>
-
-<input
-type="number"
-id="emergency_fund"
-placeholder="Emergency Fund">
-
-</div>
-
-<div>
-
-<label>Freedom Fund</label>
-
-<input
-type="number"
-id="goal_amount"
-placeholder="Current Freedom Fund">
-
-</div>
-
-</div>
-
-<button class="save-btn" type="submit">
-💾 Save Finance
-</button>
-
-</form>
-
-</div>
-    
-<!-- Statistics -->
-
-<div class="stats-grid">
-
-<div class="card">
-<h3>📈 Monthly Growth</h3>
-<h2 id="monthlyGrowth">₹0</h2>
-</div>
+<div class="stats-grid fin-section">
 
 <div class="card">
 <h3>🏆 Highest Ever Net Worth</h3>
@@ -301,8 +206,18 @@ placeholder="Current Freedom Fund">
 </div>
 
 <div class="card">
+<h3>📊 Average Daily Growth</h3>
+<h2 id="averageGrowth">₹0</h2>
+</div>
+
+<div class="card">
 <h3>⭐ Best Wealth Day</h3>
 <h2 id="bestDay">₹0</h2>
+</div>
+
+<div class="card">
+<h3>📈 Monthly Growth</h3>
+<h2 id="monthlyGrowth">₹0</h2>
 </div>
 
 <div class="card">
@@ -310,123 +225,75 @@ placeholder="Current Freedom Fund">
 <h2 id="wealthDays">0 Days</h2>
 </div>
 
-<div class="card">
-<h3>📊 Average Daily Growth</h3>
-<h2 id="averageGrowth">₹0</h2>
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>💭 Daily Financial Thought</h3>
-
-<p id="financeThought"></p>
-
 </div>
 
 <!-- =========================
-     Milestones + Goals
+     6. Goals
 ========================= -->
 
-<div class="goal-section">
+<div class="goal-section fin-section">
 
     <div class="card">
-
         <h3>🏅 Freedom Fund Milestones</h3>
-
         <div id="milestones"></div>
-
     </div>
 
     <div class="card">
-
         <div class="card-title">
-
             <h3>🎯 Upcoming Goals</h3>
-
             <button id="addGoalBtn">＋</button>
-
         </div>
-
         <div id="goalList"></div>
-
     </div>
 
 </div>
 
 <!-- =========================
-     Calendar + Timeline
+     7. History
 ========================= -->
 
-<div class="bottom-grid">
+<div class="bottom-grid fin-section">
 
     <div class="card">
-
         <h3>📅 Wealth Calendar</h3>
-
         <div id="wealthCalendar"></div>
-
     </div>
 
     <div class="card">
-
         <h3>📜 Wealth Timeline</h3>
-
         <div id="timeline-list"></div>
-
     </div>
 
 </div>
 
 <!-- =========================
-     Daily Thought
+     8. Daily Thought
 ========================= -->
 
-<div class="card">
-
+<div class="card fin-section thought-card">
     <h3>💭 Daily Financial Thought</h3>
-
     <p id="financeThought"></p>
-
 </div>
+
 <!-- Goal Modal -->
 
 <div id="goalModal" class="modal hidden">
-
 <div class="modal-content">
-
 <h2>Add Goal</h2>
-
-<input
-type="text"
-id="goalNameInput"
-placeholder="Goal name">
-
-<input
-type="number"
-id="goalAmountInput"
-placeholder="Target amount">
-
+<input type="text" id="goalNameInput" placeholder="Goal name">
+<input type="number" id="goalAmountInput" placeholder="Target amount">
 <div class="modal-buttons">
-
 <button id="saveGoalBtn">Save</button>
-
 <button id="cancelGoalBtn">Cancel</button>
-
+</div>
+</div>
 </div>
 
-</div>
-
-</div>
 <!-- Celebration -->
 
 <div id="celebrationModal" class="celebration hidden">
-
 <h1>🎉 Congratulations!</h1>
-
 <p id="celebrationText"></p>
-
 </div>
 
 </main>
