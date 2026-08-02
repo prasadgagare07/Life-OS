@@ -1001,3 +1001,124 @@ display:block;
 display:block;
 margin:auto;
 }
+
+/* ===========================
+   Freedom Fund Hero
+=========================== */
+
+.finance-hero{
+padding:32px;
+border-radius:22px;
+}
+
+.hero-title{
+margin-bottom:24px;
+font-size:28px;
+font-weight:700;
+}
+
+.hero-layout{
+display:grid;
+grid-template-columns:1fr 320px 1fr;
+align-items:center;
+gap:40px;
+}
+
+.hero-left-info{
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.hero-left-info h1{
+font-size:48px;
+font-weight:700;
+color:#fff;
+}
+
+.hero-label{
+color:#9CA3AF;
+font-size:16px;
+}
+
+.hero-goal,
+.hero-date{
+padding:14px 18px;
+background:#1A1F29;
+border-radius:16px;
+}
+
+.hero-goal h3,
+.hero-date h3{
+margin-top:6px;
+font-size:22px;
+}
+
+.hero-center{
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.ring-wrapper{
+position:relative;
+width:220px;
+height:220px;
+}
+
+.ring-center{
+position:absolute;
+inset:0;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+.ring-center h1{
+font-size:42px;
+font-weight:700;
+}
+
+.hero-right-info{
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.hero-stat{
+background:#1A1F29;
+padding:16px 20px;
+border-radius:16px;
+}
+
+.hero-stat h3{
+font-size:26px;
+margin-bottom:4px;
+}
+
+.hero-stat span{
+color:#9CA3AF;
+font-size:14px;
+}
+
+.progress-track{
+margin-top:28px;
+height:10px;
+background:#202633;
+border-radius:999px;
+overflow:hidden;
+}
+
+.progress-fill{
+height:100%;
+background:#22C55E;
+width:0%;
+transition:width .8s;
+}
+
+#goalCaption{
+margin-top:14px;
+text-align:center;
+color:#9CA3AF;
+}
