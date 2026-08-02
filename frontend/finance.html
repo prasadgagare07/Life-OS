@@ -192,49 +192,6 @@
 </div>
 
 </div>
-    
-<!-- Wealth Overview -->
-
-<div class="grid grid-4">
-
-<div class="card">
-<h3>💰 Savings</h3>
-<div id="savingAmount">••••••</div>
-<button class="eye-btn" id="toggleSavings">👁</button>
-</div>
-
-<div class="card">
-<h3>🌱 Growth Fund</h3>
-<div id="growthAmount">••••••</div>
-<button class="eye-btn" id="toggleGrowth">👁</button>
-</div>
-
-<div class="card">
-<h3>🛡 Emergency Fund</h3>
-<div id="emergencyAmount">••••••</div>
-<button class="eye-btn" id="toggleEmergency">👁</button>
-</div>
-
-<div class="card highlight-card">
-
-<h3>💎 Net Worth</h3>
-
-<h2 id="wealthAmount">₹0</h2>
-
-<p>Savings + Growth + Emergency</p>
-
-<hr>
-
-<p id="wealthLevel">🌿 Beginner</p>
-
-<p id="healthMessage">
-❤️
-<span id="healthScore">0%</span>
-</p>
-
-</div>
-
-</div>
 
 <div class="grid analytics-grid">
 
@@ -331,48 +288,32 @@ placeholder="Current Freedom Fund">
 <!-- Statistics -->
 
 <div class="stats-grid">
-  
-<div class="card">
 
+<div class="card">
 <h3>📈 Monthly Growth</h3>
-
 <h2 id="monthlyGrowth">₹0</h2>
-
 </div>
 
 <div class="card">
-
 <h3>🏆 Highest Ever Net Worth</h3>
-
 <h2 id="highestWealth">₹0</h2>
-
-</div>
-
-<div class="card">
-
-<h3>⭐ Best Wealth Day</h3>
-
-<h2 id="bestDay">₹0</h2>
-
-</div>
-
-<div class="card">
-
-<h3>📅 Wealth Journey</h3>
-
-<h2 id="wealthDays">0 Days</h2>
-
-</div>
-
-<div class="card">
-
-<h3>📊 Average Daily Growth</h3>
-
-<h2 id="averageGrowth">₹0</h2>
-
-</div>
-
 <p id="bestDate">--</p>
+</div>
+
+<div class="card">
+<h3>⭐ Best Wealth Day</h3>
+<h2 id="bestDay">₹0</h2>
+</div>
+
+<div class="card">
+<h3>📅 Wealth Journey</h3>
+<h2 id="wealthDays">0 Days</h2>
+</div>
+
+<div class="card">
+<h3>📊 Average Daily Growth</h3>
+<h2 id="averageGrowth">₹0</h2>
+</div>
 
 </div>
 
@@ -384,49 +325,69 @@ placeholder="Current Freedom Fund">
 
 </div>
 
-<!-- Milestones -->
+<!-- =========================
+     Milestones + Goals
+========================= -->
 
-<div class="card">
+<div class="goal-section">
 
-<h3>🏅 Freedom Fund Milestones</h3>
+    <div class="card">
 
-<div id="milestones"></div>
+        <h3>🏅 Freedom Fund Milestones</h3>
 
-</div>
+        <div id="milestones"></div>
 
-<!-- Calendar -->
+    </div>
 
-<div class="card">
+    <div class="card">
 
-<h3>📅 Wealth Calendar</h3>
+        <div class="card-title">
 
-<div id="wealthCalendar"></div>
+            <h3>🎯 Upcoming Goals</h3>
 
-</div>
+            <button id="addGoalBtn">＋</button>
 
-<!-- Timeline -->
+        </div>
 
-<div class="card">
+        <div id="goalList"></div>
 
-<h3>📜 Wealth Timeline</h3>
-
-<div id="timeline-list"></div>
-
-</div>
-
-<!-- Goals -->
-
-<div class="card">
-
-<div class="card-title">
-
-<h3>🎯 Upcoming Goals</h3>
-
-<button id="addGoalBtn">＋</button>
+    </div>
 
 </div>
 
-<div id="goalList"></div>
+<!-- =========================
+     Calendar + Timeline
+========================= -->
+
+<div class="bottom-grid">
+
+    <div class="card">
+
+        <h3>📅 Wealth Calendar</h3>
+
+        <div id="wealthCalendar"></div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>📜 Wealth Timeline</h3>
+
+        <div id="timeline-list"></div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     Daily Thought
+========================= -->
+
+<div class="card">
+
+    <h3>💭 Daily Financial Thought</h3>
+
+    <p id="financeThought"></p>
 
 </div>
 <!-- Goal Modal -->
