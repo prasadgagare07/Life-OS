@@ -939,3 +939,65 @@ color:#3B82F6;
 #averageGrowth{
 color:#A855F7;
 }
+
+/* ===== Premium Layout ===== */
+
+.finance-hero{
+padding:36px;
+border-radius:24px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:40px;
+margin-bottom:30px;
+}
+
+.hero-right{
+flex:1;
+}
+
+.hero-right h1{
+font-size:56px;
+font-weight:800;
+margin:12px 0;
+}
+
+.hero-right p{
+opacity:.8;
+margin:8px 0;
+}
+
+.card{
+border-radius:22px;
+}
+
+.grid-4{
+margin-bottom:28px;
+}
+
+.grid-2{
+margin-bottom:28px;
+}
+
+.page-header{
+margin-bottom:28px;
+}
+
+.main-content{
+padding-bottom:80px;
+}
+
+canvas{
+max-width:100%;
+}
+
+#assetChart{
+max-width:280px;
+margin:auto;
+display:block;
+}
+
+#goalRing{
+display:block;
+margin:auto;
+}
