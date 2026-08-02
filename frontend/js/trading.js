@@ -8,8 +8,8 @@
 // needed here — it already prefers the API when available.
 
 const TARGET = 5000;
-const INITIAL_CAPITAL = 50000;
-const START_DATE_STR = '2026-06-15'; // fixed baseline — change to your real start date
+const INITIAL_CAPITAL = 7000;
+const START_DATE_STR = '2026-08-02'; // fixed baseline — change to your real start date
 const STORAGE_KEY = 'lifeos_trading_entries';
 
 function dstr(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
