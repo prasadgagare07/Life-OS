@@ -88,12 +88,10 @@ font-weight:600;
 }
 
 .hero-left{
-position:relative;
-width:180px;
-height:180px;
 display:flex;
 justify-content:center;
 align-items:center;
+min-width:260px;
 }
 
 #goalRing{
@@ -123,17 +121,17 @@ flex:1;
 }
 
 .hero-right h2{
-font-size:20px;
-font-weight:600;
-color:#CBD5E1;
+font-size:42px;
+font-weight:800;
 margin-bottom:8px;
 }
 
 .hero-right h1{
-font-size:42px;
+font-size:64px;
 font-weight:800;
-margin:8px 0 14px;
-color:#FFFFFF;
+line-height:1;
+margin:14px 0;
+color:#fff;
 }
 
 .hero-right p{
@@ -158,11 +156,36 @@ border-radius:999px;
 transition:width .4s ease;
 }
 
-.goal-grid{
+.goal-grid-large{
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(4,1fr);
 gap:18px;
-margin-top:20px;
+margin-top:24px;
+}
+
+.goal-grid-large > div{
+background:#111827;
+border:1px solid rgba(255,255,255,.05);
+border-radius:18px;
+padding:18px;
+text-align:center;
+transition:.25s;
+}
+
+.goal-grid-large > div:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(0,0,0,.35);
+}
+
+.goal-grid-large h3{
+font-size:28px;
+margin-bottom:8px;
+font-weight:700;
+}
+
+.goal-grid-large span{
+font-size:13px;
+opacity:.75;
 }
 
 .goal-grid div{
@@ -730,4 +753,29 @@ transition:.3s;
 .save-btn:hover{
 transform:translateY(-2px);
 background:#0ea76d;
+}
+.ring-wrapper{
+position:relative;
+width:220px;
+height:220px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.ring-center{
+position:absolute;
+text-align:center;
+}
+
+.ring-center h1{
+font-size:46px;
+font-weight:800;
+margin:0;
+}
+
+.ring-center p{
+margin-top:8px;
+opacity:.8;
+font-size:15px;
 }
