@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS — Trade Guardian</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/trading.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main-content">
+
+    <section class="tg-topbar fade-up">
+      <div class="tg-brand">🛡️ Trade Guardian</div>
+      <div class="tg-streak"><span class="flame">🔥</span> <span id="streak-num">0</span>-day log streak</div>
+    </section>
+
+    <section class="tg-hero-row fade-up fade-up-1">
+      <div class="tg-hero-stat capital"><div class="n" id="hero-capital">₹0</div><div class="l">Current capital</div></div>
+      <div class="tg-hero-stat profit"><div class="n" id="hero-profit">₹0</div><div class="l">Total profit</div></div>
+      <div class="tg-hero-stat days"><div class="n" id="hero-days">0</div><div class="l">Days tracked</div></div>
+    </section>
+
+    <section class="card tg-card fade-up fade-up-1">
+      <div class="tg-card-label">Capital growth</div>
+      <div class="tg-chart-legend">
+        <span><span class="ln" style="background:var(--tg-cyan-a)"></span>Your actual capital</span>
+        <span><span class="ln" style="background:var(--accent-2)"></span>Steady ₹5,000/day pace</span>
+      </div>
+      <div class="tg-chart-wrap"><svg id="chart-svg" viewBox="0 0 620 180" preserveAspectRatio="none"></svg></div>
+    </section>
+
+    <section class="card tg-card fade-up fade-up-2">
+      <div class="tg-card-label">Add today's result</div>
+      <div class="tg-entry-row">
+        <div class="tg-entry-date" id="today-date">—</div>
+        <input class="tg-entry-input" id="entry-amount" type="number" placeholder="e.g. 5000 or -1200">
+        <button class="tg-entry-btn" id="entry-btn">Add</button>
+      </div>
+      <div class="tg-entry-hint">One entry per day — your net result after you're done trading. No live tracking needed.</div>
+    </section>
+
+    <section class="card tg-card fade-up fade-up-2">
+      <div class="tg-card-label">Consistency index</div>
+      <div class="tg-ci-row">
+        <div class="tg-ci-gauge">
+          <svg viewBox="0 0 100 100">
+            <circle class="tg-ci-track" cx="50" cy="50" r="42"/>
+            <circle class="tg-ci-fill" id="ci-fill" cx="50" cy="50" r="42"/>
+          </svg>
+          <div class="tg-ci-center"><div class="num" id="ci-num">—</div><div class="lbl">/ 100</div></div>
+        </div>
+        <div class="tg-ci-msg" id="ci-msg">Add a few days of results to see your consistency score.</div>
+      </div>
+    </section>
+
+    <section class="card tg-card fade-up fade-up-2">
+      <div class="tg-card-label">Previous months</div>
+      <div class="tg-month-list" id="month-list"></div>
+    </section>
+
+    <section class="card tg-card tg-savings-card fade-up fade-up-3">
+      <div class="tg-card-label">💎 Growth Savings</div>
+      <div class="tg-savings-amount" id="savings-amount">₹0</div>
+      <div class="tg-small-sub">Whatever you earn above ₹5,000 on any day sweeps here automatically — it only ever grows, even on days you give some back.</div>
+      <div class="tg-savings-stats">
+        <div><div class="n" id="sw-month">₹0</div><div class="l">This month</div></div>
+        <div><div class="n" id="sw-total">₹0</div><div class="l">All-time</div></div>
+      </div>
+    </section>
+
+    <section class="card tg-card tg-proj-card fade-up fade-up-3">
+      <div class="tg-card-label">The habit math</div>
+      <div class="tg-proj-compare">
+        <div class="tg-proj-box steady"><div class="num">₹1,50,000</div><div class="l">If you hit exactly ₹5,000<br>every single day for 30 days</div></div>
+        <div class="tg-proj-box actual"><div class="num" id="actual-pace">₹0</div><div class="l">Projected at <strong>your</strong><br>actual average pace</div></div>
+      </div>
+      <div class="tg-proj-note">You don't need bigger wins. You need the <strong>same win, every day</strong>. One steady habit compounds faster than any single "big day" ever will.</div>
+    </section>
+
+    <section class="card tg-card fade-up fade-up-3">
+      <div class="tg-card-label">This month — day by day</div>
+      <div class="tg-cal-grid" id="cal-grid"></div>
+      <div class="tg-cal-legend">
+        <span><span class="dot" style="background:linear-gradient(135deg,#FFD97A,#FFB13E)"></span>Hit ₹5k target</span>
+        <span><span class="dot" style="background:linear-gradient(135deg,#8FE06A,#38D97A);opacity:.75"></span>Positive, under target</span>
+        <span><span class="dot" style="background:rgba(255,107,107,.4)"></span>Loss day</span>
+        <span><span class="dot" style="background:var(--surface-raised);border:1px solid var(--border)"></span>Not yet</span>
+      </div>
+    </section>
+
+    <section class="card tg-card fade-up fade-up-3">
+      <div class="tg-card-label">Badges</div>
+      <div class="tg-badges" id="badges">
+        <div class="tg-badge" id="badge-7"><div class="icon">🔥</div><div class="name">7-Day Streak</div></div>
+        <div class="tg-badge" id="badge-pace"><div class="icon">📈</div><div class="name">On Pace</div></div>
+        <div class="tg-badge" id="badge-steady"><div class="icon">🐢</div><div class="name">Steady Hands</div></div>
+        <div class="tg-badge" id="badge-comeback"><div class="icon">🔁</div><div class="name">Calm Comeback</div></div>
+        <div class="tg-badge" id="badge-savings"><div class="icon">💎</div><div class="name">Savings Builder</div></div>
+        <div class="tg-badge"><div class="icon">👑</div><div class="name">30-Day Legend</div></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="tg-toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/trading.js"></script>
+</body>
+  </html>
