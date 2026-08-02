@@ -25,6 +25,78 @@ let calendarExpanded=false;
 let timelineExpanded=false;
 let lastTimelineEntries=[];
 
+const FINANCE_LOCK_KEY="financeLastSavedDate";
+
+function getLocalDateKey(){
+
+const d=new Date();
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+function isFinanceLockedToday(){
+
+return localStorage.getItem(FINANCE_LOCK_KEY)===getLocalDateKey();
+
+}
+
+function lockFinanceForm(){
+
+const form=document.getElementById("finance-form");
+
+const msg=document.getElementById("financeLockMessage");
+
+if(!form) return;
+
+form.querySelectorAll("input").forEach(input=>{
+
+input.disabled=true;
+
+});
+
+const btn=form.querySelector(".save-btn");
+
+if(btn) btn.disabled=true;
+
+if(msg) msg.classList.remove("hidden");
+
+}
+
+function unlockFinanceForm(){
+
+const form=document.getElementById("finance-form");
+
+const msg=document.getElementById("financeLockMessage");
+
+if(!form) return;
+
+form.querySelectorAll("input").forEach(input=>{
+
+input.disabled=false;
+
+});
+
+const btn=form.querySelector(".save-btn");
+
+if(btn) btn.disabled=false;
+
+if(msg) msg.classList.add("hidden");
+
+}
+
+setInterval(()=>{
+
+if(!isFinanceLockedToday()){
+
+unlockFinanceForm();
+
+}
+
+},60000);
+
 let hideGrowth=
 JSON.parse(localStorage.getItem("hideGrowth")) ?? true;
 
@@ -240,6 +312,12 @@ document.getElementById("market_funds").value=snapshot.market_funds;
 document.getElementById("emergency_fund").value=snapshot.emergency_fund;
 
 document.getElementById("goal_amount").value=snapshot.goal_amount;
+
+if(isFinanceLockedToday()){
+
+lockFinanceForm();
+
+}
 
 renderSummary(snapshot);
 
@@ -1200,6 +1278,10 @@ renderTimeline(timeline);
 renderWealthCalendar(timeline);
 
 renderStatistics(stats);
+
+localStorage.setItem(FINANCE_LOCK_KEY,getLocalDateKey());
+
+lockFinanceForm();
 
 showToast("Finance updated successfully","success");
 
