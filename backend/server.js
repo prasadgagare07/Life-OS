@@ -1,11 +1,19 @@
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const app = require('./app');
 const config = require('./config/config');
 const pool = require('./config/db');
 
 async function start() {
+  if (!config.jwtSecret) {
+    console.error(
+      '❌ JWT_SECRET is not set. Set it as an environment variable before starting the server.'
+    );
+    process.exit(1);
+  }
+
   try {
     const schema = fs.readFileSync(
       path.join(__dirname, 'database', 'schema.sql'),
@@ -25,6 +33,33 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
     );
 
     await pool.query(dailyEntriesMigration);
+
+    const authMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '002_auth_settings.sql'),
+      'utf8'
+    );
+
+    await pool.query(authMigration);
+
+    const { rows: existingAuth } = await pool.query(
+      `SELECT id FROM auth_settings LIMIT 1`
+    );
+
+    if (existingAuth.length === 0) {
+      const seedHash = process.env.PASSCODE_HASH || (await bcrypt.hash('123456', 10));
+
+      await pool.query(
+        `INSERT INTO auth_settings (passcode_hash) VALUES ($1)`,
+        [seedHash]
+      );
+
+      if (!process.env.PASSCODE_HASH) {
+        console.warn(
+          '⚠️  No PASSCODE_HASH was set — seeded with the default passcode "123456".\n' +
+          '   Log in and change it immediately from Settings → Change Passcode.'
+        );
+      }
+    }
 
     const visionSeed = fs.readFileSync(
       path.join(__dirname, 'database', 'seed_vision.sql'),
