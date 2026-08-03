@@ -25,18 +25,29 @@
 
     <div class="card fade-up fade-up-1">
       <div class="settings-list">
-        <div class="settings-row">
+
+        <div class="settings-row settings-row-column">
           <div>
-            <h3>Passcode</h3>
-            <p>Change it by regenerating the hash — see README for the command.</p>
+            <h3>Change Passcode</h3>
+            <p>Update the passcode used to unlock LifeOS on this device.</p>
           </div>
+
+          <form id="passcode-form" class="passcode-form">
+            <input type="password" id="current-passcode" inputmode="numeric" placeholder="Current passcode" required>
+            <input type="password" id="new-passcode" inputmode="numeric" placeholder="New passcode (min 6 characters)" required>
+            <input type="password" id="confirm-passcode" inputmode="numeric" placeholder="Confirm new passcode" required>
+            <div class="passcode-message" id="passcode-message"></div>
+            <button type="submit" class="btn-secondary">Update Passcode</button>
+          </form>
         </div>
+
         <div class="settings-row">
           <div>
             <h3>Version</h3>
             <p>LifeOS v1.0 — Core app</p>
           </div>
         </div>
+
         <div class="settings-row">
           <div>
             <h3>Log out</h3>
@@ -44,6 +55,7 @@
           </div>
           <button class="btn-secondary" id="logout-btn">Log out</button>
         </div>
+
       </div>
     </div>
   </main>
