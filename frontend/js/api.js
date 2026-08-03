@@ -15,7 +15,11 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  if (res.status === 401) {
+  // A 401 from the login endpoint itself means "wrong passcode" — that should
+  // show as an error message, not trigger a logout-redirect (there's no
+  // session to log out of yet). Only auto-redirect on 401s from *other*
+  // endpoints, which mean an existing token expired or was invalidated.
+  if (res.status === 401 && path !== '/auth/login') {
     localStorage.removeItem('lifeos_token');
     window.location.href = '/index.html';
     return;
