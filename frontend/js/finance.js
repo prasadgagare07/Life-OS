@@ -688,7 +688,7 @@ const data=entries.slice().reverse();
 
 const cards=data.map((item,index)=>{
 
-let icon="⚪";
+let status="neutral";
 
 if(index>0){
 
@@ -698,43 +698,41 @@ const current=Number(item.total_wealth);
 
 if(current>previous){
 
-icon="🟢";
+status="up";
 
 }else if(current<previous){
 
-icon="🔴";
+status="down";
 
 }
 
 }
+
+const dateObj=new Date(item.recorded_on);
+
+const isToday=dateObj.toDateString()===new Date().toDateString();
+
+const fullDate=dateObj.toLocaleDateString("en-IN",{
+
+day:"numeric",
+
+month:"long",
+
+year:"numeric"
+
+});
 
 return `
 
-<div class="calendar-day ${
-new Date(item.recorded_on).toDateString()===new Date().toDateString()
-?"today":""
-}">
+<div
 
-<div class="calendar-icon">
+class="calendar-day ${status} ${isToday?"today":""}"
 
-${icon}
+title="${fullDate}: ${formatINR(item.total_wealth)}"
 
-</div>
+>
 
-<div class="calendar-date">
-
-${new Date(item.recorded_on).toLocaleDateString("en-IN",{
-day:"numeric",
-month:"short"
-})}
-
-</div>
-
-<div class="calendar-value">
-
-${formatINR(item.total_wealth)}
-
-</div>
+${dateObj.getDate()}
 
 </div>
 
