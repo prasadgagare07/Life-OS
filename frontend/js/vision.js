@@ -22,6 +22,60 @@ const SECTIONS = [
 
 let visions = BASE.slice();
 
+// ---------- Streak (maintained by finance growth) ----------
+function ymd(d){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function todayKey(){ return ymd(new Date()); }
+
+const FINANCE_LOG_KEY = 'lifeos_vision_finance_log';
+function getFinanceLog(){
+  try { return JSON.parse(localStorage.getItem(FINANCE_LOG_KEY)) || []; }
+  catch { return []; }
+}
+function saveFinanceLog(log){ localStorage.setItem(FINANCE_LOG_KEY, JSON.stringify(log)); }
+
+function computeStreak(){
+  const log = new Set(getFinanceLog());
+  let streak = 0;
+  let d = new Date();
+  if (!log.has(todayKey())) d.setDate(d.getDate() - 1);
+  while (true) {
+    const key = ymd(d);
+    if (log.has(key)) { streak++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return streak;
+}
+
+function renderStreak(){
+  const el = document.getElementById('streakNum');
+  if (el) el.textContent = computeStreak();
+}
+
+function showToast(message, type=''){
+  const existing = document.querySelector('.v-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = `v-toast ${type}`.trim();
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2200);
+}
+
+// Tapping a "growth" vision (Invest, SIP) logs today and keeps the streak alive
+function logFinanceGrowth(){
+  const log = getFinanceLog();
+  const key = todayKey();
+  const alreadyLoggedToday = log.includes(key);
+  if (!alreadyLoggedToday) {
+    log.push(key);
+    saveFinanceLog(log);
+  }
+  renderStreak();
+  return !alreadyLoggedToday;
+}
+
 // ---------- Celebration engine ----------
 const PARTICLE_SETS = {
   shield:['✅','✨','🛡️'], growth:['💰','💵','📈','✨'], knowledge:['📖','✨','💡'],
@@ -111,11 +165,17 @@ function render(){
           background:radial-gradient(circle at 40% 30%, ${v.color}, ${v.color}66 70%);
           box-shadow:0 0 16px ${v.color}aa;
           animation-delay:${(Math.random()*2).toFixed(2)}s;
-        ">${v.icon}</div>
+        ">${v.icon}${v.category==='growth' ? '<span class="streak-flame">🔥</span>' : ''}</div>
         <div class="diya-bowl"></div>
         <div class="item-label">${v.label}</div>
       `;
-      node.addEventListener('click', ()=>showCelebration(v));
+      node.addEventListener('click', ()=>{
+        showCelebration(v);
+        if (v.category === 'growth') {
+          const isNewDay = logFinanceGrowth();
+          if (isNewDay) showToast('🔥 Streak extended by finance growth!', 'success');
+        }
+      });
       row.appendChild(node);
     });
 
@@ -125,6 +185,7 @@ function render(){
 }
 
 render();
+renderStreak();
 
 // ---------- Add Vision ----------
 document.getElementById('addBtn').addEventListener('click', ()=>{
