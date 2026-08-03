@@ -103,3 +103,65 @@
   background:var(--surface-raised);border:1px solid var(--border);padding:.7rem 1.2rem;border-radius:999px;
   font-size:.85rem;opacity:0;transition:.35s;pointer-events:none;z-index:20;text-align:center;max-width:88vw;}
 .tg-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===========================
+   MOBILE — narrow phones
+   The trade-entry row (date + input + button all in
+   one line) is the main thing that breaks on small
+   screens — stack it. A few other rows get extra
+   breathing room too.
+=========================== */
+
+@media (max-width: 480px) {
+
+  .tg-topbar {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .tg-hero-row {
+    flex-wrap: wrap;
+  }
+
+  .tg-hero-stat {
+    min-width: 45%;
+  }
+
+  .tg-entry-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tg-entry-date {
+    justify-content: center;
+  }
+
+  .tg-ci-row {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .tg-ci-gauge {
+    margin: 0 auto;
+  }
+
+  .tg-month-row {
+    flex-wrap: wrap;
+  }
+
+  .tg-month-name {
+    width: auto;
+  }
+
+  .tg-month-amt {
+    width: auto;
+  }
+
+  .tg-proj-compare {
+    flex-direction: column;
+  }
+
+  .tg-cal-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
