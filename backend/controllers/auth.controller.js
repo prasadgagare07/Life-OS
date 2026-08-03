@@ -6,13 +6,38 @@ const config = require('../config/config');
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
 
-// In-memory brute-force tracker, keyed by IP.
+// In-memory brute-force tracker, keyed by "purpose:ip".
 // Resets on server restart — fine for a single-user personal app.
 const attempts = new Map();
 
 function getClientIp(req) {
   const forwarded = req.headers['x-forwarded-for'];
   return (forwarded ? forwarded.split(',')[0].trim() : null) || req.socket.remoteAddress;
+}
+
+function checkLockout(key) {
+  const record = attempts.get(key);
+  if (record && record.lockedUntil && record.lockedUntil > Date.now()) {
+    const minutesLeft = Math.ceil((record.lockedUntil - Date.now()) / 60000);
+    return `Too many attempts. Try again in ${minutesLeft} minute(s).`;
+  }
+  return null;
+}
+
+function recordFailure(key) {
+  const current = attempts.get(key) || { count: 0 };
+  current.count += 1;
+
+  if (current.count >= MAX_ATTEMPTS) {
+    current.lockedUntil = Date.now() + LOCKOUT_MS;
+    current.count = 0;
+  }
+
+  attempts.set(key, current);
+}
+
+function clearAttempts(key) {
+  attempts.delete(key);
 }
 
 async function getPasscodeHash() {
@@ -24,15 +49,11 @@ async function getPasscodeHash() {
 
 async function login(req, res) {
   const { passcode } = req.body;
-  const ip = getClientIp(req);
+  const key = `login:${getClientIp(req)}`;
 
-  const record = attempts.get(ip);
-
-  if (record && record.lockedUntil && record.lockedUntil > Date.now()) {
-    const minutesLeft = Math.ceil((record.lockedUntil - Date.now()) / 60000);
-    return res.status(429).json({
-      error: `Too many attempts. Try again in ${minutesLeft} minute(s).`,
-    });
+  const lockoutMessage = checkLockout(key);
+  if (lockoutMessage) {
+    return res.status(429).json({ error: lockoutMessage });
   }
 
   if (!passcode) {
@@ -43,19 +64,11 @@ async function login(req, res) {
   const valid = hash ? await bcrypt.compare(passcode, hash) : false;
 
   if (!valid) {
-    const current = attempts.get(ip) || { count: 0 };
-    current.count += 1;
-
-    if (current.count >= MAX_ATTEMPTS) {
-      current.lockedUntil = Date.now() + LOCKOUT_MS;
-      current.count = 0;
-    }
-
-    attempts.set(ip, current);
+    recordFailure(key);
     return res.status(401).json({ error: 'Incorrect passcode' });
   }
 
-  attempts.delete(ip);
+  clearAttempts(key);
 
   const token = jwt.sign(
     { authorized: true },
@@ -68,6 +81,12 @@ async function login(req, res) {
 
 async function changePasscode(req, res) {
   const { currentPasscode, newPasscode } = req.body;
+  const key = `change:${getClientIp(req)}`;
+
+  const lockoutMessage = checkLockout(key);
+  if (lockoutMessage) {
+    return res.status(429).json({ error: lockoutMessage });
+  }
 
   if (!currentPasscode || !newPasscode) {
     return res.status(400).json({ error: 'Current and new passcode are required' });
@@ -81,8 +100,11 @@ async function changePasscode(req, res) {
   const valid = hash ? await bcrypt.compare(currentPasscode, hash) : false;
 
   if (!valid) {
+    recordFailure(key);
     return res.status(401).json({ error: 'Current passcode is incorrect' });
   }
+
+  clearAttempts(key);
 
   const newHash = await bcrypt.hash(newPasscode, 10);
 
