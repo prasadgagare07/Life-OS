@@ -15,23 +15,24 @@
 }
 
 .main-content{
-    padding:32px;
+    max-width:1140px;
+    margin:0 auto;
+    padding:28px;
     padding-bottom:80px;
 }
 
 .page-header{
-    margin-bottom:28px;
+    margin-bottom:20px;
 }
 
 /* ==========================================================
    UNIFORM SECTION SPACING
-   Every one of the 8 sections gets the exact same 28px gap
-   below it. This replaces the old mix of margin:28px/30px/34px
-   that different sections were getting.
+   Every one of the 8 sections gets the exact same 20px gap
+   below it, matching the 20px grid gap used everywhere else.
 ========================================================== */
 
 .fin-section{
-    margin-bottom:28px;
+    margin-bottom:20px;
 }
 
 .fin-section:last-of-type{
@@ -57,7 +58,7 @@
 .card{
     background:var(--card);
     border:1px solid var(--border);
-    border-radius:22px;
+    border-radius:18px;
     padding:24px;
     transition:.25s;
     box-shadow:0 10px 30px rgba(0,0,0,.25);
@@ -83,9 +84,9 @@
 
 .finance-hero{
 
-    padding:36px;
+    padding:24px 28px;
 
-    border-radius:28px;
+    border-radius:18px;
 
     background:linear-gradient(145deg,#101826,#182437);
 
@@ -93,11 +94,11 @@
 
 .hero-title{
 
-    font-size:30px;
+    font-size:16px;
 
     font-weight:700;
 
-    margin-bottom:30px;
+    margin-bottom:12px;
 
 }
 
@@ -105,9 +106,9 @@
 
     display:grid;
 
-    grid-template-columns:1fr 1fr 1fr;
+    grid-template-columns:35fr 25fr 40fr;
 
-    gap:40px;
+    gap:20px;
 
     align-items:center;
 
@@ -127,7 +128,7 @@
 
 .hero-left-info h1{
 
-    font-size:64px;
+    font-size:34px;
 
     font-weight:800;
 
@@ -137,13 +138,13 @@
 
 .hero-label{
 
-    font-size:16px;
+    font-size:13px;
 
     color:var(--muted);
 
-    margin-top:6px;
+    margin-top:4px;
 
-    margin-bottom:20px;
+    margin-bottom:8px;
 
 }
 
@@ -177,11 +178,11 @@
 
 }
 
-.hero-date h3{
+.hero-date-only{
 
-    margin-top:6px;
+    font-size:12px;
 
-    font-size:20px;
+    color:var(--muted);
 
 }
 
@@ -201,17 +202,17 @@
 
     position:relative;
 
-    width:280px;
+    width:100px;
 
-    height:280px;
+    height:100px;
 
 }
 
 #goalRing{
 
-    width:280px;
+    width:100px;
 
-    height:280px;
+    height:100px;
 
 }
 
@@ -233,7 +234,7 @@
 
 .ring-center h1{
 
-    font-size:60px;
+    font-size:22px;
 
     font-weight:800;
 
@@ -242,6 +243,8 @@
 .ring-center p{
 
     color:var(--muted);
+
+    font-size:9px;
 
 }
 
@@ -253,7 +256,7 @@
 
     grid-template-columns:1fr 1fr;
 
-    gap:18px;
+    gap:10px;
 
 }
 
@@ -261,17 +264,17 @@
 
     background:#1A2434;
 
-    border-radius:18px;
+    border-radius:12px;
 
-    padding:20px;
+    padding:10px 12px;
 
 }
 
 .hero-stat h3{
 
-    font-size:28px;
+    font-size:18px;
 
-    margin-bottom:8px;
+    margin-bottom:2px;
 
 }
 
@@ -279,15 +282,15 @@
 
     color:var(--muted);
 
-    font-size:14px;
+    font-size:10px;
 
 }
 
 .progress-track{
 
-    margin-top:28px;
+    margin-top:12px;
 
-    height:10px;
+    height:6px;
 
     border-radius:999px;
 
@@ -309,11 +312,13 @@
 
 #goalCaption{
 
-    margin-top:12px;
+    margin-top:6px;
 
     text-align:center;
 
     color:var(--muted);
+
+    font-size:11px;
 
 }
 
@@ -327,19 +332,29 @@
 
     grid-template-columns:repeat(4,1fr);
 
-    gap:22px;
+    gap:20px;
 
 }
 
 .grid-4 .card{
 
-    min-height:170px;
+    height:150px;
+
+    padding:24px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
 
 }
 
 .grid-4 h3{
 
-    font-size:18px;
+    font-size:15px;
 
 }
 
@@ -351,29 +366,31 @@
 
 #wealthAmount{
 
-    font-size:34px;
+    font-size:26px;
 
     font-weight:800;
 
-    margin:20px 0;
+    margin:8px 0;
 
 }
 
 .eye-btn{
 
-    margin-top:10px;
+    margin-top:0;
 
-    padding:10px 18px;
+    padding:8px 14px;
 
     border:none;
 
-    border-radius:12px;
+    border-radius:10px;
 
     background:var(--green);
 
     color:white;
 
     cursor:pointer;
+
+    font-size:12px;
 
 }
 
@@ -393,7 +410,7 @@
 
     grid-template-columns:repeat(2,1fr);
 
-    gap:22px;
+    gap:16px;
 
 }
 
@@ -401,7 +418,9 @@
 
     display:block;
 
-    margin-bottom:8px;
+    margin-bottom:6px;
+
+    font-size:13px;
 
     color:var(--muted);
 
@@ -411,11 +430,11 @@
 
     width:100%;
 
-    height:54px;
+    height:44px;
 
-    padding:0 18px;
+    padding:0 16px;
 
-    border-radius:14px;
+    border-radius:12px;
 
     background:#0F172A;
 
@@ -429,19 +448,19 @@
 
     width:100%;
 
-    height:58px;
+    height:48px;
 
-    margin-top:24px;
+    margin-top:16px;
 
     border:none;
 
-    border-radius:16px;
+    border-radius:12px;
 
     background:var(--green);
 
     color:white;
 
-    font-size:18px;
+    font-size:15px;
 
     font-weight:700;
 
@@ -509,9 +528,9 @@
 
     display:grid;
 
-    grid-template-columns:1fr 1fr 1.4fr;
+    grid-template-columns:25fr 25fr 50fr;
 
-    gap:22px;
+    gap:20px;
 
 }
 
@@ -563,7 +582,7 @@ display:grid;
 
 grid-template-columns:repeat(5,1fr);
 
-gap:22px;
+gap:20px;
 
 }
 
@@ -571,9 +590,11 @@ gap:22px;
 
 text-align:center;
 
-padding:24px;
+padding:20px;
 
-min-height:155px;
+min-height:130px;
+
+border-radius:18px;
 
 display:flex;
 
@@ -585,17 +606,17 @@ justify-content:center;
 
 .stats-grid h3{
 
-font-size:15px;
+font-size:13px;
 
 color:var(--muted);
 
-margin-bottom:12px;
+margin-bottom:10px;
 
 }
 
 .stats-grid h2{
 
-font-size:30px;
+font-size:24px;
 
 font-weight:800;
 
@@ -631,7 +652,7 @@ display:grid;
 
 grid-template-columns:1fr 1fr;
 
-gap:22px;
+gap:20px;
 
 }
 
@@ -755,9 +776,9 @@ background:linear-gradient(90deg,#10B981,#34D399);
 
 display:grid;
 
-grid-template-columns:1fr 1fr;
+grid-template-columns:55fr 45fr;
 
-gap:22px;
+gap:20px;
 
 }
 
@@ -1005,6 +1026,7 @@ font-weight:700;
 
 cursor:pointer;
 
+}
 }
 
 #saveGoalBtn{
@@ -1389,13 +1411,67 @@ height:46px;
 
 .analytics-grid{
 
-grid-template-columns:1fr;
+grid-template-columns:1fr 1fr;
+
+gap:10px;
+
+}
+
+.analytics-grid .card:nth-child(3){
+
+grid-column:1 / -1;
 
 }
 
 .analytics-grid .card{
 
 min-height:auto;
+
+padding:14px;
+
+}
+
+#assetChart{
+
+max-width:130px;
+
+}
+
+.asset-legend{
+
+margin-top:12px;
+
+gap:6px;
+
+}
+
+.legend-item{
+
+font-size:11px;
+
+gap:6px;
+
+}
+
+.legend-dot{
+
+width:9px;
+
+height:9px;
+
+}
+
+.breakdown-row{
+
+padding:6px 0;
+
+font-size:12px;
+
+}
+
+.breakdown-row.total b{
+
+font-size:14px;
 
 }
 
@@ -1442,6 +1518,58 @@ grid-template-columns:1fr;
 #wealthCalendar{
 
 grid-template-columns:repeat(4,1fr);
+
+gap:6px;
+
+}
+
+.calendar-day{
+
+padding:8px;
+
+min-height:auto;
+
+}
+
+.calendar-icon{
+
+font-size:16px;
+
+margin-bottom:4px;
+
+}
+
+.calendar-date{
+
+font-size:10px;
+
+margin-bottom:2px;
+
+}
+
+.calendar-value{
+
+font-size:10px;
+
+}
+
+#timeline-list{
+
+gap:10px;
+
+margin-top:12px;
+
+}
+
+.timeline-date{
+
+font-size:11px;
+
+}
+
+.numeric{
+
+font-size:12px;
 
 }
 
@@ -1678,7 +1806,7 @@ linear-gradient(
 
 .analytics-grid .card{
 
-min-height:360px;
+min-height:260px;
 
 }
 
@@ -1688,7 +1816,7 @@ display:block;
 
 margin:auto;
 
-max-width:280px;
+max-width:170px;
 
 }
 
@@ -1873,7 +2001,7 @@ transition:width .8s ease;
 
 #financeThought{
 
-font-size:18px;
+font-size:16px;
 
 max-width:900px;
 
