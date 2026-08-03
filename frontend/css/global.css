@@ -48,6 +48,9 @@ html, body {
   color: var(--text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -82,6 +85,7 @@ button {
   border: none;
   border-radius: var(--radius-sm);
   font-weight: 600;
+  min-height: 44px;
 }
 
 .btn-primary {
@@ -89,6 +93,7 @@ button {
   color: #1A1200;
   padding: 0.75em 1.4em;
   font-size: 0.95rem;
+  min-height: 48px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255, 138, 76, 0.25); }
@@ -100,6 +105,7 @@ button {
   border: 1px solid var(--border);
   padding: 0.7em 1.3em;
   font-size: 0.9rem;
+  min-height: 48px;
 }
 .btn-secondary:hover { border-color: var(--accent-1); }
 .btn-secondary:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
@@ -111,27 +117,41 @@ input[type="text"], input[type="password"], input[type="number"], input[type="da
   border-radius: var(--radius-sm);
   padding: 0.7em 0.9em;
   font-size: 0.95rem;
+  min-height: 44px;
+  width: 100%;
+  max-width: 100%;
 }
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--accent-1);
 }
 
+img, canvas, svg {
+  max-width: 100%;
+  height: auto;
+}
+
 .app-shell {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
 }
 
 .main-content {
   flex: 1;
   padding: 2.5rem 3rem;
   max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-bottom: 2rem;
 }
 
@@ -146,15 +166,59 @@ input:focus, textarea:focus, select:focus {
 .grid {
   display: grid;
   gap: 1.25rem;
+  width: 100%;
 }
 
 .grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 
+/* ============================================
+   RESPONSIVE — tablet
+   ============================================ */
 @media (max-width: 900px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
   .app-shell { flex-direction: column; }
-  .main-content { padding: 1.5rem; }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+
+  .main-content {
+    padding: 16px;
+    padding-top: 76px; /* room for the fixed hamburger button */
+    max-width: 100%;
+  }
+
+  .grid, .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 18px; }
+
+  .card, .card-title h3 { font-size: 16px; }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   RESPONSIVE — small phones (320–480px)
+   ============================================ */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 12px;
+    padding-top: 72px;
+  }
+
+  h1 { font-size: 22px; }
+  h2 { font-size: 19px; }
+  h3 { font-size: 17px; }
+
+  p, body, input, select, textarea, button {
+    font-size: 15px;
+  }
 }
 
 .visually-hidden {
