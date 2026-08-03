@@ -1191,13 +1191,17 @@ grid-template-columns:1fr;
 
 .main-content{
 
-padding:18px;
+padding:16px;
+
+padding-top:76px;
 
 }
 
 .finance-hero{
 
-padding:22px;
+padding:18px;
+
+border-radius:20px;
 
 }
 
@@ -1205,59 +1209,181 @@ padding:22px;
 
 text-align:center;
 
-font-size:24px;
+font-size:19px;
+
+margin-bottom:14px;
 
 }
 
 .hero-layout{
 
-gap:30px;
+gap:16px;
+
+}
+
+.hero-left-info{
+
+align-items:center;
+
+text-align:center;
 
 }
 
 .hero-left-info h1{
 
-font-size:48px;
+font-size:34px;
+
+}
+
+.hero-label{
+
+font-size:13px;
+
+margin-bottom:6px;
+
+}
+
+.hero-date-only{
+
+font-size:13px;
 
 }
 
 .ring-wrapper{
 
-width:220px;
+width:150px;
 
-height:220px;
+height:150px;
+
+margin:0 auto;
 
 }
 
 #goalRing{
 
-width:220px;
+width:150px;
 
-height:220px;
+height:150px;
 
 }
 
 .ring-center h1{
 
-font-size:46px;
+font-size:28px;
+
+}
+
+.ring-center p{
+
+font-size:11px;
 
 }
 
 .hero-right-info{
 
-grid-template-columns:1fr;
+grid-template-columns:repeat(2,1fr);
+
+gap:10px;
+
+}
+
+.hero-stat{
+
+padding:12px;
+
+}
+
+.hero-stat h3{
+
+font-size:16px;
+
+margin-bottom:2px;
+
+}
+
+.hero-stat span{
+
+font-size:10px;
+
+}
+
+.progress-track{
+
+margin-top:18px;
+
+}
+
+.card{
+
+padding:16px;
+
+border-radius:16px;
+
+}
+
+.card h3{
+
+font-size:15px;
+
+margin-bottom:10px;
 
 }
 
 .grid-4{
 
-grid-template-columns:1fr;
+grid-template-columns:1fr 1fr;
+
+gap:10px;
+
+}
+
+.grid-4 .card{
+
+min-height:auto;
+
+padding:14px;
+
+}
+
+.grid-4 h3{
+
+font-size:14px;
+
+}
+
+#savingAmount,
+
+#growthAmount,
+
+#emergencyAmount,
+
+#wealthAmount{
+
+font-size:20px;
+
+margin:10px 0;
+
+}
+
+.eye-btn{
+
+padding:8px 14px;
+
+font-size:13px;
 
 }
 
 .finance-grid{
 
 grid-template-columns:1fr;
+
+gap:12px;
+
+}
+
+.finance-grid input{
+
+height:46px;
 
 }
 
@@ -1267,7 +1393,47 @@ grid-template-columns:1fr;
 
 }
 
+.analytics-grid .card{
+
+min-height:auto;
+
+}
+
 .stats-grid{
+
+grid-template-columns:1fr 1fr;
+
+gap:10px;
+
+}
+
+.stats-grid .card{
+
+min-height:auto;
+
+padding:14px;
+
+}
+
+.stats-grid h2{
+
+font-size:19px;
+
+}
+
+.stats-grid h3{
+
+font-size:12px;
+
+}
+
+.goal-section{
+
+grid-template-columns:1fr;
+
+}
+
+.bottom-grid{
 
 grid-template-columns:1fr;
 
@@ -1281,9 +1447,97 @@ grid-template-columns:repeat(4,1fr);
 
 .timeline-row{
 
-grid-template-columns:70px 1fr 80px;
+grid-template-columns:60px 1fr 70px;
 
-gap:10px;
+gap:8px;
+
+}
+
+}
+
+/* ==========================================================
+   SMALL PHONES
+========================================================== */
+
+@media(max-width:480px){
+
+.main-content{
+
+padding:12px;
+
+padding-top:72px;
+
+}
+
+.finance-hero{
+
+padding:16px;
+
+}
+
+.hero-left-info h1{
+
+font-size:28px;
+
+}
+
+.ring-wrapper{
+
+width:130px;
+
+height:130px;
+
+}
+
+#goalRing{
+
+width:130px;
+
+height:130px;
+
+}
+
+.ring-center h1{
+
+font-size:24px;
+
+}
+
+.grid-4{
+
+grid-template-columns:1fr 1fr;
+
+gap:8px;
+
+}
+
+#savingAmount,
+
+#growthAmount,
+
+#emergencyAmount,
+
+#wealthAmount{
+
+font-size:18px;
+
+}
+
+.stats-grid{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+.stats-grid h2{
+
+font-size:17px;
+
+}
+
+#wealthCalendar{
+
+grid-template-columns:repeat(3,1fr);
 
 }
 
@@ -1624,6 +1878,36 @@ font-size:18px;
 max-width:900px;
 
 margin:auto;
+
+}
+
+/* ==========================================================
+   MOBILE — FINAL OVERRIDES
+   Placed last on purpose: some earlier unconditional rules
+   (e.g. .analytics-grid .card min-height) would otherwise
+   win over the mobile block above since they appear later
+   in the file. These re-assert the compact mobile sizing.
+========================================================== */
+
+@media(max-width:768px){
+
+.analytics-grid .card{
+
+min-height:auto;
+
+}
+
+.grid-4 .card{
+
+min-height:auto;
+
+}
+
+.stats-grid .card{
+
+min-height:auto;
+
+}
 
 }
 
