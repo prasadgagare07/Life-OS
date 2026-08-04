@@ -338,7 +338,9 @@
 
 .grid-4 .card{
 
-    height:150px;
+    min-height:150px;
+
+    height:auto;
 
     padding:24px;
 
@@ -355,6 +357,24 @@
 .grid-4 h3{
 
     font-size:15px;
+
+}
+
+.highlight-card p{
+
+    font-size:12px;
+
+    margin:2px 0;
+
+}
+
+.highlight-card hr{
+
+    margin:8px 0;
+
+    border-color:var(--border);
+
+    opacity:.4;
 
 }
 
@@ -1072,8 +1092,7 @@ padding:12px 6px;
 
 font-style:italic;
 
-}
-
+   }
 /* ==========================================================
    GOAL MODAL
 ========================================================== */
@@ -1088,6 +1107,7 @@ background:rgba(0,0,0,.70);
 backdrop-filter:blur(8px);
 z-index:9999;
 }
+
 .modal.hidden{
 display:none;
 }
@@ -1415,9 +1435,9 @@ font-size:8px;
 
 .ring-wrapper{
 
-width:56px;
+width:72px;
 
-height:56px;
+height:72px;
 
 margin:0 auto;
 
@@ -1425,15 +1445,15 @@ margin:0 auto;
 
 #goalRing{
 
-width:56px;
+width:72px;
 
-height:56px;
+height:72px;
 
 }
 
 .ring-center h1{
 
-font-size:13px;
+font-size:16px;
 
 }
 
@@ -1661,7 +1681,73 @@ grid-template-columns:1fr;
 
 .bottom-grid{
 
-grid-template-columns:1fr;
+grid-template-columns:1fr 1fr;
+
+gap:10px;
+
+}
+
+.bottom-grid .card{
+
+padding:12px;
+
+}
+
+.calendar-legend{
+
+gap:8px;
+
+margin-top:8px;
+
+flex-wrap:wrap;
+
+font-size:9px;
+
+}
+
+.calendar-legend .dot{
+
+width:6px;
+
+height:6px;
+
+}
+
+.calendar-nav{
+
+margin-top:8px;
+
+}
+
+.cal-nav-btn{
+
+width:24px;
+
+height:24px;
+
+font-size:13px;
+
+}
+
+.cal-month-label{
+
+font-size:11px;
+
+}
+
+.calendar-weekdays{
+
+gap:3px;
+
+margin-top:8px;
+
+margin-bottom:2px;
+
+}
+
+.calendar-weekdays span{
+
+font-size:7px;
 
 }
 
@@ -1669,41 +1755,43 @@ grid-template-columns:1fr;
 
 grid-template-columns:repeat(7,1fr);
 
-gap:6px;
+gap:3px;
 
 }
 
 .calendar-day{
 
-font-size:10px;
+font-size:8px;
 
 }
 
 #timeline-list{
 
-gap:10px;
+gap:8px;
 
-margin-top:12px;
+margin-top:8px;
+
+max-height:320px;
 
 }
 
 .timeline-date{
 
-font-size:11px;
+font-size:9px;
 
 }
 
 .numeric{
 
-font-size:12px;
+font-size:10px;
 
 }
 
 .timeline-row{
 
-grid-template-columns:60px 1fr 70px;
+grid-template-columns:34px 1fr 46px;
 
-gap:8px;
+gap:4px;
 
 }
 
@@ -1737,23 +1825,23 @@ font-size:17px;
 
 .ring-wrapper{
 
-width:48px;
+width:62px;
 
-height:48px;
+height:62px;
 
 }
 
 #goalRing{
 
-width:48px;
+width:62px;
 
-height:48px;
+height:62px;
 
 }
 
 .ring-center h1{
 
-font-size:11px;
+font-size:14px;
 
 }
 
@@ -1899,9 +1987,9 @@ box-shadow:
 
 .hero-left-info h1{
 
-line-height:1;
+line-height:1.1;
 
-letter-spacing:-2px;
+letter-spacing:normal;
 
 }
 
@@ -2080,7 +2168,6 @@ display:flex;
 gap:12px;
 
 }
-
 .goal-right button{
 
 width:42px;
@@ -2180,4 +2267,3 @@ min-height:auto;
 }
 
 /* End */
-
