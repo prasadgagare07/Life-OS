@@ -7,6 +7,7 @@ const standardsRoutes = require('./routes/standards.routes');
 const financeRoutes = require('./routes/finance.routes');
 const fitnessRoutes = require('./routes/fitness.routes');
 const visionRoutes = require('./routes/vision.routes');
+const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/api/standards', standardsRoutes);
 app.use('/api/finance', financeRoutes);
 app.use('/api/fitness', fitnessRoutes);
 app.use('/api/vision', visionRoutes);
+app.use('/api/time-explorer', timeExplorerRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
