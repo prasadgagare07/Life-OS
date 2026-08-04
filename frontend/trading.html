@@ -3,120 +3,404 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LifeOS — Trade Guardian</title>
-<link rel="stylesheet" href="css/global.css">
-<link rel="stylesheet" href="css/navbar.css">
-<link rel="stylesheet" href="css/cards.css">
-<link rel="stylesheet" href="css/animations.css">
-<link rel="stylesheet" href="css/trading.css">
+<title>Trade Guardian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:#05080a;color:#fff;font-family:'Poppins',sans-serif;overflow-x:hidden;}
+body{padding-bottom:40px;}
+
+:root{
+  --green:#22c55e; --green-glow:#34d399; --red:#ef4444; --red-glow:#f87171;
+  --card:#0d1512; --border:#1e2b25; --muted:#8a978f;
+}
+
+.wrap{max-width:520px; margin:0 auto; padding:22px 16px;}
+
+header{text-align:center; margin-bottom:18px;}
+.shield-emoji{font-size:34px; filter:drop-shadow(0 0 14px rgba(34,197,94,.6)); animation:shieldPulse 3s ease-in-out infinite;}
+@keyframes shieldPulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.08);}}
+h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-top:6px;
+  background:linear-gradient(90deg,#22c55e,#34d399,#22c55e); background-size:200% auto;
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  animation:shine 4s linear infinite;}
+@keyframes shine{to{background-position:200% center;}}
+.tagline{font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.3px;}
+
+/* STATS ROW */
+.stats-row{display:flex; gap:10px; margin-top:20px;}
+.stat-card{flex:1; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px 10px; text-align:center;}
+.stat-card .ic{font-size:18px;}
+.stat-card .val{font-family:'Anton',sans-serif; font-size:19px; margin-top:6px;}
+.stat-card .lbl{font-size:8.5px; color:var(--muted); letter-spacing:.5px; margin-top:2px; font-family:'JetBrains Mono',monospace;}
+.stat-card.streak .val{color:#fbbf24;}
+.stat-card.guarded .val{color:var(--green-glow);}
+.stat-card.best .val{color:#a78bfa;}
+
+/* TODAY STATUS */
+.today-status{margin-top:18px; border-radius:20px; padding:20px; text-align:center; position:relative; overflow:hidden;
+  background:linear-gradient(160deg, rgba(34,197,94,0.14), rgba(13,21,18,0.6)); border:1px solid rgba(34,197,94,0.35);}
+.today-status.broken{background:linear-gradient(160deg, rgba(239,68,68,0.16), rgba(21,13,13,0.6)); border-color:rgba(239,68,68,0.4);}
+.today-status .status-icon{font-size:30px;}
+.today-status h3{font-family:'Anton',sans-serif; font-size:15px; margin-top:8px; letter-spacing:.5px;}
+.today-status p{font-size:10.5px; color:var(--muted); margin-top:4px;}
+.today-status.disciplined h3{color:var(--green-glow);}
+.today-status.broken h3{color:var(--red-glow);}
+
+/* THE COMPOUND TOWER */
+.tower-section{margin-top:22px; background:var(--card); border:1px solid var(--border); border-radius:20px; padding:18px 16px 16px;}
+.tower-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;}
+.tower-head h4{font-size:11px; letter-spacing:2px; color:var(--green-glow); font-weight:700;}
+.tower-head .day-count{font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+.target-line{text-align:center; margin:10px 0 16px;}
+.target-line .amt{font-family:'Anton',sans-serif; font-size:32px; color:var(--green-glow); text-shadow:0 0 24px rgba(34,197,94,.4);}
+.target-line .of{font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace; margin-top:2px;}
+
+.tower-grid{display:grid; grid-template-columns:repeat(10,1fr); gap:5px;}
+.tower-step{aspect-ratio:1/1; border-radius:5px; background:#161f1a; border:1px solid #223028; display:flex; align-items:center; justify-content:center; font-size:9px; color:#4a5a50; position:relative;}
+.tower-step.done{background:linear-gradient(160deg, var(--green-glow), var(--green)); color:#04150a; font-weight:800; box-shadow:0 0 10px rgba(34,197,94,.5);}
+.tower-step.broken{background:linear-gradient(160deg, var(--red-glow), var(--red)); color:#2a0505; font-weight:800; box-shadow:0 0 12px rgba(239,68,68,.6); animation:crackFlash 1.8s ease-in-out infinite;}
+@keyframes crackFlash{0%,100%{filter:brightness(1);} 50%{filter:brightness(1.3);}}
+.tower-step.today{border-color:#fbbf24; box-shadow:0 0 0 2px #fbbf24;}
+
+.legend-row{display:flex; gap:14px; justify-content:center; margin-top:12px; font-size:8.5px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+.legend-row span{display:flex; align-items:center; gap:4px;}
+.legend-dot{width:8px; height:8px; border-radius:2px; display:inline-block;}
+
+/* SURPLUS VAULT */
+.vault-section{margin-top:16px; background:linear-gradient(160deg, rgba(251,191,36,0.12), var(--card)); border:1px solid rgba(251,191,36,0.3); border-radius:18px; padding:16px;}
+.vault-head{display:flex; align-items:center; justify-content:space-between;}
+.vault-head h4{font-size:11px; letter-spacing:1px; color:#fbbf24; font-weight:700;}
+.vault-head .vault-sub{font-size:8.5px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+.vault-amt{font-family:'Anton',sans-serif; font-size:30px; color:#fbbf24; text-shadow:0 0 20px rgba(251,191,36,.4); margin-top:8px;}
+.vault-note{font-size:10px; color:#e2d5a8; margin-top:6px; line-height:1.5;}
+.vault-note b{color:#fbbf24;}
+
+/* PACE CHECK */
+.pace-section{margin-top:16px; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px;}
+.pace-section h4{font-size:11px; letter-spacing:1px; color:#38bdf8; font-weight:700; margin-bottom:14px;}
+.pace-compare{display:flex; gap:10px;}
+.pace-col{flex:1; text-align:center; padding:12px 8px; border-radius:14px; background:rgba(255,255,255,0.03); border:1px solid var(--border);}
+.pace-col .pc-lbl{font-size:8.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; letter-spacing:.5px;}
+.pace-col .pc-amt{font-family:'Anton',sans-serif; font-size:18px; margin-top:6px;}
+.pace-col.expect .pc-amt{color:#94a3b8;}
+.pace-col.actual .pc-amt{color:var(--green-glow);}
+.pace-col.actual.behind .pc-amt{color:var(--red-glow);}
+.pace-status{margin-top:14px; text-align:center; padding:10px; border-radius:12px; font-size:12px; font-weight:800;}
+.pace-status.ahead{background:rgba(34,197,94,0.14); color:var(--green-glow); border:1px solid rgba(34,197,94,0.35);}
+.pace-status.behind{background:rgba(239,68,68,0.14); color:var(--red-glow); border:1px solid rgba(239,68,68,0.35);}
+
+/* GREED WARNING PANEL */
+.greed-panel{margin-top:16px; background:linear-gradient(160deg, rgba(239,68,68,0.1), var(--card)); border:1px solid rgba(239,68,68,0.3); border-radius:18px; padding:16px;}
+.greed-panel h4{font-size:11px; letter-spacing:1px; color:var(--red-glow); font-weight:700; display:flex; align-items:center; gap:6px;}
+.compare-row{display:flex; align-items:center; gap:10px; margin-top:14px;}
+.compare-bar{flex:1;}
+.compare-bar .bar-track{height:14px; border-radius:8px; background:#1a1010; overflow:hidden; margin-bottom:5px;}
+.compare-bar .bar-fill{height:100%; border-radius:8px;}
+.compare-bar.good .bar-fill{background:linear-gradient(90deg,var(--green),var(--green-glow)); width:100%;}
+.compare-bar.bad .bar-fill{background:linear-gradient(90deg,var(--red),var(--red-glow)); width:27%;}
+.compare-bar .cap{font-size:9px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+.compare-bar .num{font-size:12px; font-weight:800;}
+.compare-bar.good .num{color:var(--green-glow);}
+.compare-bar.bad .num{color:var(--red-glow);}
+.greed-line{text-align:center; font-size:11px; color:#fca5a5; margin-top:14px; font-weight:600; line-height:1.5;}
+.greed-line b{color:var(--red-glow);}
+
+/* RULES CHECKLIST */
+.rules-section{margin-top:22px;}
+.sec-title{font-size:11px; letter-spacing:2px; color:var(--green-glow); font-weight:700; margin-bottom:10px; padding-left:2px;}
+.rule-row{display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-bottom:9px; cursor:pointer; transition:.15s;}
+.rule-row.done{border-color:rgba(34,197,94,0.5); background:linear-gradient(90deg, rgba(34,197,94,0.1), var(--card));}
+.rule-row .r-ic{font-size:16px; width:24px; text-align:center;}
+.rule-row .r-txt{flex:1; font-size:12.5px; color:#dcded9;}
+.rule-row.done .r-txt{color:#fff;}
+.rule-chk{width:20px; height:20px; border-radius:6px; border:1.5px solid #2a3a32; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;}
+.rule-row.done .rule-chk{background:var(--green); border-color:var(--green); color:#04150a;}
+
+/* QUOTE */
+.quote-card{margin-top:22px; text-align:center; padding:20px; border-radius:18px; border:1px solid var(--border);
+  background:linear-gradient(160deg, rgba(34,197,94,0.08), rgba(13,21,18,0.4));}
+.quote-card p{font-size:13.5px; font-weight:700; line-height:1.6; color:#d1fae5;}
+</style>
 </head>
 <body>
 
-<div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
+<div class="wrap">
 
-  <main class="main-content">
+  <header>
+    <div class="shield-emoji">🛡️</div>
+    <h1>TRADE GUARDIAN</h1>
+    <div class="tagline">Protecting my consistency. Guarding my capital.</div>
+  </header>
 
-    <section class="tg-topbar fade-up">
-      <div class="tg-brand">🛡️ Trade Guardian</div>
-      <div class="tg-streak"><span class="flame">🔥</span> <span id="streak-num">0</span>-day log streak</div>
-    </section>
+  <div class="stats-row">
+    <div class="stat-card streak">
+      <div class="ic">🔥</div>
+      <div class="val" id="streakVal">12</div>
+      <div class="lbl">DAY STREAK</div>
+    </div>
+    <div class="stat-card guarded">
+      <div class="ic">🛡️</div>
+      <div class="val" id="guardedVal">₹60,000</div>
+      <div class="lbl">CAPITAL GUARDED</div>
+    </div>
+    <div class="stat-card best">
+      <div class="ic">🏆</div>
+      <div class="val" id="bestVal">18</div>
+      <div class="lbl">BEST STREAK</div>
+    </div>
+  </div>
 
-    <section class="tg-hero-row fade-up fade-up-1">
-      <div class="tg-hero-stat capital"><div class="n" id="hero-capital">₹0</div><div class="l">Current capital</div></div>
-      <div class="tg-hero-stat profit"><div class="n" id="hero-profit">₹0</div><div class="l">Total profit</div></div>
-      <div class="tg-hero-stat days"><div class="n" id="hero-days">0</div><div class="l">Days tracked</div></div>
-    </section>
+  <div class="today-status disciplined" id="todayStatus">
+    <div class="status-icon" id="statusIcon">✅</div>
+    <h3 id="statusTitle">TODAY: DISCIPLINED</h3>
+    <p id="statusSub">Stopped at target. Capital protected. Streak alive.</p>
+    <button id="logBtn" style="margin-top:14px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:10px 20px; border-radius:999px; font-size:11.5px; font-weight:700; cursor:pointer;">✏️ Log / Edit Today's Close</button>
+  </div>
 
-    <section class="card tg-card fade-up fade-up-1">
-      <div class="tg-card-label">Capital growth</div>
-      <div class="tg-chart-legend">
-        <span><span class="ln" style="background:var(--tg-cyan-a)"></span>Your actual capital</span>
-        <span><span class="ln" style="background:var(--accent-2)"></span>Steady ₹5,000/day pace</span>
+  <div class="tower-section">
+    <div class="tower-head">
+      <h4>THE COMPOUND EFFECT</h4>
+      <div class="day-count">DAY 12 / 30</div>
+    </div>
+    <div class="target-line">
+      <div class="amt">₹60,000</div>
+      <div class="of">GUARDED SO FAR &nbsp;•&nbsp; TARGET ₹1,50,000 IN 30 DAYS</div>
+    </div>
+    <div class="tower-grid" id="towerGrid"></div>
+    <div class="legend-row">
+      <span><i class="legend-dot" style="background:var(--green-glow);"></i>Disciplined</span>
+      <span><i class="legend-dot" style="background:var(--red-glow);"></i>Greed broke it</span>
+      <span><i class="legend-dot" style="background:#161f1a;border:1px solid #223028;"></i>Not yet</span>
+    </div>
+  </div>
+
+  <div class="vault-section">
+    <div class="vault-head">
+      <h4>💰 SURPLUS VAULT</h4>
+      <div class="vault-sub">EXTRA BEYOND ₹5,000/DAY</div>
+    </div>
+    <div class="vault-amt" id="vaultVal">₹0</div>
+    <div class="vault-note">Every rupee earned <b>above your daily target</b> lands here — separate from your core streak count, so you can see exactly how much "extra" discipline has earned you.</div>
+  </div>
+
+  <div class="pace-section">
+    <h4>📊 PACE CHECK — AHEAD OR BEHIND?</h4>
+    <div class="pace-compare">
+      <div class="pace-col expect">
+        <div class="pc-lbl">EXPECTED AT ₹5K/DAY</div>
+        <div class="pc-amt" id="expectVal">₹0</div>
       </div>
-      <div class="tg-chart-wrap"><svg id="chart-svg" viewBox="0 0 620 180" preserveAspectRatio="none"></svg></div>
-    </section>
-
-    <section class="card tg-card fade-up fade-up-2">
-      <div class="tg-card-label">Add today's result</div>
-      <div class="tg-entry-row">
-        <div class="tg-entry-date" id="today-date">—</div>
-        <input class="tg-entry-input" id="entry-amount" type="number" placeholder="e.g. 5000 or -1200">
-        <button class="tg-entry-btn" id="entry-btn">Add</button>
+      <div class="pace-col actual" id="actualCol">
+        <div class="pc-lbl">YOUR ACTUAL TOTAL</div>
+        <div class="pc-amt" id="actualVal">₹0</div>
       </div>
-      <div class="tg-entry-hint">One entry per day — your net result after you're done trading. No live tracking needed.</div>
-    </section>
+    </div>
+    <div class="pace-status" id="paceStatus">—</div>
+  </div>
 
-    <section class="card tg-card fade-up fade-up-2">
-      <div class="tg-card-label">Consistency index</div>
-      <div class="tg-ci-row">
-        <div class="tg-ci-gauge">
-          <svg viewBox="0 0 100 100">
-            <circle class="tg-ci-track" cx="50" cy="50" r="42"/>
-            <circle class="tg-ci-fill" id="ci-fill" cx="50" cy="50" r="42"/>
-          </svg>
-          <div class="tg-ci-center"><div class="num" id="ci-num">—</div><div class="lbl">/ 100</div></div>
-        </div>
-        <div class="tg-entry-hint" id="entry-hint">One entry per day — your net result after you're done trading. No live tracking needed.</div>
+  <div class="greed-panel">
+    <h4>⚠️ ONE GREEDY DAY vs 8 DISCIPLINED DAYS</h4>
+    <div class="compare-row">
+      <div class="compare-bar good">
+        <div class="bar-track"><div class="bar-fill"></div></div>
+        <div class="cap">8 DISCIPLINED DAYS</div>
+        <div class="num">+₹40,000</div>
       </div>
-    </section>
-
-    <section class="card tg-card fade-up fade-up-2">
-      <div class="tg-card-label">Previous months</div>
-      <div class="tg-month-list" id="month-list"></div>
-    </section>
-
-    <section class="card tg-card tg-savings-card fade-up fade-up-3">
-      <div class="tg-card-label">💎 Growth Savings</div>
-      <div class="tg-savings-amount" id="savings-amount">₹0</div>
-      <div class="tg-small-sub">Whatever you earn above ₹5,000 on any day sweeps here automatically — it only ever grows, even on days you give some back.</div>
-      <div class="tg-savings-stats">
-        <div><div class="n" id="sw-month">₹0</div><div class="l">This month</div></div>
-        <div><div class="n" id="sw-total">₹0</div><div class="l">All-time</div></div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-bar bad">
+        <div class="bar-track"><div class="bar-fill"></div></div>
+        <div class="cap">1 REVENGE-TRADE DAY</div>
+        <div class="num">−₹40,000</div>
       </div>
-    </section>
+    </div>
+    <div class="greed-line">One <b>greedy overtrade</b> can erase what <b>8 disciplined days</b> built. Discipline is slow. Greed is instant. Choose slow.</div>
+  </div>
 
-    <section class="card tg-card tg-proj-card fade-up fade-up-3">
-      <div class="tg-card-label">The habit math</div>
-      <div class="tg-proj-compare">
-        <div class="tg-proj-box steady"><div class="num">₹1,50,000</div><div class="l">If you hit exactly ₹5,000<br>every single day for 30 days</div></div>
-        <div class="tg-proj-box actual"><div class="num" id="actual-pace">₹0</div><div class="l">Projected at <strong>your</strong><br>actual average pace</div></div>
-      </div>
-      <div class="tg-proj-note">You don't need bigger wins. You need the <strong>same win, every day</strong>. One steady habit compounds faster than any single "big day" ever will.</div>
-    </section>
+  <div class="rules-section">
+    <div class="sec-title">📋 TODAY'S DISCIPLINE RULES</div>
+    <div id="rulesList"></div>
+  </div>
 
-    <section class="card tg-card fade-up fade-up-3">
-      <div class="tg-card-label">This month — day by day</div>
-      <div class="tg-cal-grid" id="cal-grid"></div>
-      <div class="tg-cal-legend">
-        <span><span class="dot" style="background:linear-gradient(135deg,#FFD97A,#FFB13E)"></span>Hit ₹5k target</span>
-        <span><span class="dot" style="background:linear-gradient(135deg,#8FE06A,#38D97A);opacity:.75"></span>Positive, under target</span>
-        <span><span class="dot" style="background:rgba(255,107,107,.4)"></span>Loss day</span>
-        <span><span class="dot" style="background:var(--surface-raised);border:1px solid var(--border)"></span>Not yet</span>
-      </div>
-    </section>
+  <div class="quote-card">
+    <p>"Greed steals in an instant what discipline builds in a month."</p>
+  </div>
 
-    <section class="card tg-card fade-up fade-up-3">
-      <div class="tg-card-label">Badges</div>
-      <div class="tg-badges" id="badges">
-        <div class="tg-badge" id="badge-7"><div class="icon">🔥</div><div class="name">7-Day Streak</div></div>
-        <div class="tg-badge" id="badge-pace"><div class="icon">📈</div><div class="name">On Pace</div></div>
-        <div class="tg-badge" id="badge-steady"><div class="icon">🐢</div><div class="name">Steady Hands</div></div>
-        <div class="tg-badge" id="badge-comeback"><div class="icon">🔁</div><div class="name">Calm Comeback</div></div>
-        <div class="tg-badge" id="badge-savings"><div class="icon">💎</div><div class="name">Savings Builder</div></div>
-        <div class="tg-badge"><div class="icon">👑</div><div class="name">30-Day Legend</div></div>
-      </div>
-    </section>
-
-  </main>
 </div>
 
-<div class="tg-toast" id="toast"></div>
+<script>
+  // ===== Persistence: real daily closes, saved in the browser =====
+  const DAILY_TARGET = 5000;
+  const GRID_SIZE = 30;
+  const STORAGE_KEY = 'tradeGuardian_closes';
+  const BEST_KEY = 'tradeGuardian_best';
 
-<script src="js/api.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/app.js"></script>
-<script src="js/trading.js"></script>
+  function loadCloses(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function saveCloses(obj){ localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); }
+
+  function todayKey(){
+    const d = new Date();
+    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  }
+
+  function fmtRupee(n){
+    const sign = n < 0 ? '−' : '';
+    return sign + '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+  }
+
+  function sortedEntries(closes){
+    return Object.entries(closes).sort((a,b) => a[0] < b[0] ? -1 : 1); // chronological
+  }
+
+  function computeStreak(entries){
+    let streak = 0;
+    for(let i = entries.length - 1; i >= 0; i--){
+      if (entries[i][1] >= 0) streak++; else break;
+    }
+    return streak;
+  }
+
+  function render(){
+    const closes = loadCloses();
+    const entries = sortedEntries(closes);
+    const tKey = todayKey();
+    const hasToday = closes.hasOwnProperty(tKey);
+    const brokenCount = entries.filter(([,v]) => v < 0).length;
+
+    const actualTotal = entries.reduce((sum,[,v]) => sum + v, 0);
+    const surplusTotal = entries.filter(([,v]) => v > DAILY_TARGET).reduce((sum,[,v]) => sum + (v - DAILY_TARGET), 0);
+    const dayCount = entries.length || 1;
+    const expectedTotal = DAILY_TARGET * dayCount;
+    const paceDelta = actualTotal - expectedTotal;
+
+    const streak = computeStreak(entries);
+    let best = Number(localStorage.getItem(BEST_KEY)) || 0;
+    if (streak > best) { best = streak; localStorage.setItem(BEST_KEY, best); }
+
+    // Top stats
+    document.getElementById('streakVal').textContent = streak;
+    document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
+    document.getElementById('bestVal').textContent = best;
+
+    // Today status card
+    const statusCard = document.getElementById('todayStatus');
+    const statusIcon = document.getElementById('statusIcon');
+    const statusTitle = document.getElementById('statusTitle');
+    const statusSub = document.getElementById('statusSub');
+    if (!hasToday) {
+      statusCard.className = 'today-status';
+      statusIcon.textContent = '⏳';
+      statusTitle.textContent = "TODAY: NOT LOGGED YET";
+      statusSub.textContent = "Log today's close once you're done trading.";
+    } else if (closes[tKey] >= 0) {
+      statusCard.className = 'today-status disciplined';
+      statusIcon.textContent = '✅';
+      statusTitle.textContent = 'TODAY: DISCIPLINED';
+      statusSub.textContent = `Closed at ${fmtRupee(closes[tKey])}. Capital protected. Streak alive.`;
+    } else {
+      statusCard.className = 'today-status broken';
+      statusIcon.textContent = '⚠️';
+      statusTitle.textContent = 'TODAY: DISCIPLINE BROKEN';
+      statusSub.textContent = `Closed at ${fmtRupee(closes[tKey])}. Streak reset. Guard it tomorrow.`;
+    }
+
+    // Tower headline + day count
+    document.querySelector('.target-line .amt').textContent = fmtRupee(actualTotal);
+    document.querySelector('.tower-head .day-count').textContent = `DAY ${entries.length} / ${GRID_SIZE}`;
+
+    // Tower grid
+    const towerGrid = document.getElementById('towerGrid');
+    towerGrid.innerHTML = '';
+    const gridLen = Math.max(GRID_SIZE, entries.length);
+    for (let i = 0; i < gridLen; i++) {
+      const step = document.createElement('div');
+      step.className = 'tower-step';
+      const entry = entries[i];
+      if (entry) {
+        const [date, amt] = entry;
+        if (amt < 0) {
+          step.classList.add('broken');
+          step.textContent = '✕';
+        } else {
+          step.classList.add('done');
+          step.textContent = i + 1;
+        }
+        step.title = `${date}: ${fmtRupee(amt)}`;
+        if (date === tKey) step.classList.add('today');
+      } else {
+        step.textContent = i + 1;
+      }
+      towerGrid.appendChild(step);
+    }
+
+    // Surplus Vault
+    document.getElementById('vaultVal').textContent = fmtRupee(surplusTotal);
+
+    // Pace Check
+    document.getElementById('expectVal').textContent = fmtRupee(expectedTotal);
+    document.getElementById('actualVal').textContent = fmtRupee(actualTotal);
+    const actualCol = document.getElementById('actualCol');
+    const paceStatus = document.getElementById('paceStatus');
+    actualCol.classList.remove('behind');
+    if (paceDelta >= 0) {
+      paceStatus.className = 'pace-status ahead';
+      paceStatus.textContent = entries.length ? `🚀 ${fmtRupee(Math.abs(paceDelta))} AHEAD OF PACE` : 'Log a day to see your pace';
+    } else {
+      actualCol.classList.add('behind');
+      paceStatus.className = 'pace-status behind';
+      paceStatus.textContent = `🔻 ${fmtRupee(Math.abs(paceDelta))} BEHIND PACE`;
+    }
+  }
+
+  document.getElementById('logBtn').addEventListener('click', () => {
+    const closes = loadCloses();
+    const tKey = todayKey();
+    const current = closes[tKey];
+    const raw = prompt(
+      "Today's closing P&L (₹)\nEnter a loss as a negative number, e.g. -4000",
+      current !== undefined ? current : ''
+    );
+    if (raw === null) return;
+    const amt = Number(raw);
+    if (isNaN(amt)) { alert('Enter a valid number.'); return; }
+    closes[tKey] = amt;
+    saveCloses(closes);
+    render();
+  });
+
+  render();
+
+  const RULES = [
+    { icon:'🎯', text:'Stopped trading after hitting ₹5,000 target' },
+    { icon:'🚫', text:'No revenge trade after a loss' },
+    { icon:'🛑', text:'Followed stop-loss on every trade' },
+    { icon:'📉', text:'Stayed within max trade count for the day' },
+    { icon:'🚶', text:'Walked away after 2 consecutive losses' },
+    { icon:'📝', text:"Journaled today's trades honestly" },
+  ];
+  const doneToday = [true, true, true, false, true, false]; // demo state
+
+  const rulesList = document.getElementById('rulesList');
+  RULES.forEach((r,i)=>{
+    const row = document.createElement('div');
+    row.className = 'rule-row' + (doneToday[i] ? ' done' : '');
+    row.innerHTML = `
+      <span class="r-ic">${r.icon}</span>
+      <span class="r-txt">${r.text}</span>
+      <span class="rule-chk">${doneToday[i] ? '✓' : ''}</span>
+    `;
+    row.addEventListener('click', ()=>{
+      row.classList.toggle('done');
+      const chk = row.querySelector('.rule-chk');
+      chk.textContent = row.classList.contains('done') ? '✓' : '';
+    });
+    rulesList.appendChild(row);
+  });
+</script>
 </body>
-  </html>
+</html>
