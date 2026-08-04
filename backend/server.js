@@ -62,17 +62,26 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
     }
 
     const visionSeed = fs.readFileSync(
-      path.join(__dirname, 'database', 'seed_vision.sql'),
-      'utf8'
-    );
+  path.join(__dirname, 'database', 'seed_vision.sql'),
+  'utf8'
+);
 
-    await pool.query(visionSeed);
+await pool.query(visionSeed);
 
-    console.log('✅ Database initialized');
+// Financial Time Explorer Migration
+const timeExplorerMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '003_time_explorer.sql'),
+  'utf8'
+);
 
-    app.listen(config.port, () => {
-      console.log(`🚀 LifeOS server running on port ${config.port}`);
-    });
+await pool.query(timeExplorerMigration);
+
+console.log('✅ Database initialized');
+
+app.listen(config.port, () => {
+  console.log(`🚀 LifeOS server running on port ${config.port}`);
+});
+    
   } catch (err) {
     console.error('❌ Startup error:', err);
     process.exit(1);
