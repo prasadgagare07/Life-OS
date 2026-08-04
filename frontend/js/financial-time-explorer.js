@@ -83,10 +83,13 @@ const today = new Date().toISOString().split("T")[0];
 
 dateInput.value = today;
 
+alert("Reached bottom of JS");
+
 loadSimulation(today);
 
+alert("Called loadSimulation");
+
 dateInput.addEventListener("change", () => {
-
+    alert("Date changed");
     loadSimulation(dateInput.value);
-
 });
