@@ -21,7 +21,6 @@ const FINANCE_THOUGHTS = [
 let hideSavings=
 JSON.parse(localStorage.getItem("hideSavings")) ?? true;
 
-let calendarExpanded=false;
 let timelineExpanded=false;
 let lastTimelineEntries=[];
 
@@ -197,6 +196,8 @@ style="width:${progress}%">
 
 }
 
+
+
 function showCelebration(message){
 
 const modal=document.getElementById("celebrationModal");
@@ -323,7 +324,7 @@ renderSummary(snapshot);
 
 await saveWealthHistory(snapshot);
 
-const timeline = await api.get("/finance/timeline?limit=365");
+const timeline = await api.get("/finance/timeline?limit=730");
 
 lastTimelineEntries = timeline;
 
@@ -664,53 +665,97 @@ ${done?"✓":""}
 
 }
 
+let calendarViewDate=new Date();
+
 function renderWealthCalendar(entries){
 
 const cal=document.getElementById("wealthCalendar");
 
+const label=document.getElementById("calMonthLabel");
+
 if(!cal) return;
 
-if(!entries || entries.length===0){
+const byDate={};
 
-cal.innerHTML=`
-<div class="empty-state">
-📅 No wealth history yet
-</div>
-`;
+(entries||[]).forEach(e=>{
 
-updateViewAllBtn("calendarViewAllBtn",0,calendarExpanded);
+const key=new Date(e.recorded_on).toISOString().split("T")[0];
 
-return;
+byDate[key]=Number(e.total_wealth);
+
+});
+
+const sortedKeys=Object.keys(byDate).sort();
+
+const year=calendarViewDate.getFullYear();
+
+const month=calendarViewDate.getMonth();
+
+if(label){
+
+label.textContent=calendarViewDate.toLocaleDateString("en-IN",{
+
+month:"long",
+
+year:"numeric"
+
+});
 
 }
 
-const data=entries.slice().reverse();
+const firstOfMonth=new Date(year,month,1);
 
-const cards=data.map((item,index)=>{
+const daysInMonth=new Date(year,month+1,0).getDate();
+
+let startOffset=firstOfMonth.getDay()-1;
+
+if(startOffset<0) startOffset=6;
+
+const cells=[];
+
+for(let i=0;i<startOffset;i++){
+
+cells.push(`<div class="calendar-day empty"></div>`);
+
+}
+
+for(let day=1;day<=daysInMonth;day++){
+
+const dateObj=new Date(year,month,day);
+
+const key=dateObj.toISOString().split("T")[0];
+
+const isToday=dateObj.toDateString()===new Date().toDateString();
+
+if(byDate[key]===undefined){
+
+cells.push(`<div class="calendar-day empty ${isToday?"today":""}">${day}</div>`);
+
+continue;
+
+}
+
+const idx=sortedKeys.indexOf(key);
 
 let status="neutral";
 
-if(index>0){
+if(idx>0){
 
-const previous=Number(data[index-1].total_wealth);
+const prevVal=byDate[sortedKeys[idx-1]];
 
-const current=Number(item.total_wealth);
+const curVal=byDate[key];
 
-if(current>previous){
+if(curVal>prevVal){
 
 status="up";
 
-}else if(current<previous){
+}else if(curVal<prevVal){
 
 status="down";
 
 }
 
 }
-
-const dateObj=new Date(item.recorded_on);
-
-const isToday=dateObj.toDateString()===new Date().toDateString();
 
 const fullDate=dateObj.toLocaleDateString("en-IN",{
 
@@ -722,29 +767,24 @@ year:"numeric"
 
 });
 
-return `
+cells.push(`
 
 <div
 
 class="calendar-day ${status} ${isToday?"today":""}"
 
-title="${fullDate}: ${formatINR(item.total_wealth)}"
+title="${fullDate}: ${formatINR(byDate[key])}"
 
 >
 
-${dateObj.getDate()}
+${day}
 
 </div>
 
-`;
+`);
 
-});
-
-const visible=calendarExpanded?cards:cards.slice(0,7);
-
-cal.innerHTML=visible.join("");
-
-updateViewAllBtn("calendarViewAllBtn",cards.length,calendarExpanded);
+}
+cal.innerHTML=cells.join("");
 
 }
 
@@ -773,6 +813,7 @@ btn.textContent=expanded?"Show Less":"View All";
 // ===============================
 
 function renderTimeline(entries){
+
 const el=document.getElementById("timeline-list");
 
 if(!el) return;
@@ -942,7 +983,6 @@ stats.averageGrowth>0
 }
 
 }
-
 function renderWealthLevel(wealth){
 
 const el=document.getElementById("wealthLevel");
@@ -1293,7 +1333,7 @@ lockFinanceForm();
 
 renderSummary(updated);
 
-const timeline = await api.get('/finance/timeline?limit=365');
+const timeline = await api.get('/finance/timeline?limit=730');
 
 lastTimelineEntries = timeline;
 
@@ -1496,9 +1536,17 @@ goalModal.classList.add("hidden");
 
 });
 
-document.getElementById("calendarViewAllBtn")?.addEventListener("click",()=>{
+document.getElementById("calPrevBtn")?.addEventListener("click",()=>{
 
-calendarExpanded=!calendarExpanded;
+calendarViewDate=new Date(calendarViewDate.getFullYear(),calendarViewDate.getMonth()-1,1);
+
+renderWealthCalendar(lastTimelineEntries);
+
+});
+
+document.getElementById("calNextBtn")?.addEventListener("click",()=>{
+
+calendarViewDate=new Date(calendarViewDate.getFullYear(),calendarViewDate.getMonth()+1,1);
 
 renderWealthCalendar(lastTimelineEntries);
 
