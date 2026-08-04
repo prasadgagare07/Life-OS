@@ -33,6 +33,9 @@ async function loadSimulation(date) {
 
     const data = await response.json();
 
+    console.log(data);
+alert(JSON.stringify(data));
+    
     freedomFund.textContent = money(data.freedomFund);
     savings.textContent = money(data.savings);
     emergencyFund.textContent = money(data.emergencyFund);
