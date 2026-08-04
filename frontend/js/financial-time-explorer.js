@@ -33,6 +33,8 @@ async function loadSimulation(date) {
 
     const data = await response.json();
 
+alert(JSON.stringify(data, null, 2));
+
     console.log(data);
 alert(JSON.stringify(data));
     
