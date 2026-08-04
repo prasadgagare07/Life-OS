@@ -125,7 +125,6 @@
 
 <div class="card fin-section">
 
-
 <h3>✏️ Update Finance</h3>
 
 <div id="financeLockMessage" class="lock-message hidden">
@@ -133,7 +132,7 @@
 </div>
 
 <form id="finance-form">
-  
+
 <div class="finance-grid">
 
 <div>
@@ -263,12 +262,19 @@
     <div class="card">
         <div class="card-title">
             <h3>📅 Wealth Calendar</h3>
-            <button id="calendarViewAllBtn" class="view-all-btn">View All</button>
         </div>
         <div class="calendar-legend">
             <span><i class="dot up"></i> Increase</span>
             <span><i class="dot down"></i> Decrease</span>
             <span><i class="dot neutral"></i> No Change</span>
+        </div>
+        <div class="calendar-nav">
+            <button id="calPrevBtn" class="cal-nav-btn">‹</button>
+            <span id="calMonthLabel" class="cal-month-label"></span>
+            <button id="calNextBtn" class="cal-nav-btn">›</button>
+        </div>
+        <div class="calendar-weekdays">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
         </div>
         <div id="wealthCalendar"></div>
     </div>
