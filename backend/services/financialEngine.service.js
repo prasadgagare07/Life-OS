@@ -1,108 +1,85 @@
 const START_DATE = new Date("2026-08-04");
 
-const DAILY_PHASE_ONE = 5000;
-const PHASE_ONE_TARGET = 300000;
+const PHASE1_DAILY = 5000;
+const PHASE1_TARGET = 300000;
 
-const ONE_TIME_EXPENSE = 100000;
-const DEPLOYED_CAPITAL = 160000;
-const BACKUP_SAVINGS = 40000;
+const DEPLOYED = 160000;
+const BACKUP = 40000;
 
-const DAILY_PHASE_TWO = 8333;
+const PHASE2_DAILY = 250000 / 30;
 
 function calculate(selectedDate) {
 
+    const start = new Date(START_DATE);
+    start.setHours(0,0,0,0);
+
     const target = new Date(selectedDate);
+    target.setHours(0,0,0,0);
 
-    const totalDays = Math.max(
-        0,
-        Math.floor(
-            (target - START_DATE) /
-            (1000 * 60 * 60 * 24)
-        )
-    );
+    let days = Math.floor((target - start) / 86400000);
 
-    let tradeGuardianCash = 0;
+    if (days < 0) days = 0;
 
     let diversified = false;
+
+    let tradeGuardianCash = 0;
 
     let freedomFund = 0;
     let savings = 0;
     let emergencyFund = 0;
 
     let deployedCapital = 0;
-
-    let currentDailyIncome = DAILY_PHASE_ONE;
+    let currentDailyIncome = PHASE1_DAILY;
 
     let diversificationDate = null;
 
-    for (let day = 0; day <= totalDays; day++) {
+    for (let i = 0; i <= days; i++) {
 
         if (!diversified) {
 
-            tradeGuardianCash += DAILY_PHASE_ONE;
+            tradeGuardianCash += PHASE1_DAILY;
 
-            if (tradeGuardianCash >= PHASE_ONE_TARGET) {
+            if (tradeGuardianCash >= PHASE1_TARGET) {
 
                 diversified = true;
 
                 diversificationDate = new Date(
-                    START_DATE.getTime() +
-                    day * 86400000
-                );
+                    start.getTime() + i * 86400000
+                ).toISOString().split("T")[0];
 
                 tradeGuardianCash = 0;
 
-                deployedCapital = DEPLOYED_CAPITAL;
+                deployedCapital = DEPLOYED;
 
-                savings += BACKUP_SAVINGS;
+                savings += BACKUP;
 
-                currentDailyIncome = DAILY_PHASE_TWO;
+                currentDailyIncome = PHASE2_DAILY;
 
                 continue;
             }
 
-        }
-
-        else {
+        } else {
 
             freedomFund += currentDailyIncome * 0.70;
-
             savings += currentDailyIncome * 0.20;
-
             emergencyFund += currentDailyIncome * 0.10;
 
         }
-
     }
 
     return {
-
         simulationDate: selectedDate,
-
         diversified,
-
         diversificationDate,
-
-        currentDailyIncome,
-
-        tradeGuardianCash,
-
+        currentDailyIncome: Math.round(currentDailyIncome),
+        tradeGuardianCash: Math.round(tradeGuardianCash),
         deployedCapital,
-
-        backupSavings: BACKUP_SAVINGS,
-
+        backupSavings: BACKUP,
         freedomFund: Math.round(freedomFund),
-
         savings: Math.round(savings),
-
         emergencyFund: Math.round(emergencyFund)
-
     };
 
 }
 
-module.exports = {
-
-    calculate
-
-};
+module.exports = { calculate };
