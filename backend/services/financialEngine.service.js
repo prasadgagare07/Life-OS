@@ -1,4 +1,4 @@
-const START_DATE = new Date("2026-08-05");
+const START_DATE = new Date("2026-08-04");
 
 const DAILY_PHASE_ONE = 5000;
 const PHASE_ONE_TARGET = 300000;
