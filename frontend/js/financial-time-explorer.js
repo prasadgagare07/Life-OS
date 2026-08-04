@@ -1,3 +1,4 @@
+alert("Financial Time Explorer JS Loaded");
 const dateInput = document.getElementById("simulationDate");
 
 const freedomFund = document.getElementById("freedomFund");
