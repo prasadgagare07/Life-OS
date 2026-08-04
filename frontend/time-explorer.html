@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Financial Time Explorer</title>
+
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/time-explorer.css">
+
+</head>
+
+<body>
+
+<div id="sidebar"></div>
+
+<main class="page">
+
+<header class="page-header">
+
+<h1>Financial Time Explorer</h1>
+
+<p>
+See your estimated financial future on any selected date.
+</p>
+
+</header>
+
+
+<section class="calendar-card">
+
+<label>
+
+Choose Date
+
+</label>
+
+<input
+type="date"
+id="simulationDate">
+
+</section>
+
+
+<section class="grid grid-3">
+
+
+<div class="card">
+
+<h3>Freedom Fund</h3>
+
+<div
+class="amount"
+id="freedomFund">
+
+₹0
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>Savings</h3>
+
+<div
+class="amount"
+id="savings">
+
+₹0
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>Emergency Fund</h3>
+
+<div
+class="amount"
+id="emergencyFund">
+
+₹0
+
+</div>
+
+</div>
+
+</section>
+
+
+<section
+class="comparison-card"
+id="comparisonCard">
+
+<h2 id="comparisonTitle">
+
+Estimated
+
+</h2>
+
+<div
+id="comparisonMessage">
+
+Select a date.
+
+</div>
+
+</section>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/time-explorer.js"></script>
+
+</body>
+
+</html>
