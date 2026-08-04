@@ -172,13 +172,13 @@ Emergency Fund
 
 <div class="info">
 
-<h3 id="status">
+<h3 id="comparisonTitle"></h3>
 
 Loading...
 
 </h3>
 
-<p id="message">
+<p id="comparisonMessage"></p>
 
 Please wait...
 
@@ -190,55 +190,8 @@ Please wait...
 
 <script src="js/sidebar.js"></script>
 
-<script>
-
-const date=document.getElementById("simulationDate");
-
-const ff=document.getElementById("freedomFund");
-
-const s=document.getElementById("savings");
-
-const e=document.getElementById("emergencyFund");
-
-const status=document.getElementById("status");
-
-const message=document.getElementById("message");
-
-date.value=new Date().toISOString().split("T")[0];
-
-async function load(){
-
-const token=localStorage.getItem("token");
-
-const res=await fetch("/api/financial-engine?date="+date.value,{
-
-headers:{Authorization:"Bearer "+token}
-
-});
-
-const data=await res.json();
-
-ff.innerHTML="₹"+Number(data.freedomFund).toLocaleString("en-IN");
-
-s.innerHTML="₹"+Number(data.savings).toLocaleString("en-IN");
-
-e.innerHTML="₹"+Number(data.emergencyFund).toLocaleString("en-IN");
-
-status.innerHTML=data.diversified?"Income Engine Active":"Growth Phase";
-
-message.innerHTML=data.diversified?
-
-"Daily estimate ₹"+Number(data.currentDailyIncome).toLocaleString("en-IN"):
-
-"Building ₹3,00,000 Trade Guardian capital.";
-
-}
-
-load();
-
-date.onchange=load;
-
-</script>
+<script src="js/sidebar.js"></script>
+<script src="js/financial-time-explorer.js"></script>
 
 </body>
 
