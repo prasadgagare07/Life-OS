@@ -784,6 +784,7 @@ ${day}
 `);
 
 }
+
 cal.innerHTML=cells.join("");
 
 }
@@ -809,6 +810,7 @@ btn.textContent=expanded?"Show Less":"View All";
 }
 // ===============================
 // Part 3
+
 // Timeline + Statistics
 // ===============================
 
@@ -1488,6 +1490,8 @@ document.getElementById("goalNameInput").value="";
 
 document.getElementById("goalAmountInput").value="";
 
+document.getElementById("saveGoalBtn").onclick=null;
+
 goalModal.classList.remove("hidden");
 
 });
@@ -1515,6 +1519,16 @@ return;
 if(amount<=0){
 
 alert("Enter valid amount");
+
+return;
+
+}
+
+const alreadyExists=goals.some(g=>g.name.trim().toLowerCase()===name.toLowerCase());
+
+if(alreadyExists){
+
+alert("A goal with this name already exists");
 
 return;
 
