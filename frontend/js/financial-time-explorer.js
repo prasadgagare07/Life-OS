@@ -14,19 +14,37 @@ function money(value) {
 
 async function loadSimulation(date) {
 
-    const token = localStorage.getItem("token");
+    try {
 
-    const response = await fetch(
+        alert("1");
 
-        `/api/financial-engine?date=${date}`,
+        const token = localStorage.getItem("token");
 
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
+        alert("2");
+
+        const response = await fetch(
+            `/api/financial-engine?date=${date}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             }
-        }
+        );
 
-    );
+        alert("3 Status = " + response.status);
+
+        const text = await response.text();
+
+        alert("4 Response = " + text);
+
+    } catch (err) {
+
+        alert("ERROR: " + err.message);
+        console.error(err);
+
+    }
+
+}
 
     if (!response.ok) {
         throw new Error("Unable to load simulation");
