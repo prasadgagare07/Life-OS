@@ -26,10 +26,15 @@ async function getGoals(req, res) {
   const goals = await Finance.getGoals();
   res.json(goals);
 }
+async function addGoal(req, res) {
+  const goal = await Finance.addGoal(req.body);
+  res.status(201).json(goal);
+}
 module.exports = {
   getSnapshot,
   updateSnapshot,
   getTimeline,
   getStatistics,
-  getGoals
+  getGoals,
+  addGoal
 };
