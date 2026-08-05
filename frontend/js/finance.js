@@ -102,58 +102,10 @@ JSON.parse(localStorage.getItem("hideGrowth")) ?? true;
 let hideEmergency=
 JSON.parse(localStorage.getItem("hideEmergency")) ?? true;
 
-let goals=JSON.parse(localStorage.getItem("lifeos_goals"))||[
-{
-name:"🏍 Bike",
-target:250000
-},
-{
-name:"💍 Gold Jewellery",
-target:400000
-},
-{
-name:"📦 Others",
-target:300000
-},
-{
-name:"💰 Savings",
-target:1000000
-}
-];
+let goals = [];
 
-(function dedupeGoals(){
-
-const seen=new Set();
-
-const cleaned=goals.filter(g=>{
-
-const key=g.name.trim().toLowerCase();
-
-if(seen.has(key)) return false;
-
-seen.add(key);
-
-return true;
-
-});
-
-if(cleaned.length!==goals.length){
-
-goals=cleaned;
-
-localStorage.setItem("lifeos_goals",JSON.stringify(goals));
-
-}
-
-})();
-
-function saveGoals(){
-
-localStorage.setItem(
-"lifeos_goals",
-JSON.stringify(goals)
-);
-
+function saveGoals() {
+  return;
 }
 function renderGoals(){
 
@@ -362,7 +314,7 @@ renderTimeline(timeline);
 renderWealthCalendar(timeline);
 renderWealthChart(timeline);
 renderDailyChange(timeline);
-
+goals = await api.get("/finance/goals");
 renderGoals();
 
 renderStatistics(stats);
@@ -1530,10 +1482,9 @@ document.getElementById("cancelGoalBtn").addEventListener("click",()=>{
 
 goalModal.classList.add("hidden");
 
-});
-
-document.getElementById("saveGoalBtn").addEventListener("click",()=>{
-
+}
+                                                          
+document.getElementById("saveGoalBtn").addEventListener("click", async () => {
 const name=document.getElementById("goalNameInput").value.trim();
 
 const amount=Number(document.getElementById("goalAmountInput").value);
@@ -1564,15 +1515,12 @@ return;
 
 }
 
-goals.push({
-
-name,
-
-target:amount
-
+await api.post("/finance/goals", {
+  name,
+  target: amount
 });
 
-saveGoals();
+goals = await api.get("/finance/goals");
 
 renderGoals();
 
