@@ -33,7 +33,12 @@ CREATE TABLE IF NOT EXISTS finance_history (
   total_wealth    NUMERIC(14,2) NOT NULL,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
+CREATE TABLE IF NOT EXISTS finance_goals (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  target NUMERIC(14,2) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 -- Fitness
 CREATE TABLE IF NOT EXISTS fitness_goal (
   id            SERIAL PRIMARY KEY,
