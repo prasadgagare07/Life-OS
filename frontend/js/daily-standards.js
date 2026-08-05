@@ -15,11 +15,32 @@ const defaultHabits = [
 { name:"English Speaking (10 min)", icon:"🗣️", color:"#EAB308", value:7 },
 { name:"Daily Review", icon:"📝", color:"#EC4899", value:9 }
 ];
+let habits = [];
 
-let habits =
-JSON.parse(localStorage.getItem("lifeos_habits"))
-|| defaultHabits;
+async function loadHabits() {
 
+  try {
+
+    habits = await api.get("/standards/habits");
+
+    if (!habits.length) {
+      habits = defaultHabits;
+    }
+
+    createHabits();
+    updateSummary();
+
+  } catch (err) {
+
+    console.error(err);
+
+    habits = defaultHabits;
+
+    loadHabits();
+
+  }
+
+}
 // --- Daily lock: once saved, sliders are frozen until the next day (12:00 AM–11:59 PM) ---
 function getTodayKey(){
   const d = new Date();
@@ -286,7 +307,7 @@ addHabitForm.style.display==="none"
 
 document
 .getElementById("saveHabitBtn")
-.addEventListener("click",()=>{
+.addEventListener("click", async ()=>{
 
 const name=
 
@@ -303,33 +324,20 @@ return;
 
 }
 
-habits.push({
-
-name:name,
-
-icon:selectedEmoji,
-
-color:selectedColor,
-
-value:5
-
+await api.post("/standards/habits", {
+  name,
+  icon: selectedEmoji,
+  color: selectedColor
 });
 
-document
-.getElementById("habitName")
-.value="";
+await loadHabits();
 
-saveHabits();
-
-createHabits();
-
-updateSummary();
+document.getElementById("habitName").value = "";
 
 openManager();
 
-addHabitForm.style.display="none";
-
-});
+addHabitForm.style.display = "none";
+  
 // =======================================
 // Part 3
 // Emoji Picker
