@@ -15,7 +15,15 @@ async function getToday(req, res) {
   const best = await Standards.getBest();
   res.json({ entry: entry || null, best });
 }
+async function getHabits(req, res) {
+  const habits = await Standards.getHabits();
+  res.json(habits);
+}
 
+async function addHabit(req, res) {
+  const habit = await Standards.addHabit(req.body);
+  res.status(201).json(habit);
+}
 async function save(req, res) {
   const { habits, locked } = req.body;
 
@@ -38,4 +46,11 @@ async function save(req, res) {
   res.json({ entry, best });
 }
 
-module.exports = { list, getToday, save };
+module.exports = {
+  getRecent,
+  getByDate,
+  getBest,
+  upsert,
+  getHabits,
+  addHabit
+};
