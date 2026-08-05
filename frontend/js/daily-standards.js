@@ -63,7 +63,8 @@ function isLockedToday(){
 
 const habitList =
 document.getElementById("habitList");
-
+console.log("habitList =", habitList);
+console.log("habits =", habits);
 const today =
 new Date();
 
@@ -188,7 +189,7 @@ Number(slider.value);
 updateSummary();
 
 createHabits();
-
+console.log("createHabits finished");
 };
 
 habitList.appendChild(card);
