@@ -32,13 +32,13 @@ async function loadHabits() {
 
   } catch (err) {
 
-    console.error(err);
+  console.error(err);
 
-    habits = defaultHabits;
+  habits = defaultHabits;
 
-    loadHabits();
+  createHabits();
 
-  }
+  updateSummary();
 
 }
 // --- Daily lock: once saved, sliders are frozen until the next day (12:00 AM–11:59 PM) ---
