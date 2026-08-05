@@ -16,7 +16,31 @@ CREATE TABLE IF NOT EXISTS standards_entries (
                 ) STORED,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
+CREATE TABLE IF NOT EXISTS standards_habits (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  color TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+INSERT INTO standards_habits (name, icon, color, sort_order)
+SELECT * FROM (
+VALUES
+('Naam Jap','🙏','#A855F7',1),
+('Meditation','🧘','#3B82F6',2),
+('Yoga + Manifestation','🌅','#14B8A6',3),
+('Sleep Schedule','🌙','#6366F1',4),
+('Screen Glasses','👓','#06B6D4',5),
+('Hair, Face Care & Hygiene','✨','#22C55E',6),
+('Read 20 Pages','📖','#F97316',7),
+('Phone Discipline','📱','#EF4444',8),
+('English Speaking (10 min)','🗣️','#EAB308',9),
+('Daily Review','📝','#EC4899',10)
+) AS v(name, icon, color, sort_order)
+WHERE NOT EXISTS (
+  SELECT 1 FROM standards_habits
+);
 -- Finance: single evolving snapshot + a timeline of historical snapshots
 CREATE TABLE IF NOT EXISTS finance_snapshot (
   id              SERIAL PRIMARY KEY,
