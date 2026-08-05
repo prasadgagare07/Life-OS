@@ -10,5 +10,6 @@ router.put('/', financeController.updateSnapshot);
 router.get('/timeline', financeController.getTimeline);
 router.get('/statistics', financeController.getStatistics);
 router.get('/goals', financeController.getGoals);
+router.post('/goals', financeController.addGoal);
 
 module.exports = router;
