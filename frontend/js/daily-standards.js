@@ -33,11 +33,13 @@ console.log("Habits received:", habits);
     updateSummary();
 
   } catch (err) {
-  console.error("loadHabits failed:", err);
+
+  alert("loadHabits failed: " + (err.message || JSON.stringify(err)));
 
   habits = defaultHabits;
 
   createHabits();
+
   updateSummary();
 }
 
