@@ -121,10 +121,21 @@ async function getGoals() {
 
   return rows;
 }
+async function addGoal({ name, target }) {
+  const { rows } = await pool.query(
+    `INSERT INTO finance_goals (name, target)
+     VALUES ($1, $2)
+     RETURNING *`,
+    [name, target]
+  );
+
+  return rows[0];
+}
 module.exports = {
   getSnapshot,
   updateSnapshot,
   getTimeline,
   getStatistics,
-  getGoals
+  getGoals,
+  addGoal
 };
