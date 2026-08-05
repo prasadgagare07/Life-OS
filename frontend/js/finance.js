@@ -120,6 +120,33 @@ name:"💰 Savings",
 target:1000000
 }
 ];
+
+(function dedupeGoals(){
+
+const seen=new Set();
+
+const cleaned=goals.filter(g=>{
+
+const key=g.name.trim().toLowerCase();
+
+if(seen.has(key)) return false;
+
+seen.add(key);
+
+return true;
+
+});
+
+if(cleaned.length!==goals.length){
+
+goals=cleaned;
+
+localStorage.setItem("lifeos_goals",JSON.stringify(goals));
+
+}
+
+})();
+
 function saveGoals(){
 
 localStorage.setItem(
@@ -810,7 +837,6 @@ btn.textContent=expanded?"Show Less":"View All";
 }
 // ===============================
 // Part 3
-
 // Timeline + Statistics
 // ===============================
 
@@ -1205,13 +1231,17 @@ data.forEach((item, index) => {
 
 function renderHealthScore(savings,growth,emergency,goal){
 
+const scoreEl=document.getElementById("healthScore");
+
+const msg=document.getElementById("healthMessage");
+
+if(!scoreEl || !msg) return;
+
 const wealth=savings+growth+emergency;
 
 const score=Math.min(100,Math.round((wealth/goal)*100));
 
-document.getElementById("healthScore").textContent=score+"%";
-
-const msg=document.getElementById("healthMessage");
+scoreEl.textContent=score+"%";
 
 if(score>=100){
 
