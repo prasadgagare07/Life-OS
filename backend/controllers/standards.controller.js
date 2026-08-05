@@ -45,12 +45,10 @@ async function save(req, res) {
 
   res.json({ entry, best });
 }
-
 module.exports = {
-  getRecent,
-  getByDate,
-  getBest,
-  upsert,
+  list,
+  getToday,
+  save,
   getHabits,
   addHabit
 };
