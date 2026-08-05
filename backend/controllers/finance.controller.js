@@ -22,10 +22,14 @@ const stats = await Finance.getStatistics();
 res.json(stats);
 
 }
-
+async function getGoals(req, res) {
+  const goals = await Finance.getGoals();
+  res.json(goals);
+}
 module.exports = {
-getSnapshot,
-updateSnapshot,
-getTimeline,
-getStatistics
+  getSnapshot,
+  updateSnapshot,
+  getTimeline,
+  getStatistics,
+  getGoals
 };
