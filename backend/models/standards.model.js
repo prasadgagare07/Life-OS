@@ -42,5 +42,39 @@ async function upsert(date, habits, avgScore, locked) {
   );
   return rows[0];
 }
+async function getHabits() {
+  const { rows } = await pool.query(
+    `SELECT * FROM standards_habits
+     ORDER BY sort_order ASC`
+  );
 
-module.exports = { getRecent, getByDate, getBest, upsert };
+  return rows;
+}
+
+async function addHabit({ name, icon, color }) {
+
+  const { rows } = await pool.query(
+    `INSERT INTO standards_habits
+    (name, icon, color, sort_order)
+    VALUES (
+      $1,
+      $2,
+      $3,
+      (SELECT COALESCE(MAX(sort_order),0)+1
+       FROM standards_habits)
+    )
+    RETURNING *`,
+    [name, icon, color]
+  );
+
+  return rows[0];
+}
+
+module.exports = {
+  getRecent,
+  getByDate,
+  getBest,
+  upsert,
+  getHabits,
+  addHabit
+};
