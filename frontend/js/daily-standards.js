@@ -1,9 +1,11 @@
+alert("JS started");
 // =======================================
 // LifeOS Daily Standards
 // Part 1
 // =======================================
 
 const defaultHabits = [
+alert("defaultHabits loaded");
 { name:"Naam Jap", icon:"🙏", color:"#A855F7", value:9 },
 { name:"Meditation", icon:"🧘", color:"#3B82F6", value:8 },
 { name:"Yoga + Manifestation", icon:"🌅", color:"#14B8A6", value:10 },
