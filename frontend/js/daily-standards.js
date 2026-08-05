@@ -41,6 +41,8 @@ async function loadHabits() {
   updateSummary();
 
 }
+
+}
 // --- Daily lock: once saved, sliders are frozen until the next day (12:00 AM–11:59 PM) ---
 function getTodayKey(){
   const d = new Date();
@@ -540,3 +542,4 @@ window.addEventListener("click", (e) => {
 refreshSaveButton();
 refreshStreak();
 renderHistory();
+loadHabits();
