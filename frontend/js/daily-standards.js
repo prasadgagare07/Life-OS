@@ -21,7 +21,9 @@ async function loadHabits() {
 
   try {
 
-    habits = await api.get("/standards/habits");
+    console.log("Loading habits...");
+habits = await api.get("/standards/habits");
+console.log("Habits received:", habits);
 
     if (!habits.length) {
       habits = defaultHabits;
