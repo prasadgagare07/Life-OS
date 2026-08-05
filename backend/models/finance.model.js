@@ -112,10 +112,19 @@ async function getStatistics() {
         : 0
   };
 }
+async function getGoals() {
+  const { rows } = await pool.query(`
+    SELECT *
+    FROM finance_goals
+    ORDER BY id ASC
+  `);
 
+  return rows;
+}
 module.exports = {
   getSnapshot,
   updateSnapshot,
   getTimeline,
-  getStatistics
+  getStatistics,
+  getGoals
 };
