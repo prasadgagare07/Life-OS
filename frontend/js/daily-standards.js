@@ -66,6 +66,7 @@ function isLockedToday(){
 
 const habitList =
 document.getElementById("habitList");
+alert("Reached habitList");
 console.log("habitList =", habitList);
 console.log("habits =", habits);
 const today =
@@ -543,4 +544,5 @@ window.addEventListener("click", (e) => {
 refreshSaveButton();
 refreshStreak();
 renderHistory();
+alert("About to call loadHabits");
 loadHabits();
