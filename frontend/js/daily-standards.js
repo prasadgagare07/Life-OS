@@ -75,15 +75,6 @@ month:"long",
 year:"numeric"
 });
 
-function saveHabits(){
-
-localStorage.setItem(
-"lifeos_habits",
-JSON.stringify(habits)
-);
-
-}
-
 function updateSummary(){
 
 const total =
@@ -108,8 +99,6 @@ localStorage.setItem("lifeos_best_score", bestScore);
 
 document.getElementById("bestScore").innerText =
 bestScore.toFixed(1)+"/10";
-
-saveHabits();
 
 }
 
@@ -276,8 +265,6 @@ window.deleteHabit=function(index){
 if(!confirm("Delete this habit?")) return;
 
 habits.splice(index,1);
-
-saveHabits();
 
 createHabits();
 
