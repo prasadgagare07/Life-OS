@@ -3,7 +3,16 @@ const financeModel = require("./finance.model");
 
 async function getSimulation(date) {
 
-    return engine.calculate(date);
+    const simulation = engine.calculate(date);
+
+    if (simulation.actualAvailable) {
+
+        simulation.actualWealth =
+            await financeModel.getActualWealthByDate(date);
+
+    }
+
+    return simulation;
 
 }
 
