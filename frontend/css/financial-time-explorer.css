@@ -115,3 +115,36 @@
 @media (max-width: 480px){
   .fte-total{ font-size: 2.1rem; }
 }
+/* ===============================
+   Actual vs Projection
+=============================== */
+
+.fte-actual {
+  margin-top: 24px;
+}
+
+.fte-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+#fteProjectedValue,
+#fteActualValue,
+#fteDifference {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+#fteDifference {
+  transition: color 0.3s ease;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .fte-compare-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
