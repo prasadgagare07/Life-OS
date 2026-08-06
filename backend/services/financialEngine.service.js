@@ -75,9 +75,12 @@ const actualAvailable = selected <= TODAY;
 
 let actualWealth = null;
 
-if (actualAvailable) {
-    actualWealth = 0; // We'll replace this with your real database value next.
-}
+const selected = new Date(selectedDate);
+selected.setHours(0, 0, 0, 0);
+
+const actualAvailable = selected <= TODAY;
+
+let actualWealth = null;
 
     return {
     simulationDate: selectedDate,
