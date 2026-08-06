@@ -1,129 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>Financial Time Explorer</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS — Time Explorer</title>
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/animations.css">
 <link rel="stylesheet" href="css/time-explorer.css">
-
 </head>
-
 <body>
 
-<div id="sidebar"></div>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
 
-<main class="page">
+  <main class="main-content">
 
-<header class="page-header">
+    <div class="page-header fade-up">
+      <div>
+        <div class="eyebrow">WEALTH</div>
+        <h1>Time Explorer</h1>
+      </div>
+    </div>
 
-<h1>Financial Time Explorer</h1>
+    <section class="card te-card fade-up">
+      <div class="te-milestone" id="teMilestone">
+        <span class="te-flame">🔥</span> Loading pace…
+      </div>
 
-<p>
-See your estimated financial future on any selected date.
-</p>
+      <div class="te-nav-row">
+        <div class="te-nav-btns">
+          <button id="tePrevY" title="Previous year">«</button>
+          <button id="tePrevM" title="Previous month">‹</button>
+        </div>
+        <div class="te-ym" id="teYmLabel">—</div>
+        <div class="te-nav-btns">
+          <button id="teNextM" title="Next month">›</button>
+          <button id="teNextY" title="Next year">»</button>
+        </div>
+      </div>
 
-</header>
+      <div class="te-jump-row"><button class="te-jump" id="teJumpToggle">Jump to date ↓</button></div>
+      <div class="te-jump-input" id="teJumpInput">
+        <input type="date" id="teJumpDate">
+        <button id="teJumpGo">Go</button>
+      </div>
 
+      <div class="te-dow">
+        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+      </div>
+      <div class="te-grid" id="teGrid"></div>
 
-<section class="calendar-card">
+      <div class="te-legend">
+        <span><span class="te-sw te-p1"></span> Building to 3L</span>
+        <span><span class="te-sw te-p2"></span> Distributing</span>
+        <span><span class="te-sw te-ms"></span> 3L reached</span>
+        <span><span class="te-sw te-good"></span> Ahead of plan</span>
+        <span><span class="te-sw te-bad"></span> Behind plan</span>
+      </div>
 
-<label>
+      <div class="te-detail">
+        <div class="te-dhead" id="teDHead">—</div>
+        <div class="te-dtag" id="teDTag">—</div>
+        <div class="te-total" id="teTotal">₹0</div>
+        <div class="te-rows" id="teRows"></div>
+      </div>
+    </section>
 
-Choose Date
-
-</label>
-
-<input
-type="date"
-id="simulationDate">
-
-</section>
-
-
-<section class="grid grid-3">
-
-
-<div class="card">
-
-<h3>Freedom Fund</h3>
-
-<div
-class="amount"
-id="freedomFund">
-
-₹0
-
+  </main>
 </div>
-
-</div>
-
-
-<div class="card">
-
-<h3>Savings</h3>
-
-<div
-class="amount"
-id="savings">
-
-₹0
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>Emergency Fund</h3>
-
-<div
-class="amount"
-id="emergencyFund">
-
-₹0
-
-</div>
-
-</div>
-
-</section>
-
-
-<section
-class="comparison-card"
-id="comparisonCard">
-
-<h2 id="comparisonTitle">
-
-Estimated
-
-</h2>
-
-<div
-id="comparisonMessage">
-
-Select a date.
-
-</div>
-
-</section>
-
-</main>
 
 <script src="js/api.js"></script>
-<script src="js/sidebar.js"></script>
-<script src="js/financial-time-explorer.js"></script>
-
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/time-explorer.js"></script>
 </body>
-
 </html>
