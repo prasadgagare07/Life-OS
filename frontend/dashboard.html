@@ -25,6 +25,37 @@
 
     <div class="quote-banner fade-up fade-up-1">"<span id="quote"></span>"</div>
 
+    <div class="stat-strip fade-up fade-up-1">
+      <div class="stat-chip">
+        <div class="sc-icon">🌱</div>
+        <div>
+          <div class="sc-value" id="qs-standards">—</div>
+          <div class="sc-label">Today's Score</div>
+        </div>
+      </div>
+      <div class="stat-chip">
+        <div class="sc-icon">💰</div>
+        <div>
+          <div class="sc-value" id="qs-networth">—</div>
+          <div class="sc-label">Net Worth</div>
+        </div>
+      </div>
+      <div class="stat-chip">
+        <div class="sc-icon">🛡️</div>
+        <div>
+          <div class="sc-value" id="qs-streak">—</div>
+          <div class="sc-label">Guardian Streak</div>
+        </div>
+      </div>
+      <div class="stat-chip">
+        <div class="sc-icon">💪</div>
+        <div>
+          <div class="sc-value" id="qs-weight">—</div>
+          <div class="sc-label">Current Weight</div>
+        </div>
+      </div>
+    </div>
+
     <div class="grid grid-3">
       <div class="card overview-card fade-up fade-up-1">
         <div class="card-title"><h3>🌱 Daily Standards</h3></div>
@@ -45,6 +76,35 @@
         <div class="stat-label" id="fitness-status">Loading…</div>
       </div>
     </div>
+
+    <div class="card tg-card fade-up fade-up-2">
+      <div class="card-title">
+        <h3>🛡️ Trade Guardian &amp; Wealth Growth</h3>
+        <span class="badge" id="tg-badge">Loading</span>
+      </div>
+      <div class="tg-stats">
+        <div>
+          <div class="stat-label">Day Streak</div>
+          <div class="stat-value" id="tg-streak">0</div>
+        </div>
+        <div>
+          <div class="stat-label">Capital Guarded</div>
+          <div class="stat-value" id="tg-guarded">₹0</div>
+        </div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="tg-bar-fill"></div></div>
+      <div class="stat-label" id="tg-bar-label" style="margin-top:8px;">—</div>
+      <a href="trading.html" class="card-link">Open Trade Guardian →</a>
+    </div>
+
+    <div class="card vision-card fade-up fade-up-3">
+      <div class="card-title">
+        <h3>🌟 Vision Board</h3>
+        <span class="stat-value" id="vision-count" style="font-size:1.4rem;">0</span>
+      </div>
+      <div class="vision-chips" id="vision-chips"></div>
+      <a href="vision.html" class="card-link">View full board →</a>
+    </div>
   </main>
 </div>
 
@@ -55,4 +115,4 @@
 <script src="js/app.js"></script>
 <script src="js/dashboard.js"></script>
 </body>
-</html>
+          </html>
