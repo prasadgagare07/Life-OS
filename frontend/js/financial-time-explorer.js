@@ -3,7 +3,7 @@
 // ===============================
 
 // Must match START_DATE in backend/services/financialEngine.service.js
-const FTE_START_DATE = "2026-08-04";
+const FTE_START_DATE = "2026-08-06";
 // Must match PHASE1_TARGET in backend/services/financialEngine.service.js
 const FTE_PHASE1_TARGET = 300000;
 
@@ -82,7 +82,7 @@ function render(data) {
   // Actual vs Projection
 fteProjectedValue.textContent = formatINR(totalWealth);
 
-if (!actualAvailable) {
+if (!actualAvailable || actualWealth === null) {
 
   fteActualCard.hidden = true;
 
