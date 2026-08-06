@@ -5,146 +5,115 @@
 .fte-subtitle{
   color: var(--text-muted);
   margin-top: -0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.fte-date-card{
   margin-bottom: 1.25rem;
 }
 
-.fte-date-row{
-  display:flex;
-  gap:0.75rem;
-  align-items:center;
-  flex-wrap:wrap;
-  margin-top:0.5rem;
+.fte-milestone{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;border-radius:14px;
+  background:var(--surface-raised);border:1px solid var(--border);
+  margin-bottom:1.25rem;font-size:.85rem;color:var(--text-muted);
+}
+.fte-milestone b{color:var(--text);font-family:var(--font-mono);}
+
+.fte-card{margin-bottom:1.25rem;}
+
+.fte-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.fte-ym{font-family:var(--font-display);font-size:1.15rem;font-weight:600;}
+.fte-nav-btns{display:flex;gap:6px;}
+.fte-nav-btns button{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--surface-raised);border:1px solid var(--border);
+  color:var(--text);font-size:.9rem;cursor:pointer;
+}
+.fte-nav-btns button:active{transform:scale(.94);}
+
+.fte-jump-row{display:flex;justify-content:flex-end;margin-bottom:8px;}
+.fte-jump{background:none;border:none;color:var(--accent-2);font-size:.75rem;font-weight:600;cursor:pointer;padding:4px 0;}
+.fte-jump-input{display:none;gap:8px;margin-bottom:12px;}
+.fte-jump-input.show{display:flex;}
+.fte-jump-input input{
+  flex:1;background:var(--surface-raised);border:1px solid var(--border);
+  color:var(--text);border-radius:9px;padding:8px 10px;font-size:.85rem;
+}
+.fte-jump-input button{
+  background:var(--accent-gradient);border:none;color:#1A1200;
+  border-radius:9px;padding:0 16px;font-weight:700;font-size:.82rem;cursor:pointer;
 }
 
-.fte-date-row input[type=date]{
-  max-width: 240px;
-}
+.fte-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;}
+.fte-dow span{text-align:center;font-size:.65rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;}
 
-.fte-hero{
-  margin-bottom: 1.25rem;
+.fte-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.fte-cell{
+  position:relative;aspect-ratio:1;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;color:var(--text-muted);cursor:pointer;
+  background:var(--surface-raised);border:1px solid transparent;
+  transition:transform .12s ease;
 }
+.fte-cell:active{transform:scale(.92);}
+.fte-cell.empty{visibility:hidden;cursor:default;}
+.fte-cell.disabled{opacity:.25;cursor:default;}
 
-.fte-hero-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap: 1rem;
-  flex-wrap:wrap;
+.fte-cell.phase1{background:rgba(255,193,94,.13);color:var(--accent-2);}
+.fte-cell.phase2{background:rgba(62,207,192,.14);color:#3ECFC0;}
+.fte-cell.milestone-day{background:var(--accent-gradient);color:#1A1200;font-weight:700;}
+.fte-cell.actual-good{background:rgba(62,207,142,.22);color:var(--good);box-shadow:inset 0 0 0 1.5px var(--good);}
+.fte-cell.actual-bad{background:rgba(242,85,90,.22);color:var(--bad);box-shadow:inset 0 0 0 1.5px var(--bad);}
+.fte-cell.today{border-color:var(--text);}
+.fte-cell.selected{outline:2px solid var(--accent-2);outline-offset:1px;}
+
+.fte-legend{display:flex;gap:10px;margin:14px 2px 0;font-size:.65rem;color:var(--text-faint);flex-wrap:wrap;}
+.fte-legend span{display:inline-flex;align-items:center;gap:4px;}
+.fte-sw{width:8px;height:8px;border-radius:3px;display:inline-block;}
+.fte-sw.fte-p1{background:var(--accent-2);}
+.fte-sw.fte-p2{background:#3ECFC0;}
+.fte-sw.fte-ms{background:var(--accent-1);}
+.fte-sw.fte-good{background:var(--good);}
+.fte-sw.fte-bad{background:var(--bad);}
+
+.fte-detail{margin-bottom:1.25rem;}
+.fte-dhead{font-family:var(--font-display);font-size:1.1rem;margin-bottom:6px;}
+.fte-dtag{
+  display:inline-block;font-size:.7rem;font-weight:700;
+  padding:4px 10px;border-radius:999px;margin-bottom:16px;
 }
+.fte-dtag.phase1{background:rgba(255,193,94,.13);color:var(--accent-2);}
+.fte-dtag.phase2{background:rgba(62,207,192,.14);color:#3ECFC0;}
+.fte-dtag.milestone-day{background:var(--accent-gradient);color:#1A1200;}
+.fte-dtag.actual-good{background:rgba(62,207,142,.18);color:var(--good);}
+.fte-dtag.actual-bad{background:rgba(242,85,90,.18);color:var(--bad);}
 
 .fte-total{
-  font-size: 2.6rem;
+  font-family:var(--font-display);font-size:2.3rem;
+  margin-bottom:16px;font-variant-numeric:tabular-nums;
 }
 
-.fte-hero-sub{
-  margin-top: 0.9rem;
-  color: var(--text-muted);
-  font-size: 0.92rem;
+.fte-rows{display:flex;flex-direction:column;gap:0;}
+.fte-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid var(--border);font-size:.88rem;
 }
+.fte-row:last-child{border-bottom:none;}
+.fte-row .n{color:var(--text-muted);display:flex;align-items:center;gap:8px;}
+.fte-row .v{font-family:var(--font-mono);font-weight:600;font-variant-numeric:tabular-nums;}
+.fte-row .v.sub{font-size:.76rem;color:var(--text-faint);font-weight:500;}
 
-#fteBadge{
-  background: var(--surface-raised);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-}
+.fte-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.fte-dot.freedom{background:var(--accent-2);}
+.fte-dot.savings{background:#3ECFC0;}
+.fte-dot.emergency{background:#B388FF;}
 
-.fte-progress{
-  margin-bottom: 1.25rem;
+.fte-delta{
+  margin-top:4px;padding:10px 12px;border-radius:12px;
+  font-size:.85rem;font-weight:700;text-align:center;
 }
-
-.fte-progress[hidden],
-.fte-fund-grid[hidden]{
-  display:none;
-}
-
-.fte-progress .card-title{
-  margin-bottom: 0.75rem;
-}
-
-.fte-progress-pct{
-  font-family: var(--font-mono);
-  font-weight: 600;
-  color: var(--accent-2);
-}
-
-.fte-bar-track{
-  height: 12px;
-  border-radius: 999px;
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.fte-bar-fill{
-  height: 100%;
-  width: 0%;
-  border-radius: 999px;
-  background: var(--accent-gradient);
-  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.fte-bar-labels{
-  display:flex;
-  justify-content:space-between;
-  margin-top: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.fte-progress-note{
-  margin: 0.9rem 0 0;
-  font-size: 0.85rem;
-}
-
-.fte-fund-grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-
-.fte-info{
-  margin-bottom: 1.25rem;
-}
+.fte-delta.good{background:rgba(62,207,142,.14);color:var(--good);border:1px solid rgba(62,207,142,.3);}
+.fte-delta.bad{background:rgba(242,85,90,.14);color:var(--bad);border:1px solid rgba(242,85,90,.3);}
+.fte-delta.info{background:rgba(255,193,94,.12);color:var(--accent-2);border:1px solid rgba(255,193,94,.3);}
 
 @media (max-width: 480px){
-  .fte-total{ font-size: 2.1rem; }
-}
-/* ===============================
-   Actual vs Projection
-=============================== */
-
-.fte-actual {
-  margin-top: 24px;
-}
-
-.fte-compare-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-top: 18px;
-}
-
-#fteProjectedValue,
-#fteActualValue,
-#fteDifference {
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-#fteDifference {
-  transition: color 0.3s ease;
-}
-
-/* Mobile */
-@media (max-width: 640px) {
-  .fte-compare-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
+  .fte-total{font-size:1.9rem;}
+  .fte-cell{font-size:.72rem;}
 }
