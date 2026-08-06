@@ -27,7 +27,11 @@ const deployedCapitalVal = document.getElementById("deployedCapitalVal");
 
 const fteInfoTitle = document.getElementById("fteInfoTitle");
 const fteInfoMessage = document.getElementById("fteInfoMessage");
-
+const fteActualCard = document.getElementById("fteActualCard");
+const fteProjectedValue = document.getElementById("fteProjectedValue");
+const fteActualValue = document.getElementById("fteActualValue");
+const fteDifference = document.getElementById("fteDifference");
+const fteCompareBadge = document.getElementById("fteCompareBadge");
 function setLoading() {
   fteBadge.textContent = "Loading";
   fteBadge.className = "badge";
@@ -56,22 +60,69 @@ async function loadSimulation(date) {
 
 function render(data) {
   const {
-    diversified,
-    diversificationDate,
-    currentDailyIncome,
-    tradeGuardianCash,
-    deployedCapital,
-    backupSavings,
-    freedomFund,
-    savings,
-    emergencyFund
-  } = data;
+  diversified,
+  diversificationDate,
+  currentDailyIncome,
+  tradeGuardianCash,
+  deployedCapital,
+  backupSavings,
+  freedomFund,
+  savings,
+  emergencyFund,
+  actualWealth,
+  actualAvailable
+} = data;
 
   const totalWealth = diversified
     ? deployedCapital + freedomFund + savings + emergencyFund
     : tradeGuardianCash;
 
   fteTotal.textContent = formatINR(totalWealth);
+
+  // Actual vs Projection
+fteProjectedValue.textContent = formatINR(totalWealth);
+
+if (!actualAvailable) {
+
+  fteActualCard.hidden = true;
+
+} else {
+
+  fteActualCard.hidden = false;
+
+  fteActualValue.textContent = formatINR(actualWealth);
+
+  const difference = actualWealth - totalWealth;
+
+  const differencePercent =
+    totalWealth > 0
+      ? ((difference / totalWealth) * 100).toFixed(1)
+      : 0;
+
+  fteDifference.textContent =
+    `${difference >= 0 ? "+" : ""}${formatINR(difference)}`;
+
+  if (difference > 0) {
+
+    fteCompareBadge.textContent = `🟢 Ahead ${differencePercent}%`;
+    fteCompareBadge.className = "badge good";
+    fteDifference.style.color = "#22c55e";
+
+  } else if (difference < 0) {
+
+    fteCompareBadge.textContent = `🔴 Behind ${Math.abs(differencePercent)}%`;
+    fteCompareBadge.className = "badge bad";
+    fteDifference.style.color = "#ef4444";
+
+  } else {
+
+    fteCompareBadge.textContent = "🎯 On Track";
+    fteCompareBadge.className = "badge";
+    fteDifference.style.color = "";
+
+  }
+
+}
 
   if (diversified) {
     fteBadge.textContent = "Diversified";
