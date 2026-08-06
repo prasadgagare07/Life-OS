@@ -8,7 +8,8 @@ const financeRoutes = require('./routes/finance.routes');
 const fitnessRoutes = require('./routes/fitness.routes');
 const visionRoutes = require('./routes/vision.routes');
 const financialEngineRoutes = require('./routes/financialEngine.routes');
-//const timeExplorerRoutes = require('./routes/timeExplorer.routes');
+const timeExplorerRoutes = require('./routes/timeExplorer.routes');
+const tradingRoutes = require('./routes/trading.routes');
 
 const app = express();
 
@@ -21,7 +22,8 @@ app.use('/api/finance', financeRoutes);
 app.use('/api/fitness', fitnessRoutes);
 app.use('/api/vision', visionRoutes);
 app.use('/api/financial-engine', financialEngineRoutes);
-//app.use('/api/time-explorer', timeExplorerRoutes);
+app.use('/api/time-explorer', timeExplorerRoutes);
+app.use('/api/trading', tradingRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
