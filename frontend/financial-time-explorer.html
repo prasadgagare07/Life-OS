@@ -1,187 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Financial Time Explorer</title>
-
+<title>LifeOS — Financial Time Explorer</title>
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/cards.css">
-
-<style>
-
-main{
-max-width:1200px;
-margin:auto;
-padding:30px;
-}
-
-h1{
-font-size:38px;
-margin-bottom:8px;
-}
-
-.subtitle{
-opacity:.7;
-margin-bottom:30px;
-}
-
-.date-box{
-margin-bottom:25px;
-}
-
-input[type=date]{
-
-width:260px;
-padding:12px;
-
-border-radius:12px;
-
-border:none;
-
-font-size:16px;
-
-}
-
-.grid{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-
-gap:20px;
-
-}
-
-.card{
-
-padding:24px;
-
-border-radius:20px;
-
-background:#181818;
-
-}
-
-.label{
-
-opacity:.7;
-
-margin-bottom:10px;
-
-}
-
-.amount{
-
-font-size:36px;
-
-font-weight:700;
-
-}
-
-.info{
-
-margin-top:30px;
-
-padding:22px;
-
-border-radius:20px;
-
-background:#181818;
-
-}
-
-</style>
-
+<link rel="stylesheet" href="css/financial-time-explorer.css">
 </head>
-
 <body>
 
-<div id="sidebar"></div>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
 
-<main>
+  <main class="main-content">
 
-<h1>Financial Time Explorer</h1>
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">WEALTH SIMULATION</div>
+        <h1>Financial Time Explorer</h1>
+      </div>
+    </div>
+    <p class="fte-subtitle">Pick any date to see your projected financial position on that day.</p>
 
-<div class="subtitle">
+    <section class="card fte-date-card">
+      <label class="stat-label" for="simulationDate">Simulation date</label>
+      <div class="fte-date-row">
+        <input id="simulationDate" type="date">
+        <button class="btn-secondary" id="fteToday" type="button">Today</button>
+      </div>
+    </section>
 
-Select any date to view your estimated financial position.
+    <section class="card fte-hero">
+      <div class="fte-hero-top">
+        <div>
+          <div class="stat-label">Total projected wealth</div>
+          <div class="stat-value fte-total" id="fteTotal">₹0</div>
+        </div>
+        <span class="badge" id="fteBadge">Loading</span>
+      </div>
+      <div class="fte-hero-sub" id="fteHeroSub">Crunching the numbers…</div>
+    </section>
 
+    <section class="card fte-progress" id="fteProgressCard">
+      <div class="card-title">
+        <h3>🛡️ Trade Guardian — Growth Phase</h3>
+        <span class="fte-progress-pct" id="fteProgressPct">0%</span>
+      </div>
+      <div class="fte-bar-track"><div class="fte-bar-fill" id="fteBarFill"></div></div>
+      <div class="fte-bar-labels">
+        <span id="fteBarCurrent">₹0 of ₹3,00,000</span>
+        <span>Target ₹3,00,000</span>
+      </div>
+      <p class="fte-progress-note">Once Trade Guardian cash reaches ₹3,00,000, capital gets deployed and diversified income kicks in.</p>
+    </section>
+
+    <div class="fte-fund-grid" id="fteFundGrid">
+      <div class="card">
+        <div class="card-title"><h3>Freedom Fund</h3></div>
+        <div class="stat-value" id="freedomFundVal">₹0</div>
+        <div class="stat-label">70% of daily income</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><h3>Savings</h3></div>
+        <div class="stat-value" id="savingsVal">₹0</div>
+        <div class="stat-label">20% of daily income + backup</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><h3>Emergency Fund</h3></div>
+        <div class="stat-value" id="emergencyFundVal">₹0</div>
+        <div class="stat-label">10% of daily income</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><h3>Deployed Capital</h3></div>
+        <div class="stat-value" id="deployedCapitalVal">₹0</div>
+        <div class="stat-label">Working capital generating income</div>
+      </div>
+    </div>
+
+    <section class="card fte-info">
+      <h3 id="fteInfoTitle">Loading…</h3>
+      <p id="fteInfoMessage">Please wait…</p>
+    </section>
+
+  </main>
 </div>
 
-<div class="date-box">
-
-<input id="simulationDate" type="date">
-
-</div>
-
-<div class="grid">
-
-<div class="card">
-
-<div class="label">
-
-Freedom Fund
-
-</div>
-
-<div id="freedomFund" class="amount">
-
-₹0
-
-</div>
-
-</div>
-
-<div class="card">
-
-<div class="label">
-
-Savings
-
-</div>
-
-<div id="savings" class="amount">
-
-₹0
-
-</div>
-
-</div>
-
-<div class="card">
-
-<div class="label">
-
-Emergency Fund
-
-</div>
-
-<div id="emergencyFund" class="amount">
-
-₹0
-
-</div>
-
-</div>
-
-</div>
-
-<div class="info">
-
-<h3 id="comparisonTitle">Loading...</h3>
-<p id="comparisonMessage">Please wait...</p>
-
-</div>
-
-</main>
-
-<script src="js/sidebar.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
 <script src="js/financial-time-explorer.js"></script>
-
 </body>
-
 </html>
