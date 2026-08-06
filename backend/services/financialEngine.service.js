@@ -68,17 +68,10 @@ function calculate(selectedDate) {
         }
     }
 
-    const selected = new Date(selectedDate);
-selected.setHours(0, 0, 0, 0);
+    const selectedDateObj = new Date(selectedDate);
+selectedDateObj.setHours(0, 0, 0, 0);
 
-const actualAvailable = selected <= TODAY;
-
-let actualWealth = null;
-
-const selected = new Date(selectedDate);
-selected.setHours(0, 0, 0, 0);
-
-const actualAvailable = selected <= TODAY;
+const actualAvailable = selectedDateObj <= TODAY;
 
 let actualWealth = null;
 
