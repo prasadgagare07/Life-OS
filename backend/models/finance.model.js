@@ -72,7 +72,21 @@ async function getTimeline(limit = 90) {
 
   return rows;
 }
+async function getActualWealthByDate(date) {
 
+  const { rows } = await pool.query(
+    `SELECT total_wealth
+     FROM finance_history
+     WHERE recorded_on <= $1
+     ORDER BY recorded_on DESC
+     LIMIT 1`,
+    [date]
+  );
+
+  return rows.length
+    ? Number(rows[0].total_wealth)
+    : null;
+}
 async function getStatistics() {
   const { rows: history } = await pool.query(
     `SELECT recorded_on, total_wealth
@@ -131,10 +145,12 @@ async function addGoal({ name, target }) {
 
   return rows[0];
 }
+
 module.exports = {
   getSnapshot,
   updateSnapshot,
   getTimeline,
+  getActualWealthByDate,
   getStatistics,
   getGoals,
   addGoal
