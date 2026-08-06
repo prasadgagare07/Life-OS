@@ -1,5 +1,6 @@
 const START_DATE = new Date("2026-08-04");
-
+const TODAY = new Date();
+TODAY.setHours(0, 0, 0, 0);
 const PHASE1_DAILY = 5000;
 const PHASE1_TARGET = 300000;
 
@@ -67,18 +68,32 @@ function calculate(selectedDate) {
         }
     }
 
+    const selected = new Date(selectedDate);
+selected.setHours(0, 0, 0, 0);
+
+const actualAvailable = selected <= TODAY;
+
+let actualWealth = null;
+
+if (actualAvailable) {
+    actualWealth = 0; // We'll replace this with your real database value next.
+}
+
     return {
-        simulationDate: selectedDate,
-        diversified,
-        diversificationDate,
-        currentDailyIncome: Math.round(currentDailyIncome),
-        tradeGuardianCash: Math.round(tradeGuardianCash),
-        deployedCapital,
-        backupSavings: BACKUP,
-        freedomFund: Math.round(freedomFund),
-        savings: Math.round(savings),
-        emergencyFund: Math.round(emergencyFund)
-    };
+    simulationDate: selectedDate,
+    diversified,
+    diversificationDate,
+    currentDailyIncome: Math.round(currentDailyIncome),
+    tradeGuardianCash: Math.round(tradeGuardianCash),
+    deployedCapital,
+    backupSavings: BACKUP,
+    freedomFund: Math.round(freedomFund),
+    savings: Math.round(savings),
+    emergencyFund: Math.round(emergencyFund),
+
+    actualAvailable,
+    actualWealth
+};
 
 }
 
