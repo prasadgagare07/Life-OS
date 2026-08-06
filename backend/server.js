@@ -76,6 +76,15 @@ const timeExplorerMigration = fs.readFileSync(
 
 await pool.query(timeExplorerMigration);
 
+// Trade Guardian Migration — creates trading_entries, without which every
+// /api/trading/* request fails because the table doesn't exist.
+const tradingMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '004_trading.sql'),
+  'utf8'
+);
+
+await pool.query(tradingMigration);
+
 console.log('✅ Database initialized');
 
 app.listen(config.port, () => {
