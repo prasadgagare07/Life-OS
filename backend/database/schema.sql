@@ -109,3 +109,11 @@ WHERE NOT EXISTS (SELECT 1 FROM finance_snapshot);
 INSERT INTO fitness_goal (goal_weight)
   SELECT 80
   WHERE NOT EXISTS (SELECT 1 FROM fitness_goal);
+
+
+CREATE TABLE IF NOT EXISTS trade_guardian_history (
+    id SERIAL PRIMARY KEY,
+    recorded_on DATE UNIQUE NOT NULL,
+    cash NUMERIC(12,2) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+);
