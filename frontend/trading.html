@@ -275,20 +275,34 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 
 </div>
 
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
 <script>
-  // ===== Persistence: real daily closes, saved in the browser =====
+  // ===== Persistence: real daily closes, saved on the server (shared with
+  // the Dashboard's "Trade Guardian" card and the Financial Time Explorer
+  // calendar — all three now read from the same backend table). =====
   const DAILY_TARGET = 5000;
   const GRID_SIZE = 30;
-  const STORAGE_KEY = 'tradeGuardian_closes';
-  const BEST_KEY = 'tradeGuardian_best';
   const CURRENT_FUNDS = 17935.74; // set directly in code — not user-editable
-  const ACCOUNT_KEY = 'tradeGuardian_account';
+  const ACCOUNT_KEY = 'tradeGuardian_account'; // UPI/bank stay local — no backend table for these yet
 
-  function loadCloses(){
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch { return {}; }
+  async function fetchCloses(){
+    try {
+      const entries = await api.get('/trading/entries'); // [{entry_date, profit}, ...]
+      const map = {};
+      entries.forEach(e => { map[e.entry_date] = Number(e.profit); });
+      return map;
+    } catch (err) {
+      console.error(err);
+      showToast('Could not load trading entries', 'error');
+      return {};
+    }
   }
-  function saveCloses(obj){ localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); }
+
+  async function saveClose(entry_date, profit){
+    await api.post('/trading/entries', { entry_date, profit });
+  }
 
   function loadAccount(){
     try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY)) || { upi:'', bank:'' }; }
@@ -318,8 +332,19 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     return streak;
   }
 
-  function render(){
-    const closes = loadCloses();
+  // Longest-ever run of non-negative days, computed straight from history —
+  // no separate counter to fall out of sync.
+  function computeBestStreak(entries){
+    let best = 0, run = 0;
+    for (const [, amt] of entries) {
+      if (amt >= 0) { run++; best = Math.max(best, run); }
+      else { run = 0; }
+    }
+    return best;
+  }
+
+  async function render(){
+    const closes = await fetchCloses();
     const entries = sortedEntries(closes);
     const tKey = todayKey();
     const hasToday = closes.hasOwnProperty(tKey);
@@ -332,8 +357,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     const paceDelta = actualTotal - expectedTotal;
 
     const streak = computeStreak(entries);
-    let best = Number(localStorage.getItem(BEST_KEY)) || 0;
-    if (streak > best) { best = streak; localStorage.setItem(BEST_KEY, best); }
+    const best = Math.max(computeBestStreak(entries), streak);
 
     // Top stats
     document.getElementById('streakVal').textContent = streak;
@@ -436,8 +460,8 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     }
   }
 
-  document.getElementById('logBtn').addEventListener('click', () => {
-    const closes = loadCloses();
+  document.getElementById('logBtn').addEventListener('click', async () => {
+    const closes = await fetchCloses();
     const tKey = todayKey();
     if (closes.hasOwnProperty(tKey)) {
       alert("Today's close is already saved and locked. It unlocks automatically at 12:00 AM.");
@@ -450,19 +474,14 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     if (raw === null) return;
     const amt = Number(raw);
     if (isNaN(amt)) { alert('Enter a valid number.'); return; }
-    closes[tKey] = amt;
-    saveCloses(closes);
-    render();
-  });
 
-  document.getElementById('editAccountBtn').addEventListener('click', () => {
-    const acc = loadAccount();
-    const upi = prompt('Enter UPI ID', acc.upi || '');
-    if (upi === null) return;
-    const bank = prompt('Enter Bank Name', acc.bank || '');
-    if (bank === null) return;
-    saveAccount({ upi: upi.trim(), bank: bank.trim() });
-    render();
+    try {
+      await saveClose(tKey, amt);
+      render();
+    } catch (err) {
+      console.error(err);
+      showToast('Could not save today\'s close — try again', 'error');
+    }
   });
 
   render();
@@ -499,4 +518,4 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   });
 </script>
 </body>
-    </html>
+        </html>
