@@ -47,15 +47,20 @@ async function updateSnapshot({
   if (existing.rows.length > 0) {
     await pool.query(
       `UPDATE finance_history
-       SET total_wealth = $1
+       SET total_wealth = $1,
+           bank_balance = $2,
+           market_funds = $3,
+           emergency_fund = $4,
+           goal_amount = $5
        WHERE recorded_on = CURRENT_DATE`,
-      [total]
+      [total, updated.bank_balance, updated.market_funds, updated.emergency_fund, updated.goal_amount]
     );
   } else {
     await pool.query(
-      `INSERT INTO finance_history (recorded_on, total_wealth)
-       VALUES (CURRENT_DATE, $1)`,
-      [total]
+      `INSERT INTO finance_history
+        (recorded_on, total_wealth, bank_balance, market_funds, emergency_fund, goal_amount)
+       VALUES (CURRENT_DATE, $1, $2, $3, $4, $5)`,
+      [total, updated.bank_balance, updated.market_funds, updated.emergency_fund, updated.goal_amount]
     );
   }
 
