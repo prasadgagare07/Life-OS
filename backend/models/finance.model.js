@@ -40,27 +40,39 @@ async function updateSnapshot({
     Number(updated.market_funds || 0) +
     Number(updated.emergency_fund || 0);
 
-  const existing = await pool.query(
-    `SELECT 1 FROM finance_history WHERE recorded_on = CURRENT_DATE`
-  );
-
-  if (existing.rows.length > 0) {
-    await pool.query(
-      `UPDATE finance_history
-       SET total_wealth = $1,
-           bank_balance = $2,
-           market_funds = $3,
-           emergency_fund = $4,
-           goal_amount = $5
-       WHERE recorded_on = CURRENT_DATE`,
-      [total, updated.bank_balance, updated.market_funds, updated.emergency_fund, updated.goal_amount]
+  // Recording the daily breakdown (for the calendar) is a "nice to have" —
+  // it must never be able to fail the actual balance save above. If the
+  // 005_finance_daily_breakdown.sql migration hasn't been run yet, this
+  // block would throw (missing columns); we log it and move on so Save
+  // still works.
+  try {
+    const existing = await pool.query(
+      `SELECT 1 FROM finance_history WHERE recorded_on = CURRENT_DATE`
     );
-  } else {
-    await pool.query(
-      `INSERT INTO finance_history
-        (recorded_on, total_wealth, bank_balance, market_funds, emergency_fund, goal_amount)
-       VALUES (CURRENT_DATE, $1, $2, $3, $4, $5)`,
-      [total, updated.bank_balance, updated.market_funds, updated.emergency_fund, updated.goal_amount]
+
+    if (existing.rows.length > 0) {
+      await pool.query(
+        `UPDATE finance_history
+         SET total_wealth = $1,
+             bank_balance = $2,
+             market_funds = $3,
+             emergency_fund = $4,
+             goal_amount = $5
+         WHERE recorded_on = CURRENT_DATE`,
+        [total, updated.bank_balance, updated.market_funds, updated.emergency_fund, updated.goal_amount]
+      );
+    } else {
+      await pool.query(
+        `INSERT INTO finance_history
+          (recorded_on, total_wealth, bank_balance, market_funds, emergency_fund, goal_amount)
+         VALUES (CURRENT_DATE, $1, $2, $3, $4, $5)`,
+        [total, updated.bank_balance, updated.market_funds, updated.emergency_fund, updated.goal_amount]
+      );
+    }
+  } catch (historyErr) {
+    console.error(
+      '[finance] Could not record today\'s history — has migration 005_finance_daily_breakdown.sql been run? ',
+      historyErr.message
     );
   }
 
