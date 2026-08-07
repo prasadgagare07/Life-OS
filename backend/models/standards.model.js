@@ -70,11 +70,16 @@ async function addHabit({ name, icon, color }) {
   return rows[0];
 }
 
+async function deleteHabit(id) {
+  await pool.query(`DELETE FROM standards_habits WHERE id = $1`, [id]);
+}
+
 module.exports = {
   getRecent,
   getByDate,
   getBest,
   upsert,
   getHabits,
-  addHabit
+  addHabit,
+  deleteHabit
 };
