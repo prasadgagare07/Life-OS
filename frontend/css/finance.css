@@ -1,32 +1,76 @@
 /* ==========================================================
-   LIFEOS FINANCE — simple, classy, mobile-first
-   Wealth (savings+growth+emergency) and Freedom Fund are
-   kept visually distinct throughout: green = wealth,
-   gold = the freedom-fund goal.
+   LIFEOS FINANCE — colorful festive, mobile-first
+   Rich gradient background (not black), glassy cards.
+   Green = Wealth, Gold = Freedom Fund, throughout.
 ========================================================== */
 
 :root{
-    --bg:#0B1120;
-    --card:#111827;
-    --border:rgba(255,255,255,.07);
-    --text:#F8FAFC;
-    --muted:#94A3B8;
-    --green:#10B981;
-    --green2:#34D399;
-    --red:#F87171;
-    --gold:#E8B94D;
-    --gold2:#F5D888;
+    --text:#FFFFFF;
+    --muted:#F0DCC8;
+    --panel:rgba(50,12,10,.55);
+    --panel-solid:#3A1210;
+    --border:rgba(255,255,255,.16);
+
+    --green:#22D3A6;
+    --green2:#6EE7C0;
+    --red:#FF6B6B;
+    --gold:#FFC94D;
+    --gold2:#FFE29A;
+    --pink:#FF6FA8;
+    --blue:#5EC8F2;
+    --purple:#B084F5;
 }
 
 *{ box-sizing:border-box; }
 
+html, body{ height:100%; }
+
 body{
     background:
-        radial-gradient(700px 320px at 12% -8%, rgba(232,185,77,.07), transparent 60%),
-        radial-gradient(600px 300px at 100% 0%, rgba(16,185,129,.06), transparent 60%),
-        var(--bg);
+        radial-gradient(650px 420px at 50% -8%, rgba(255,201,77,.35), transparent 60%),
+        radial-gradient(600px 400px at 100% 0%, rgba(255,138,60,.20), transparent 55%),
+        radial-gradient(700px 550px at 50% 120%, rgba(200,30,40,.28), transparent 60%),
+        linear-gradient(170deg, #3B0A0A 0%, #7A1414 32%, #B3241A 62%, #E0631F 100%);
     color:var(--text);
     font-family:Inter,sans-serif;
+}
+
+.blessing-banner{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    margin:2px 0 16px;
+}
+.blessing-glow{
+    position:absolute;
+    top:-26px;
+    width:260px; height:260px;
+    background:radial-gradient(circle, rgba(255,201,77,.55), rgba(255,111,80,.22) 45%, transparent 72%);
+    filter:blur(4px);
+    animation:blessGlow 3.2s ease-in-out infinite;
+    z-index:0;
+}
+@keyframes blessGlow{
+    0%,100%{ opacity:.7; transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.08); }
+}
+.blessing-photo{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:320px;
+    display:block;
+    border-radius:18px;
+    border:3px solid transparent;
+    background:
+        linear-gradient(#1a0505,#1a0505) padding-box,
+        linear-gradient(135deg,var(--gold),#FFF6D8,var(--gold)) border-box;
+    box-shadow:0 0 20px rgba(255,201,77,.5), 0 12px 28px rgba(0,0,0,.45);
+    animation:framePulse 3.2s ease-in-out infinite;
+}
+@keyframes framePulse{
+    0%,100%{ box-shadow:0 0 16px rgba(255,201,77,.4), 0 12px 28px rgba(0,0,0,.45); }
+    50%{ box-shadow:0 0 30px rgba(255,201,77,.75), 0 12px 28px rgba(0,0,0,.45); }
 }
 
 .main-content{
@@ -37,29 +81,41 @@ body{
 }
 
 .page-header{ margin-bottom:14px; }
-.page-header h1{ font-size:28px; font-weight:800; margin:0; }
+.page-header h1{
+    font-size:28px;
+    font-weight:800;
+    margin:0;
+    background:linear-gradient(90deg,#FFE29A,#FFC94D 45%,#FF9E6D);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 26px rgba(255,201,77,.25);
+}
 .eyebrow{
-    color:var(--gold);
+    color:var(--gold2);
     font-size:12px;
     letter-spacing:2px;
     margin-bottom:4px;
+    font-weight:700;
 }
 
 .blessing-line{
     margin:4px 0 0;
     font-size:12px;
     font-style:italic;
-    color:var(--gold2);
-    opacity:.85;
+    color:#FFD9EC;
+    opacity:.9;
     letter-spacing:.3px;
 }
 
 .card{
-    background:var(--card);
+    background:var(--panel);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
     border:1px solid var(--border);
-    border-radius:16px;
+    border-radius:18px;
     padding:16px 18px;
-    box-shadow:0 10px 24px rgba(0,0,0,.25);
+    box-shadow:0 14px 30px rgba(20,0,40,.35);
 }
 
 .card h3{ margin:0; font-size:15px; }
@@ -87,9 +143,11 @@ body{
     position:relative;
     display:block;
     width:100%;
-    background:var(--card);
+    background:var(--panel);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
     border:1px solid var(--border);
-    border-radius:16px;
+    border-radius:18px;
     padding:14px 14px 12px;
     overflow:hidden;
     text-align:left;
@@ -105,10 +163,8 @@ button.summary-card:active{ transform:scale(.98); }
     margin-top:8px;
     font-size:10px;
     color:var(--gold2);
-    opacity:.8;
+    opacity:.9;
 }
-
-.wealth-card[aria-expanded="true"] .summary-toggle-hint::after{ content:""; }
 
 .summary-card::before{
     content:"";
@@ -117,10 +173,27 @@ button.summary-card:active{ transform:scale(.98); }
     height:3px;
 }
 
-.wealth-card::before{ background:linear-gradient(90deg,var(--green),var(--green2)); }
-.freedom-card::before{ background:linear-gradient(90deg,var(--gold),var(--gold2)); }
+.wealth-card::before{ background:linear-gradient(90deg,var(--green),var(--blue)); }
+.freedom-card::before{
+    background:linear-gradient(90deg,var(--gold),var(--pink));
+    box-shadow:0 0 10px rgba(255,201,77,.6);
+}
 
-.summary-icon{ font-size:18px; margin-bottom:4px; }
+.wealth-card{ box-shadow:0 0 0 1px rgba(34,211,166,.12), 0 14px 30px rgba(20,0,40,.35); }
+.freedom-card{ box-shadow:0 0 0 1px rgba(255,201,77,.18), 0 14px 30px rgba(20,0,40,.35); }
+
+.summary-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    font-size:15px;
+    margin-bottom:6px;
+}
+.wealth-card .summary-icon{ background:linear-gradient(135deg, rgba(34,211,166,.35), rgba(94,200,242,.30)); }
+.freedom-card .summary-icon{ background:linear-gradient(135deg, rgba(255,201,77,.40), rgba(255,111,168,.30)); }
 
 .summary-label{
     font-size:13px;
@@ -149,13 +222,13 @@ button.summary-card:active{ transform:scale(.98); }
     margin-top:10px;
     height:5px;
     border-radius:999px;
-    background:#243244;
+    background:rgba(255,255,255,.14);
     overflow:hidden;
 }
 .goal-track-fill{
     width:0;
     height:100%;
-    background:linear-gradient(90deg,var(--gold),var(--gold2));
+    background:linear-gradient(90deg,var(--gold),var(--pink));
     transition:width .8s ease;
 }
 .goal-caption{
@@ -168,7 +241,9 @@ button.summary-card:active{ transform:scale(.98); }
     display:flex;
     flex-direction:column;
     gap:6px;
-    background:var(--card);
+    background:var(--panel);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
     border:1px solid var(--border);
     border-radius:14px;
     padding:6px 14px;
@@ -182,7 +257,7 @@ button.summary-card:active{ transform:scale(.98); }
     justify-content:space-between;
     padding:8px 0;
     font-size:13px;
-    border-bottom:1px solid var(--border);
+    border-bottom:1px solid rgba(255,255,255,.10);
 }
 .wealth-breakdown .bd-row:last-child{ border-bottom:none; }
 .wealth-breakdown .bd-row .bd-label{ color:var(--muted); }
@@ -191,6 +266,9 @@ button.summary-card:active{ transform:scale(.98); }
 .wealth-breakdown .bd-row .bd-delta.up{ color:var(--green2); }
 .wealth-breakdown .bd-row .bd-delta.down{ color:var(--red); }
 .wealth-breakdown .bd-row .bd-delta.neutral{ color:var(--muted); }
+.wealth-breakdown .bd-row:nth-of-type(1) .bd-label{ color:var(--blue); }
+.wealth-breakdown .bd-row:nth-of-type(2) .bd-label{ color:var(--pink); }
+.wealth-breakdown .bd-row:nth-of-type(3) .bd-label{ color:var(--green2); }
 
 /* ==========================================================
    UPDATE — a <details> disclosure, closed by default
@@ -211,7 +289,7 @@ button.summary-card:active{ transform:scale(.98); }
 .update-card summary::-webkit-details-marker{ display:none; }
 .update-card summary::after{
     content:"▾";
-    color:var(--muted);
+    color:var(--gold2);
     transition:transform .2s ease;
     font-size:12px;
 }
@@ -225,8 +303,8 @@ button.summary-card:active{ transform:scale(.98); }
     align-items:center;
     justify-content:center;
     gap:8px;
-    background:rgba(232,185,77,.10);
-    border:1px solid rgba(232,185,77,.35);
+    background:rgba(255,201,77,.14);
+    border:1px solid rgba(255,201,77,.35);
     color:var(--gold2);
     border-radius:12px;
     padding:10px 14px;
@@ -255,7 +333,7 @@ button.summary-card:active{ transform:scale(.98); }
     height:42px;
     padding:0 12px;
     border-radius:10px;
-    background:#0F172A;
+    background:rgba(0,0,0,.22);
     border:1px solid var(--border);
     color:white;
     font-size:14px;
@@ -268,12 +346,13 @@ button.summary-card:active{ transform:scale(.98); }
     margin-top:16px;
     border:none;
     border-radius:12px;
-    background:linear-gradient(90deg,var(--green),var(--green2));
-    color:#04231a;
+    background:linear-gradient(90deg,var(--pink),var(--gold));
+    color:#341022;
     font-size:14px;
     font-weight:800;
+    box-shadow:0 8px 20px rgba(255,111,168,.30);
 }
-.save-btn:disabled{ background:#374151; color:#9CA3AF; }
+.save-btn:disabled{ background:rgba(255,255,255,.12); color:rgba(255,255,255,.4); box-shadow:none; }
 
 /* ==========================================================
    CALENDAR
@@ -294,7 +373,7 @@ button.summary-card:active{ transform:scale(.98); }
     width:34px; height:34px; flex-shrink:0;
     border-radius:9px;
     border:1px solid var(--border);
-    background:#1A2434;
+    background:rgba(255,255,255,.08);
     color:var(--gold2);
     font-size:16px;
     display:flex; align-items:center; justify-content:center;
@@ -306,7 +385,7 @@ button.summary-card:active{ transform:scale(.98); }
     height:34px;
     border:1px solid var(--border);
     border-radius:9px;
-    background:#1A2434;
+    background:rgba(255,255,255,.08);
     color:white;
     font-size:13px;
     font-weight:700;
@@ -335,7 +414,7 @@ button.summary-card:active{ transform:scale(.98); }
 .calendar-day{
     aspect-ratio:1;
     border-radius:9px;
-    background:#1A2434;
+    background:rgba(255,255,255,.07);
     border:none;
     color:var(--text);
     font-size:12px;
@@ -349,9 +428,9 @@ button.summary-card:active{ transform:scale(.98); }
 .calendar-day.day-down,
 .calendar-day.day-neutral{ font-weight:700; }
 
-.calendar-day.day-up{ background:rgba(16,185,129,.16); color:var(--green2); }
-.calendar-day.day-down{ background:rgba(248,113,113,.16); color:var(--red); }
-.calendar-day.day-neutral{ background:rgba(148,163,184,.14); color:var(--muted); }
+.calendar-day.day-up{ background:rgba(34,211,166,.26); color:#B9FFE9; }
+.calendar-day.day-down{ background:rgba(255,107,107,.26); color:#FFD3D3; }
+.calendar-day.day-neutral{ background:rgba(255,255,255,.14); color:var(--muted); }
 
 .calendar-day.day-up::after,
 .calendar-day.day-down::after,
@@ -366,7 +445,7 @@ button.summary-card:active{ transform:scale(.98); }
 .calendar-day.day-down::after{ background:var(--red); }
 .calendar-day.day-neutral::after{ background:var(--muted); }
 
-.calendar-day.today{ box-shadow:0 0 0 2px var(--gold); }
+.calendar-day.today{ box-shadow:0 0 0 2px var(--gold), 0 0 10px rgba(255,201,77,.5); }
 
 .date-detail{
     margin-top:14px;
@@ -387,7 +466,7 @@ button.summary-card:active{ transform:scale(.98); }
     width:26px; height:26px;
     border-radius:8px;
     border:none;
-    background:#1A2434;
+    background:rgba(255,255,255,.10);
     color:var(--muted);
     font-size:12px;
 }
@@ -398,8 +477,8 @@ button.summary-card:active{ transform:scale(.98); }
     justify-content:space-between;
     padding:10px 12px;
     border-radius:10px;
-    background:rgba(232,185,77,.10);
-    border:1px solid rgba(232,185,77,.25);
+    background:rgba(255,201,77,.14);
+    border:1px solid rgba(255,201,77,.30);
     margin-bottom:8px;
     font-size:13px;
 }
@@ -409,8 +488,8 @@ button.summary-card:active{ transform:scale(.98); }
 .detail-wealth{
     padding:10px 12px;
     border-radius:10px;
-    background:rgba(16,185,129,.08);
-    border:1px solid rgba(16,185,129,.22);
+    background:rgba(34,211,166,.12);
+    border:1px solid rgba(34,211,166,.28);
 }
 
 .detail-wealth-total{
@@ -428,7 +507,7 @@ button.summary-card:active{ transform:scale(.98); }
     gap:6px 12px;
     margin-top:8px;
     padding-top:8px;
-    border-top:1px solid rgba(255,255,255,.06);
+    border-top:1px solid rgba(255,255,255,.12);
     font-size:11px;
     color:var(--muted);
 }
@@ -443,8 +522,8 @@ button.summary-card:active{ transform:scale(.98); }
 .footer-blessing{
     text-align:center;
     font-size:11px;
-    color:var(--gold2);
-    opacity:.75;
+    color:#FFD9EC;
+    opacity:.85;
     font-style:italic;
     margin:18px 0 0;
 }
@@ -460,4 +539,4 @@ button.summary-card:active{ transform:scale(.98); }
 /* Room for the fixed hamburger button on mobile (see navbar.css) */
 @media(max-width:768px){
     .main-content{ padding-top:76px; }
-}
+       }
