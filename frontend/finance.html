@@ -6,7 +6,6 @@
 <title>LifeOS — Finance</title>
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/navbar.css">
-<link rel="stylesheet" href="css/cards.css">
 <link rel="stylesheet" href="css/animations.css">
 <link rel="stylesheet" href="css/finance.css">
 </head>
@@ -19,109 +18,50 @@
 
 <div class="page-header fade-up">
     <div>
-        <div class="eyebrow">WEALTH</div>
+        <div class="eyebrow">🪷 WEALTH</div>
         <h1>Finance</h1>
+        <p class="blessing-line">श्री गणेशाय नमः · श्री महालक्ष्म्यै नमः</p>
     </div>
 </div>
 
 <!-- =========================
-     1. Freedom Fund Hero
+     Summary — Wealth (Savings+Growth+Emergency) is one
+     thing, Freedom Fund is a separate, different thing.
 ========================= -->
 
-<section class="card finance-hero fin-section fade-up">
+<div class="summary-grid fade-up">
 
-<h2 class="hero-title">💰 Freedom Fund</h2>
+  <button type="button" class="summary-card wealth-card" id="wealthCard" aria-expanded="false">
+    <div class="summary-icon">🪷</div>
+    <div class="summary-label">Wealth</div>
+    <div class="summary-sub">Savings + Growth + Emergency</div>
+    <div class="summary-amount" id="wealthAmount">₹0</div>
+    <div class="summary-delta" id="wealthDelta">—</div>
+    <div class="summary-toggle-hint" id="wealthToggleHint">Tap to see breakdown ▾</div>
+  </button>
 
-<div class="hero-layout">
-
-    <!-- LEFT -->
-    <div class="hero-left-info">
-        <div>
-            <h1 id="freedomFund">₹0</h1>
-            <p class="hero-label">of <strong>₹50,00,000</strong></p>
-        </div>
-        <div class="hero-date-only">📅 30 March 2027</div>
-    </div>
-
-    <!-- CENTER -->
-    <div class="hero-center">
-        <div class="ring-wrapper">
-            <canvas id="goalRing" width="260" height="260"></canvas>
-            <div class="ring-center">
-                <h1 id="goalPercent">0%</h1>
-                <p>Completed</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="hero-right-info">
-        <div class="hero-stat">
-            <h3 id="daysRemaining">0</h3>
-            <span>⏳ Days Left</span>
-        </div>
-        <div class="hero-stat">
-            <h3 id="dailyChange">₹0</h3>
-            <span>📈 Today's Change</span>
-        </div>
-        <div class="hero-stat">
-            <h3 id="remainingAmount">₹0</h3>
-            <span>💰 Remaining</span>
-        </div>
-        <div class="hero-stat">
-            <h3 id="perDayNeed">₹0</h3>
-            <span>🚀 Need / Day</span>
-        </div>
-    </div>
+  <div class="summary-card freedom-card">
+    <div class="summary-icon">🎯</div>
+    <div class="summary-label">Freedom Fund</div>
+    <div class="summary-sub">Financial freedom goal</div>
+    <div class="summary-amount" id="freedomAmount">₹0</div>
+    <div class="summary-delta" id="freedomDelta">—</div>
+    <div class="goal-track"><div class="goal-track-fill" id="freedomGoalFill"></div></div>
+    <div class="goal-caption" id="freedomGoalCaption">0% of ₹50,00,000</div>
+  </div>
 
 </div>
 
-<div class="progress-track">
-    <div id="goalBar" class="progress-fill"></div>
-</div>
-
-<p id="goalCaption"></p>
-
-</section>
+<div class="wealth-breakdown hidden fade-up" id="wealthBreakdown"></div>
 
 <!-- =========================
-     2. Wealth Overview
+     Update — collapsed by default so the numbers
+     aren't shown twice on screen at once.
 ========================= -->
 
-<div class="grid grid-4 fin-section">
+<details class="card update-card fade-up" id="updateDetails">
 
-<div class="card">
-<h3>💰 Savings</h3>
-<div id="savingAmount">••••••</div>
-<button id="toggleSavings" class="eye-btn">👁</button>
-</div>
-
-<div class="card">
-<h3>🌱 Growth Fund</h3>
-<div id="growthAmount">••••••</div>
-<button id="toggleGrowth" class="eye-btn">👁</button>
-</div>
-
-<div class="card">
-<h3>🛡 Emergency Fund</h3>
-<div id="emergencyAmount">••••••</div>
-<button id="toggleEmergency" class="eye-btn">👁</button>
-</div>
-
-<div class="card highlight-card">
-<h3>💎 Net Worth</h3>
-<h2 id="wealthAmount">₹0</h2>
-</div>
-
-</div>
-
-<!-- =========================
-     3. Update Finance
-========================= -->
-
-<div class="card fin-section">
-
-<h3>✏️ Update Finance</h3>
+<summary>✏️ Update Today's Balance</summary>
 
 <div id="financeLockMessage" class="lock-message hidden">
 🔒 Already updated today. You can update again after 12:00 AM.
@@ -129,191 +69,71 @@
 
 <form id="finance-form">
 
-<div class="finance-grid">
+<div class="update-grid">
 
 <div>
 <label>Savings</label>
-<input type="number" id="bank_balance" placeholder="Savings">
-</div>
-
-<div>
-<label>Growth Fund</label>
-<input type="number" id="market_funds" placeholder="Growth Fund">
+<input type="number" id="bank_balance" placeholder="0" inputmode="decimal">
 </div>
 
 <div>
 <label>Emergency Fund</label>
-<input type="number" id="emergency_fund" placeholder="Emergency Fund">
+<input type="number" id="emergency_fund" placeholder="0" inputmode="decimal">
+</div>
+
+<div>
+<label>Growth Fund</label>
+<input type="number" id="market_funds" placeholder="0" inputmode="decimal">
 </div>
 
 <div>
 <label>Freedom Fund</label>
-<input type="number" id="goal_amount" placeholder="Current Freedom Fund">
+<input type="number" id="goal_amount" placeholder="0" inputmode="decimal">
 </div>
 
 </div>
 
-<button class="save-btn" type="submit">💾 Save Finance</button>
+<button class="save-btn" type="submit">🪔 Save</button>
 
 </form>
 
-</div>
+</details>
 
 <!-- =========================
-     4. Analytics
+     History calendar — tap any date to see that
+     date's status (Freedom Fund separate, the rest combined)
 ========================= -->
 
-<div class="grid analytics-grid fin-section">
+<div class="card calendar-card fade-up">
 
-<div class="card">
-<h3>📊 Asset Allocation</h3>
-<canvas id="assetChart" width="300" height="300"></canvas>
-<div id="assetLegend" class="asset-legend"></div>
+<div class="card-title">
+<h3>📅 History</h3>
+<span class="calendar-hint">Tap a date</span>
 </div>
 
-<div class="card">
-<h3>💰 Net Worth Breakdown</h3>
-<div id="wealthBreakdown"></div>
+<div class="calendar-nav">
+<button type="button" id="calPrevBtn" class="cal-nav-btn">‹</button>
+<input type="month" id="calMonthPicker" class="cal-month-picker">
+<button type="button" id="calNextBtn" class="cal-nav-btn">›</button>
 </div>
 
-<div class="card">
-<h3>📈 Net Worth Trend</h3>
-
-<div class="trend-tabs">
-<button class="active">7D</button>
-<button>15D</button>
-<button>1M</button>
-<button>6M</button>
-<button>1Y</button>
-<button>2Y</button>
+<div class="calendar-weekdays">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
 </div>
 
-<canvas id="wealthChart"></canvas>
+<div id="wealthCalendar" class="calendar-grid"></div>
 
-</div>
-
-</div>
-
-<!-- =========================
-     5. Statistics
-========================= -->
-
-<div class="stats-grid fin-section">
-
-<div class="card">
-<h3>🏆 Highest Ever Net Worth</h3>
-<h2 id="highestWealth">₹0</h2>
-<p id="bestDate">--</p>
-</div>
-
-<div class="card">
-<h3>📊 Average Daily Growth</h3>
-<h2 id="averageGrowth">₹0</h2>
-</div>
-
-<div class="card">
-<h3>⭐ Best Wealth Day</h3>
-<h2 id="bestDay">₹0</h2>
-</div>
-
-<div class="card">
-<h3>📈 Monthly Growth</h3>
-<h2 id="monthlyGrowth">₹0</h2>
-</div>
-
-<div class="card">
-<h3>📅 Wealth Journey</h3>
-<h2 id="wealthDays">0 Days</h2>
+<div id="dateDetail" class="date-detail hidden">
+  <div class="date-detail-header">
+    <h4 id="dateDetailTitle">--</h4>
+    <button type="button" id="closeDateDetail" class="close-btn">✕</button>
+  </div>
+  <div id="dateDetailBody" class="date-detail-body"></div>
 </div>
 
 </div>
 
-<!-- =========================
-     6. Goals
-========================= -->
-
-<div class="goal-section fin-section">
-
-    <div class="card">
-        <h3>🏅 Freedom Fund Milestones</h3>
-        <div id="milestones"></div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">
-            <h3>🎯 Upcoming Goals</h3>
-            <button id="addGoalBtn">＋</button>
-        </div>
-        <div id="goalList"></div>
-    </div>
-
-</div>
-
-<!-- =========================
-     7. History
-========================= -->
-
-<div class="bottom-grid fin-section">
-
-    <div class="card">
-        <div class="card-title">
-            <h3>📅 Wealth Calendar</h3>
-        </div>
-        <div class="calendar-legend">
-            <span><i class="dot up"></i> Increase</span>
-            <span><i class="dot down"></i> Decrease</span>
-            <span><i class="dot neutral"></i> No Change</span>
-        </div>
-        <div class="calendar-nav">
-            <button id="calPrevBtn" class="cal-nav-btn">‹</button>
-            <span id="calMonthLabel" class="cal-month-label"></span>
-            <button id="calNextBtn" class="cal-nav-btn">›</button>
-        </div>
-        <div class="calendar-weekdays">
-            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-        </div>
-        <div id="wealthCalendar"></div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">
-            <h3>📜 Wealth Timeline</h3>
-            <button id="timelineViewAllBtn" class="view-all-btn">View All</button>
-        </div>
-        <div id="timeline-list"></div>
-    </div>
-
-</div>
-
-<!-- =========================
-     8. Daily Thought
-========================= -->
-
-<div class="card fin-section thought-card">
-    <h3>💭 Daily Financial Thought</h3>
-    <p id="financeThought"></p>
-</div>
-
-<!-- Goal Modal -->
-
-<div id="goalModal" class="modal hidden">
-<div class="modal-content">
-<h2>Add Goal</h2>
-<input type="text" id="goalNameInput" placeholder="Goal name">
-<input type="number" id="goalAmountInput" placeholder="Target amount">
-<div class="modal-buttons">
-<button id="saveGoalBtn">Save</button>
-<button id="cancelGoalBtn">Cancel</button>
-</div>
-</div>
-</div>
-
-<!-- Celebration -->
-
-<div id="celebrationModal" class="celebration hidden">
-<h1>🎉 Congratulations!</h1>
-<p id="celebrationText"></p>
-</div>
+<p class="footer-blessing">🪔 May Lakshmi Mata's grace keep this wealth growing 🪔</p>
 
 </main>
 </div>
@@ -324,4 +144,4 @@
 <script src="js/app.js"></script>
 <script src="js/finance.js"></script>
 </body>
-  </html>
+</html>
