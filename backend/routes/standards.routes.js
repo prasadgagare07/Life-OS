@@ -10,4 +10,5 @@ router.get('/today', standardsController.getToday);
 router.post('/', standardsController.save);
 router.get('/habits', standardsController.getHabits);
 router.post('/habits', standardsController.addHabit);
+router.delete('/habits/:id', standardsController.deleteHabit);
 module.exports = router;
