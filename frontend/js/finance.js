@@ -283,10 +283,19 @@ async function loadFinance() {
     document.getElementById("emergency_fund").value = snapshot.emergency_fund;
     document.getElementById("goal_amount").value = snapshot.goal_amount;
 
-    if (isFinanceLockedToday()) lockFinanceForm();
-
     const timeline = await api.get("/finance/timeline?limit=1000");
     indexHistory(timeline);
+
+    // Locked if either this browser already saved today, or the server
+    // already has today's entry (covers switching devices/browsers —
+    // requires migration 005 to have been run so today's date shows up
+    // in the timeline; falls back to the local flag either way).
+    const todayKey = getLocalDateKey();
+    const alreadySavedToday = isFinanceLockedToday() || !!historyByDate[todayKey];
+    if (alreadySavedToday) {
+      localStorage.setItem(FINANCE_LOCK_KEY, todayKey);
+      lockFinanceForm();
+    }
 
     renderSummary(snapshot);
     renderCalendar();
