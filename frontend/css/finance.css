@@ -1,2269 +1,463 @@
 /* ==========================================================
-   LIFEOS FINANCE
-   PART 1
+   LIFEOS FINANCE — simple, classy, mobile-first
+   Wealth (savings+growth+emergency) and Freedom Fund are
+   kept visually distinct throughout: green = wealth,
+   gold = the freedom-fund goal.
 ========================================================== */
 
 :root{
     --bg:#0B1120;
     --card:#111827;
-    --card2:#182233;
-    --border:rgba(255,255,255,.06);
+    --border:rgba(255,255,255,.07);
     --text:#F8FAFC;
     --muted:#94A3B8;
     --green:#10B981;
     --green2:#34D399;
+    --red:#F87171;
+    --gold:#E8B94D;
+    --gold2:#F5D888;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+    background:
+        radial-gradient(700px 320px at 12% -8%, rgba(232,185,77,.07), transparent 60%),
+        radial-gradient(600px 300px at 100% 0%, rgba(16,185,129,.06), transparent 60%),
+        var(--bg);
+    color:var(--text);
+    font-family:Inter,sans-serif;
 }
 
 .main-content{
-    max-width:1140px;
+    max-width:640px;
     margin:0 auto;
-    padding:28px;
-    padding-bottom:80px;
+    padding:20px;
+    padding-bottom:44px;
 }
 
-.page-header{
-    margin-bottom:20px;
-}
-
-/* ==========================================================
-   UNIFORM SECTION SPACING
-   Every one of the 8 sections gets the exact same 20px gap
-   below it, matching the 20px grid gap used everywhere else.
-========================================================== */
-
-.fin-section{
-    margin-bottom:20px;
-}
-
-.fin-section:last-of-type{
-    margin-bottom:0;
-}
-
-.page-header h1{
-    font-size:38px;
-    font-weight:800;
-}
-
+.page-header{ margin-bottom:14px; }
+.page-header h1{ font-size:28px; font-weight:800; margin:0; }
 .eyebrow{
-    color:var(--green);
-    font-size:13px;
+    color:var(--gold);
+    font-size:12px;
     letter-spacing:2px;
-    margin-bottom:6px;
+    margin-bottom:4px;
 }
 
-/* ==========================================================
-   CARD
-========================================================== */
+.blessing-line{
+    margin:4px 0 0;
+    font-size:12px;
+    font-style:italic;
+    color:var(--gold2);
+    opacity:.85;
+    letter-spacing:.3px;
+}
 
 .card{
     background:var(--card);
     border:1px solid var(--border);
-    border-radius:18px;
-    padding:24px;
-    transition:.25s;
-    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    border-radius:16px;
+    padding:16px 18px;
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
 }
 
-.card:hover{
-    transform:translateY(-4px);
-}
+.card h3{ margin:0; font-size:15px; }
 
-.card h3{
-    margin-bottom:18px;
-    font-size:18px;
-}
-
-.card h2{
-    font-size:34px;
-    font-weight:800;
-}
-
-/* ==========================================================
-   FREEDOM HERO
-========================================================== */
-
-.finance-hero{
-
-    padding:24px 28px;
-
-    border-radius:18px;
-
-    background:linear-gradient(145deg,#101826,#182437);
-
-}
-
-.hero-title{
-
-    font-size:16px;
-
-    font-weight:700;
-
-    margin-bottom:12px;
-
-}
-
-.hero-layout{
-
-    display:grid;
-
-    grid-template-columns:35fr 25fr 40fr;
-
-    gap:20px;
-
+.card-title{
+    display:flex;
     align-items:center;
-
-}
-
-/* ---------- LEFT ---------- */
-
-.hero-left-info{
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-}
-
-.hero-left-info h1{
-
-    font-size:34px;
-
-    font-weight:800;
-
-    margin:0;
-
-}
-
-.hero-label{
-
-    font-size:13px;
-
-    color:var(--muted);
-
-    margin-top:4px;
-
-    margin-bottom:8px;
-
-}
-
-.hero-goal,
-
-.hero-date{
-
-    background:none;
-
-    padding:0;
-
-    margin:0;
-
-}
-
-.hero-goal p,
-
-.hero-date p{
-
-    color:var(--muted);
-
-    margin:0;
-
-}
-
-.hero-goal h3{
-
-    margin:6px 0 18px;
-
-    font-size:30px;
-
-}
-
-.hero-date-only{
-
-    font-size:12px;
-
-    color:var(--muted);
-
-}
-
-/* ---------- CENTER ---------- */
-
-.hero-center{
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-}
-
-.ring-wrapper{
-
-    position:relative;
-
-    width:100px;
-
-    height:100px;
-
-}
-
-#goalRing{
-
-    width:100px;
-
-    height:100px;
-
-}
-
-.ring-center{
-
-    position:absolute;
-
-    inset:0;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-}
-
-.ring-center h1{
-
-    font-size:22px;
-
-    font-weight:800;
-
-}
-
-.ring-center p{
-
-    color:var(--muted);
-
-    font-size:9px;
-
-}
-
-/* ---------- RIGHT ---------- */
-
-.hero-right-info{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:10px;
-
-}
-
-.hero-stat{
-
-    background:#1A2434;
-
-    border-radius:12px;
-
-    padding:10px 12px;
-
-}
-
-.hero-stat h3{
-
-    font-size:18px;
-
-    margin-bottom:2px;
-
-}
-
-.hero-stat span{
-
-    color:var(--muted);
-
-    font-size:10px;
-
-}
-
-.progress-track{
-
-    margin-top:12px;
-
-    height:6px;
-
-    border-radius:999px;
-
-    background:#243244;
-
-    overflow:hidden;
-
-}
-
-.progress-fill{
-
-    width:0;
-
-    height:100%;
-
-    background:linear-gradient(90deg,var(--green),var(--green2));
-
-}
-
-#goalCaption{
-
-    margin-top:6px;
-
-    text-align:center;
-
-    color:var(--muted);
-
-    font-size:11px;
-
-}
-
-/* ==========================================================
-   FOUR WALLET CARDS
-========================================================== */
-
-.grid-4{
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:20px;
-
-}
-
-.grid-4 .card{
-
-    min-height:150px;
-
-    height:auto;
-
-    padding:24px;
-
-    border-radius:18px;
-
-    display:flex;
-
-    flex-direction:column;
-
     justify-content:space-between;
-
-}
-
-.grid-4 h3{
-
-    font-size:15px;
-
-}
-
-.highlight-card p{
-
-    font-size:12px;
-
-    margin:2px 0;
-
-}
-
-.highlight-card hr{
-
-    margin:8px 0;
-
-    border-color:var(--border);
-
-    opacity:.4;
-
-}
-
-#savingAmount,
-
-#growthAmount,
-
-#emergencyAmount,
-
-#wealthAmount{
-
-    font-size:26px;
-
-    font-weight:800;
-
-    margin:8px 0;
-
-}
-
-.eye-btn{
-
-    margin-top:0;
-
-    padding:8px 14px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:var(--green);
-
-    color:white;
-
-    cursor:pointer;
-
-    font-size:12px;
-
-}
-
-.highlight-card{
-
-    border:2px solid var(--green);
-
+    margin-bottom:12px;
 }
 
 /* ==========================================================
-   UPDATE FINANCE
+   SUMMARY — 2 cards only: Wealth, Freedom Fund
 ========================================================== */
 
-.finance-grid{
-
+.summary-grid{
     display:grid;
-
-    grid-template-columns:repeat(2,1fr);
-
-    gap:16px;
-
+    grid-template-columns:1fr 1fr;
+    align-items:start;
+    gap:10px;
+    margin-bottom:12px;
 }
 
-.finance-grid label{
-
+.summary-card{
+    position:relative;
     display:block;
-
-    margin-bottom:6px;
-
-    font-size:13px;
-
-    color:var(--muted);
-
-}
-
-.finance-grid input{
-
     width:100%;
-
-    height:44px;
-
-    padding:0 16px;
-
-    border-radius:12px;
-
-    background:#0F172A;
-
+    background:var(--card);
     border:1px solid var(--border);
-
-    color:white;
-
+    border-radius:16px;
+    padding:14px 14px 12px;
+    overflow:hidden;
+    text-align:left;
+    font-family:inherit;
+    color:inherit;
+    cursor:default;
 }
 
-.save-btn{
+button.summary-card{ cursor:pointer; }
+button.summary-card:active{ transform:scale(.98); }
 
-    width:100%;
+.summary-toggle-hint{
+    margin-top:8px;
+    font-size:10px;
+    color:var(--gold2);
+    opacity:.8;
+}
 
-    height:48px;
+.wealth-card[aria-expanded="true"] .summary-toggle-hint::after{ content:""; }
 
-    margin-top:16px;
+.summary-card::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:3px;
+}
 
-    border:none;
+.wealth-card::before{ background:linear-gradient(90deg,var(--green),var(--green2)); }
+.freedom-card::before{ background:linear-gradient(90deg,var(--gold),var(--gold2)); }
 
-    border-radius:12px;
+.summary-icon{ font-size:18px; margin-bottom:4px; }
 
-    background:var(--green);
-
-    color:white;
-
-    font-size:15px;
-
+.summary-label{
+    font-size:13px;
     font-weight:700;
-
+    margin-bottom:1px;
 }
 
-.save-btn:disabled{
-
-    background:#374151;
-
-    color:#9CA3AF;
-
-    cursor:not-allowed;
-
+.summary-sub{
+    font-size:10px;
+    color:var(--muted);
+    margin-bottom:8px;
 }
 
-.finance-grid input:disabled{
-
-    opacity:.5;
-
-    cursor:not-allowed;
-
+.summary-amount{
+    font-size:20px;
+    font-weight:800;
+    line-height:1.2;
 }
+
+.summary-delta{ margin-top:4px; font-size:11px; color:var(--muted); }
+.summary-delta .delta.up{ color:var(--green2); }
+.summary-delta .delta.down{ color:var(--red); }
+.summary-delta .delta.neutral{ color:var(--muted); }
+
+.goal-track{
+    margin-top:10px;
+    height:5px;
+    border-radius:999px;
+    background:#243244;
+    overflow:hidden;
+}
+.goal-track-fill{
+    width:0;
+    height:100%;
+    background:linear-gradient(90deg,var(--gold),var(--gold2));
+    transition:width .8s ease;
+}
+.goal-caption{
+    margin-top:5px;
+    font-size:10px;
+    color:var(--muted);
+}
+
+.wealth-breakdown{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:6px 14px;
+    margin:-2px 0 12px;
+}
+.wealth-breakdown.hidden{ display:none; }
+
+.wealth-breakdown .bd-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 0;
+    font-size:13px;
+    border-bottom:1px solid var(--border);
+}
+.wealth-breakdown .bd-row:last-child{ border-bottom:none; }
+.wealth-breakdown .bd-row .bd-label{ color:var(--muted); }
+.wealth-breakdown .bd-row .bd-amount{ font-weight:700; }
+.wealth-breakdown .bd-row .bd-delta{ font-size:11px; margin-left:8px; }
+.wealth-breakdown .bd-row .bd-delta.up{ color:var(--green2); }
+.wealth-breakdown .bd-row .bd-delta.down{ color:var(--red); }
+.wealth-breakdown .bd-row .bd-delta.neutral{ color:var(--muted); }
+
+/* ==========================================================
+   UPDATE — a <details> disclosure, closed by default
+========================================================== */
+
+.update-card{ margin-bottom:12px; padding:0; overflow:hidden; }
+
+.update-card summary{
+    list-style:none;
+    cursor:pointer;
+    padding:14px 18px;
+    font-weight:700;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.update-card summary::-webkit-details-marker{ display:none; }
+.update-card summary::after{
+    content:"▾";
+    color:var(--muted);
+    transition:transform .2s ease;
+    font-size:12px;
+}
+.update-card[open] summary::after{ transform:rotate(180deg); }
+.update-card[open] summary{ border-bottom:1px solid var(--border); }
+
+.update-card form{ padding:16px 18px 18px; }
 
 .lock-message{
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     gap:8px;
-
-    background:rgba(16,185,129,.12);
-
-    border:1px solid rgba(16,185,129,.35);
-
-    color:var(--green2);
-
-    border-radius:14px;
-
-    padding:14px 18px;
-
-    font-size:14px;
-
+    background:rgba(232,185,77,.10);
+    border:1px solid rgba(232,185,77,.35);
+    color:var(--gold2);
+    border-radius:12px;
+    padding:10px 14px;
+    font-size:12px;
     font-weight:600;
-
     text-align:center;
-
-    margin-bottom:20px;
-
+    margin:0 18px 14px;
 }
+.lock-message.hidden{ display:none; }
 
-.lock-message.hidden{
-
-    display:none;
-
-}
-
-/* ==========================================================
-   ANALYTICS ROW
-========================================================== */
-
-.analytics-grid{
-
+.update-grid{
     display:grid;
-
-    grid-template-columns:25fr 25fr 50fr;
-
-    gap:20px;
-
+    grid-template-columns:1fr 1fr;
+    gap:12px;
 }
 
-.analytics-grid canvas{
+.update-grid label{
+    display:block;
+    margin-bottom:5px;
+    font-size:12px;
+    color:var(--muted);
+}
 
+.update-grid input{
     width:100%;
-
-}
-
-.trend-tabs{
-
-    display:flex;
-
-    gap:8px;
-
-    margin-bottom:18px;
-
-}
-
-.trend-tabs button{
-
-    border:none;
-
-    border-radius:999px;
-
-    padding:8px 14px;
-
-    background:#1A2434;
-
+    height:42px;
+    padding:0 12px;
+    border-radius:10px;
+    background:#0F172A;
+    border:1px solid var(--border);
     color:white;
-
-    cursor:pointer;
-
+    font-size:14px;
 }
+.update-grid input:disabled{ opacity:.5; }
 
-.trend-tabs .active{
-
-    background:var(--green);
-
+.save-btn{
+    width:100%;
+    height:46px;
+    margin-top:16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,var(--green),var(--green2));
+    color:#04231a;
+    font-size:14px;
+    font-weight:800;
 }
+.save-btn:disabled{ background:#374151; color:#9CA3AF; }
 
 /* ==========================================================
-   SECTION 5 : STATISTICS
+   CALENDAR
 ========================================================== */
 
-.stats-grid{
-
-display:grid;
-
-grid-template-columns:repeat(5,1fr);
-
-gap:20px;
-
-}
-
-.stats-grid .card{
-
-text-align:center;
-
-padding:20px;
-
-min-height:130px;
-
-border-radius:18px;
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:center;
-
-}
-
-.stats-grid h3{
-
-font-size:13px;
-
-color:var(--muted);
-
-margin-bottom:10px;
-
-}
-
-.stats-grid h2{
-
-font-size:24px;
-
-font-weight:800;
-
-margin:0;
-
-}
-
-#monthlyGrowth{color:#10B981;}
-#highestWealth{color:#F59E0B;}
-#bestDay{color:#3B82F6;}
-#averageGrowth{color:#A855F7;}
-#wealthDays{color:#06B6D4;}
-
-#bestDate{
-
-margin-top:10px;
-
-text-align:center;
-
-font-size:13px;
-
-color:var(--muted);
-
-}
-
-/* ==========================================================
-   SECTION 6 : MILESTONES + GOALS
-========================================================== */
-
-.goal-section{
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:20px;
-
-}
-
-#milestones{
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:14px;
-
-}
-
-.milestone{
-
-display:flex;
-
-align-items:center;
-
-gap:14px;
-
-padding:18px;
-
-background:#172233;
-
-border-radius:18px;
-
-transition:.25s;
-
-}
-
-.milestone:hover{
-
-transform:translateY(-3px);
-
-}
-
-.milestone .dot{
-
-width:34px;
-
-height:34px;
-
-border-radius:50%;
-
-border:2px solid #475569;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-font-weight:700;
-
-}
-
-.milestone.done{
-
-background:rgba(16,185,129,.12);
-
-}
-
-.milestone.done .dot{
-
-background:#10B981;
-
-border-color:#10B981;
-
-color:white;
-
-}
-
-#goalList{
-
-display:grid;
-
-gap:18px;
-
-}
-
-.goal-item{
-
-padding:20px;
-
-background:#172233;
-
-border-radius:18px;
-
-}
-
-.goal-progress{
-
-height:10px;
-
-border-radius:999px;
-
-background:#243244;
-
-overflow:hidden;
-
-margin-top:12px;
-
-}
-
-.goal-progress-fill{
-
-height:100%;
-
-width:0;
-
-background:linear-gradient(90deg,#10B981,#34D399);
-
-}
-
-/* ==========================================================
-   SECTION 7 : CALENDAR + TIMELINE
-========================================================== */
-
-.bottom-grid{
-
-display:grid;
-
-grid-template-columns:55fr 45fr;
-
-gap:20px;
-
-}
-
-#wealthCalendar{
-
-display:grid;
-
-grid-template-columns:repeat(7,1fr);
-
-gap:10px;
-
-margin-top:14px;
-
-}
-
-.calendar-day{
-
-aspect-ratio:1;
-
-border-radius:50%;
-
-background:#374151;
-
-color:white;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-font-size:13px;
-
-font-weight:700;
-
-transition:.2s;
-
-cursor:default;
-
-}
-
-.calendar-day:hover{
-
-transform:scale(1.1);
-
-}
-
-.calendar-day.up{
-
-background:#10B981;
-
-}
-
-.calendar-day.down{
-
-background:#EF4444;
-
-}
-
-.calendar-day.neutral{
-
-background:#4B5563;
-
-}
-
-.calendar-day.today{
-
-box-shadow:0 0 0 2px #F8FAFC;
-
-}
-
-.calendar-legend{
-
-display:flex;
-
-gap:16px;
-
-margin-top:12px;
-
-margin-bottom:4px;
-
-font-size:12px;
-
-color:var(--muted);
-
-}
-
-.calendar-legend span{
-
-display:flex;
-
-align-items:center;
-
-gap:6px;
-
-}
-
-.calendar-legend .dot{
-
-width:9px;
-
-height:9px;
-
-border-radius:50%;
-
-display:inline-block;
-
-}
-
-.calendar-legend .dot.up{background:#10B981;}
-.calendar-legend .dot.down{background:#EF4444;}
-.calendar-legend .dot.neutral{background:#4B5563;}
+.calendar-card{ padding:16px 16px 18px; }
+.calendar-hint{ font-size:11px; color:var(--muted); }
 
 .calendar-nav{
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-margin-top:14px;
-
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:10px;
 }
 
 .cal-nav-btn{
-
-width:32px;
-
-height:32px;
-
-border-radius:8px;
-
-border:1px solid var(--border);
-
-background:#1A2434;
-
-color:white;
-
-font-size:16px;
-
-cursor:pointer;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
+    width:34px; height:34px; flex-shrink:0;
+    border-radius:9px;
+    border:1px solid var(--border);
+    background:#1A2434;
+    color:var(--gold2);
+    font-size:16px;
+    display:flex; align-items:center; justify-content:center;
 }
 
-.cal-nav-btn:hover{
-
-background:#243244;
-
-}
-
-.cal-month-label{
-
-font-size:14px;
-
-font-weight:700;
-
+.cal-month-picker{
+    flex:1;
+    text-align:center;
+    height:34px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:#1A2434;
+    color:white;
+    font-size:13px;
+    font-weight:700;
+    padding:0 8px;
 }
 
 .calendar-weekdays{
-
-display:grid;
-
-grid-template-columns:repeat(7,1fr);
-
-gap:10px;
-
-margin-top:12px;
-
-margin-bottom:4px;
-
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+    margin-bottom:5px;
 }
-
 .calendar-weekdays span{
-
-text-align:center;
-
-font-size:10px;
-
-color:var(--muted);
-
-font-weight:600;
-
+    text-align:center;
+    font-size:10px;
+    color:var(--muted);
+    font-weight:600;
 }
 
-.calendar-day.empty{
-
-background:transparent;
-
-color:var(--muted);
-
-font-weight:400;
-
-cursor:default;
-
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
 }
 
-.calendar-day.empty:hover{
+.calendar-day{
+    aspect-ratio:1;
+    border-radius:9px;
+    background:#1A2434;
+    border:none;
+    color:var(--text);
+    font-size:12px;
+    font-weight:600;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+}
+.calendar-day.empty{ background:transparent; }
 
-transform:none;
+.calendar-day.day-up,
+.calendar-day.day-down,
+.calendar-day.day-neutral{ font-weight:700; }
 
+.calendar-day.day-up{ background:rgba(16,185,129,.16); color:var(--green2); }
+.calendar-day.day-down{ background:rgba(248,113,113,.16); color:var(--red); }
+.calendar-day.day-neutral{ background:rgba(148,163,184,.14); color:var(--muted); }
+
+.calendar-day.day-up::after,
+.calendar-day.day-down::after,
+.calendar-day.day-neutral::after{
+    content:"";
+    position:absolute;
+    bottom:4px;
+    width:3.5px; height:3.5px;
+    border-radius:50%;
+}
+.calendar-day.day-up::after{ background:var(--green2); }
+.calendar-day.day-down::after{ background:var(--red); }
+.calendar-day.day-neutral::after{ background:var(--muted); }
+
+.calendar-day.today{ box-shadow:0 0 0 2px var(--gold); }
+
+.date-detail{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed var(--border);
+}
+.date-detail.hidden{ display:none; }
+
+.date-detail-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+.date-detail-header h4{ margin:0; font-size:14px; }
+
+.close-btn{
+    width:26px; height:26px;
+    border-radius:8px;
+    border:none;
+    background:#1A2434;
+    color:var(--muted);
+    font-size:12px;
 }
 
-#timeline-list{
+.detail-freedom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 12px;
+    border-radius:10px;
+    background:rgba(232,185,77,.10);
+    border:1px solid rgba(232,185,77,.25);
+    margin-bottom:8px;
+    font-size:13px;
+}
+.detail-freedom span{ color:var(--gold2); }
+.detail-freedom b{ font-size:15px; }
 
-display:flex;
-
-flex-direction:column;
-
-gap:16px;
-
-margin-top:18px;
-
-max-height:500px;
-
-overflow-y:auto;
-
+.detail-wealth{
+    padding:10px 12px;
+    border-radius:10px;
+    background:rgba(16,185,129,.08);
+    border:1px solid rgba(16,185,129,.22);
 }
 
-.timeline-row{
+.detail-wealth-total{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:13px;
+}
+.detail-wealth-total span{ color:var(--green2); }
+.detail-wealth-total b{ font-size:15px; }
 
-display:grid;
-
-grid-template-columns:90px 1fr 100px;
-
-gap:14px;
-
-align-items:center;
-
+.detail-wealth-breakdown{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 12px;
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px solid rgba(255,255,255,.06);
+    font-size:11px;
+    color:var(--muted);
 }
 
-.timeline-date{
-
-font-size:13px;
-
-color:var(--muted);
-
+.no-data{
+    color:var(--muted);
+    font-size:13px;
+    text-align:center;
+    padding:8px 0;
 }
 
-.timeline-bar-track{
-
-height:10px;
-
-background:#243244;
-
-border-radius:999px;
-
-overflow:hidden;
-
-}
-
-.timeline-bar{
-
-height:100%;
-
-background:linear-gradient(90deg,#10B981,#34D399);
-
-width:0;
-
-}
-
-.numeric{
-
-text-align:right;
-
-font-weight:700;
-
-}
-
-/* ==========================================================
-   DAILY THOUGHT
-========================================================== */
-
-#financeThought{
-
-font-size:17px;
-
-line-height:1.8;
-
-text-align:center;
-
-color:#E2E8F0;
-
-padding:12px 6px;
-
-font-style:italic;
-
-   }
-/* ==========================================================
-   GOAL MODAL
-========================================================== */
-
-.modal{
-position:fixed;
-inset:0;
-display:flex;
-justify-content:center;
-align-items:center;
-background:rgba(0,0,0,.70);
-backdrop-filter:blur(8px);
-z-index:9999;
-}
-
-.modal.hidden{
-display:none;
-}
-
-.modal-content{
-
-width:92%;
-max-width:430px;
-
-background:#111827;
-
-padding:28px;
-
-border-radius:24px;
-
-border:1px solid rgba(255,255,255,.08);
-
-box-shadow:0 25px 60px rgba(0,0,0,.45);
-
-}
-
-.modal-content h2{
-
-margin-bottom:22px;
-
-font-size:26px;
-
-font-weight:700;
-
-}
-
-.modal-content input{
-
-width:100%;
-
-height:56px;
-
-padding:0 18px;
-
-margin-bottom:16px;
-
-border:none;
-
-border-radius:14px;
-
-background:#172233;
-
-color:#fff;
-
-font-size:16px;
-
-outline:none;
-
-}
-
-.modal-buttons{
-
-display:flex;
-
-gap:14px;
-
-margin-top:10px;
-
-}
-
-.modal-buttons button{
-
-flex:1;
-
-height:52px;
-
-border:none;
-
-border-radius:14px;
-
-font-size:16px;
-
-font-weight:700;
-
-cursor:pointer;
-
-}
-
-#saveGoalBtn{
-
-background:#10B981;
-
-color:white;
-
-}
-
-#cancelGoalBtn{
-
-background:#374151;
-
-color:white;
-
+.footer-blessing{
+    text-align:center;
+    font-size:11px;
+    color:var(--gold2);
+    opacity:.75;
+    font-style:italic;
+    margin:18px 0 0;
 }
 
 /* ==========================================================
-   CELEBRATION
+   WIDER SCREENS
 ========================================================== */
 
-.celebration{
-
-position:fixed;
-
-inset:0;
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:center;
-
-align-items:center;
-
-background:rgba(0,0,0,.82);
-
-backdrop-filter:blur(10px);
-
-z-index:99999;
-
-animation:fadeIn .35s;
-
+@media(min-width:640px){
+    .main-content{ padding:32px; }
 }
 
-.celebration.hidden{
-
-display:none;
-
-}
-
-.celebration h1{
-
-font-size:54px;
-
-margin-bottom:20px;
-
-color:#10B981;
-
-text-shadow:0 0 30px rgba(16,185,129,.55);
-
-}
-
-.celebration p{
-
-font-size:24px;
-
-font-weight:600;
-
-color:#fff;
-
-text-align:center;
-
-max-width:420px;
-
-}
-
-@keyframes fadeIn{
-
-from{
-
-opacity:0;
-
-}
-
-to{
-
-opacity:1;
-
-}
-
-}
-
-/* ==========================================================
-   SCROLLBAR
-========================================================== */
-
-::-webkit-scrollbar{
-
-width:8px;
-
-}
-
-::-webkit-scrollbar-thumb{
-
-background:#10B981;
-
-border-radius:999px;
-
-}
-
-::-webkit-scrollbar-track{
-
-background:#0B1120;
-
-}
-
-/* ==========================================================
-   TABLET
-========================================================== */
-
-@media(max-width:1100px){
-
-.hero-layout{
-
-grid-template-columns:35fr 25fr 40fr;
-
-gap:16px;
-
-}
-
-.hero-right-info{
-
-grid-template-columns:repeat(2,1fr);
-
-gap:8px;
-
-}
-
-.grid-4{
-
-grid-template-columns:repeat(2,1fr);
-
-}
-
-.analytics-grid{
-
-grid-template-columns:1fr;
-
-}
-
-.stats-grid{
-
-grid-template-columns:repeat(3,1fr);
-
-}
-
-.goal-section{
-
-grid-template-columns:1fr;
-
-}
-
-.bottom-grid{
-
-grid-template-columns:1fr;
-
-}
-
-}
-
-/* ==========================================================
-   MOBILE
-========================================================== */
-
+/* Room for the fixed hamburger button on mobile (see navbar.css) */
 @media(max-width:768px){
-
-.main-content{
-
-padding:16px;
-
-padding-top:76px;
-
+    .main-content{ padding-top:76px; }
 }
-
-.finance-hero{
-
-padding:14px;
-
-border-radius:18px;
-
-}
-
-.hero-title{
-
-text-align:center;
-
-font-size:14px;
-
-margin-bottom:10px;
-
-}
-
-.hero-layout{
-
-grid-template-columns:35fr 25fr 40fr;
-
-gap:8px;
-
-align-items:center;
-
-}
-
-.hero-left-info{
-
-align-items:flex-start;
-
-text-align:left;
-
-}
-
-.hero-left-info h1{
-
-font-size:20px;
-
-}
-
-.hero-label{
-
-font-size:9px;
-
-margin-top:2px;
-
-margin-bottom:4px;
-
-}
-
-.hero-date-only{
-
-font-size:8px;
-
-}
-
-.ring-wrapper{
-
-width:72px;
-
-height:72px;
-
-margin:0 auto;
-
-}
-
-#goalRing{
-
-width:72px;
-
-height:72px;
-
-}
-
-.ring-center h1{
-
-font-size:16px;
-
-}
-
-.ring-center p{
-
-font-size:6px;
-
-}
-
-.hero-right-info{
-
-grid-template-columns:repeat(2,1fr);
-
-gap:6px;
-
-}
-
-.hero-stat{
-
-padding:6px;
-
-border-radius:8px;
-
-}
-
-.hero-stat h3{
-
-font-size:11px;
-
-margin-bottom:1px;
-
-}
-
-.hero-stat span{
-
-font-size:6px;
-
-line-height:1.2;
-
-display:block;
-
-}
-
-.progress-track{
-
-margin-top:10px;
-
-height:4px;
-
-}
-
-.card{
-
-padding:16px;
-
-border-radius:16px;
-
-}
-
-.card h3{
-
-font-size:15px;
-
-margin-bottom:10px;
-
-}
-
-.grid-4{
-
-grid-template-columns:1fr 1fr;
-
-gap:10px;
-
-}
-
-.grid-4 .card{
-
-min-height:auto;
-
-padding:14px;
-
-}
-
-.grid-4 h3{
-
-font-size:14px;
-
-}
-
-#savingAmount,
-
-#growthAmount,
-
-#emergencyAmount,
-
-#wealthAmount{
-
-font-size:20px;
-
-margin:10px 0;
-
-}
-
-.eye-btn{
-
-padding:8px 14px;
-
-font-size:13px;
-
-}
-
-.finance-grid{
-
-grid-template-columns:1fr;
-
-gap:12px;
-
-}
-
-.finance-grid input{
-
-height:46px;
-
-}
-
-.analytics-grid{
-
-grid-template-columns:1fr 1fr;
-
-gap:10px;
-
-}
-
-.analytics-grid .card:nth-child(3){
-
-grid-column:1 / -1;
-
-}
-
-.analytics-grid .card{
-
-min-height:auto;
-
-padding:14px;
-
-}
-
-#assetChart{
-
-max-width:130px;
-
-}
-
-.asset-legend{
-
-margin-top:12px;
-
-gap:6px;
-
-}
-
-.legend-item{
-
-font-size:11px;
-
-gap:6px;
-
-}
-
-.legend-dot{
-
-width:9px;
-
-height:9px;
-
-}
-
-.breakdown-row{
-
-padding:6px 0;
-
-font-size:12px;
-
-}
-
-.breakdown-row.total b{
-
-font-size:14px;
-
-}
-
-.stats-grid{
-
-grid-template-columns:1fr 1fr;
-
-gap:10px;
-
-}
-
-.stats-grid .card{
-
-min-height:auto;
-
-padding:14px;
-
-}
-
-.stats-grid h2{
-
-font-size:19px;
-
-}
-
-.stats-grid h3{
-
-font-size:12px;
-
-}
-
-.goal-section{
-
-grid-template-columns:1fr;
-
-}
-
-.bottom-grid{
-
-grid-template-columns:1fr 1fr;
-
-gap:10px;
-
-}
-
-.bottom-grid .card{
-
-padding:12px;
-
-}
-
-.calendar-legend{
-
-gap:8px;
-
-margin-top:8px;
-
-flex-wrap:wrap;
-
-font-size:9px;
-
-}
-
-.calendar-legend .dot{
-
-width:6px;
-
-height:6px;
-
-}
-
-.calendar-nav{
-
-margin-top:8px;
-
-}
-
-.cal-nav-btn{
-
-width:24px;
-
-height:24px;
-
-font-size:13px;
-
-}
-
-.cal-month-label{
-
-font-size:11px;
-
-}
-
-.calendar-weekdays{
-
-gap:3px;
-
-margin-top:8px;
-
-margin-bottom:2px;
-
-}
-
-.calendar-weekdays span{
-
-font-size:7px;
-
-}
-
-#wealthCalendar{
-
-grid-template-columns:repeat(7,1fr);
-
-gap:3px;
-
-}
-
-.calendar-day{
-
-font-size:8px;
-
-}
-
-#timeline-list{
-
-gap:8px;
-
-margin-top:8px;
-
-max-height:320px;
-
-}
-
-.timeline-date{
-
-font-size:9px;
-
-}
-
-.numeric{
-
-font-size:10px;
-
-}
-
-.timeline-row{
-
-grid-template-columns:34px 1fr 46px;
-
-gap:4px;
-
-}
-
-}
-
-/* ==========================================================
-   SMALL PHONES
-========================================================== */
-
-@media(max-width:480px){
-
-.main-content{
-
-padding:12px;
-
-padding-top:72px;
-
-}
-
-.finance-hero{
-
-padding:12px;
-
-}
-
-.hero-left-info h1{
-
-font-size:17px;
-
-}
-
-.ring-wrapper{
-
-width:62px;
-
-height:62px;
-
-}
-
-#goalRing{
-
-width:62px;
-
-height:62px;
-
-}
-
-.ring-center h1{
-
-font-size:14px;
-
-}
-
-.grid-4{
-
-grid-template-columns:1fr 1fr;
-
-gap:8px;
-
-}
-
-#savingAmount,
-
-#growthAmount,
-
-#emergencyAmount,
-
-#wealthAmount{
-
-font-size:18px;
-
-}
-
-.stats-grid{
-
-grid-template-columns:1fr 1fr;
-
-}
-
-.stats-grid h2{
-
-font-size:17px;
-
-}
-
-#wealthCalendar{
-
-grid-template-columns:repeat(7,1fr);
-
-gap:4px;
-
-}
-
-.calendar-day{
-
-font-size:9px;
-
-}
-
-.calendar-weekdays{
-
-gap:4px;
-
-}
-
-.calendar-weekdays span{
-
-font-size:8px;
-
-}
-
-}
-
-/* ==========================================================
-   FINAL PREMIUM POLISH
-========================================================== */
-
-*{
-box-sizing:border-box;
-}
-
-html{
-scroll-behavior:smooth;
-}
-
-body{
-background:#0B1120;
-color:#F8FAFC;
-font-family:Inter,sans-serif;
-}
-
-/* Smooth animation */
-
-.card,
-.finance-hero,
-.goal-item,
-.milestone,
-.calendar-day,
-.hero-stat{
-
-transition:
-transform .25s ease,
-box-shadow .25s ease,
-border-color .25s ease;
-
-}
-
-.card:hover,
-.goal-item:hover,
-.calendar-day:hover,
-.hero-stat:hover,
-.milestone:hover{
-
-border-color:#10B981;
-
-box-shadow:
-0 18px 40px rgba(16,185,129,.12);
-
-}
-
-/* Buttons */
-
-button{
-
-transition:.25s;
-
-}
-
-button:hover{
-
-transform:translateY(-2px);
-
-}
-
-button:active{
-
-transform:scale(.98);
-
-}
-
-/* Inputs */
-
-input:focus{
-
-border-color:#10B981 !important;
-
-box-shadow:
-0 0 0 4px rgba(16,185,129,.15);
-
-}
-
-/* Hero Left */
-
-.hero-left-info h1{
-
-line-height:1.1;
-
-letter-spacing:normal;
-
-}
-
-.hero-goal h3{
-
-color:#10B981;
-
-}
-
-.hero-date h3{
-
-color:#E5E7EB;
-
-}
-
-/* Ring */
-
-.ring-wrapper{
-
-filter:drop-shadow(0 15px 30px rgba(16,185,129,.18));
-
-}
-
-/* Cards */
-
-.grid-4 .card{
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:space-between;
-
-}
-
-.highlight-card{
-
-background:
-
-linear-gradient(
-135deg,
-#111827,
-#182437);
-
-}
-
-/* Analytics */
-
-.analytics-grid .card{
-
-min-height:260px;
-
-}
-
-#assetChart{
-
-display:block;
-
-margin:auto;
-
-max-width:170px;
-
-}
-
-.asset-legend{
-
-display:flex;
-
-flex-direction:column;
-
-gap:10px;
-
-margin-top:20px;
-
-}
-
-.legend-item{
-
-display:flex;
-
-align-items:center;
-
-gap:10px;
-
-font-size:14px;
-
-}
-
-.legend-dot{
-
-width:12px;
-
-height:12px;
-
-border-radius:50%;
-
-flex-shrink:0;
-
-}
-
-.legend-label{
-
-flex:1;
-
-color:var(--muted);
-
-}
-
-.legend-pct{
-
-font-weight:700;
-
-color:#F8FAFC;
-
-}
-
-.breakdown-row{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:10px 0;
-
-font-size:15px;
-
-}
-
-.breakdown-row span{
-
-color:var(--muted);
-
-}
-
-.breakdown-row.total b{
-
-color:var(--green);
-
-font-size:18px;
-
-}
-
-#wealthChart{
-
-width:100%;
-
-height:260px;
-
-}
-
-/* Goal list */
-
-.goal-item{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-gap:20px;
-
-}
-
-.goal-left{
-  flex:1;
-
-}
-
-.goal-right{
-
-display:flex;
-
-gap:12px;
-
-}
-.goal-right button{
-
-width:42px;
-
-height:42px;
-
-border:none;
-
-border-radius:12px;
-
-background:#1F2937;
-
-color:white;
-
-}
-
-/* Calendar */
-
-.calendar-day{
-
-min-height:0;
-
-}
-
-.view-all-btn{
-
-border:1px solid var(--border);
-
-border-radius:999px;
-
-padding:8px 16px;
-
-background:#1A2434;
-
-color:var(--green2);
-
-font-size:13px;
-
-font-weight:600;
-
-cursor:pointer;
-
-}
-
-.view-all-btn:hover{
-
-background:#243244;
-
-}
-
-.timeline-bar{
-
-transition:width .8s ease;
-
-}
-
-/* Thought */
-
-#financeThought{
-
-font-size:16px;
-
-max-width:900px;
-
-margin:auto;
-
-}
-
-/* ==========================================================
-   MOBILE — FINAL OVERRIDES
-   Placed last on purpose: some earlier unconditional rules
-   (e.g. .analytics-grid .card min-height) would otherwise
-   win over the mobile block above since they appear later
-   in the file. These re-assert the compact mobile sizing.
-========================================================== */
-
-@media(max-width:768px){
-
-.analytics-grid .card{
-
-min-height:auto;
-
-}
-
-.grid-4 .card{
-
-min-height:auto;
-
-}
-
-.stats-grid .card{
-
-min-height:auto;
-
-}
-
-}
-
-/* End */
