@@ -28,14 +28,26 @@
 
         <div class="settings-row settings-row-column">
           <div>
-            <h3>Change Passcode</h3>
-            <p>Update the passcode used to unlock LifeOS on this device.</p>
+            <h3>Change Page Passcode</h3>
+            <p>Every page has its own passcode. Pick a page, then enter its current passcode and a new one to change it.</p>
           </div>
 
           <form id="passcode-form" class="passcode-form">
-            <input type="password" id="current-passcode" inputmode="numeric" placeholder="Current passcode" required>
-            <input type="password" id="new-passcode" inputmode="numeric" placeholder="New passcode (min 6 characters)" required>
-            <input type="password" id="confirm-passcode" inputmode="numeric" placeholder="Confirm new passcode" required>
+            <select id="passcode-page" required>
+              <option value="dashboard">Dashboard</option>
+              <option value="daily-standards">Daily Standards</option>
+              <option value="standards">Daily Standards (legacy page)</option>
+              <option value="finance">Finance</option>
+              <option value="financial-time-explorer">Financial Time Explorer</option>
+              <option value="time-explorer">Time Explorer (legacy page)</option>
+              <option value="fitness">Fitness</option>
+              <option value="vision">Vision Board</option>
+              <option value="trading">Trade Guardian</option>
+              <option value="settings">Settings</option>
+            </select>
+            <input type="password" id="current-passcode" placeholder="Current passcode for that page" required>
+            <input type="password" id="new-passcode" placeholder="New passcode (min 4 characters)" required>
+            <input type="password" id="confirm-passcode" placeholder="Confirm new passcode" required>
             <div class="passcode-message" id="passcode-message"></div>
             <button type="submit" class="btn-secondary">Update Passcode</button>
           </form>
@@ -51,7 +63,7 @@
         <div class="settings-row">
           <div>
             <h3>Log out</h3>
-            <p>End your current session on this device.</p>
+            <p>End your sessions on every page on this device.</p>
           </div>
           <button class="btn-secondary" id="logout-btn">Log out</button>
         </div>
