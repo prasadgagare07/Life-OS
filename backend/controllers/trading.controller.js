@@ -28,7 +28,30 @@ async function addEntry(req, res) {
   }
 }
 
+async function getAccount(req, res) {
+  try {
+    const account = await Trading.getAccount();
+    res.json(account);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to load account details' });
+  }
+}
+
+async function setAccount(req, res) {
+  try {
+    const { upi_id, bank_name } = req.body;
+    const account = await Trading.setAccount({ upi_id, bank_name });
+    res.json(account);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save account details' });
+  }
+}
+
 module.exports = {
   list,
-  addEntry
+  addEntry,
+  getAccount,
+  setAccount
 };
