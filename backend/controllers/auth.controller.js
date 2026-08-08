@@ -6,7 +6,23 @@ const config = require('../config/config');
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
 
-// In-memory brute-force tracker, keyed by "purpose:ip".
+// Every page LifeOS serves (dashboard, finance, fitness, ...) has its own
+// row in auth_settings and its own passcode. Knowing one page's passcode
+// never unlocks another page.
+const VALID_PAGES = [
+  'dashboard',
+  'daily-standards',
+  'standards',
+  'finance',
+  'financial-time-explorer',
+  'time-explorer',
+  'fitness',
+  'vision',
+  'trading',
+  'settings',
+];
+
+// In-memory brute-force tracker, keyed by "purpose:page:ip".
 // Resets on server restart — fine for a single-user personal app.
 const attempts = new Map();
 
@@ -40,16 +56,22 @@ function clearAttempts(key) {
   attempts.delete(key);
 }
 
-async function getPasscodeHash() {
+async function getPasscodeHash(page) {
   const { rows } = await pool.query(
-    `SELECT passcode_hash FROM auth_settings ORDER BY id DESC LIMIT 1`
+    `SELECT passcode_hash FROM auth_settings WHERE page = $1`,
+    [page]
   );
   return rows[0]?.passcode_hash || null;
 }
 
 async function login(req, res) {
-  const { passcode } = req.body;
-  const key = `login:${getClientIp(req)}`;
+  const { page, passcode } = req.body;
+
+  if (!page || !VALID_PAGES.includes(page)) {
+    return res.status(400).json({ error: 'Unknown page' });
+  }
+
+  const key = `login:${page}:${getClientIp(req)}`;
 
   const lockoutMessage = checkLockout(key);
   if (lockoutMessage) {
@@ -60,7 +82,7 @@ async function login(req, res) {
     return res.status(400).json({ error: 'Passcode is required' });
   }
 
-  const hash = await getPasscodeHash();
+  const hash = await getPasscodeHash(page);
   const valid = hash ? await bcrypt.compare(passcode, hash) : false;
 
   if (!valid) {
@@ -71,17 +93,25 @@ async function login(req, res) {
   clearAttempts(key);
 
   const token = jwt.sign(
-    { authorized: true },
+    { page, authorized: true },
     config.jwtSecret,
     { expiresIn: config.jwtExpiresIn }
   );
 
-  res.json({ token });
+  res.json({ token, page });
 }
 
+// Changing a page's passcode requires being logged into Settings *and*
+// knowing that page's current passcode — req.authPage is guaranteed to be
+// 'settings' by the requireAuth(['settings']) middleware on this route.
 async function changePasscode(req, res) {
-  const { currentPasscode, newPasscode } = req.body;
-  const key = `change:${getClientIp(req)}`;
+  const { page, currentPasscode, newPasscode } = req.body;
+
+  if (!page || !VALID_PAGES.includes(page)) {
+    return res.status(400).json({ error: 'Unknown page' });
+  }
+
+  const key = `change:${page}:${getClientIp(req)}`;
 
   const lockoutMessage = checkLockout(key);
   if (lockoutMessage) {
@@ -92,11 +122,11 @@ async function changePasscode(req, res) {
     return res.status(400).json({ error: 'Current and new passcode are required' });
   }
 
-  if (newPasscode.length < 6) {
-    return res.status(400).json({ error: 'New passcode must be at least 6 characters' });
+  if (newPasscode.length < 4) {
+    return res.status(400).json({ error: 'New passcode must be at least 4 characters' });
   }
 
-  const hash = await getPasscodeHash();
+  const hash = await getPasscodeHash(page);
   const valid = hash ? await bcrypt.compare(currentPasscode, hash) : false;
 
   if (!valid) {
@@ -109,12 +139,11 @@ async function changePasscode(req, res) {
   const newHash = await bcrypt.hash(newPasscode, 10);
 
   await pool.query(
-    `UPDATE auth_settings SET passcode_hash = $1, updated_at = now()
-     WHERE id = (SELECT id FROM auth_settings ORDER BY id DESC LIMIT 1)`,
-    [newHash]
+    `UPDATE auth_settings SET passcode_hash = $1, updated_at = now() WHERE page = $2`,
+    [newHash, page]
   );
 
   res.json({ success: true });
 }
 
-module.exports = { login, changePasscode };
+module.exports = { login, changePasscode, VALID_PAGES };
