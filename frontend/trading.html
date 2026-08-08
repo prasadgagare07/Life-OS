@@ -18,6 +18,151 @@ body{padding-bottom:40px;}
 
 .wrap{max-width:520px; margin:0 auto; padding:22px 16px;}
 
+/* ===========================
+   Sidebar navigation (added)
+   Scoped to this page's own dark/green palette on
+   purpose — not using global.css/navbar.css tokens,
+   so the rest of the page's look stays untouched.
+=========================== */
+
+.app-shell{
+  display:flex;
+  min-height:100vh;
+}
+
+.main-content{
+  flex:1;
+  min-width:0;
+}
+
+.sidebar{
+  width:220px;
+  flex-shrink:0;
+  background:#080c0a;
+  border-right:1px solid var(--border);
+  padding:28px 18px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:'Anton',sans-serif;
+  font-size:18px;
+  letter-spacing:.5px;
+  color:#fff;
+}
+
+.brand .mark{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--green),var(--green-glow));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+}
+
+.nav-links{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  flex:1;
+}
+
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:12px;
+  color:var(--muted);
+  font-size:13.5px;
+  font-weight:600;
+  min-height:44px;
+  transition:background .15s ease,color .15s ease;
+}
+
+.nav-link:hover{ background:var(--card); color:#fff; }
+
+.nav-link.active{
+  background:var(--card);
+  color:#fff;
+  box-shadow:inset 3px 0 0 var(--green-glow);
+}
+
+.nav-link .icon{ font-size:16px; }
+
+.sidebar-footer{
+  border-top:1px solid var(--border);
+  padding-top:14px;
+  font-size:11.5px;
+  color:var(--muted);
+}
+
+/* Mobile — hamburger + off-canvas drawer */
+
+.sidebar-toggle{
+  display:none;
+  position:fixed;
+  top:14px;
+  left:14px;
+  z-index:1100;
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:0;
+}
+
+.sidebar-toggle span{
+  display:block;
+  width:20px;
+  height:2px;
+  background:#fff;
+  border-radius:2px;
+}
+
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:999;
+}
+
+.sidebar-overlay.visible{ display:block; }
+
+@media(max-width:768px){
+  .app-shell{ flex-direction:column; }
+  .sidebar-toggle{ display:flex; }
+  .main-content{ padding-top:76px; }
+
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    width:260px;
+    max-width:80vw;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    z-index:1050;
+    overflow-y:auto;
+  }
+
+  .sidebar.open{ transform:translateX(0); }
+}
+
 header{text-align:center; margin-bottom:18px;}
 .shield-emoji{font-size:34px; filter:drop-shadow(0 0 14px rgba(34,197,94,.6)); animation:shieldPulse 3s ease-in-out infinite;}
 @keyframes shieldPulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.08);}}
@@ -144,6 +289,10 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 </style>
 </head>
 <body>
+
+<div class="app-shell">
+<aside class="sidebar" id="sidebar"></aside>
+<main class="main-content">
 
 <div class="wrap">
 
@@ -274,18 +423,20 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   </div>
 
 </div>
+</main>
+</div>
 
 <script src="js/api.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/app.js"></script>
 <script>
   // ===== Persistence: real daily closes, saved on the server (shared with
   // the Dashboard's "Trade Guardian" card and the Financial Time Explorer
   // calendar — all three now read from the same backend table). =====
   const DAILY_TARGET = 5000;
   const GRID_SIZE = 30;
-  const CURRENT_FUNDS = 29934.74; // set directly in code — not user-editable
-  const ACCOUNT_KEY = 'tradeGuardian_account'; // UPI/bank stay local — no backend table for these yet
+  const CURRENT_FUNDS = 25434.74; // set directly in code — not user-editable
 
   async function fetchCloses(){
     try {
@@ -304,11 +455,18 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     await api.post('/trading/entries', { entry_date, profit });
   }
 
-  function loadAccount(){
-    try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY)) || { upi:'', bank:'' }; }
-    catch { return { upi:'', bank:'' }; }
+  async function fetchAccount(){
+    try {
+      return await api.get('/trading/account');
+    } catch (err) {
+      console.error(err);
+      showToast('Could not load account details', 'error');
+      return { upi_id: '', bank_name: '' };
+    }
   }
-  function saveAccount(obj){ localStorage.setItem(ACCOUNT_KEY, JSON.stringify(obj)); }
+  async function saveAccount(upi_id, bank_name){
+    await api.put('/trading/account', { upi_id, bank_name });
+  }
 
   function todayKey(){
     const d = new Date();
@@ -372,9 +530,9 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     profitEl.classList.toggle('neg', actualTotal < 0);
 
     // Account details
-    const acc = loadAccount();
-    document.getElementById('upiVal').textContent = acc.upi ? acc.upi : 'Not set';
-    document.getElementById('bankVal').textContent = acc.bank ? acc.bank : 'Not set';
+    const acc = await fetchAccount();
+    document.getElementById('upiVal').textContent = acc.upi_id ? acc.upi_id : 'Not set';
+    document.getElementById('bankVal').textContent = acc.bank_name ? acc.bank_name : 'Not set';
 
     // Lock today's close once it's been saved — unlocks automatically at 12:00 AM
     const logBtn = document.getElementById('logBtn');
@@ -484,6 +642,22 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     }
   });
 
+  document.getElementById('editAccountBtn').addEventListener('click', async () => {
+    const acc = await fetchAccount();
+    const upi = prompt('Enter UPI ID', acc.upi_id || '');
+    if (upi === null) return;
+    const bank = prompt('Enter Bank Name', acc.bank_name || '');
+    if (bank === null) return;
+
+    try {
+      await saveAccount(upi.trim(), bank.trim());
+      render();
+    } catch (err) {
+      console.error(err);
+      showToast('Could not save account details — try again', 'error');
+    }
+  });
+
   render();
 
   // Re-render every minute so the lock releases automatically at 12:00 AM
@@ -518,4 +692,4 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   });
 </script>
 </body>
-        </html>
+  </html>
