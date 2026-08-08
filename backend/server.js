@@ -41,24 +41,53 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
 
     await pool.query(authMigration);
 
-    const { rows: existingAuth } = await pool.query(
-      `SELECT id FROM auth_settings LIMIT 1`
+    // Move auth_settings from one shared passcode to one row per page.
+    const pageAuthMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '008_page_auth_settings.sql'),
+      'utf8'
     );
 
-    if (existingAuth.length === 0) {
-      const seedHash = process.env.PASSCODE_HASH || (await bcrypt.hash('123456', 10));
+    await pool.query(pageAuthMigration);
 
+    // Every page gets its own passcode, seeded with a known default word so
+    // it can be logged into for the first time. Change each one from
+    // Settings — Settings' own default passcode is "control".
+    const DEFAULT_PAGE_PASSCODES = {
+      dashboard: 'horizon',
+      'daily-standards': 'discipline',
+      standards: 'consistency',
+      finance: 'abundance',
+      'financial-time-explorer': 'foresight',
+      'time-explorer': 'patience',
+      fitness: 'strength',
+      vision: 'purpose',
+      trading: 'courage',
+      settings: 'control',
+    };
+
+    const { rows: existingPages } = await pool.query(
+      `SELECT page FROM auth_settings`
+    );
+    const existingPageSet = new Set(existingPages.map((row) => row.page));
+    const seededPages = [];
+
+    for (const [page, defaultPasscode] of Object.entries(DEFAULT_PAGE_PASSCODES)) {
+      if (existingPageSet.has(page)) continue;
+
+      const hash = await bcrypt.hash(defaultPasscode, 10);
       await pool.query(
-        `INSERT INTO auth_settings (passcode_hash) VALUES ($1)`,
-        [seedHash]
+        `INSERT INTO auth_settings (page, passcode_hash) VALUES ($1, $2)`,
+        [page, hash]
       );
+      seededPages.push(`${page} → "${defaultPasscode}"`);
+    }
 
-      if (!process.env.PASSCODE_HASH) {
-        console.warn(
-          '⚠️  No PASSCODE_HASH was set — seeded with the default passcode "123456".\n' +
-          '   Log in and change it immediately from Settings → Change Passcode.'
-        );
-      }
+    if (seededPages.length > 0) {
+      console.warn(
+        '⚠️  Seeded default passcodes for these pages:\n' +
+        seededPages.map((line) => `   ${line}`).join('\n') +
+        '\n   Log into each one and change it from Settings → Change Passcode.'
+      );
     }
 
     const visionSeed = fs.readFileSync(
