@@ -3,7 +3,7 @@ const router = express.Router();
 const requireAuth = require('../middleware/auth');
 const standardsController = require('../controllers/standards.controller');
 
-router.use(requireAuth);
+router.use(requireAuth(['daily-standards', 'standards', 'dashboard']));
 
 router.get('/', standardsController.list);
 router.get('/today', standardsController.getToday);
