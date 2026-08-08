@@ -6,7 +6,7 @@ const requireAuth = require("../middleware/auth");
 
 const controller = require("../controllers/financialEngine.controller");
 
-router.use(requireAuth);
+router.use(requireAuth(['financial-time-explorer', 'dashboard']));
 
 router.get("/", controller.getSimulation);
 
