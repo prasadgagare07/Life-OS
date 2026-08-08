@@ -3,7 +3,7 @@ const router = express.Router();
 const requireAuth = require('../middleware/auth');
 const fitnessController = require('../controllers/fitness.controller');
 
-router.use(requireAuth);
+router.use(requireAuth(['fitness', 'dashboard']));
 
 router.get('/goal', fitnessController.getGoal);
 router.put('/goal', fitnessController.setGoal);
