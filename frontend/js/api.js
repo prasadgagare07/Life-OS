@@ -3,8 +3,20 @@
 // to your backend's full URL, e.g. 'https://lifeos-api.onrender.com/api'.
 const API_BASE = '/api';
 
+// Each page has its own passcode and its own token, stored under its own
+// localStorage key, so unlocking one page never unlocks another.
+function getCurrentPage() {
+  const file = window.location.pathname.split('/').pop() || 'dashboard.html';
+  return file.replace(/\.html$/, '') || 'dashboard';
+}
+
+function getPageTokenKey(page) {
+  return `lifeos_token_${page}`;
+}
+
 async function apiRequest(path, { method = 'GET', body } = {}) {
-  const token = localStorage.getItem('lifeos_token');
+  const page = getCurrentPage();
+  const token = localStorage.getItem(getPageTokenKey(page));
 
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -20,8 +32,8 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
   // session to log out of yet). Only auto-redirect on 401s from *other*
   // endpoints, which mean an existing token expired or was invalidated.
   if (res.status === 401 && path !== '/auth/login') {
-    localStorage.removeItem('lifeos_token');
-    window.location.href = '/index.html';
+    localStorage.removeItem(getPageTokenKey(page));
+    window.location.href = `/index.html?page=${encodeURIComponent(page)}`;
     return;
   }
 
