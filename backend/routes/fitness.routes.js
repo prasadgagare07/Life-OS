@@ -7,6 +7,8 @@ router.use(requireAuth);
 
 router.get('/goal', fitnessController.getGoal);
 router.put('/goal', fitnessController.setGoal);
+router.get('/photos', fitnessController.getPhotos);
+router.post('/photos', fitnessController.savePhoto);
 router.get('/', fitnessController.list);
 router.post('/', fitnessController.save);
 
