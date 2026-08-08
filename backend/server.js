@@ -85,6 +85,23 @@ const tradingMigration = fs.readFileSync(
 
 await pool.query(tradingMigration);
 
+// Fitness Migration — adds steps/water/protein/sleep/rules/lock columns
+// plus a photos table, so nothing fitness.js tracks lives only in the browser.
+const fitnessMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '006_fitness_full.sql'),
+  'utf8'
+);
+
+await pool.query(fitnessMigration);
+
+// Trade Guardian account details (UPI / bank) — was localStorage-only.
+const tradingAccountMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '007_trading_account.sql'),
+  'utf8'
+);
+
+await pool.query(tradingAccountMigration);
+
 console.log('✅ Database initialized');
 
 app.listen(config.port, () => {
