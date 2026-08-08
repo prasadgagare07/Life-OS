@@ -1,5 +1,9 @@
 // =======================================
-// LifeOS — Fitness (localStorage-driven)
+// LifeOS — Fitness
+// Persisted entirely through /api/fitness — no browser
+// storage. Every tap saves straight to Postgres so nothing
+// is lost if history/cache/cookies are cleared, or you
+// switch devices.
 // =======================================
 
 const RULES = [
@@ -28,34 +32,92 @@ function blankEntry(date){
   };
 }
 
-function loadJSON(key, fallback){
-  try { const v = JSON.parse(localStorage.getItem(key)); return v == null ? fallback : v; }
-  catch { return fallback; }
+// Server rows -> the same shape the rest of this file already works with.
+function entryFromRow(row){
+  return {
+    date: row.entry_date,
+    weight: row.weight != null ? Number(row.weight) : null,
+    steps: row.steps || 0,
+    water_l: Number(row.water_l) || 0,
+    protein_g: row.protein_g || 0,
+    sleep_hours: Number(row.sleep_hours) || 0,
+    workout_done: !!row.workout_done,
+    workout_minutes: row.workout_minutes || 0,
+    locked: !!row.locked,
+    rules: Object.assign(
+      { junk:false, clean_diet:false, no_sugar:false, late_night:false, calorie_goal:false, screen_free:false },
+      row.rules || {}
+    )
+  };
 }
-function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
 
-let goalWeight = loadJSON('lifeos_fitness_goal', 80);
-let startWeight = loadJSON('lifeos_fitness_start_weight', null);
-let history = loadJSON('lifeos_fitness_history', []); // array of finished-day entries
-let bestStreak = loadJSON('lifeos_fitness_best_streak', 0);
-let photos = loadJSON('lifeos_fitness_photos', {});
-let today = loadJSON('lifeos_fitness_today', null);
+let goalWeight = 80;
+let startWeight = null;
+let history = [];               // finished past days, most-recent-first is not required
+let today = blankEntry(todayKey());
+let bestStreak = 0;
+let photos = {};
 
-// Day rollover: if the stored "today" entry is from a previous day,
-// archive it into history and start a fresh (unlocked) one.
-(function rollover(){
-  const key = todayKey();
-  if (!today) { today = blankEntry(key); saveJSON('lifeos_fitness_today', today); return; }
-  if (today.date !== key) {
-    history.push(today);
-    history = history.slice(-120);
-    saveJSON('lifeos_fitness_history', history);
-    today = blankEntry(key);
-    saveJSON('lifeos_fitness_today', today);
+// ---------- Persistence (server) ----------
+
+async function persistToday(){
+  try {
+    await api.post('/fitness', {
+      date: today.date,
+      weight: today.weight,
+      workout_done: today.workout_done,
+      workout_minutes: today.workout_minutes,
+      steps: today.steps,
+      water_l: today.water_l,
+      protein_g: today.protein_g,
+      sleep_hours: today.sleep_hours,
+      locked: today.locked,
+      rules: today.rules
+    });
+  } catch (err) {
+    showToast(err.message || 'Could not save — try again', 'error');
   }
-})();
+}
 
-function saveToday(){ saveJSON('lifeos_fitness_today', today); }
+async function persistGoal(){
+  try {
+    await api.put('/fitness/goal', { goal_weight: goalWeight, start_weight: startWeight });
+  } catch (err) {
+    showToast(err.message || 'Could not save goal — try again', 'error');
+  }
+}
+
+async function persistPhoto(slot, dataUrl){
+  try {
+    await api.post('/fitness/photos', { slot, data_url: dataUrl });
+  } catch (err) {
+    showToast(err.message || 'Could not save photo — try again', 'error');
+  }
+}
+
+async function loadFitness(){
+  try {
+    const [goal, entries, photoMap] = await Promise.all([
+      api.get('/fitness/goal'),
+      api.get('/fitness?limit=120'),
+      api.get('/fitness/photos')
+    ]);
+
+    goalWeight = goal ? Number(goal.goal_weight) : 80;
+    startWeight = (goal && goal.start_weight != null) ? Number(goal.start_weight) : null;
+    photos = photoMap || {};
+
+    const tKey = todayKey();
+    const todayRow = entries.find(e => e.entry_date === tKey);
+    today = todayRow ? entryFromRow(todayRow) : blankEntry(tKey);
+    history = entries.filter(e => e.entry_date !== tKey).map(entryFromRow);
+
+    renderAll();
+    renderPhotos();
+  } catch (err) {
+    showToast(err.message || 'Could not load fitness data', 'error');
+  }
+}
 
 // ---------- Rules / scoring (generalised over any entry) ----------
 
@@ -117,20 +179,20 @@ function renderRules(){
   }).join('');
 
   list.querySelectorAll('.rule-row').forEach(row => {
-    row.addEventListener('click', () => {
+    row.addEventListener('click', async () => {
       if (checkLock()) return;
       const key = row.dataset.key;
       const type = row.dataset.type;
       if (type === 'manual') {
         today.rules[key] = !today.rules[key];
-        saveToday();
+        await persistToday();
         renderAll();
       } else {
         const rule = RULES.find(r => r.key === key);
         const val = promptNumber(rule.label, today[rule.field], rule.unit);
         if (val !== null) {
           today[rule.field] = val;
-          saveToday();
+          await persistToday();
           renderAll();
         }
       }
@@ -141,6 +203,34 @@ function renderRules(){
   document.getElementById('lockIndicator').textContent = today.locked ? '🔒 Locked' : '';
 }
 
+// Longest-ever run of workout_done days, computed straight from history —
+// no separate counter to fall out of sync (mirrors Trade Guardian's approach).
+function isNextDay(a, b){
+  const [ay,am,ad] = a.split('-').map(Number);
+  const [by,bm,bd] = b.split('-').map(Number);
+  return (new Date(by,bm-1,bd) - new Date(ay,am-1,ad)) === 86400000;
+}
+function computeBestStreakEver(){
+  const byDate = {};
+  history.forEach(h => byDate[h.date] = h);
+  byDate[today.date] = today;
+  const dates = Object.keys(byDate).sort();
+
+  let best = 0, run = 0, prevDate = null;
+  dates.forEach(dateStr => {
+    const entry = byDate[dateStr];
+    const consecutive = prevDate && isNextDay(prevDate, dateStr);
+    if (entry.workout_done) {
+      run = consecutive ? run + 1 : 1;
+      best = Math.max(best, run);
+    } else {
+      run = 0;
+    }
+    prevDate = dateStr;
+  });
+  return best;
+}
+
 function renderScoreAndStreak(){
   const score = scoreOf(today);
   document.getElementById('scoreNum').textContent = score;
@@ -149,7 +239,7 @@ function renderScoreAndStreak(){
   ring.style.strokeDashoffset = offset;
 
   const streak = computeStreak();
-  if (streak > bestStreak) { bestStreak = streak; saveJSON('lifeos_fitness_best_streak', bestStreak); }
+  bestStreak = Math.max(computeBestStreakEver(), streak);
   document.getElementById('streakNum').textContent = streak;
   document.getElementById('bestStreak').textContent = `Best: ${bestStreak} Days`;
 }
@@ -216,11 +306,11 @@ function refreshSaveButton(){
   document.body.classList.toggle('locked-day', !!today.locked);
 }
 
-document.getElementById('saveDayBtn').addEventListener('click', () => {
+document.getElementById('saveDayBtn').addEventListener('click', async () => {
   if (today.locked) return;
   if (!confirm("Once saved, today's fitness data can't be edited until tomorrow. Continue?")) return;
   today.locked = true;
-  saveToday();
+  await persistToday();
   renderAll();
   showToast('Day saved — see you tomorrow!', 'success');
 });
@@ -455,49 +545,55 @@ function renderAll(){
 
 // ---------- Interactions ----------
 
-document.getElementById('weightVal').addEventListener('click', () => {
+document.getElementById('weightVal').addEventListener('click', async () => {
   if (checkLock()) return;
   const val = promptNumber('Current weight', today.weight ?? '', 'kg');
   if (val === null) return;
   today.weight = val;
-  if (startWeight === null) { startWeight = val; saveJSON('lifeos_fitness_start_weight', startWeight); }
-  saveToday();
+  if (startWeight === null) { startWeight = val; await persistGoal(); }
+  await persistToday();
   renderAll();
   showToast('Weight updated', 'success');
 });
 
 // Goal weight is a standing target, not part of the daily lock
-document.getElementById('goalVal').addEventListener('click', () => {
+document.getElementById('goalVal').addEventListener('click', async () => {
   const val = promptNumber('Goal weight', goalWeight, 'kg');
   if (val === null) return;
   goalWeight = val;
-  saveJSON('lifeos_fitness_goal', goalWeight);
+  await persistGoal();
   renderAll();
   showToast('Goal updated', 'success');
 });
 
-document.getElementById('stepsVal').addEventListener('click', () => {
+document.getElementById('stepsVal').addEventListener('click', async () => {
   if (checkLock()) return;
   const val = promptNumber('Steps today', today.steps, '');
   if (val === null) return;
-  today.steps = val; saveToday(); renderAll();
+  today.steps = val;
+  await persistToday();
+  renderAll();
 });
 
-document.getElementById('waterVal').addEventListener('click', () => {
+document.getElementById('waterVal').addEventListener('click', async () => {
   if (checkLock()) return;
   const val = promptNumber('Water intake', today.water_l, 'L');
   if (val === null) return;
-  today.water_l = val; saveToday(); renderAll();
+  today.water_l = val;
+  await persistToday();
+  renderAll();
 });
 
-document.getElementById('proteinVal').addEventListener('click', () => {
+document.getElementById('proteinVal').addEventListener('click', async () => {
   if (checkLock()) return;
   const val = promptNumber('Protein intake', today.protein_g, 'g');
   if (val === null) return;
-  today.protein_g = val; saveToday(); renderAll();
+  today.protein_g = val;
+  await persistToday();
+  renderAll();
 });
 
-document.getElementById('workoutCard').addEventListener('click', () => {
+document.getElementById('workoutCard').addEventListener('click', async () => {
   if (checkLock()) return;
   today.workout_done = !today.workout_done;
   if (today.workout_done) {
@@ -506,7 +602,7 @@ document.getElementById('workoutCard').addEventListener('click', () => {
   } else {
     today.workout_minutes = 0;
   }
-  saveToday();
+  await persistToday();
   renderAll();
 });
 
@@ -529,9 +625,9 @@ photoInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = async () => {
     photos[pendingSlot] = reader.result;
-    saveJSON('lifeos_fitness_photos', photos);
+    await persistPhoto(pendingSlot, reader.result);
     renderPhotos();
     showToast('Photo saved', 'success');
   };
@@ -584,5 +680,4 @@ window.addEventListener('click', (e) => {
 });
 
 // ---------- Init ----------
-renderAll();
-renderPhotos();
+loadFitness();
