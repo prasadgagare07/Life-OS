@@ -177,7 +177,7 @@ async function submitEntry() {
   modalSubmit.disabled = true;
 
   try {
-    const { entry, charge: newCharge, leaks } = await api.post('/reactor', { type, text });
+    const { entry, charge: newCharge, leaks, race, raceResolved } = await api.post('/reactor', { type, text });
 
     document.getElementById(type === 'charge' ? 'emptyCharge' : 'emptyLeak')?.remove();
     renderRow(entry);
@@ -187,6 +187,14 @@ async function submitEntry() {
     charge = newCharge;
     document.getElementById('chargeVal').textContent = Math.round(charge) + '%';
     document.getElementById('leakVal').textContent = leaks;
+
+    if (race) renderRace(race);
+
+    if (raceResolved) {
+      showOutcome(raceResolved);
+    } else {
+      loadStats();
+    }
 
     const toast = document.getElementById('rxToast');
     toast.textContent = type === 'charge' ? '⚡ Logged — power rising' : '☢️ Logged — containment breached';
@@ -210,3 +218,120 @@ async function submitEntry() {
 }
 
 loadToday();
+/* --- Race, points, trajectory, lockdown (added) --- */
+
+// Set your own reward text here — shown on the IGNITION screen.
+const REWARD_TEXT = 'You earned it — go treat yourself to whatever you\'ve been holding off on.';
+
+function fmtDateShort(iso) {
+  return new Date(iso + 'T00:00:00').toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+function renderTrajectory(trajectory) {
+  const svg = document.getElementById('trajectorySvg');
+  if (!trajectory.length) {
+    svg.innerHTML = '<text x="10" y="90" fill="#5C7A94" font-size="11">Log a few days to see your trajectory.</text>';
+    return;
+  }
+
+  const maxVal = Math.max(
+    1,
+    ...trajectory.map((d) => d.goodCumulative),
+    ...trajectory.map((d) => d.badCumulative)
+  );
+  const W = 600, H = 160, PAD = 10;
+  const n = trajectory.length;
+  const xStep = n > 1 ? (W - PAD * 2) / (n - 1) : 0;
+
+  const toY = (v) => H - PAD - (v / maxVal) * (H - PAD * 2);
+  const toX = (i) => PAD + i * xStep;
+
+  const goodPts = trajectory.map((d, i) => `${toX(i)},${toY(d.goodCumulative)}`).join(' ');
+  const badPts = trajectory.map((d, i) => `${toX(i)},${toY(d.badCumulative)}`).join(' ');
+
+  const last = trajectory[trajectory.length - 1];
+
+  svg.innerHTML = `
+    <polyline points="${goodPts}" fill="none" stroke="#00E5FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="${badPts}" fill="none" stroke="#FF1B4C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+    <circle cx="${toX(n - 1)}" cy="${toY(last.goodCumulative)}" r="4" fill="#7CF9FF"/>
+    <circle cx="${toX(n - 1)}" cy="${toY(last.badCumulative)}" r="4" fill="#FF6B8F"/>
+    <text x="${PAD}" y="${H - 2}" fill="#5C7A94" font-size="9" font-family="JetBrains Mono">${fmtDateShort(trajectory[0].date)}</text>
+    <text x="${W - 60}" y="${H - 2}" fill="#5C7A94" font-size="9" font-family="JetBrains Mono">${fmtDateShort(last.date)}</text>
+  `;
+}
+
+function renderRace(race) {
+  document.getElementById('raceNumber').textContent = race.raceNumber;
+
+  const goodPct = (race.goodPoints / race.target) * 50; // half-track each side
+  const badPct = (race.badPoints / race.target) * 50;
+  document.getElementById('raceFillGood').style.width = goodPct + '%';
+  document.getElementById('raceFillBad').style.width = badPct + '%';
+
+  const lead = race.goodPoints - race.badPoints;
+  const leadLabel = document.getElementById('raceLeadLabel');
+  if (lead > 0) leadLabel.textContent = `GOOD LEADS BY ${lead}`;
+  else if (lead < 0) leadLabel.textContent = `BAD LEADS BY ${-lead}`;
+  else leadLabel.textContent = 'EVEN';
+}
+
+function showOutcome(resolved) {
+  const overlay = document.getElementById('outcomeOverlay');
+  const card = document.getElementById('outcomeCard');
+  const icon = document.getElementById('outcomeIcon');
+  const title = document.getElementById('outcomeTitle');
+  const body = document.getElementById('outcomeBody');
+
+  if (resolved.winner === 'good') {
+    card.classList.remove('lose');
+    icon.textContent = '🏆';
+    title.textContent = 'IGNITION';
+    body.textContent = `Race #${resolved.raceNumber} won. The dream beat the excuses. ${REWARD_TEXT}`;
+  } else {
+    card.classList.add('lose');
+    icon.textContent = '☢️';
+    title.textContent = 'MELTDOWN';
+    body.textContent = `Race #${resolved.raceNumber} lost to the cracks. Lockdown: only charges can be logged for the next ${24} hours.`;
+  }
+
+  overlay.classList.add('open');
+}
+document.getElementById('outcomeClose').addEventListener('click', () => {
+  document.getElementById('outcomeOverlay').classList.remove('open');
+  loadStats();
+});
+
+function updateLockdownBanner(lockdownUntil) {
+  const banner = document.getElementById('lockdownBanner');
+  const leakBtn = document.getElementById('leakBtn');
+  if (lockdownUntil && new Date(lockdownUntil) > new Date()) {
+    banner.style.display = 'block';
+    document.getElementById('lockdownUntil').textContent =
+      new Date(lockdownUntil).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    leakBtn.disabled = true;
+    leakBtn.style.opacity = '0.4';
+  } else {
+    banner.style.display = 'none';
+    leakBtn.disabled = false;
+    leakBtn.style.opacity = '1';
+  }
+}
+
+async function loadStats() {
+  try {
+    const data = await api.get('/reactor/stats?days=30');
+
+    document.getElementById('lifetimeGood').textContent = '+' + data.lifetime.goodPoints;
+    document.getElementById('lifetimeBad').textContent = data.lifetime.badPoints;
+    document.getElementById('streakVal').textContent = '🔥 ' + data.streak;
+
+    renderRace(data.race);
+    renderTrajectory(data.trajectory);
+    updateLockdownBanner(data.lockdownUntil);
+  } catch (err) {
+    showToast(err.message || 'Could not load reactor stats', 'error');
+  }
+}
+
+loadStats();
