@@ -10,10 +10,9 @@ const visionRoutes = require('./routes/vision.routes');
 const financialEngineRoutes = require('./routes/financialEngine.routes');
 const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 const tradingRoutes = require('./routes/trading.routes');
-const reactorRoutes = require('./routes/reactor.routes');
-// ...
-app.use('/api/reactor', reactorRoutes);
-const app = express();
+const reactorRoutes = require('./routes/reactor.routes');   // ✅ require can go here, fine
+
+const app = express();   // ✅ app must be created BEFORE any app.use(...)
 
 app.use(cors());
 app.use(express.json());
@@ -26,6 +25,7 @@ app.use('/api/vision', visionRoutes);
 app.use('/api/financial-engine', financialEngineRoutes);
 app.use('/api/time-explorer', timeExplorerRoutes);
 app.use('/api/trading', tradingRoutes);
+app.use('/api/reactor', reactorRoutes);   // ✅ app.use lines go here, after const app = express()
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
