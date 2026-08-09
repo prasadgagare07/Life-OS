@@ -185,22 +185,21 @@ async function changePasscode(req, res) {
   res.json({ success: true });
 }
 
-// Lists active (non-revoked, non-expired-by-us) sessions for a page, most
-// recently active first. req.authPage comes from requireAuth, so you can
-// only ever see sessions for a page you're currently logged into.
+// Lists every active (non-revoked) session across ALL pages, most recently
+// active first. Only reachable with the Settings passcode (see routes) —
+// Settings already has authority over every other page's passcode, so it's
+// the one place that can see the whole household of logins at once.
 async function listSessions(req, res) {
-  const page = req.authPage;
-
   const { rows } = await pool.query(
-    `SELECT id, ip, user_agent, created_at, last_seen_at
+    `SELECT id, page, ip, user_agent, created_at, last_seen_at
      FROM sessions
-     WHERE page = $1 AND revoked_at IS NULL
-     ORDER BY last_seen_at DESC`,
-    [page]
+     WHERE revoked_at IS NULL
+     ORDER BY last_seen_at DESC`
   );
 
   const sessions = rows.map((row) => ({
     id: row.id,
+    page: row.page,
     device: describeDevice(row.user_agent),
     ip: row.ip,
     createdAt: row.created_at,
@@ -211,16 +210,14 @@ async function listSessions(req, res) {
   res.json({ sessions });
 }
 
-// Revokes one session by id. Scoped to req.authPage so you can't revoke a
-// session belonging to a different page's passcode.
+// Revokes one session by id, regardless of which page it belongs to.
 async function revokeSession(req, res) {
-  const page = req.authPage;
   const { id } = req.params;
 
   const { rowCount } = await pool.query(
     `UPDATE sessions SET revoked_at = now()
-     WHERE id = $1 AND page = $2 AND revoked_at IS NULL`,
-    [id, page]
+     WHERE id = $1 AND revoked_at IS NULL`,
+    [id]
   );
 
   if (rowCount === 0) {
@@ -230,15 +227,13 @@ async function revokeSession(req, res) {
   res.json({ success: true });
 }
 
-// Revokes every session for this page except the one making the request —
-// "log out all other devices" without logging yourself out.
+// Revokes every session on every page except the one making the request —
+// "log out all other devices" without logging yourself out of Settings.
 async function revokeOtherSessions(req, res) {
-  const page = req.authPage;
-
   const { rowCount } = await pool.query(
     `UPDATE sessions SET revoked_at = now()
-     WHERE page = $1 AND id != $2 AND revoked_at IS NULL`,
-    [page, req.sessionId]
+     WHERE id != $1 AND revoked_at IS NULL`,
+    [req.sessionId]
   );
 
   res.json({ success: true, revokedCount: rowCount });
