@@ -57,7 +57,7 @@ async function loadSessions() {
       <div class="session-row" data-id="${s.id}">
         <div>
           <div class="session-device">${s.device}${s.isCurrent ? ' <span class="session-current">This device</span>' : ''}</div>
-          <div class="session-meta">${s.ip || 'Unknown IP'} · last active ${timeAgo(s.lastSeenAt)}</div>
+          <div class="session-meta">${s.page} · ${s.ip || 'Unknown IP'} · last active ${timeAgo(s.lastSeenAt)}</div>
         </div>
         ${s.isCurrent ? '' : `<button class="btn-secondary session-revoke" data-id="${s.id}">Log out</button>`}
       </div>
