@@ -156,6 +156,14 @@ const sessionsMigration = fs.readFileSync(
 
 await pool.query(sessionsMigration);
 
+// Reactor Race Migration — good-vs-bad race to 100 points.
+const reactorRaceMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '011_reactor_race.sql'),
+  'utf8'
+);
+
+await pool.query(reactorRaceMigration);
+
 console.log('✅ Database initialized');
 
 app.listen(config.port, () => {
