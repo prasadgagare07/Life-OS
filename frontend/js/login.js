@@ -12,6 +12,7 @@ const PAGE_LABELS = {
   vision: 'Vision Board',
   trading: 'Trade Guardian',
   settings: 'Settings',
+  reactor: 'Dream Reactor',   // ← make sure this exact line is present
 };
 
 function getRequestedPage() {
