@@ -164,6 +164,14 @@ const reactorRaceMigration = fs.readFileSync(
 
 await pool.query(reactorRaceMigration);
 
+// TEMPORARY — wipes reactor test data back to zero on next deploy.
+// Remove this block after it runs once, or it'll wipe your real data
+// on every future deploy too.
+await pool.query(`DELETE FROM reactor_entries;`);
+await pool.query(`DELETE FROM reactor_races;`);
+await pool.query(`INSERT INTO reactor_races (race_number, started_at) VALUES (1, now());`);
+console.log('🔧 Reactor data reset to zero — remove this block from server.js now.');
+
 console.log('✅ Database initialized');
 
 app.listen(config.port, () => {
