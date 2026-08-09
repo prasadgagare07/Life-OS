@@ -1,0 +1,196 @@
+/* ============================================
+   Dream Reactor — a deliberate departure from the
+   app's premium-dark theme. Colorful, cinematic,
+   built for one thing: celebrate what charges the
+   dream, make what cracks it sting a little.
+   ============================================ */
+
+body.reactor-body {
+  --rx-core: #00E5FF;
+  --rx-core-glow: #7CF9FF;
+  --rx-leak: #FF1B4C;
+  --rx-leak-glow: #FF6B8F;
+  --rx-muted: #5C7A94;
+  --rx-text: #EAF6FF;
+  background:
+    radial-gradient(700px 400px at 50% -10%, rgba(0, 229, 255, 0.10), transparent 60%),
+    radial-gradient(600px 400px at 90% 100%, rgba(255, 27, 76, 0.08), transparent 60%),
+    var(--bg);
+}
+
+.reactor-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--rx-text);
+  font-family: 'Chakra Petch', var(--font-body);
+}
+
+.rx-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--rx-muted);
+  text-align: center;
+}
+
+.rx-h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 2.1rem;
+  text-align: center;
+  margin: 8px 0 6px;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--rx-core-glow);
+  text-shadow: 0 0 30px rgba(0, 229, 255, 0.4);
+}
+
+.rx-sub {
+  text-align: center;
+  color: var(--rx-muted);
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.rx-hint {
+  color: var(--rx-muted);
+  font-size: 0.8rem;
+  margin-bottom: 14px;
+}
+
+/* Reactor core visual */
+.reactorCard {
+  position: relative;
+  height: 250px;
+  border-radius: 22px;
+  margin-bottom: 26px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 55%, rgba(0, 229, 255, 0.06), transparent 70%), var(--surface);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+}
+#reactorCanvas { width: 100%; height: 100%; display: block; }
+.reactorLabel {
+  position: absolute; top: 12px; left: 16px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.1em; color: var(--rx-core-glow); text-transform: uppercase; opacity: 0.8;
+}
+.reactorStat {
+  position: absolute; bottom: 12px; left: 16px; right: 16px;
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--rx-muted);
+}
+.reactorStat b { color: var(--rx-core-glow); font-size: 1rem; }
+.reactorStat .leakStat b { color: var(--rx-leak-glow); }
+
+.rx-actions { display: flex; gap: 12px; margin-bottom: 28px; }
+.actBtn {
+  flex: 1; border-radius: 16px; padding: 16px 10px; cursor: pointer; border: 1px solid transparent;
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.03em;
+  text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: transform 0.15s ease;
+}
+.actBtn:active { transform: scale(0.95); }
+.actBtn .ico { font-size: 1.5rem; }
+.btn-charge { background: linear-gradient(160deg, rgba(0,229,255,.14), rgba(0,229,255,.02)); border-color: rgba(0,229,255,.4); color: var(--rx-core-glow); }
+.btn-charge:hover { box-shadow: 0 0 30px rgba(0,229,255,.3); }
+.btn-leak { background: linear-gradient(160deg, rgba(255,27,76,.14), rgba(255,27,76,.02)); border-color: rgba(255,27,76,.4); color: var(--rx-leak-glow); }
+.btn-leak:hover { box-shadow: 0 0 30px rgba(255,27,76,.3); }
+
+.section { margin-bottom: 20px; }
+.sectionHead {
+  display: flex; align-items: center; gap: 8px; font-family: 'Rajdhani', sans-serif; font-weight: 700;
+  font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 10px; padding-left: 2px;
+}
+.sectionHead.charge { color: var(--rx-core-glow); }
+.sectionHead.leak { color: var(--rx-leak-glow); }
+.sectionDot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.sectionHead.charge .sectionDot { background: var(--rx-core); box-shadow: 0 0 10px var(--rx-core); }
+.sectionHead.leak .sectionDot { background: var(--rx-leak); box-shadow: 0 0 10px var(--rx-leak); }
+.sectionCount {
+  margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500;
+  background: rgba(255,255,255,.06); padding: 2px 9px; border-radius: 6px;
+}
+.empty {
+  color: var(--rx-muted); font-size: 0.82rem; font-style: italic; padding: 16px 14px;
+  border: 1px dashed rgba(255,255,255,.1); border-radius: 12px; text-align: center;
+}
+
+.log { display: flex; flex-direction: column; gap: 10px; }
+.row {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); animation: rxDrift 0.5s ease both;
+}
+@keyframes rxDrift { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.row .dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+.row.charge .dot { background: var(--rx-core); box-shadow: 0 0 10px var(--rx-core); }
+.row.leak .dot { background: var(--rx-leak); box-shadow: 0 0 10px var(--rx-leak); }
+.row .txt { flex: 1; font-size: 0.9rem; font-family: 'Chakra Petch', sans-serif; }
+.row .txt b { display: block; font-weight: 600; color: var(--rx-text); }
+.row .txt span { color: var(--rx-muted); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; }
+.row.charge { border-color: rgba(0,229,255,.2); }
+.row.leak { border-color: rgba(255,27,76,.2); }
+.row .del {
+  background: none; border: none; color: var(--rx-muted); cursor: pointer; font-size: 0.9rem;
+  min-height: auto; padding: 4px 6px; flex-shrink: 0;
+}
+.row .del:hover { color: var(--rx-leak-glow); }
+
+/* Toast — overrides the generic .toast from animations.css for this page */
+#rxToast.toast {
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.02em;
+  text-transform: uppercase; border: none; opacity: 0; transition: all 0.4s cubic-bezier(.2,.9,.3,1.3);
+}
+#rxToast.toast.show { opacity: 1; }
+#rxToast.toast.charge { background: var(--rx-core); color: #00232A; box-shadow: 0 8px 32px rgba(0,229,255,.45); }
+#rxToast.toast.leak { background: var(--rx-leak); color: #2A000A; box-shadow: 0 8px 32px rgba(255,27,76,.45); }
+
+.leakFlash {
+  position: fixed; inset: 0; pointer-events: none; z-index: 44; opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,27,76,.25), rgba(10,0,4,.5) 75%);
+}
+.leakFlash.show { animation: rxFlash 0.7s ease forwards; }
+@keyframes rxFlash { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
+
+.rx-shake { animation: rxShake 0.5s ease; }
+@keyframes rxShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+
+/* Input modal */
+.modalBack {
+  position: fixed; inset: 0; background: rgba(2,4,8,.72); backdrop-filter: blur(4px); z-index: 60;
+  display: none; align-items: flex-end; justify-content: center;
+}
+.modalBack.open { display: flex; }
+.modalSheet {
+  width: 100%; max-width: 640px; background: var(--surface-raised); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px 20px 0 0; padding: 22px 20px calc(22px + env(safe-area-inset-bottom));
+  animation: rxSheetUp 0.25s ease both;
+}
+@keyframes rxSheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modalSheet h3 { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem; margin: 0 0 4px; letter-spacing: 0.02em; }
+.modalSheet h3.charge { color: var(--rx-core-glow); }
+.modalSheet h3.leak { color: var(--rx-leak-glow); }
+.modalSheet input {
+  width: 100%; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.15); color: var(--rx-text);
+  border-radius: 12px; padding: 14px; font-size: 1rem; font-family: 'Chakra Petch', sans-serif; margin-bottom: 14px;
+}
+.modalSheet input:focus { outline: none; border-color: var(--rx-core); }
+.modalRow { display: flex; gap: 10px; }
+.modalBtn {
+  flex: 1; border: none; border-radius: 12px; padding: 13px; font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 0.95rem; letter-spacing: 0.03em; text-transform: uppercase; cursor: pointer;
+}
+.modalBtn.cancel { background: rgba(255,255,255,.06); color: var(--rx-muted); }
+.modalBtn.submit.charge { background: var(--rx-core); color: #00232A; }
+.modalBtn.submit.leak { background: var(--rx-leak); color: #2A000A; }
+
+@media (max-width: 480px) {
+  .rx-h1 { font-size: 1.7rem; }
+  .reactorCard { height: 210px; }
+}
