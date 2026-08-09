@@ -56,3 +56,38 @@
 .passcode-message.error {
   color: #EF4444;
 }
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.session-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.session-device {
+  font-weight: 600;
+}
+
+.session-current {
+  font-weight: 500;
+  font-size: 0.8em;
+  color: #38bdf8;
+}
+
+.session-meta {
+  font-size: 0.85em;
+  opacity: 0.7;
+}
+
+.sessions-loading,
+.sessions-empty {
+  opacity: 0.7;
+  font-size: 0.9em;
+}
