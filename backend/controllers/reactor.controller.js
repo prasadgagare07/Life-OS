@@ -3,6 +3,11 @@ const Reactor = require('../models/reactor.model');
 const CHARGE_STEP = 12;
 const LEAK_STEP = 8;
 
+const RACE_TARGET = 100;   // first side to reach this many points wins
+const GOOD_POINTS = 1;     // per charge
+const BAD_POINTS = 2;      // per leak — twice as costly as a charge is worth
+const LOCKDOWN_HOURS = 24; // after a MELTDOWN, leak-logging is blocked this long
+
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -22,6 +27,74 @@ function computeState(entries) {
     }
   }
   return { charge, leaks };
+}
+
+// Computes a "net-positive day" streak, walking backward from today.
+// A day counts toward the streak only if it has at least one entry AND
+// its net score (charges - 2×leaks) is >= 0. A day with zero entries
+// breaks the streak — showing up matters, not just avoiding bad days.
+function computeStreak(historyRows) {
+  const byDate = new Map(historyRows.map((r) => [r.entry_date, r]));
+  let streak = 0;
+  const cursor = new Date();
+
+  for (let i = 0; i < 3650; i++) {
+    const key = cursor.toISOString().slice(0, 10);
+    const day = byDate.get(key);
+
+    if (!day) break;
+
+    const charges = Number(day.charges);
+    const leaks = Number(day.leaks);
+    const net = charges * GOOD_POINTS - leaks * BAD_POINTS;
+
+    if (charges + leaks === 0 || net < 0) break;
+
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  return streak;
+}
+
+// Checks the current race against the target, resolving + starting a new
+// one if either side just won. Returns { race, justResolved } so the
+// caller can tell the frontend to show a celebration/meltdown screen.
+async function checkAndResolveRace() {
+  let race = await Reactor.getOpenRace();
+  if (!race) {
+    race = await Reactor.startNextRace(0);
+  }
+
+  const { charges, leaks } = await Reactor.getPointsSince(race.started_at);
+  const goodPoints = charges * GOOD_POINTS;
+  const badPoints = leaks * BAD_POINTS;
+
+  let justResolved = null;
+
+  if (goodPoints >= RACE_TARGET || badPoints >= RACE_TARGET) {
+    const winner = goodPoints >= RACE_TARGET ? 'good' : 'bad';
+    const lockdownUntil =
+      winner === 'bad'
+        ? new Date(Date.now() + LOCKDOWN_HOURS * 60 * 60 * 1000)
+        : null;
+
+    await Reactor.resolveRace(race.id, winner, lockdownUntil);
+    justResolved = { winner, raceNumber: race.race_number };
+
+    race = await Reactor.startNextRace(race.race_number);
+  }
+
+  return {
+    race: {
+      raceNumber: race.race_number,
+      startedAt: race.started_at,
+      goodPoints: Math.min(goodPoints, RACE_TARGET),
+      badPoints: Math.min(badPoints, RACE_TARGET),
+      target: RACE_TARGET,
+    },
+    justResolved,
+  };
 }
 
 async function getToday(req, res, next) {
@@ -54,11 +127,22 @@ async function addEntry(req, res, next) {
       return res.status(400).json({ error: '"text" must be 200 characters or fewer' });
     }
 
+    if (type === 'leak') {
+      const lockdownUntil = await Reactor.getActiveLockdown();
+      if (lockdownUntil) {
+        return res.status(423).json({
+          error: 'Lockdown active after a meltdown — only charges can be logged right now.',
+          lockdownUntil,
+        });
+      }
+    }
+
     const entry = await Reactor.addEntry(todayKey(), type, text.trim());
     const entries = await Reactor.getByDate(todayKey());
     const { charge, leaks } = computeState(entries);
+    const { race, justResolved } = await checkAndResolveRace();
 
-    res.status(201).json({ entry, charge, leaks });
+    res.status(201).json({ entry, charge, leaks, race, raceResolved: justResolved });
   } catch (err) {
     next(err);
   }
@@ -66,6 +150,18 @@ async function addEntry(req, res, next) {
 
 async function deleteEntry(req, res, next) {
   try {
+    const existing = await Reactor.getEntryById(req.params.id);
+
+    if (!existing) {
+      return res.status(404).json({ error: 'Entry not found' });
+    }
+
+    // Locked: once a day is over, its entries can't be edited or deleted —
+    // no rewriting history after the fact.
+    if (existing.entry_date !== todayKey()) {
+      return res.status(423).json({ error: "This entry is locked — it's from a previous day." });
+    }
+
     await Reactor.deleteEntry(req.params.id);
     const entries = await Reactor.getByDate(todayKey());
     const { charge, leaks } = computeState(entries);
@@ -85,4 +181,49 @@ async function history(req, res, next) {
   }
 }
 
-module.exports = { getToday, addEntry, deleteEntry, history };
+// Everything the "trajectory" view needs in one call: lifetime totals,
+// current race progress, streak, and daily history for the chart.
+async function stats(req, res, next) {
+  try {
+    const days = Number(req.query.days) || 30;
+
+    const [lifetime, historyRows, { race }, lockdownUntil] = await Promise.all([
+      Reactor.getLifetimeTotals(),
+      Reactor.getHistory(days),
+      checkAndResolveRace(),
+      Reactor.getActiveLockdown(),
+    ]);
+
+    const goodPoints = lifetime.charges * GOOD_POINTS;
+    const badPoints = lifetime.leaks * BAD_POINTS;
+
+    // Cumulative running totals per day, for the dual-line chart.
+    let runningGood = 0;
+    let runningBad = 0;
+    const trajectory = historyRows.map((row) => {
+      runningGood += Number(row.charges) * GOOD_POINTS;
+      runningBad += Number(row.leaks) * BAD_POINTS;
+      return {
+        date: row.entry_date,
+        goodCumulative: runningGood,
+        badCumulative: runningBad,
+      };
+    });
+
+    res.json({
+      lifetime: {
+        goodPoints,
+        badPoints: -badPoints,
+        net: goodPoints - badPoints,
+      },
+      race,
+      streak: computeStreak(historyRows),
+      lockdownUntil,
+      trajectory,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getToday, addEntry, deleteEntry, history, stats };
