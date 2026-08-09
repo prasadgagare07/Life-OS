@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Reactor</title>
+
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/reactor.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+</head>
+<body class="reactor-body">
+
+<div class="app-shell">
+<aside class="sidebar" id="sidebar"></aside>
+<main class="main-content">
+
+<div class="reactor-wrap">
+
+  <div class="rx-tag">Dream Reactor</div>
+  <h1 class="rx-h1">Power the core.<br>Don't let it leak.</h1>
+  <p class="rx-sub">Good habits charge your dream reactor. Bad habits crack it open.</p>
+
+  <div class="reactorCard">
+    <canvas id="reactorCanvas"></canvas>
+    <div class="reactorLabel" id="reactorDate">Today</div>
+    <div class="reactorStat">
+      <span class="chargeStat">CHARGE <b id="chargeVal">0%</b></span>
+      <span class="leakStat">LEAK <b id="leakVal">0</b></span>
+    </div>
+  </div>
+
+  <div class="rx-actions">
+    <button class="actBtn btn-charge" id="chargeBtn"><span class="ico">⚡</span> Charge It</button>
+    <button class="actBtn btn-leak" id="leakBtn"><span class="ico">☢️</span> Crack It</button>
+  </div>
+
+  <div class="section">
+    <div class="sectionHead charge"><span class="sectionDot"></span> Charged Today <span class="sectionCount" id="chargeCount">0</span></div>
+    <div class="log" id="logCharge"><div class="empty" id="emptyCharge">No charge yet — log the first good thing you did.</div></div>
+  </div>
+
+  <div class="section">
+    <div class="sectionHead leak"><span class="sectionDot"></span> Cracks Today <span class="sectionCount" id="leakCount">0</span></div>
+    <div class="log" id="logLeak"><div class="empty" id="emptyLeak">No cracks yet — good. Keep it sealed.</div></div>
+  </div>
+
+</div>
+
+<!-- Input modal -->
+<div class="modalBack" id="modalBack">
+  <div class="modalSheet">
+    <h3 id="modalTitle">What did you do?</h3>
+    <p class="rx-hint" id="modalHint">One line is enough — be specific.</p>
+    <input type="text" id="modalInput" placeholder="e.g. Studied EC2 for 1 hour" maxlength="200">
+    <div class="modalRow">
+      <button class="modalBtn cancel" id="modalCancel">Cancel</button>
+      <button class="modalBtn submit" id="modalSubmit">Log It</button>
+    </div>
+  </div>
+</div>
+
+<div class="leakFlash" id="leakFlash"></div>
+<div class="toast" id="rxToast"></div>
+
+</main>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/reactor.js"></script>
+
+</body>
+      </html>
