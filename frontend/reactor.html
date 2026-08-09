@@ -68,21 +68,50 @@
 
 </div>
 
-<!-- Input modal -->
-<div class="modalBack" id="modalBack">
-  <div class="modalSheet">
-    <h3 id="modalTitle">What did you do?</h3>
-    <p class="rx-hint" id="modalHint">One line is enough — be specific.</p>
-    <input type="text" id="modalInput" placeholder="e.g. Studied EC2 for 1 hour" maxlength="200">
-    <div class="modalRow">
-      <button class="modalBtn cancel" id="modalCancel">Cancel</button>
-      <button class="modalBtn submit" id="modalSubmit">Log It</button>
+<div class="raceCard">
+    <div class="raceHead">
+      <div class="raceTitle">🏁 Race #<span id="raceNumber">1</span> — First to 100</div>
+      <div class="raceSub" id="raceLeadLabel">EVEN</div>
+    </div>
+    <div class="raceTrack">
+      <div class="raceFillBad" id="raceFillBad"></div>
+      <div class="raceFillGood" id="raceFillGood"></div>
+      <div class="raceMarker"></div>
+    </div>
+    <div class="raceLabels">
+      <span class="goalBad">−100 MELTDOWN</span>
+      <span>YOU ARE HERE</span>
+      <span class="goal">+100 IGNITION</span>
     </div>
   </div>
-</div>
 
+  <div class="graphCard">
+    <div class="graphHead">
+      <div class="graphTitle">Trajectory — Last 30 Days</div>
+      <div class="graphLegend">
+        <span><span class="legendDot good"></span>Good</span>
+        <span><span class="legendDot bad"></span>Bad</span>
+      </div>
+    </div>
+    <svg id="trajectorySvg" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
+  </div>
+
+  <div class="lockdownBanner" id="lockdownBanner" style="display:none;">
+    🔒 Lockdown active — only charges can be logged until <span id="lockdownUntil"></span>.
+  </div>
+
+<!-- Input modal -->
 <div class="leakFlash" id="leakFlash"></div>
 <div class="toast" id="rxToast"></div>
+
+<div class="outcomeOverlay" id="outcomeOverlay">
+  <div class="outcomeCard" id="outcomeCard">
+    <span class="outcomeIcon" id="outcomeIcon">🏆</span>
+    <div class="outcomeTitle" id="outcomeTitle">IGNITION</div>
+    <div class="outcomeBody" id="outcomeBody"></div>
+    <button class="modalBtn submit" id="outcomeClose">Continue</button>
+  </div>
+</div>
 
 </main>
 </div>
