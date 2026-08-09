@@ -14,6 +14,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LifeOS">
 </head>
 <body class="reactor-body">
 
@@ -26,21 +32,6 @@
   <div class="rx-tag">Dream Reactor</div>
   <h1 class="rx-h1">Power the core.<br>Don't let it leak.</h1>
   <p class="rx-sub">Good habits charge your dream reactor. Bad habits crack it open.</p>
-
-  <div class="statRow">
-    <div class="statCard good">
-      <div class="statLabel">Good Points</div>
-      <div class="statValue" id="lifetimeGood">+0</div>
-    </div>
-    <div class="statCard bad">
-      <div class="statLabel">Bad Points</div>
-      <div class="statValue" id="lifetimeBad">0</div>
-    </div>
-    <div class="statCard streak">
-      <div class="statLabel">Streak</div>
-      <div class="statValue" id="streakVal">🔥 0</div>
-    </div>
-  </div>
 
   <div class="reactorCard">
     <canvas id="reactorCanvas"></canvas>
@@ -68,7 +59,22 @@
 
 </div>
 
-<div class="raceCard">
+  <div class="statRow">
+    <div class="statCard good">
+      <div class="statLabel">Good Points</div>
+      <div class="statValue" id="lifetimeGood">+0</div>
+    </div>
+    <div class="statCard bad">
+      <div class="statLabel">Bad Points</div>
+      <div class="statValue" id="lifetimeBad">0</div>
+    </div>
+    <div class="statCard streak">
+      <div class="statLabel">Streak</div>
+      <div class="statValue" id="streakVal">🔥 0</div>
+    </div>
+  </div>
+
+  <div class="raceCard">
     <div class="raceHead">
       <div class="raceTitle">🏁 Race #<span id="raceNumber">1</span> — First to 100</div>
       <div class="raceSub" id="raceLeadLabel">EVEN</div>
@@ -101,6 +107,18 @@
   </div>
 
 <!-- Input modal -->
+<div class="modalBack" id="modalBack">
+  <div class="modalSheet">
+    <h3 id="modalTitle">What did you do?</h3>
+    <p class="rx-hint" id="modalHint">One line is enough — be specific.</p>
+    <input type="text" id="modalInput" placeholder="e.g. Studied EC2 for 1 hour" maxlength="200">
+    <div class="modalRow">
+      <button class="modalBtn cancel" id="modalCancel">Cancel</button>
+      <button class="modalBtn submit" id="modalSubmit">Log It</button>
+    </div>
+  </div>
+</div>
+
 <div class="leakFlash" id="leakFlash"></div>
 <div class="toast" id="rxToast"></div>
 
@@ -122,5 +140,12 @@
 <script src="js/app.js"></script>
 <script src="js/reactor.js"></script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
 </body>
       </html>
