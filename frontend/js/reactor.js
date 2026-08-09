@@ -218,6 +218,7 @@ async function submitEntry() {
 }
 
 loadToday();
+
 /* --- Race, points, trajectory, lockdown (added) --- */
 
 // Set your own reward text here — shown on the IGNITION screen.
