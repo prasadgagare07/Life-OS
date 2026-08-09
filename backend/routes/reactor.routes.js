@@ -7,6 +7,7 @@ router.use(requireAuth(['reactor', 'dashboard']));
 
 router.get('/today', reactorController.getToday);
 router.get('/history', reactorController.history);
+router.get('/stats', reactorController.stats);
 router.post('/', reactorController.addEntry);
 router.delete('/:id', reactorController.deleteEntry);
 
