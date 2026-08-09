@@ -20,6 +20,7 @@ const VALID_PAGES = [
   'vision',
   'trading',
   'settings',
+  'reactor',   // ← check if this line is actually there
 ];
 
 // In-memory brute-force tracker, keyed by "purpose:page:ip".
