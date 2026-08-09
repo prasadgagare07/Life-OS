@@ -147,6 +147,15 @@ const tradingAccountMigration = fs.readFileSync(
 
 await pool.query(tradingAccountMigration);
 
+// Sessions Migration — lets Settings show which devices are logged into
+// each page, and lets you force-log-out a specific device.
+const sessionsMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '010_sessions.sql'),
+  'utf8'
+);
+
+await pool.query(sessionsMigration);
+
 console.log('✅ Database initialized');
 
 app.listen(config.port, () => {
