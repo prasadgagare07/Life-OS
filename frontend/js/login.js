@@ -27,7 +27,7 @@ document.getElementById('login-subtitle').textContent =
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const passcode = document.getElementById('passcode').value;
+  const passcode = document.getElementById('passcode').value.trim();
   const errorEl = document.getElementById('login-error');
   errorEl.textContent = '';
 
