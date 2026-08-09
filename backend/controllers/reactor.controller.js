@@ -8,8 +8,25 @@ const GOOD_POINTS = 1;     // per charge
 const BAD_POINTS = 2;      // per leak — twice as costly as a charge is worth
 const LOCKDOWN_HOURS = 24; // after a MELTDOWN, leak-logging is blocked this long
 
+// The reactor's "day" resets at 10pm local time, not midnight — so
+// something logged at 11pm on the 9th belongs to the "10th" and stays
+// open (editable) until 10pm on the 10th, same pattern every day after.
+// TIMEZONE_OFFSET_MINUTES assumes IST (UTC+5:30) — change if you're
+// somewhere else. This is independent of whatever timezone the server
+// itself runs in (Render runs UTC).
+const TIMEZONE_OFFSET_MINUTES = 330;
+const RESET_HOUR_LOCAL = 22; // 10pm
+
 function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+  const local = new Date(utcMs + TIMEZONE_OFFSET_MINUTES * 60000);
+
+  if (local.getUTCHours() >= RESET_HOUR_LOCAL) {
+    local.setUTCDate(local.getUTCDate() + 1);
+  }
+
+  return local.toISOString().slice(0, 10);
 }
 
 // Replays today's entries in order to get the current charge % and crack
@@ -36,7 +53,10 @@ function computeState(entries) {
 function computeStreak(historyRows) {
   const byDate = new Map(historyRows.map((r) => [r.entry_date, r]));
   let streak = 0;
-  const cursor = new Date();
+  // Anchor on the reactor's current day label (respects the 10pm
+  // boundary), then step backward one calendar day at a time — each
+  // reactor day maps 1:1 to a date label once todayKey() has assigned it.
+  const cursor = new Date(todayKey() + 'T00:00:00Z');
 
   for (let i = 0; i < 3650; i++) {
     const key = cursor.toISOString().slice(0, 10);
@@ -51,7 +71,7 @@ function computeStreak(historyRows) {
     if (charges + leaks === 0 || net < 0) break;
 
     streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
   }
 
   return streak;
