@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: 'vision.html', icon: '🌟', label: 'Vision Board' },
   { href: 'trading.html', icon: '🛡️', label: 'Trade Guardian' },
   { href: 'settings.html', icon: '⚙️', label: 'Settings' },
+  { href: 'reactor.html', icon: '⚡', label: 'Dream Reactor' },
 ];
 
 function renderSidebar() {
