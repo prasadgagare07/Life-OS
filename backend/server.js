@@ -49,6 +49,12 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
 
     await pool.query(pageAuthMigration);
 
+    const reactorMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '009_reactor.sql'),
+  'utf8'
+);
+await pool.query(reactorMigration);
+
     // Every page gets its own passcode, seeded with a known default word so
     // it can be logged into for the first time. Change each one from
     // Settings — Settings' own default passcode is "control".
