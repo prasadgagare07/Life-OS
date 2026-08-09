@@ -83,7 +83,19 @@ async function login(req, res) {
   }
 
   const hash = await getPasscodeHash(page);
+
+  // TEMPORARY DEBUG — remove after we find the issue
+  console.log('🔍 LOGIN DEBUG', {
+    page,
+    passcodeLength: passcode.length,
+    passcodeReceived: JSON.stringify(passcode),
+    hashFound: !!hash,
+    hashPrefix: hash ? hash.slice(0, 15) : null,
+  });
+
   const valid = hash ? await bcrypt.compare(passcode, hash) : false;
+
+  console.log('🔍 LOGIN DEBUG result:', valid);
 
   if (!valid) {
     recordFailure(key);
