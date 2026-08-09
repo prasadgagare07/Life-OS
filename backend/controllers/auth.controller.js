@@ -20,7 +20,7 @@ const VALID_PAGES = [
   'vision',
   'trading',
   'settings',
-  'reactor',   // ← check if this line is actually there
+  'reactor',
 ];
 
 // In-memory brute-force tracker, keyed by "purpose:page:ip".
@@ -30,6 +30,30 @@ const attempts = new Map();
 function getClientIp(req) {
   const forwarded = req.headers['x-forwarded-for'];
   return (forwarded ? forwarded.split(',')[0].trim() : null) || req.socket.remoteAddress;
+}
+
+// Turns a raw User-Agent string into something readable in a device list,
+// e.g. "Safari on iPhone" instead of the full UA blob.
+function describeDevice(userAgent) {
+  if (!userAgent) return 'Unknown device';
+
+  const ua = userAgent;
+  let os = 'Unknown OS';
+  if (/iphone/i.test(ua)) os = 'iPhone';
+  else if (/ipad/i.test(ua)) os = 'iPad';
+  else if (/android/i.test(ua)) os = 'Android';
+  else if (/mac os x/i.test(ua)) os = 'Mac';
+  else if (/windows/i.test(ua)) os = 'Windows';
+  else if (/linux/i.test(ua)) os = 'Linux';
+
+  let browser = 'Unknown browser';
+  if (/edg\//i.test(ua)) browser = 'Edge';
+  else if (/chrome\//i.test(ua) && !/edg\//i.test(ua)) browser = 'Chrome';
+  else if (/crios\//i.test(ua)) browser = 'Chrome';
+  else if (/fxios\//i.test(ua) || /firefox\//i.test(ua)) browser = 'Firefox';
+  else if (/safari\//i.test(ua) && !/chrome\//i.test(ua)) browser = 'Safari';
+
+  return `${browser} on ${os}`;
 }
 
 function checkLockout(key) {
@@ -84,19 +108,7 @@ async function login(req, res) {
   }
 
   const hash = await getPasscodeHash(page);
-
-  // TEMPORARY DEBUG — remove after we find the issue
-  console.log('🔍 LOGIN DEBUG', {
-    page,
-    passcodeLength: passcode.length,
-    passcodeReceived: JSON.stringify(passcode),
-    hashFound: !!hash,
-    hashPrefix: hash ? hash.slice(0, 15) : null,
-  });
-
   const valid = hash ? await bcrypt.compare(passcode, hash) : false;
-
-  console.log('🔍 LOGIN DEBUG result:', valid);
 
   if (!valid) {
     recordFailure(key);
@@ -105,8 +117,22 @@ async function login(req, res) {
 
   clearAttempts(key);
 
+  // Create a session row for this device/login so it shows up in Settings
+  // and can be individually revoked later.
+  const userAgent = req.headers['user-agent'] || null;
+  const ip = getClientIp(req);
+
+  const { rows } = await pool.query(
+    `INSERT INTO sessions (page, ip, user_agent) VALUES ($1, $2, $3) RETURNING id`,
+    [page, ip, userAgent]
+  );
+  const sessionId = rows[0].id;
+
+  // The session ID (sid) is what lets requireAuth check, on every request,
+  // whether this specific login has been revoked — the JWT itself never
+  // changes, so revocation has to be checked against the database.
   const token = jwt.sign(
-    { page, authorized: true },
+    { page, authorized: true, sid: sessionId },
     config.jwtSecret,
     { expiresIn: config.jwtExpiresIn }
   );
@@ -159,4 +185,70 @@ async function changePasscode(req, res) {
   res.json({ success: true });
 }
 
-module.exports = { login, changePasscode, VALID_PAGES };
+// Lists active (non-revoked, non-expired-by-us) sessions for a page, most
+// recently active first. req.authPage comes from requireAuth, so you can
+// only ever see sessions for a page you're currently logged into.
+async function listSessions(req, res) {
+  const page = req.authPage;
+
+  const { rows } = await pool.query(
+    `SELECT id, ip, user_agent, created_at, last_seen_at
+     FROM sessions
+     WHERE page = $1 AND revoked_at IS NULL
+     ORDER BY last_seen_at DESC`,
+    [page]
+  );
+
+  const sessions = rows.map((row) => ({
+    id: row.id,
+    device: describeDevice(row.user_agent),
+    ip: row.ip,
+    createdAt: row.created_at,
+    lastSeenAt: row.last_seen_at,
+    isCurrent: row.id === req.sessionId,
+  }));
+
+  res.json({ sessions });
+}
+
+// Revokes one session by id. Scoped to req.authPage so you can't revoke a
+// session belonging to a different page's passcode.
+async function revokeSession(req, res) {
+  const page = req.authPage;
+  const { id } = req.params;
+
+  const { rowCount } = await pool.query(
+    `UPDATE sessions SET revoked_at = now()
+     WHERE id = $1 AND page = $2 AND revoked_at IS NULL`,
+    [id, page]
+  );
+
+  if (rowCount === 0) {
+    return res.status(404).json({ error: 'Session not found' });
+  }
+
+  res.json({ success: true });
+}
+
+// Revokes every session for this page except the one making the request —
+// "log out all other devices" without logging yourself out.
+async function revokeOtherSessions(req, res) {
+  const page = req.authPage;
+
+  const { rowCount } = await pool.query(
+    `UPDATE sessions SET revoked_at = now()
+     WHERE page = $1 AND id != $2 AND revoked_at IS NULL`,
+    [page, req.sessionId]
+  );
+
+  res.json({ success: true, revokedCount: rowCount });
+}
+
+module.exports = {
+  login,
+  changePasscode,
+  listSessions,
+  revokeSession,
+  revokeOtherSessions,
+  VALID_PAGES,
+};
