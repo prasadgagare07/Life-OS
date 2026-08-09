@@ -55,6 +55,16 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
 );
 await pool.query(reactorMigration);
 
+    // TEMPORARY — force-resets the reactor passcode to "ignite" on next deploy,
+// even if a stale row already exists. Remove this block after logging in once.
+const forceHash = await bcrypt.hash('ignite', 10);
+await pool.query(
+  `INSERT INTO auth_settings (page, passcode_hash) VALUES ('reactor', $1)
+   ON CONFLICT (page) DO UPDATE SET passcode_hash = $1, updated_at = now()`,
+  [forceHash]
+);
+console.log('🔧 Reactor passcode force-reset to "ignite"');
+
     // Every page gets its own passcode, seeded with a known default word so
     // it can be logged into for the first time. Change each one from
     // Settings — Settings' own default passcode is "control".
