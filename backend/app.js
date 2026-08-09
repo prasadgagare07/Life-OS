@@ -10,7 +10,9 @@ const visionRoutes = require('./routes/vision.routes');
 const financialEngineRoutes = require('./routes/financialEngine.routes');
 const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 const tradingRoutes = require('./routes/trading.routes');
-
+const reactorRoutes = require('./routes/reactor.routes');
+// ...
+app.use('/api/reactor', reactorRoutes);
 const app = express();
 
 app.use(cors());
