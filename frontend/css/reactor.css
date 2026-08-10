@@ -256,3 +256,12 @@ body.reactor-body {
 .outcomeTitle{font-family:'Rajdhani',sans-serif;font-weight:800;font-size:1.6rem;letter-spacing:.03em;margin-bottom:10px;color:#7CF9FF;text-shadow:0 0 20px rgba(0,229,255,.5);}
 .outcomeCard.lose .outcomeTitle{color:#FF6B8F;text-shadow:0 0 20px rgba(255,27,76,.5);}
 .outcomeBody{font-size:.88rem;color:#EAF6FF;opacity:.9;line-height:1.6;margin-bottom:20px;}
+/* Compact single-line points row, above the circle */
+.rxPointsRow{
+  display:flex;justify-content:center;align-items:center;gap:14px;
+  margin:6px 0 14px;font-family:'JetBrains Mono',monospace;font-size:.8rem;
+}
+.rxPoint{padding:4px 10px;border-radius:20px;font-weight:600;}
+.rxPoint.good{color:#7CF9FF;background:rgba(0,229,255,.1);}
+.rxPoint.bad{color:#FF6B8F;background:rgba(255,27,76,.1);}
+.rxPoint.streak{color:#FFC857;background:rgba(255,200,87,.1);}
