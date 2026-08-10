@@ -2,6 +2,8 @@ async function loadDashboard() {
   document.getElementById('quote').textContent = getDailyQuote();
   document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-IN', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    // was: const weight = renderFitness(val(fitnessGoalR, null), val(fitnessEntriesR, []));
+renderFitness(val(fitnessEntriesR, [])[0] || null);
   });
 
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -60,21 +62,79 @@ function renderFinance(finance) {
   return total;
 }
 
-function renderFitness(goal, entries) {
-  const latestWeight = entries?.[0]?.weight;
-  if (latestWeight && goal) {
-    const start = goal.start_weight || latestWeight;
-    const totalToLose = start - goal.goal_weight;
-    const doneSoFar = start - latestWeight;
-    const fitPct = totalToLose > 0 ? (doneSoFar / totalToLose) * 100 : 0;
-    renderSunriseArc(document.getElementById('fitness-arc'), fitPct, `${latestWeight}kg`);
-    document.getElementById('fitness-status').textContent = `Goal: ${goal.goal_weight}kg`;
-    return latestWeight;
-  }
-  renderSunriseArc(document.getElementById('fitness-arc'), 0, '—');
-  document.getElementById('fitness-status').textContent = 'No entries yet';
-  return null;
+const FITNESS_TARGETS = { steps:10000, protein_g:100, water_l:3, sleep_hours:7, workout_minutes:45 };
+const RADAR_AXES = [
+  { key:'steps',           label:'STEPS',   unit:'' },
+  { key:'protein_g',       label:'PROTEIN', unit:'g' },
+  { key:'water_l',         label:'WATER',   unit:'L' },
+  { key:'sleep_hours',     label:'SLEEP',   unit:'h' },
+  { key:'workout_minutes', label:'WORKOUT', unit:'min' },
+];
+
+function polarPoint(pct, index, total, cx, cy, minR, maxR){
+  const angle = (index * (360 / total)) - 90;
+  const r = minR + (Math.min(Math.max(pct,0),100) / 100) * (maxR - minR);
+  const rad = angle * Math.PI / 180;
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
 }
+
+function drawRadarGrid(){
+  const cx = 110, cy = 92, minR = 14, maxR = 76;
+  const grid = document.getElementById('radar-grid');
+  const labels = document.getElementById('radar-axis-labels');
+  if (!grid || !labels) return;
+  grid.innerHTML = ''; labels.innerHTML = '';
+
+  [33, 66, 100].forEach(ringPct => {
+    const pts = RADAR_AXES.map((_, i) => polarPoint(ringPct, i, RADAR_AXES.length, cx, cy, minR, maxR).join(',')).join(' ');
+    grid.innerHTML += `<polygon points="${pts}"/>`;
+  });
+
+  RADAR_AXES.forEach((axis, i) => {
+    const [x, y] = polarPoint(118, i, RADAR_AXES.length, cx, cy, minR, maxR);
+    labels.innerHTML += `<text x="${x}" y="${y}">${axis.label}</text>`;
+  });
+}
+drawRadarGrid();
+
+function renderFitness(entry){
+  const badge = document.getElementById('fitness-badge');
+  const status = document.getElementById('fitness-status');
+  const shape = document.getElementById('radar-shape');
+  const dotsG = document.getElementById('radar-dots');
+  const legend = document.getElementById('fitness-legend');
+  const cx = 110, cy = 92, minR = 14, maxR = 76;
+
+  if (!entry) {
+    shape.setAttribute('points', RADAR_AXES.map((_, i) => polarPoint(0, i, RADAR_AXES.length, cx, cy, minR, maxR).join(',')).join(' '));
+    dotsG.innerHTML = '';
+    legend.innerHTML = '';
+    badge.textContent = 'No data';
+    badge.className = 'badge';
+    status.textContent = 'No entries yet';
+    return;
+  }
+
+  const pcts = RADAR_AXES.map(axis => {
+    const val = Number(entry[axis.key]) || 0;
+    const target = FITNESS_TARGETS[axis.key];
+    return { ...axis, value: val, pct: Math.min((val / target) * 100, 100) };
+  });
+
+  const points = pcts.map((a, i) => polarPoint(a.pct, i, pcts.length, cx, cy, minR, maxR));
+  shape.setAttribute('points', points.map(p => p.join(',')).join(' '));
+
+  dotsG.innerHTML = points.map(([x, y]) => `<circle class="radar-dot" cx="${x}" cy="${y}" r="2.4"/>`).join('');
+  legend.innerHTML = pcts.map(a => `<div>${a.label}<span>${a.value}${a.unit}</span></div>`).join('');
+
+  const avgPct = pcts.reduce((s, a) => s + a.pct, 0) / pcts.length;
+  const isToday = entry.entry_date === new Date().toISOString().slice(0, 10);
+
+  badge.textContent = `${Math.round(avgPct)}%`;
+  badge.className = 'badge ' + (avgPct >= 70 ? 'good' : avgPct >= 40 ? 'warn' : 'bad');
+  status.textContent = isToday ? "Today's balance" : `Last logged ${entry.entry_date}`;
+}
+
 
 function renderVision(goals) {
   const chipsEl = document.getElementById('vision-chips');
