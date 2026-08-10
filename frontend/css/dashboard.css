@@ -71,3 +71,30 @@
 @media (max-width: 480px){
   .tg-stats{gap:1.25rem;}
 }
+
+/* ==========================================================
+   Fitness — Discipline Radar
+========================================================== */
+.fitness-radar-card .radar-chart{
+  width:100%; max-width:220px; margin:0.5rem auto 0.25rem; display:block;
+}
+.radar-grid polygon{ fill:none; stroke:var(--border); stroke-width:1; }
+.radar-axis-labels text{
+  font-family:var(--font-mono); font-size:7.5px; fill:var(--text-muted);
+  text-anchor:middle;
+}
+.radar-shape{
+  fill:url(#radarFillGrad); fill-opacity:0.32;
+  stroke:url(#radarFillGrad); stroke-width:2;
+  transition:points 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.radar-dot{ fill:#fff; }
+.radar-legend{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:0.35rem 1rem;
+  margin-top:0.75rem;
+}
+.radar-legend div{
+  display:flex; justify-content:space-between;
+  font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted);
+}
+.radar-legend span{ color:var(--text); font-weight:600; }
