@@ -164,6 +164,15 @@ const reactorRaceMigration = fs.readFileSync(
 
 await pool.query(reactorRaceMigration);
 
+// Reactor Custom Weight Migration — per-entry impact %, replacing the
+// old fixed +12/-8 per entry.
+const reactorWeightMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '012_reactor_custom_weight.sql'),
+  'utf8'
+);
+
+await pool.query(reactorWeightMigration);
+
 // TEMPORARY — wipes reactor test data back to zero on next deploy.
 // Remove this block after it runs once, or it'll wipe your real data
 // on every future deploy too.
