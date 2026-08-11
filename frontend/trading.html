@@ -671,19 +671,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   // without requiring a page refresh.
   setInterval(render, 60000);
 
-  const RULES = [
-    { icon:'🎯', text:'Stopped trading after hitting ₹5,000 target' },
-    { icon:'🚫', text:'No revenge trade after a loss' },
-    { icon:'🛑', text:'Followed stop-loss on every trade' },
-    { icon:'📉', text:'Stayed within max trade count for the day' },
-    { icon:'🚶', text:'Walked away after 2 consecutive losses' },
-    { icon:'📝', text:"Journaled today's trades honestly" },
-  ];
-  // ===== DAILY RULE BOOK =====
-// Rules lock after saving.
-// They automatically unlock every day at 10:00 PM.
-
-
 // ===== DAILY RULE BOOK =====
 
 const RULES = [
@@ -902,13 +889,7 @@ setInterval(renderRuleBook, 60000);
 
     rulesList.parentElement.appendChild(lockMsg);
   }
-}
-
-renderRuleBook();
-
-// Check every minute.
-// At 10:00 PM the rules automatically become editable again.
-setInterval(renderRuleBook, 60000);
+ }
   
 </script>
 </body>
