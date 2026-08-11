@@ -3,7 +3,7 @@ const router = express.Router();
 const requireAuth = require('../middleware/auth');
 const tradingController = require('../controllers/trading.controller');
 
-router.use(requireAuth(['trading', 'dashboard']));
+//router.use(requireAuth(['trading', 'dashboard']));
 
 // GET  /api/trading/entries
 router.get('/entries', tradingController.list);
