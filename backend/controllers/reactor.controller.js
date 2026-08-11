@@ -1,8 +1,5 @@
 const Reactor = require('../models/reactor.model');
 
-const CHARGE_STEP = 12;
-const LEAK_STEP = 8;
-
 const RACE_TARGET = 100;   // first side to reach this many points wins
 const GOOD_POINTS = 1;     // per charge
 const BAD_POINTS = 2;      // per leak — twice as costly as a charge is worth
@@ -31,15 +28,18 @@ function todayKey() {
 
 // Replays today's entries in order to get the current charge % and crack
 // count — kept in the entries themselves rather than a separate counter so
-// the reactor state can never drift out of sync with the log.
+// the reactor state can never drift out of sync with the log. Each entry
+// carries its own weight (typed in when logged) instead of a fixed step,
+// and charge has no ceiling — a big enough entry can push it past 100%.
 function computeState(entries) {
   let charge = 0;
   let leaks = 0;
   for (const entry of entries) {
+    const weight = Number(entry.weight);
     if (entry.type === 'charge') {
-      charge = Math.min(100, charge + CHARGE_STEP);
+      charge = charge + weight;
     } else {
-      charge = Math.max(0, charge - LEAK_STEP);
+      charge = Math.max(0, charge - weight);
       leaks += 1;
     }
   }
@@ -135,7 +135,7 @@ async function getToday(req, res, next) {
 
 async function addEntry(req, res, next) {
   try {
-    const { type, text } = req.body;
+    const { type, text, weight } = req.body;
 
     if (!['charge', 'leak'].includes(type)) {
       return res.status(400).json({ error: '"type" must be "charge" or "leak"' });
@@ -145,6 +145,11 @@ async function addEntry(req, res, next) {
     }
     if (text.length > 200) {
       return res.status(400).json({ error: '"text" must be 200 characters or fewer' });
+    }
+
+    const w = Number(weight);
+    if (!w || Number.isNaN(w) || w <= 0 || w > 500) {
+      return res.status(400).json({ error: '"weight" must be a number between 0 and 500 (percent impact)' });
     }
 
     if (type === 'leak') {
@@ -157,7 +162,7 @@ async function addEntry(req, res, next) {
       }
     }
 
-    const entry = await Reactor.addEntry(todayKey(), type, text.trim());
+    const entry = await Reactor.addEntry(todayKey(), type, text.trim(), w);
     const entries = await Reactor.getByDate(todayKey());
     const { charge, leaks } = computeState(entries);
     const { race, justResolved } = await checkAndResolveRace();
