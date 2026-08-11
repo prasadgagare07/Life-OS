@@ -103,23 +103,26 @@ body.reactor-body {
 .spFirefly { animation: spFloat 5s ease-in-out infinite; }
 @keyframes spFloat { 0%,100%{ transform:translateY(0) translateX(0);} 50%{ transform:translateY(-14px) translateX(6px);} }
 
-/* dying-only layers fade in as charge drops */
+/* dying-only layers — hidden entirely above half charge, then ramp in
+   fast as it drops below that, instead of bleeding through the whole time */
 .spFog, .spVoidCrack, .spEye, .spVine, .spVignette, .spEmber {
   transition: opacity .6s ease;
-  opacity: calc(1 - var(--charge));
+  opacity: calc(max(0, (0.5 - var(--charge)) * 2));
 }
 .spFog { animation: spFogDrift 12s ease-in-out infinite; }
 @keyframes spFogDrift { 0%,100%{ transform:translateX(0);} 50%{ transform:translateX(12px);} }
 .spEye { animation: spEyeBlink 4s ease-in-out infinite; }
-@keyframes spEyeBlink { 0%,100%{ opacity:calc(1 - var(--charge));} 92%{ opacity:calc(1 - var(--charge));} 95%{ opacity:.05;} 97%{ opacity:calc(1 - var(--charge));} }
+@keyframes spEyeBlink { 0%,100%{ opacity:calc(max(0, (0.5 - var(--charge)) * 2));} 92%{ opacity:calc(max(0, (0.5 - var(--charge)) * 2));} 95%{ opacity:.05;} 97%{ opacity:calc(max(0, (0.5 - var(--charge)) * 2));} }
 .spVoidCrack { animation: spCrackFlicker 2.3s steps(3) infinite; }
-@keyframes spCrackFlicker { 0%,100%{ opacity:calc((1 - var(--charge)) * 0.5);} 30%{ opacity:calc(1 - var(--charge));} 60%{ opacity:calc((1 - var(--charge)) * 0.55);} }
+@keyframes spCrackFlicker { 0%,100%{ opacity:calc(max(0, (0.5 - var(--charge)) * 2) * 0.5);} 30%{ opacity:calc(max(0, (0.5 - var(--charge)) * 2));} 60%{ opacity:calc(max(0, (0.5 - var(--charge)) * 2) * 0.55);} }
 .spEmber { animation: spEmberRise 3.4s ease-in infinite; }
-@keyframes spEmberRise { 0%{ transform:translateY(0); opacity:0;} 15%{ opacity:calc(1 - var(--charge));} 100%{ transform:translateY(-60px); opacity:0;} }
+@keyframes spEmberRise { 0%{ transform:translateY(0); opacity:0;} 15%{ opacity:calc(max(0, (0.5 - var(--charge)) * 2));} 100%{ transform:translateY(-60px); opacity:0;} }
 
-/* guardian brightens, shadow dims — and the reverse */
-.spGuardian { transition: opacity .6s, filter .6s; opacity: 1; filter: drop-shadow(0 0 calc(6px + 12px * var(--charge)) rgba(127,231,255,calc(0.25 + 0.55 * var(--charge)))); }
-.spShadow { transition: opacity .6s, filter .6s; opacity: 1; filter: drop-shadow(0 0 calc(6px + 14px * (1 - var(--charge))) rgba(255,59,31,calc(0.25 + 0.55 * (1 - var(--charge))))); }
+/* guardian brightens and comes forward with charge; shadow does the
+   reverse — both stay faintly present (never fully vanish), matching
+   the approved mockup instead of sitting at flat full opacity always */
+.spGuardian { transition: opacity .6s, filter .6s; opacity: calc(0.32 + 0.68 * var(--charge)); filter: drop-shadow(0 0 calc(6px + 12px * var(--charge)) rgba(127,231,255,calc(0.25 + 0.55 * var(--charge)))); }
+.spShadow { transition: opacity .6s, filter .6s; opacity: calc(0.32 + 0.68 * (1 - var(--charge))); filter: drop-shadow(0 0 calc(6px + 14px * (1 - var(--charge))) rgba(255,59,31,calc(0.25 + 0.55 * (1 - var(--charge))))); }
 
 /* the spire itself — shards dim/grey out as charge falls */
 .spCore { transition: filter 1s; filter: drop-shadow(0 0 calc(10px + 16px * var(--charge)) rgba(178,140,255,calc(0.3 + 0.25 * var(--charge)))) drop-shadow(0 0 calc(14px + 32px * var(--charge)) rgba(127,231,196,calc(0.15 * var(--charge)))); }
