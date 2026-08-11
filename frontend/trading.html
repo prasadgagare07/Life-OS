@@ -316,17 +316,17 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   <div class="stats-row">
     <div class="stat-card streak">
       <div class="ic">🔥</div>
-      <div class="val" id="streakVal">12</div>
+      <div class="val" id="streakVal">0</div>
       <div class="lbl">DAY STREAK</div>
     </div>
     <div class="stat-card guarded">
       <div class="ic">🛡️</div>
-      <div class="val" id="guardedVal">₹60,000</div>
+      <div class="val" id="guardedVal">₹0</div>
       <div class="lbl">CAPITAL GUARDED</div>
     </div>
     <div class="stat-card best">
       <div class="ic">🏆</div>
-      <div class="val" id="bestVal">18</div>
+      <div class="val" id="bestVal">0</div>
       <div class="lbl">BEST STREAK</div>
     </div>
   </div>
@@ -341,10 +341,10 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   <div class="tower-section">
     <div class="tower-head">
       <h4>THE COMPOUND EFFECT</h4>
-      <div class="day-count">DAY 12 / 30</div>
+      <div class="day-count">DAY 0 / 30</div>
     </div>
     <div class="target-line">
-      <div class="amt">₹60,000</div>
+      <div class="amt">₹0</div>
       <div class="of">GUARDED SO FAR &nbsp;•&nbsp; TARGET ₹1,50,000 IN 30 DAYS</div>
     </div>
     <div class="tower-grid" id="towerGrid"></div>
@@ -440,20 +440,23 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   const START_DATE = '2026-08-12';
   
   async function fetchCloses(){
-    try {
-      const entries = await api.get('/trading/entries'); // [{entry_date, profit}, ...]
-      const map = {};
-      entries
-  .filter(e => e.entry_date >= START_DATE)
-  .forEach(e => { map[e.entry_date] = Number(e.profit); });
+  try {
+    const entries = await api.get('/trading/entries');
+    const map = {};
 
-return map;
-    } catch (err) {
-      console.error(err);
-      showToast('Could not load trading entries', 'error');
-      return {};
-    }
+    entries
+      .filter(e => e.entry_date >= START_DATE)
+      .forEach(e => {
+        map[e.entry_date] = Number(e.profit);
+      });
+
+    return map;
+  } catch (err) {
+    console.error(err);
+    showToast('Could not load trading entries', 'error');
+    return {};
   }
+}
 
   async function saveClose(entry_date, profit){
     await api.post('/trading/entries', { entry_date, profit });
@@ -680,6 +683,9 @@ return map;
 // Rules lock after saving.
 // They automatically unlock every day at 10:00 PM.
 
+
+// ===== DAILY RULE BOOK =====
+
 const RULES = [
   { icon:'🎯', text:'Stopped trading after hitting ₹5,000 target' },
   { icon:'🚫', text:'No revenge trade after a loss' },
@@ -689,44 +695,40 @@ const RULES = [
   { icon:'📝', text:"Journaled today's trades honestly" },
 ];
 
-const RULEBOOK_KEY = 'trade_guardian_rulebook';
+const RULEBOOK_KEY = 'trade_guardian_rules';
 
-function getRuleBook() {
-  try {
-    return JSON.parse(localStorage.getItem(RULEBOOK_KEY)) || null;
-  } catch {
-    return null;
-  }
+function ruleDateKey() {
+  const d = new Date();
+
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
 }
 
-function isAfter10PM() {
-  const now = new Date();
-  return now.getHours() >= 22;
-}
-
-function getTodayDate() {
-  const now = new Date();
-
-  return now.getFullYear() + '-' +
-    String(now.getMonth() + 1).padStart(2, '0') + '-' +
-    String(now.getDate()).padStart(2, '0');
+function isRuleUnlockTime() {
+  return new Date().getHours() >= 22;
 }
 
 function renderRuleBook() {
   const rulesList = document.getElementById('rulesList');
   rulesList.innerHTML = '';
 
-  let saved = getRuleBook();
+  const today = ruleDateKey();
+  let saved = JSON.parse(localStorage.getItem(RULEBOOK_KEY) || 'null');
 
-  // If it's a new day after 10 PM, automatically unlock.
-  if (saved && saved.date !== getTodayDate()) {
+  // New day after 10 PM: unlock for a fresh entry.
+  if (saved && saved.date !== today) {
     saved = null;
     localStorage.removeItem(RULEBOOK_KEY);
   }
 
-  const locked = saved && saved.locked && !isAfter10PM();
+  const locked =
+    saved &&
+    saved.date === today &&
+    saved.locked === true &&
+    !isRuleUnlockTime();
 
-  const currentState = saved
+  const states = saved && saved.date === today
     ? saved.rules
     : RULES.map(() => false);
 
@@ -734,21 +736,19 @@ function renderRuleBook() {
     const row = document.createElement('div');
 
     row.className =
-      'rule-row' + (currentState[i] ? ' done' : '');
+      'rule-row' + (states[i] ? ' done' : '');
 
     row.innerHTML = `
       <span class="r-ic">${rule.icon}</span>
       <span class="r-txt">${rule.text}</span>
-      <span class="rule-chk">${currentState[i] ? '✓' : ''}</span>
+      <span class="rule-chk">${states[i] ? '✓' : ''}</span>
     `;
 
     if (!locked) {
       row.addEventListener('click', () => {
         row.classList.toggle('done');
 
-        const chk = row.querySelector('.rule-chk');
-
-        chk.textContent =
+        row.querySelector('.rule-chk').textContent =
           row.classList.contains('done') ? '✓' : '';
       });
     } else {
@@ -759,6 +759,79 @@ function renderRuleBook() {
     rulesList.appendChild(row);
   });
 
+  const oldButton = document.getElementById('saveRulesBtn');
+  if (oldButton) oldButton.remove();
+
+  if (!locked) {
+    const saveButton = document.createElement('button');
+
+    saveButton.id = 'saveRulesBtn';
+    saveButton.textContent = '🔒 SAVE TODAY\'S RULES';
+
+    saveButton.style.cssText = `
+      width:100%;
+      margin-top:12px;
+      padding:13px;
+      border:none;
+      border-radius:12px;
+      background:#22c55e;
+      color:#04150a;
+      font-family:Poppins,sans-serif;
+      font-size:11px;
+      font-weight:800;
+      cursor:pointer;
+    `;
+
+    saveButton.addEventListener('click', () => {
+      const states = [...document.querySelectorAll('.rule-row')]
+        .map(row => row.classList.contains('done'));
+
+      localStorage.setItem(
+        RULEBOOK_KEY,
+        JSON.stringify({
+          date: today,
+          rules: states,
+          locked: true
+        })
+      );
+
+      renderRuleBook();
+
+      showToast(
+        'Rules saved and locked until 10:00 PM.',
+        'success'
+      );
+    });
+
+    rulesList.parentElement.appendChild(saveButton);
+
+  } else {
+    const lockMessage = document.createElement('div');
+
+    lockMessage.textContent =
+      '🔒 RULES LOCKED — UNLOCKS AT 10:00 PM';
+
+    lockMessage.style.cssText = `
+      margin-top:12px;
+      padding:11px;
+      border-radius:12px;
+      text-align:center;
+      background:rgba(34,197,94,.08);
+      border:1px solid rgba(34,197,94,.25);
+      color:#34d399;
+      font-family:JetBrains Mono,monospace;
+      font-size:9px;
+      font-weight:700;
+    `;
+
+    rulesList.parentElement.appendChild(lockMessage);
+  }
+}
+
+renderRuleBook();
+
+setInterval(renderRuleBook, 60000);
+  
   // Remove old save button if it exists.
   const oldBtn = document.getElementById('saveRulesBtn');
   if (oldBtn) oldBtn.remove();
