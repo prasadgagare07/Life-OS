@@ -50,8 +50,8 @@
       <div class="stat-chip">
         <div class="sc-icon">💪</div>
         <div>
-          <div class="sc-value" id="qs-weight">—</div>
-          <div class="sc-label">Current Weight</div>
+          <div class="sc-value" id="qs-discipline">—</div>
+          <div class="sc-label">Discipline Today</div>
         </div>
       </div>
     </div>
@@ -71,28 +71,29 @@
       </div>
 
       <div class="card overview-card fitness-radar-card fade-up fade-up-3">
-  <div class="card-title">
-    <h3>💪 Fitness</h3>
-    <span class="badge" id="fitness-badge">—</span>
-  </div>
+        <div class="card-title">
+          <h3>💪 Fitness</h3>
+          <span class="badge" id="fitness-badge">—</span>
+        </div>
 
-  <svg class="radar-chart" viewBox="0 0 220 184" id="fitness-radar-svg">
-    <defs>
-      <linearGradient id="radarFillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#3ECF8E"/>
-        <stop offset="55%" stop-color="#4FD1E8"/>
-        <stop offset="100%" stop-color="#B98BFF"/>
-      </linearGradient>
-    </defs>
-    <g class="radar-grid" id="radar-grid"></g>
-    <g class="radar-axis-labels" id="radar-axis-labels"></g>
-    <polygon id="radar-shape" class="radar-shape" points=""></polygon>
-    <g id="radar-dots"></g>
-  </svg>
+        <svg class="radar-chart" viewBox="0 0 220 184" id="fitness-radar-svg">
+          <defs>
+            <linearGradient id="radarFillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3ECF8E"/>
+              <stop offset="55%" stop-color="#4FD1E8"/>
+              <stop offset="100%" stop-color="#B98BFF"/>
+            </linearGradient>
+          </defs>
+          <g class="radar-grid" id="radar-grid"></g>
+          <g class="radar-axis-labels" id="radar-axis-labels"></g>
+          <polygon id="radar-shape" class="radar-shape" points=""></polygon>
+          <g id="radar-dots"></g>
+        </svg>
 
-  <div class="radar-legend" id="fitness-legend"></div>
-  <div class="stat-label" id="fitness-status">Loading…</div>
-</div>
+        <div class="radar-legend" id="fitness-legend"></div>
+        <div class="stat-label" id="fitness-status">Loading…</div>
+      </div>
+    </div>
 
     <div class="card tg-card fade-up fade-up-2">
       <div class="card-title">
