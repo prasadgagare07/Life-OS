@@ -59,25 +59,98 @@ body.reactor-body {
   margin-bottom: 14px;
 }
 
-/* Reactor core visual */
-.reactorCard {
+/* Reactor core visual — The Spire of Tomorrow.
+   Continuously blends between "thriving" and "dying" based on the
+   live --charge custom property (0–1), set from JS in reactor.js. */
+.reactorCard.spireStage {
+  --charge: 0.5;
   position: relative;
-  height: 250px;
+  height: 300px;
   border-radius: 22px;
   margin-bottom: 26px;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 55%, rgba(0, 229, 255, 0.06), transparent 70%), var(--surface);
-  border: 1px solid rgba(0, 229, 255, 0.15);
+  border: 1px solid rgba(178,140,255,0.18);
+  background: #05040A;
 }
-#reactorCanvas { width: 100%; height: 100%; display: block; }
+.spireBgAlive, .spireBgDying {
+  position: absolute; inset: 0; transition: opacity .4s ease;
+}
+.spireBgAlive {
+  background: radial-gradient(ellipse 90% 70% at 50% 15%, #1C2550 0%, #0F1230 45%, #05060F 100%);
+  opacity: var(--charge);
+}
+.spireBgDying {
+  background: radial-gradient(ellipse 90% 70% at 50% 15%, #3A0A12 0%, #1A0509 40%, #030102 100%);
+  opacity: calc(1 - var(--charge));
+}
+.spireSvg { position: relative; width: 100%; height: 100%; display: block; z-index: 2; }
+
+/* thriving-only layers fade in with charge */
+.spNebula, .spStars, .spShoot, .spFirefly, .spRootGlow {
+  transition: opacity .6s ease;
+  opacity: var(--charge);
+}
+.spStar { animation: spTwinkle 3s ease-in-out infinite; }
+@keyframes spTwinkle { 0%,100%{ opacity:.15;} 50%{ opacity:1;} }
+.spShoot { opacity: 0; animation: spShootAnim 6s linear infinite; }
+.spShoot.spShoot2 { animation-delay: 3s; }
+@keyframes spShootAnim {
+  0%{ opacity:0; transform:translate(0,0);}
+  2%{ opacity:calc(var(--charge));}
+  12%{ opacity:0; transform:translate(-70px,50px);}
+  100%{ opacity:0; transform:translate(-70px,50px);}
+}
+.spFirefly { animation: spFloat 5s ease-in-out infinite; }
+@keyframes spFloat { 0%,100%{ transform:translateY(0) translateX(0);} 50%{ transform:translateY(-14px) translateX(6px);} }
+
+/* dying-only layers fade in as charge drops */
+.spFog, .spVoidCrack, .spEye, .spVine, .spVignette, .spEmber {
+  transition: opacity .6s ease;
+  opacity: calc(1 - var(--charge));
+}
+.spFog { animation: spFogDrift 12s ease-in-out infinite; }
+@keyframes spFogDrift { 0%,100%{ transform:translateX(0);} 50%{ transform:translateX(12px);} }
+.spEye { animation: spEyeBlink 4s ease-in-out infinite; }
+@keyframes spEyeBlink { 0%,100%{ opacity:calc(1 - var(--charge));} 92%{ opacity:calc(1 - var(--charge));} 95%{ opacity:.05;} 97%{ opacity:calc(1 - var(--charge));} }
+.spVoidCrack { animation: spCrackFlicker 2.3s steps(3) infinite; }
+@keyframes spCrackFlicker { 0%,100%{ opacity:calc((1 - var(--charge)) * 0.5);} 30%{ opacity:calc(1 - var(--charge));} 60%{ opacity:calc((1 - var(--charge)) * 0.55);} }
+.spEmber { animation: spEmberRise 3.4s ease-in infinite; }
+@keyframes spEmberRise { 0%{ transform:translateY(0); opacity:0;} 15%{ opacity:calc(1 - var(--charge));} 100%{ transform:translateY(-60px); opacity:0;} }
+
+/* guardian brightens, shadow dims — and the reverse */
+.spGuardian { transition: opacity .6s, filter .6s; opacity: 1; filter: drop-shadow(0 0 calc(6px + 12px * var(--charge)) rgba(127,231,255,calc(0.25 + 0.55 * var(--charge)))); }
+.spShadow { transition: opacity .6s, filter .6s; opacity: 1; filter: drop-shadow(0 0 calc(6px + 14px * (1 - var(--charge))) rgba(255,59,31,calc(0.25 + 0.55 * (1 - var(--charge))))); }
+
+/* the spire itself — shards dim/grey out as charge falls */
+.spCore { transition: filter 1s; filter: drop-shadow(0 0 calc(10px + 16px * var(--charge)) rgba(178,140,255,calc(0.3 + 0.25 * var(--charge)))) drop-shadow(0 0 calc(14px + 32px * var(--charge)) rgba(127,231,196,calc(0.15 * var(--charge)))); }
+.spGem { transition: opacity .6s, transform .6s, fill .6s; transform-origin: center; opacity: calc(0.22 + 0.78 * var(--charge)); filter: grayscale(calc((1 - var(--charge)) * 100%)); transform: scale(calc(0.88 + 0.12 * var(--charge))); }
+.spCrack { opacity: calc(1 - var(--charge)); transition: opacity .6s; }
+.spOrbit { transform-origin: center; animation: spSpin 22s linear infinite; opacity: calc(0.15 + 0.85 * var(--charge)); transition: opacity .6s; }
+@keyframes spSpin { to{ transform: rotate(360deg); } }
+
+.spireAlert {
+  position: absolute; left: 14px; right: 14px; bottom: 14px;
+  padding: 9px 12px; border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.02em;
+  text-align: center; color: #FFC9BC;
+  background: rgba(0,0,0,.4); border: 1px solid rgba(255,90,50,.45);
+  opacity: 0; pointer-events: none; transform: translateY(6px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.spireAlert.show {
+  opacity: 1; transform: translateY(0);
+  animation: spAlertPulse 1.7s ease-in-out infinite;
+}
+@keyframes spAlertPulse { 0%,100%{ box-shadow:0 0 0 rgba(255,80,40,0);} 50%{ box-shadow:0 0 16px rgba(255,80,40,.45);} }
+
 .reactorLabel {
-  position: absolute; top: 12px; left: 16px;
+  position: absolute; top: 12px; left: 16px; z-index: 3;
   font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
   letter-spacing: 0.1em; color: var(--rx-core-glow); text-transform: uppercase; opacity: 0.8;
 }
 .reactorStat {
-  position: absolute; bottom: 12px; left: 16px; right: 16px;
-  display: flex; justify-content: space-between;
+  position: absolute; top: 12px; right: 16px; z-index: 3;
+  display: flex; gap: 14px;
   font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--rx-muted);
 }
 .reactorStat b { color: var(--rx-core-glow); font-size: 1rem; }
@@ -192,7 +265,7 @@ body.reactor-body {
 
 @media (max-width: 480px) {
   .rx-h1 { font-size: 1.7rem; }
-  .reactorCard { height: 210px; }
+  .reactorCard.spireStage { height: 230px; }
 }
 /* --- Race, points, trajectory (added) --- */
 
@@ -239,47 +312,6 @@ body.reactor-body {
 .lockdownBanner{
   background:rgba(255,200,87,.06);border:1px solid rgba(255,200,87,.25);
   border-radius:12px;padding:10px 14px;font-size:.76rem;color:#FFD98A;margin-bottom:16px;text-align:center;
-}
-
-/* --- Reactor core: bar-per-entry chart (replaces the canvas orb) --- */
-
-.reactorCard .chartZone{
-  position:absolute; inset:0; display:flex; padding:38px 16px 34px;
-}
-.yAxis{
-  display:flex; flex-direction:column-reverse; justify-content:space-between;
-  padding-bottom:20px; padding-right:8px; flex-shrink:0;
-}
-.yAxis span{
-  font-family:'JetBrains Mono',monospace; font-size:.56rem; color:var(--rx-muted);
-  line-height:1; transform:translateY(50%);
-}
-.yAxis span.headroom{ color:#FFC857; opacity:.7; }
-
-.plotArea{ flex:1; position:relative; overflow-x:auto; }
-.gridLines{ position:absolute; inset:0 0 20px 0; }
-.gridLine{ position:absolute; left:0; right:0; height:1px; background:rgba(255,255,255,.06); }
-.gridLine.headroom{ background:rgba(255,200,87,.18); border-top:1px dashed rgba(255,200,87,.3); }
-
-.barsRow{
-  position:relative; display:flex; align-items:flex-end; gap:8px;
-  height:100%; padding-bottom:20px; min-width:max-content;
-}
-.barItem{ display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; position:relative; }
-.barShape{ width:16px; border-radius:4px 4px 2px 2px; transition:height .4s cubic-bezier(.2,.9,.3,1); }
-.barShape.up{ background:linear-gradient(180deg,var(--rx-core-glow),var(--rx-core)); box-shadow:0 0 8px rgba(0,229,255,.5); }
-.barShape.down{ background:linear-gradient(180deg,var(--rx-leak-glow),var(--rx-leak)); box-shadow:0 0 8px rgba(255,27,76,.4); }
-.barPct{ font-family:'JetBrains Mono',monospace; font-size:.54rem; color:var(--rx-muted); margin-bottom:3px; }
-.barIdx{
-  position:absolute; bottom:-18px; font-family:'JetBrains Mono',monospace; font-size:.5rem; color:var(--rx-muted);
-}
-
-/* --- Trajectory: 30-day heatmap (replaces the dual-line SVG) --- */
-
-.heatGrid{ display:grid; grid-template-columns:repeat(10,1fr); gap:6px; margin:2px 0 10px; }
-.heatCell{
-  aspect-ratio:1; border-radius:5px; display:flex; align-items:center; justify-content:center;
-  font-size:.55rem; color:rgba(255,255,255,.5); font-family:'JetBrains Mono',monospace;
 }
 
 /* Outcome overlay */
