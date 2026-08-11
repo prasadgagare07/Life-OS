@@ -33,15 +33,30 @@
   <h1 class="rx-h1">Power the core.<br>Don't let it leak.</h1>
   <p class="rx-sub">Good habits charge your dream reactor. Bad habits crack it open.</p>
 
-  <div class="rxPointsRow">
-    <span class="rxPoint good" id="lifetimeGood">+0</span>
-    <span class="rxPoint bad" id="lifetimeBad">0</span>
-    <span class="rxPoint streak" id="streakVal">🔥 0</span>
+  <div class="statRow">
+    <div class="statCard">
+      <div class="statLabel">Charged</div>
+      <div class="statValue" id="lifetimeGood">+0</div>
+    </div>
+    <div class="statCard bad">
+      <div class="statLabel">Cracked</div>
+      <div class="statValue" id="lifetimeBad">0</div>
+    </div>
+    <div class="statCard streak">
+      <div class="statLabel">Streak</div>
+      <div class="statValue" id="streakVal">🔥 0</div>
+    </div>
   </div>
 
   <div class="reactorCard">
-    <canvas id="reactorCanvas"></canvas>
     <div class="reactorLabel" id="reactorDate">Today</div>
+    <div class="chartZone">
+      <div class="yAxis" id="rxYAxis"></div>
+      <div class="plotArea">
+        <div class="gridLines" id="rxGridLines"></div>
+        <div class="barsRow" id="rxBarsRow"></div>
+      </div>
+    </div>
     <div class="reactorStat">
       <span class="chargeStat">CHARGE <b id="chargeVal">0%</b></span>
       <span class="leakStat">LEAK <b id="leakVal">0</b></span>
@@ -86,11 +101,11 @@
     <div class="graphHead">
       <div class="graphTitle">Trajectory — Last 30 Days</div>
       <div class="graphLegend">
-        <span><span class="legendDot good"></span>Good</span>
-        <span><span class="legendDot bad"></span>Bad</span>
+        <span><span class="legendDot good"></span>Good day</span>
+        <span><span class="legendDot bad"></span>Bad day</span>
       </div>
     </div>
-    <svg id="trajectorySvg" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
+    <div class="heatGrid" id="heatGrid"></div>
   </div>
 
   <div class="lockdownBanner" id="lockdownBanner" style="display:none;">
