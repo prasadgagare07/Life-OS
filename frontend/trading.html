@@ -676,24 +676,167 @@ return map;
     { icon:'🚶', text:'Walked away after 2 consecutive losses' },
     { icon:'📝', text:"Journaled today's trades honestly" },
   ];
-  const doneToday = [true, true, true, false, true, false]; // demo state
+  // ===== DAILY RULE BOOK =====
+// Rules lock after saving.
+// They automatically unlock every day at 10:00 PM.
 
+const RULES = [
+  { icon:'🎯', text:'Stopped trading after hitting ₹5,000 target' },
+  { icon:'🚫', text:'No revenge trade after a loss' },
+  { icon:'🛑', text:'Followed stop-loss on every trade' },
+  { icon:'📉', text:'Stayed within max trade count for the day' },
+  { icon:'🚶', text:'Walked away after 2 consecutive losses' },
+  { icon:'📝', text:"Journaled today's trades honestly" },
+];
+
+const RULEBOOK_KEY = 'trade_guardian_rulebook';
+
+function getRuleBook() {
+  try {
+    return JSON.parse(localStorage.getItem(RULEBOOK_KEY)) || null;
+  } catch {
+    return null;
+  }
+}
+
+function isAfter10PM() {
+  const now = new Date();
+  return now.getHours() >= 22;
+}
+
+function getTodayDate() {
+  const now = new Date();
+
+  return now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+}
+
+function renderRuleBook() {
   const rulesList = document.getElementById('rulesList');
-  RULES.forEach((r,i)=>{
+  rulesList.innerHTML = '';
+
+  let saved = getRuleBook();
+
+  // If it's a new day after 10 PM, automatically unlock.
+  if (saved && saved.date !== getTodayDate()) {
+    saved = null;
+    localStorage.removeItem(RULEBOOK_KEY);
+  }
+
+  const locked = saved && saved.locked && !isAfter10PM();
+
+  const currentState = saved
+    ? saved.rules
+    : RULES.map(() => false);
+
+  RULES.forEach((rule, i) => {
     const row = document.createElement('div');
-    row.className = 'rule-row' + (doneToday[i] ? ' done' : '');
+
+    row.className =
+      'rule-row' + (currentState[i] ? ' done' : '');
+
     row.innerHTML = `
-      <span class="r-ic">${r.icon}</span>
-      <span class="r-txt">${r.text}</span>
-      <span class="rule-chk">${doneToday[i] ? '✓' : ''}</span>
+      <span class="r-ic">${rule.icon}</span>
+      <span class="r-txt">${rule.text}</span>
+      <span class="rule-chk">${currentState[i] ? '✓' : ''}</span>
     `;
-    row.addEventListener('click', ()=>{
-      row.classList.toggle('done');
-      const chk = row.querySelector('.rule-chk');
-      chk.textContent = row.classList.contains('done') ? '✓' : '';
-    });
+
+    if (!locked) {
+      row.addEventListener('click', () => {
+        row.classList.toggle('done');
+
+        const chk = row.querySelector('.rule-chk');
+
+        chk.textContent =
+          row.classList.contains('done') ? '✓' : '';
+      });
+    } else {
+      row.style.cursor = 'not-allowed';
+      row.style.opacity = '0.65';
+    }
+
     rulesList.appendChild(row);
   });
+
+  // Remove old save button if it exists.
+  const oldBtn = document.getElementById('saveRulesBtn');
+  if (oldBtn) oldBtn.remove();
+
+  // Create Save button.
+  if (!locked) {
+    const saveBtn = document.createElement('button');
+
+    saveBtn.id = 'saveRulesBtn';
+    saveBtn.textContent = '🔒 SAVE & LOCK TODAY\'S RULES';
+
+    saveBtn.style.cssText = `
+      width:100%;
+      margin-top:12px;
+      padding:13px;
+      border:none;
+      border-radius:12px;
+      background:#22c55e;
+      color:#04150a;
+      font-family:Poppins,sans-serif;
+      font-size:11px;
+      font-weight:800;
+      cursor:pointer;
+    `;
+
+    saveBtn.addEventListener('click', () => {
+      const states = [...document.querySelectorAll('.rule-row')]
+        .map(row => row.classList.contains('done'));
+
+      localStorage.setItem(
+        RULEBOOK_KEY,
+        JSON.stringify({
+          date: getTodayDate(),
+          rules: states,
+          locked: true,
+          savedAt: new Date().toISOString()
+        })
+      );
+
+      renderRuleBook();
+
+      showToast(
+        'Rules saved and locked until 10:00 PM.',
+        'success'
+      );
+    });
+
+    rulesList.parentElement.appendChild(saveBtn);
+
+  } else {
+    const lockMsg = document.createElement('div');
+
+    lockMsg.id = 'ruleLockMessage';
+    lockMsg.textContent = '🔒 RULES LOCKED — UNLOCKS AT 10:00 PM';
+
+    lockMsg.style.cssText = `
+      margin-top:12px;
+      padding:11px;
+      border-radius:12px;
+      text-align:center;
+      background:rgba(34,197,94,.08);
+      border:1px solid rgba(34,197,94,.25);
+      color:#34d399;
+      font-family:JetBrains Mono,monospace;
+      font-size:9px;
+      font-weight:700;
+    `;
+
+    rulesList.parentElement.appendChild(lockMsg);
+  }
+}
+
+renderRuleBook();
+
+// Check every minute.
+// At 10:00 PM the rules automatically become editable again.
+setInterval(renderRuleBook, 60000);
+  
 </script>
 </body>
   </html>
