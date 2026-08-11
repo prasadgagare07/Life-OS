@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 async function getByDate(date) {
   const { rows } = await pool.query(
-    `SELECT id, entry_date::text AS entry_date, type, text, created_at
+    `SELECT id, entry_date::text AS entry_date, type, text, weight, created_at
      FROM reactor_entries
      WHERE entry_date = $1
      ORDER BY created_at ASC`,
@@ -11,12 +11,12 @@ async function getByDate(date) {
   return rows;
 }
 
-async function addEntry(date, type, text) {
+async function addEntry(date, type, text, weight) {
   const { rows } = await pool.query(
-    `INSERT INTO reactor_entries (entry_date, type, text)
-     VALUES ($1, $2, $3)
-     RETURNING id, entry_date::text AS entry_date, type, text, created_at`,
-    [date, type, text]
+    `INSERT INTO reactor_entries (entry_date, type, text, weight)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, entry_date::text AS entry_date, type, text, weight, created_at`,
+    [date, type, text, weight]
   );
   return rows[0];
 }
