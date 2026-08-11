@@ -159,7 +159,7 @@ function computeConsistency() {
 function render() {
   const { points, totalProfit, finalCapital } = computeAll();
 
-  document.getElementById('hero-capital').textContent = fmt(finalCapital);
+  document.getElementById('hero-capital').textContent = fmt(10000);
   document.getElementById('hero-profit').textContent = fmt(totalProfit);
   document.getElementById('hero-days').textContent = entries.length;
 
