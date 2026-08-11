@@ -241,6 +241,47 @@ body.reactor-body {
   border-radius:12px;padding:10px 14px;font-size:.76rem;color:#FFD98A;margin-bottom:16px;text-align:center;
 }
 
+/* --- Reactor core: bar-per-entry chart (replaces the canvas orb) --- */
+
+.reactorCard .chartZone{
+  position:absolute; inset:0; display:flex; padding:38px 16px 34px;
+}
+.yAxis{
+  display:flex; flex-direction:column-reverse; justify-content:space-between;
+  padding-bottom:20px; padding-right:8px; flex-shrink:0;
+}
+.yAxis span{
+  font-family:'JetBrains Mono',monospace; font-size:.56rem; color:var(--rx-muted);
+  line-height:1; transform:translateY(50%);
+}
+.yAxis span.headroom{ color:#FFC857; opacity:.7; }
+
+.plotArea{ flex:1; position:relative; overflow-x:auto; }
+.gridLines{ position:absolute; inset:0 0 20px 0; }
+.gridLine{ position:absolute; left:0; right:0; height:1px; background:rgba(255,255,255,.06); }
+.gridLine.headroom{ background:rgba(255,200,87,.18); border-top:1px dashed rgba(255,200,87,.3); }
+
+.barsRow{
+  position:relative; display:flex; align-items:flex-end; gap:8px;
+  height:100%; padding-bottom:20px; min-width:max-content;
+}
+.barItem{ display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; position:relative; }
+.barShape{ width:16px; border-radius:4px 4px 2px 2px; transition:height .4s cubic-bezier(.2,.9,.3,1); }
+.barShape.up{ background:linear-gradient(180deg,var(--rx-core-glow),var(--rx-core)); box-shadow:0 0 8px rgba(0,229,255,.5); }
+.barShape.down{ background:linear-gradient(180deg,var(--rx-leak-glow),var(--rx-leak)); box-shadow:0 0 8px rgba(255,27,76,.4); }
+.barPct{ font-family:'JetBrains Mono',monospace; font-size:.54rem; color:var(--rx-muted); margin-bottom:3px; }
+.barIdx{
+  position:absolute; bottom:-18px; font-family:'JetBrains Mono',monospace; font-size:.5rem; color:var(--rx-muted);
+}
+
+/* --- Trajectory: 30-day heatmap (replaces the dual-line SVG) --- */
+
+.heatGrid{ display:grid; grid-template-columns:repeat(10,1fr); gap:6px; margin:2px 0 10px; }
+.heatCell{
+  aspect-ratio:1; border-radius:5px; display:flex; align-items:center; justify-content:center;
+  font-size:.55rem; color:rgba(255,255,255,.5); font-family:'JetBrains Mono',monospace;
+}
+
 /* Outcome overlay */
 .outcomeOverlay{
   position:fixed;inset:0;background:rgba(5,8,12,.9);backdrop-filter:blur(4px);
