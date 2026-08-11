@@ -2,17 +2,14 @@ async function loadDashboard() {
   document.getElementById('quote').textContent = getDailyQuote();
   document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-IN', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-    // was: const weight = renderFitness(val(fitnessGoalR, null), val(fitnessEntriesR, []));
-renderFitness(val(fitnessEntriesR, [])[0] || null);
   });
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
-  const [standardsR, financeR, fitnessGoalR, fitnessEntriesR, visionR, tradingR, engineR] =
+  const [standardsR, financeR, fitnessEntriesR, visionR, tradingR, engineR] =
     await Promise.allSettled([
       api.get('/standards/today'),
       api.get('/finance'),
-      api.get('/fitness/goal'),
       api.get('/fitness?limit=1'),
       api.get('/vision'),
       api.get('/trading/entries'),
@@ -25,13 +22,13 @@ renderFitness(val(fitnessEntriesR, [])[0] || null);
 
   const standardsScore = renderStandards(val(standardsR, null));
   const financeTotal = renderFinance(val(financeR, null));
-  const weight = renderFitness(val(fitnessGoalR, null), val(fitnessEntriesR, []));
+  const disciplinePct = renderFitness(val(fitnessEntriesR, [])[0] || null);
   renderVision(val(visionR, []));
   const { streak, guarded } = renderTradeGuardian(val(tradingR, []), val(engineR, null));
 
-  renderQuickStats({ standardsScore, financeTotal, streak, guarded, weight });
+  renderQuickStats({ standardsScore, financeTotal, streak, guarded, disciplinePct });
 
-  [standardsR, financeR, fitnessGoalR, fitnessEntriesR, visionR, tradingR, engineR]
+  [standardsR, financeR, fitnessEntriesR, visionR, tradingR, engineR]
     .filter(r => r.status === 'rejected')
     .forEach(r => console.error(r.reason));
 }
@@ -62,31 +59,34 @@ function renderFinance(finance) {
   return total;
 }
 
-const FITNESS_TARGETS = { steps:10000, protein_g:100, water_l:3, sleep_hours:7, workout_minutes:45 };
+const FITNESS_TARGETS = { steps: 10000, protein_g: 100, water_l: 3, sleep_hours: 7, workout_minutes: 45 };
 const RADAR_AXES = [
-  { key:'steps',           label:'STEPS',   unit:'' },
-  { key:'protein_g',       label:'PROTEIN', unit:'g' },
-  { key:'water_l',         label:'WATER',   unit:'L' },
-  { key:'sleep_hours',     label:'SLEEP',   unit:'h' },
-  { key:'workout_minutes', label:'WORKOUT', unit:'min' },
+  { key: 'steps',           label: 'STEPS',   unit: '' },
+  { key: 'protein_g',       label: 'PROTEIN', unit: 'g' },
+  { key: 'water_l',         label: 'WATER',   unit: 'L' },
+  { key: 'sleep_hours',     label: 'SLEEP',   unit: 'h' },
+  { key: 'workout_minutes', label: 'WORKOUT', unit: 'min' },
 ];
 
-function polarPoint(pct, index, total, cx, cy, minR, maxR){
+function polarPoint(pct, index, total, cx, cy, minR, maxR) {
   const angle = (index * (360 / total)) - 90;
-  const r = minR + (Math.min(Math.max(pct,0),100) / 100) * (maxR - minR);
+  const r = minR + (Math.min(Math.max(pct, 0), 100) / 100) * (maxR - minR);
   const rad = angle * Math.PI / 180;
   return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
 }
 
-function drawRadarGrid(){
+function drawRadarGrid() {
   const cx = 110, cy = 92, minR = 14, maxR = 76;
   const grid = document.getElementById('radar-grid');
   const labels = document.getElementById('radar-axis-labels');
   if (!grid || !labels) return;
-  grid.innerHTML = ''; labels.innerHTML = '';
+  grid.innerHTML = '';
+  labels.innerHTML = '';
 
   [33, 66, 100].forEach(ringPct => {
-    const pts = RADAR_AXES.map((_, i) => polarPoint(ringPct, i, RADAR_AXES.length, cx, cy, minR, maxR).join(',')).join(' ');
+    const pts = RADAR_AXES
+      .map((_, i) => polarPoint(ringPct, i, RADAR_AXES.length, cx, cy, minR, maxR).join(','))
+      .join(' ');
     grid.innerHTML += `<polygon points="${pts}"/>`;
   });
 
@@ -97,7 +97,7 @@ function drawRadarGrid(){
 }
 drawRadarGrid();
 
-function renderFitness(entry){
+function renderFitness(entry) {
   const badge = document.getElementById('fitness-badge');
   const status = document.getElementById('fitness-status');
   const shape = document.getElementById('radar-shape');
@@ -106,26 +106,34 @@ function renderFitness(entry){
   const cx = 110, cy = 92, minR = 14, maxR = 76;
 
   if (!entry) {
-    shape.setAttribute('points', RADAR_AXES.map((_, i) => polarPoint(0, i, RADAR_AXES.length, cx, cy, minR, maxR).join(',')).join(' '));
+    shape.setAttribute(
+      'points',
+      RADAR_AXES.map((_, i) => polarPoint(0, i, RADAR_AXES.length, cx, cy, minR, maxR).join(',')).join(' ')
+    );
     dotsG.innerHTML = '';
     legend.innerHTML = '';
     badge.textContent = 'No data';
     badge.className = 'badge';
     status.textContent = 'No entries yet';
-    return;
+    return null;
   }
 
   const pcts = RADAR_AXES.map(axis => {
-    const val = Number(entry[axis.key]) || 0;
+    const value = Number(entry[axis.key]) || 0;
     const target = FITNESS_TARGETS[axis.key];
-    return { ...axis, value: val, pct: Math.min((val / target) * 100, 100) };
+    return { ...axis, value, pct: Math.min((value / target) * 100, 100) };
   });
 
   const points = pcts.map((a, i) => polarPoint(a.pct, i, pcts.length, cx, cy, minR, maxR));
   shape.setAttribute('points', points.map(p => p.join(',')).join(' '));
 
-  dotsG.innerHTML = points.map(([x, y]) => `<circle class="radar-dot" cx="${x}" cy="${y}" r="2.4"/>`).join('');
-  legend.innerHTML = pcts.map(a => `<div>${a.label}<span>${a.value}${a.unit}</span></div>`).join('');
+  dotsG.innerHTML = points
+    .map(([x, y]) => `<circle class="radar-dot" cx="${x}" cy="${y}" r="2.4"/>`)
+    .join('');
+
+  legend.innerHTML = pcts
+    .map(a => `<div>${a.label}<span>${a.value}${a.unit}</span></div>`)
+    .join('');
 
   const avgPct = pcts.reduce((s, a) => s + a.pct, 0) / pcts.length;
   const isToday = entry.entry_date === new Date().toISOString().slice(0, 10);
@@ -133,8 +141,9 @@ function renderFitness(entry){
   badge.textContent = `${Math.round(avgPct)}%`;
   badge.className = 'badge ' + (avgPct >= 70 ? 'good' : avgPct >= 40 ? 'warn' : 'bad');
   status.textContent = isToday ? "Today's balance" : `Last logged ${entry.entry_date}`;
-}
 
+  return Math.round(avgPct);
+}
 
 function renderVision(goals) {
   const chipsEl = document.getElementById('vision-chips');
@@ -201,11 +210,11 @@ function renderTradeGuardian(entries, engine) {
   return { streak, guarded };
 }
 
-function renderQuickStats({ standardsScore, financeTotal, streak, guarded, weight }) {
+function renderQuickStats({ standardsScore, financeTotal, streak, guarded, disciplinePct }) {
   document.getElementById('qs-standards').textContent = standardsScore ? `${standardsScore.toFixed(1)}/10` : '—';
   document.getElementById('qs-networth').textContent = formatINR((financeTotal || 0) + (guarded || 0));
   document.getElementById('qs-streak').textContent = `${streak} day${streak === 1 ? '' : 's'}`;
-  document.getElementById('qs-weight').textContent = weight ? `${weight} kg` : '—';
+  document.getElementById('qs-discipline').textContent = disciplinePct != null ? `${disciplinePct}%` : '—';
 }
 
 loadDashboard();
