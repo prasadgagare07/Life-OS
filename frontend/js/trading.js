@@ -8,8 +8,8 @@
 // needed here — it already prefers the API when available.
 
 const TARGET = 5000;
-const INITIAL_CAPITAL = 50000;
-const START_DATE_STR = '2026-06-15'; // fixed baseline — change to your real start date
+const INITIAL_CAPITAL = 10000;
+const START_DATE_STR = '2026-08-11'; // fixed baseline — change to your real start date
 const STORAGE_KEY = 'lifeos_trading_entries';
 
 function dstr(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
@@ -46,6 +46,7 @@ async function loadEntries() {
   // Prefer the real backend once it exists; fall back to localStorage.
   try {
     const remote = await api.get('/trading/entries');
+    return remote.filter(e => e.entry_date >= START_DATE_STR);
     if (Array.isArray(remote)) {
       return remote.map(e => ({ date: new Date(e.entry_date || e.date), profit: Number(e.profit) }));
     }
