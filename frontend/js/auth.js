@@ -4,6 +4,7 @@
 // page never unlocks another.
 (function guardPage() {
   const page = getCurrentPage();
+  if (page === 'trading') return;
   const token = localStorage.getItem(getPageTokenKey(page));
   if (!token) {
     window.location.href = `/index.html?page=${encodeURIComponent(page)}`;
