@@ -3,19 +3,12 @@
 // it and posts new entries. auth.js has already confirmed there's a
 // valid token for this page before any of this runs.
 
-let charge = 0;   // 0–100, current reactor charge for today
+let charge = 0;      // 0–100, current reactor charge for today
+let todayEntries = []; // {id, text, created_at, kind: 'charge'|'leak'} — feeds the bar chart
 
-const spireStage = document.getElementById('spireStage');
-const spireAlert = document.getElementById('spireAlert');
-
-// Drives the whole Spire scene from one real number — no separate
-// "state" to fake, the visuals just continuously track charge %.
-function updateSpire(chargePct) {
-  const c = Math.max(0, Math.min(100, chargePct)) / 100;
-  spireStage.style.setProperty('--charge', c);
-  spireAlert.classList.toggle('show', chargePct < 40);
+function localDateKey(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
-updateSpire(charge);
 
 function escapeHtml(s) {
   const d = document.createElement('div');
@@ -48,7 +41,8 @@ async function removeEntry(id, row) {
     charge = newCharge;
     document.getElementById('chargeVal').textContent = Math.round(charge) + '%';
     document.getElementById('leakVal').textContent = leaks;
-    updateSpire(charge);
+    todayEntries = todayEntries.filter(e => e.id !== id);
+    renderTodayChart();
     maybeShowEmpty('logCharge', 'emptyCharge', 'No charge yet — log the first good thing you did.');
     maybeShowEmpty('logLeak', 'emptyLeak', 'No cracks yet — good. Keep it sealed.');
     updateCounts();
@@ -80,13 +74,18 @@ async function loadToday() {
 
     document.getElementById('chargeVal').textContent = Math.round(charge) + '%';
     document.getElementById('leakVal').textContent = data.leaks;
-    updateSpire(charge);
 
     const dateLabel = new Date(data.date + 'T00:00:00').toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
     document.getElementById('reactorDate').textContent = dateLabel;
 
     data.charges.forEach(renderRow);
     data.leakEntries.forEach(renderRow);
+
+    todayEntries = [
+      ...data.charges.map(e => ({ ...e, kind: 'charge' })),
+      ...data.leakEntries.map(e => ({ ...e, kind: 'leak' })),
+    ];
+    renderTodayChart();
 
     if (data.charges.length) document.getElementById('emptyCharge')?.remove();
     if (data.leakEntries.length) document.getElementById('emptyLeak')?.remove();
@@ -102,6 +101,7 @@ const modalBack = document.getElementById('modalBack');
 const modalTitle = document.getElementById('modalTitle');
 const modalHint = document.getElementById('modalHint');
 const modalInput = document.getElementById('modalInput');
+const modalPercent = document.getElementById('modalPercent');
 const modalSubmit = document.getElementById('modalSubmit');
 
 function openModal(type) {
@@ -110,9 +110,11 @@ function openModal(type) {
   modalTitle.className = type;
   modalHint.textContent = type === 'charge' ? 'One line is enough — be specific.' : 'Be honest. This is just for you.';
   modalInput.placeholder = type === 'charge' ? 'e.g. Studied EC2 for 1 hour' : 'e.g. Skipped practice, doomscrolled 2hrs';
+  modalPercent.placeholder = type === 'charge' ? 'How much closer to your dream? (%)' : 'How much further from it? (%)';
   modalSubmit.className = 'modalBtn submit ' + type;
   modalSubmit.textContent = type === 'charge' ? 'Charge It' : 'Crack It';
   modalInput.value = '';
+  modalPercent.value = '';
   modalBack.classList.add('open');
   setTimeout(() => modalInput.focus(), 100);
 }
@@ -126,17 +128,25 @@ document.getElementById('chargeBtn').addEventListener('click', () => openModal('
 document.getElementById('leakBtn').addEventListener('click', () => openModal('leak'));
 document.getElementById('modalCancel').addEventListener('click', closeModal);
 modalInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitEntry(); });
+modalPercent.addEventListener('keydown', e => { if (e.key === 'Enter') submitEntry(); });
 modalSubmit.addEventListener('click', submitEntry);
 
 async function submitEntry() {
   const text = modalInput.value.trim();
+  const weight = Number(modalPercent.value);
+
   if (!text) { modalInput.focus(); return; }
+  if (!weight || Number.isNaN(weight) || weight <= 0) {
+    showToast('Enter how much this changes things (%)', 'error');
+    modalPercent.focus();
+    return;
+  }
 
   const type = pendingType;
   modalSubmit.disabled = true;
 
   try {
-    const { entry, charge: newCharge, leaks, race, raceResolved } = await api.post('/reactor', { type, text });
+    const { entry, charge: newCharge, leaks, race, raceResolved } = await api.post('/reactor', { type, text, weight });
 
     document.getElementById(type === 'charge' ? 'emptyCharge' : 'emptyLeak')?.remove();
     renderRow(entry);
@@ -146,7 +156,8 @@ async function submitEntry() {
     charge = newCharge;
     document.getElementById('chargeVal').textContent = Math.round(charge) + '%';
     document.getElementById('leakVal').textContent = leaks;
-    updateSpire(charge);
+    todayEntries.push({ ...entry, kind: type });
+    renderTodayChart();
 
     if (race) renderRace(race);
 
@@ -187,38 +198,96 @@ function fmtDateShort(iso) {
   return new Date(iso + 'T00:00:00').toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
-function renderTrajectory(trajectory) {
-  const svg = document.getElementById('trajectorySvg');
-  if (!trajectory.length) {
-    svg.innerHTML = '<text x="10" y="90" fill="#5C7A94" font-size="11">Log a few days to see your trajectory.</text>';
+// One bar per entry logged today, showing the running charge % right
+// after that entry — cyan/rising for a charge, red/falling for a leak.
+// Each entry's height contribution is whatever percent you typed in when
+// logging it, not a fixed step — so a huge, especially impactful entry
+// can push the running total past 100%, and the axis stretches to fit it.
+function renderTodayChart() {
+  const yAxisEl = document.getElementById('rxYAxis');
+  const gridEl = document.getElementById('rxGridLines');
+  const barsEl = document.getElementById('rxBarsRow');
+
+  if (!todayEntries.length) {
+    yAxisEl.innerHTML = '';
+    gridEl.innerHTML = '';
+    barsEl.innerHTML = '<span style="font-size:.68rem;color:var(--rx-muted);align-self:center;">Log something to see today\'s chart.</span>';
     return;
   }
 
-  const maxVal = Math.max(
-    1,
-    ...trajectory.map((d) => d.goodCumulative),
-    ...trajectory.map((d) => d.badCumulative)
-  );
-  const W = 600, H = 160, PAD = 10;
-  const n = trajectory.length;
-  const xStep = n > 1 ? (W - PAD * 2) / (n - 1) : 0;
+  const sorted = [...todayEntries].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  let running = 0;
+  const points = sorted.map(e => {
+    const weight = Number(e.weight);
+    running = e.kind === 'charge' ? running + weight : Math.max(0, running - weight);
+    return { kind: e.kind, value: running };
+  });
 
-  const toY = (v) => H - PAD - (v / maxVal) * (H - PAD * 2);
-  const toX = (i) => PAD + i * xStep;
+  // Axis always shows at least 0→125 (the old default headroom), but
+  // stretches further — in steps of 25 — if today's peak goes past that.
+  const peak = Math.max(...points.map(p => p.value), 100);
+  const axisMax = Math.max(125, Math.ceil(peak / 25) * 25 + 25);
+  const tickStep = axisMax <= 200 ? 25 : Math.ceil(axisMax / 8 / 25) * 25;
+  const ticks = [];
+  for (let t = tickStep; t < axisMax; t += tickStep) ticks.push(t);
 
-  const goodPts = trajectory.map((d, i) => `${toX(i)},${toY(d.goodCumulative)}`).join(' ');
-  const badPts = trajectory.map((d, i) => `${toX(i)},${toY(d.badCumulative)}`).join(' ');
+  yAxisEl.innerHTML = `<span class="headroom">${axisMax}</span>` +
+    ticks.slice().reverse().map(t => `<span>${t}</span>`).join('');
 
-  const last = trajectory[trajectory.length - 1];
+  gridEl.innerHTML = [...ticks, axisMax].map(t =>
+    `<div class="gridLine ${t === axisMax ? 'headroom' : ''}" style="bottom:${(t / axisMax) * 100}%"></div>`
+  ).join('');
 
-  svg.innerHTML = `
-    <polyline points="${goodPts}" fill="none" stroke="#00E5FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <polyline points="${badPts}" fill="none" stroke="#FF1B4C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-    <circle cx="${toX(n - 1)}" cy="${toY(last.goodCumulative)}" r="4" fill="#7CF9FF"/>
-    <circle cx="${toX(n - 1)}" cy="${toY(last.badCumulative)}" r="4" fill="#FF6B8F"/>
-    <text x="${PAD}" y="${H - 2}" fill="#5C7A94" font-size="9" font-family="JetBrains Mono">${fmtDateShort(trajectory[0].date)}</text>
-    <text x="${W - 60}" y="${H - 2}" fill="#5C7A94" font-size="9" font-family="JetBrains Mono">${fmtDateShort(last.date)}</text>
-  `;
+  barsEl.innerHTML = points.map((p, i) => `
+    <div class="barItem">
+      <span class="barPct">${Math.round(p.value)}%</span>
+      <div class="barShape ${p.kind === 'charge' ? 'up' : 'down'}" style="height:${(p.value / axisMax) * 100}%"></div>
+      <span class="barIdx">${i + 1}</span>
+    </div>
+  `).join('');
+}
+
+// One cell per calendar day, colored by that day's net score (that day's
+// good points minus bad points — not cumulative). Days with no entries
+// carry the cumulative total forward flat, so they net to zero and render
+// as neutral. No axis, so a lopsided total (e.g. 70 good vs 10 bad) never
+// distorts the chart the way a dual-line graph on a shared scale would.
+function renderHeatmap(trajectory) {
+  const grid = document.getElementById('heatGrid');
+  if (!trajectory.length) {
+    grid.innerHTML = '<span style="grid-column:1/-1;font-size:.75rem;color:var(--rx-muted);text-align:center;padding:20px 0;">Log a few days to see your trajectory.</span>';
+    return;
+  }
+
+  const byDate = {};
+  trajectory.forEach(d => { byDate[d.date] = d; });
+
+  const start = new Date(trajectory[0].date + 'T00:00:00');
+  const end = new Date(trajectory[trajectory.length - 1].date + 'T00:00:00');
+
+  let prevGood = 0, prevBad = 0;
+  const cells = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const key = localDateKey(d);
+    const entry = byDate[key];
+    const good = entry ? entry.goodCumulative : prevGood;
+    const bad = entry ? entry.badCumulative : prevBad;
+    const net = (good - prevGood) - (bad - prevBad);
+    cells.push({ date: key, net });
+    prevGood = good;
+    prevBad = bad;
+  }
+
+  const maxAbs = Math.max(1, ...cells.map(c => Math.abs(c.net)));
+
+  grid.innerHTML = cells.map(c => {
+    let bg;
+    if (c.net > 0) bg = `rgba(0,229,255,${0.15 + Math.min(1, c.net / maxAbs) * 0.65})`;
+    else if (c.net < 0) bg = `rgba(255,27,76,${0.15 + Math.min(1, Math.abs(c.net) / maxAbs) * 0.65})`;
+    else bg = 'rgba(255,255,255,.04)';
+    const dayNum = new Date(c.date + 'T00:00:00').getDate();
+    return `<div class="heatCell" style="background:${bg};" title="${fmtDateShort(c.date)}: ${c.net >= 0 ? '+' : ''}${c.net}">${dayNum}</div>`;
+  }).join('');
 }
 
 function renderRace(race) {
@@ -287,7 +356,7 @@ async function loadStats() {
     document.getElementById('streakVal').textContent = '🔥 ' + data.streak;
 
     renderRace(data.race);
-    renderTrajectory(data.trajectory);
+    renderHeatmap(data.trajectory);
     updateLockdownBanner(data.lockdownUntil);
   } catch (err) {
     showToast(err.message || 'Could not load reactor stats', 'error');
