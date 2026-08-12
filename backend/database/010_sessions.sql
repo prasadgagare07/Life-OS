@@ -1,3 +1,6 @@
+-- Needed for gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE IF NOT EXISTS sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   page TEXT NOT NULL,
@@ -8,8 +11,5 @@ CREATE TABLE IF NOT EXISTS sessions (
   revoked_at TIMESTAMPTZ
 );
 
--- Fast lookups when checking/updating a specific session on every request.
+-- Fast lookups when checking/updating a specific session.
 CREATE INDEX IF NOT EXISTS idx_sessions_page ON sessions (page);
-
--- Needed for gen_random_uuid() on some Postgres setups.
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
