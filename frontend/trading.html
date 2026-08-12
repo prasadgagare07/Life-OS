@@ -18,13 +18,6 @@ body{padding-bottom:40px;}
 
 .wrap{max-width:520px; margin:0 auto; padding:22px 16px;}
 
-/* ===========================
-   Sidebar navigation (added)
-   Scoped to this page's own dark/green palette on
-   purpose — not using global.css/navbar.css tokens,
-   so the rest of the page's look stays untouched.
-=========================== */
-
 .app-shell{
   display:flex;
   min-height:100vh;
@@ -104,8 +97,6 @@ body{padding-bottom:40px;}
   color:var(--muted);
 }
 
-/* Mobile — hamburger + off-canvas drawer */
-
 .sidebar-toggle{
   display:none;
   position:fixed;
@@ -173,7 +164,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 @keyframes shine{to{background-position:200% center;}}
 .tagline{font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.3px;}
 
-/* CURRENT FUNDS + PROFIT TOTAL */
 .funds-row{display:flex; gap:10px; margin-top:20px;}
 .funds-card{flex:1; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px 14px; text-align:center;}
 .funds-card.profit{border-color:rgba(34,197,94,0.35);}
@@ -182,7 +172,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .funds-card.profit .fc-amt{color:var(--green-glow);}
 .funds-card.profit .fc-amt.neg{color:var(--red-glow);}
 
-/* ACCOUNT DETAILS */
 .account-section{margin-top:16px; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px;}
 .account-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
 .account-head h4{font-size:11px; letter-spacing:1px; color:#38bdf8; font-weight:700;}
@@ -192,7 +181,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .acc-lbl{font-size:10.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; letter-spacing:.3px; flex-shrink:0;}
 .acc-val{font-size:12.5px; color:#dcded9; font-weight:600; text-align:right; word-break:break-all; overflow-wrap:anywhere; flex:1; min-width:0;}
 
-/* STATS ROW */
 .stats-row{display:flex; gap:10px; margin-top:20px;}
 .stat-card{flex:1; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px 10px; text-align:center;}
 .stat-card .ic{font-size:18px;}
@@ -202,7 +190,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .stat-card.guarded .val{color:var(--green-glow);}
 .stat-card.best .val{color:#a78bfa;}
 
-/* TODAY STATUS */
 .today-status{margin-top:18px; border-radius:20px; padding:20px; text-align:center; position:relative; overflow:hidden;
   background:linear-gradient(160deg, rgba(34,197,94,0.14), rgba(13,21,18,0.6)); border:1px solid rgba(34,197,94,0.35);}
 .today-status.broken{background:linear-gradient(160deg, rgba(239,68,68,0.16), rgba(21,13,13,0.6)); border-color:rgba(239,68,68,0.4);}
@@ -212,7 +199,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .today-status.disciplined h3{color:var(--green-glow);}
 .today-status.broken h3{color:var(--red-glow);}
 
-/* THE COMPOUND TOWER */
 .tower-section{margin-top:22px; background:var(--card); border:1px solid var(--border); border-radius:20px; padding:18px 16px 16px;}
 .tower-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;}
 .tower-head h4{font-size:11px; letter-spacing:2px; color:var(--green-glow); font-weight:700;}
@@ -232,7 +218,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .legend-row span{display:flex; align-items:center; gap:4px;}
 .legend-dot{width:8px; height:8px; border-radius:2px; display:inline-block;}
 
-/* SURPLUS VAULT */
 .vault-section{margin-top:16px; background:linear-gradient(160deg, rgba(251,191,36,0.12), var(--card)); border:1px solid rgba(251,191,36,0.3); border-radius:18px; padding:16px;}
 .vault-head{display:flex; align-items:center; justify-content:space-between;}
 .vault-head h4{font-size:11px; letter-spacing:1px; color:#fbbf24; font-weight:700;}
@@ -241,7 +226,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .vault-note{font-size:10px; color:#e2d5a8; margin-top:6px; line-height:1.5;}
 .vault-note b{color:#fbbf24;}
 
-/* PACE CHECK */
 .pace-section{margin-top:16px; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px;}
 .pace-section h4{font-size:11px; letter-spacing:1px; color:#38bdf8; font-weight:700; margin-bottom:14px;}
 .pace-compare{display:flex; gap:10px;}
@@ -255,7 +239,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .pace-status.ahead{background:rgba(34,197,94,0.14); color:var(--green-glow); border:1px solid rgba(34,197,94,0.35);}
 .pace-status.behind{background:rgba(239,68,68,0.14); color:var(--red-glow); border:1px solid rgba(239,68,68,0.35);}
 
-/* GREED WARNING PANEL */
 .greed-panel{margin-top:16px; background:linear-gradient(160deg, rgba(239,68,68,0.1), var(--card)); border:1px solid rgba(239,68,68,0.3); border-radius:18px; padding:16px;}
 .greed-panel h4{font-size:11px; letter-spacing:1px; color:var(--red-glow); font-weight:700; display:flex; align-items:center; gap:6px;}
 .compare-row{display:flex; align-items:center; gap:10px; margin-top:14px;}
@@ -271,7 +254,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .greed-line{text-align:center; font-size:11px; color:#fca5a5; margin-top:14px; font-weight:600; line-height:1.5;}
 .greed-line b{color:var(--red-glow);}
 
-/* RULES CHECKLIST */
 .rules-section{margin-top:22px;}
 .sec-title{font-size:11px; letter-spacing:2px; color:var(--green-glow); font-weight:700; margin-bottom:10px; padding-left:2px;}
 .rule-row{display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-bottom:9px; cursor:pointer; transition:.15s;}
@@ -282,7 +264,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .rule-chk{width:20px; height:20px; border-radius:6px; border:1.5px solid #2a3a32; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;}
 .rule-row.done .rule-chk{background:var(--green); border-color:var(--green); color:#04150a;}
 
-/* QUOTE */
 .quote-card{margin-top:22px; text-align:center; padding:20px; border-radius:18px; border:1px solid var(--border);
   background:linear-gradient(160deg, rgba(34,197,94,0.08), rgba(13,21,18,0.4));}
 .quote-card p{font-size:13.5px; font-weight:700; line-height:1.6; color:#d1fae5;}
@@ -434,7 +415,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   // ===== Persistence: real daily closes, saved on the server (shared with
   // the Dashboard's "Trade Guardian" card and the Financial Time Explorer
   // calendar — all three now read from the same backend table). =====
-  
+
   const DAILY_TARGET = 5000;
   const GRID_SIZE = 30;
   const CURRENT_FUNDS = 30153.15; // set directly in code — not user-editable
@@ -448,6 +429,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   const BASE_DATE = '2026-08-13';
   const BASE_STREAK = 38;
   const BASE_PROFIT = 235444; // includes BASE_DATE's own close (4378)
+
   async function fetchCloses(){
   try {
     const entries = await api.get('/trading/entries');
@@ -524,7 +506,8 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     const tKey = todayKey();
     const hasToday = closes.hasOwnProperty(tKey);
     const brokenCount = entries.filter(([,v]) => v < 0).length;
-// Only days logged AFTER the baseline count toward it — BASE_DATE's own
+
+    // Only days logged AFTER the baseline count toward it — BASE_DATE's own
     // close is already inside BASE_PROFIT / BASE_STREAK, so it's excluded
     // here to avoid double-counting.
     const futureEntries = entries.filter(([date]) => date > BASE_DATE);
@@ -538,73 +521,57 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     const expectedTotal = DAILY_TARGET * dayCount;
     const paceDelta = actualTotal - expectedTotal;
 
-// Current streak — starts from the baseline and keeps counting forward;
-// any losing day after the baseline resets it to 0 from that point on.
-let streak = BASE_STREAK;
+    // Current streak — starts from the baseline and keeps counting forward;
+    // any losing day after the baseline resets it to 0 from that point on.
+    let streak = BASE_STREAK;
 
-for (const [, pnl] of futureEntries) {
-    if (Number(pnl) >= 0) {
-        streak++;
-    } else {
-        streak = 0;
+    for (const [, pnl] of futureEntries) {
+        if (Number(pnl) >= 0) {
+            streak++;
+        } else {
+            streak = 0;
+        }
     }
-}
 
-// Best streak — same idea, tracked across the baseline + future entries.
-let best = BASE_STREAK;
-let current = BASE_STREAK;
+    // Best streak — same idea, tracked across the baseline + future entries.
+    let best = BASE_STREAK;
+    let current = BASE_STREAK;
 
-for (const entry of futureEntries) {
-    const pnl = Number(entry[1] || 0);
+    for (const entry of futureEntries) {
+        const pnl = Number(entry[1] || 0);
 
-    if (pnl >= 0) {
-        current++;
-        best = Math.max(best, current);
-    } else {
-        current = 0;
+        if (pnl >= 0) {
+            current++;
+            best = Math.max(best, current);
+        } else {
+            current = 0;
+        }
     }
-}
 
-// Surplus Vault = total profit minus what the streak "owes" at the daily
-// target (streak × ₹5,000) — recalculates automatically as streak/profit grow.
-const surplusTotal = actualTotal - (streak * DAILY_TARGET);
-    
+    // Surplus Vault = total profit minus what the streak "owes" at the daily
+    // target (streak × ₹5,000) — recalculates automatically as streak/profit grow.
+    const surplusTotal = actualTotal - (streak * DAILY_TARGET);
 
-// Best streak
-let best = 0;
-let current = 0;
+    // Top stats
+    document.getElementById('streakVal').textContent = streak;
+    document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
+    document.getElementById('bestVal').textContent = best;
 
-for (const entry of entries) {
-    const pnl = Number(entry[1] || 0);
+    // Current Funds + Profit Total
+    document.getElementById('currentFundsVal').textContent =
+      '₹' + CURRENT_FUNDS.toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
 
-    if (pnl >= 0) {
-        current++;
-        best = Math.max(best, current);
-    } else {
-        current = 0;
-    }
-}
+    const profitEl = document.getElementById('profitTotalVal');
 
-// Top stats
-document.getElementById('streakVal').textContent = streak;
-document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
-document.getElementById('bestVal').textContent = best;
+    profitEl.textContent = '₹' + actualTotal.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
-// Current Funds + Profit Total
-document.getElementById('currentFundsVal').textContent =
-  '₹' + CURRENT_FUNDS.toLocaleString('en-IN', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-
-const profitEl = document.getElementById('profitTotalVal');
-
-profitEl.textContent = '₹' + actualTotal.toLocaleString('en-IN', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-});
-
-profitEl.classList.toggle('neg', actualTotal < 0);
+    profitEl.classList.toggle('neg', actualTotal < 0);
 
     // Account details
     const acc = await fetchAccount();
@@ -677,7 +644,7 @@ profitEl.classList.toggle('neg', actualTotal < 0);
     }
 
     // Surplus Vault
-document.getElementById('vaultVal').textContent = fmtRupee(surplusTotal);
+    document.getElementById('vaultVal').textContent = fmtRupee(surplusTotal);
 
     // Pace Check
     document.getElementById('expectVal').textContent = fmtRupee(expectedTotal);
@@ -785,18 +752,11 @@ function renderRuleBook() {
     saved = null;
   }
 
-  /*
-   * After 10 PM the previous day's rules are released.
-   * A fresh Rule Book can now be prepared.
-   */
   if (saved && saved.date !== today) {
     saved = null;
     localStorage.removeItem(RULEBOOK_KEY);
   }
 
-  /*
-   * Once saved, rules remain locked until 10 PM.
-   */
   const locked =
     saved &&
     saved.date === today &&
@@ -840,7 +800,6 @@ function renderRuleBook() {
     rulesList.appendChild(row);
   });
 
-  // Remove previous button/message
   const oldButton =
     document.getElementById('saveRulesBtn');
 
@@ -851,10 +810,6 @@ function renderRuleBook() {
 
   if (oldMessage) oldMessage.remove();
 
-  /*
-   * Before 10 PM:
-   * Show SAVE button if today's rules aren't locked.
-   */
   if (!locked) {
     const saveButton = document.createElement('button');
 
@@ -900,9 +855,6 @@ function renderRuleBook() {
     rulesList.parentElement.appendChild(saveButton);
 
   } else {
-    /*
-     * Locked message
-     */
     const lockMessage = document.createElement('div');
 
     lockMessage.id = 'ruleLockMessage';
@@ -933,7 +885,7 @@ renderRuleBook();
 // Check every minute so the 10 PM unlock happens automatically
 // without requiring a page refresh.
 setInterval(renderRuleBook, 60000);
-  
+
 </script>
 </body>
   </html>
