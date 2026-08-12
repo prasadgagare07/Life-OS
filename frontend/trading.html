@@ -434,11 +434,20 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   // ===== Persistence: real daily closes, saved on the server (shared with
   // the Dashboard's "Trade Guardian" card and the Financial Time Explorer
   // calendar — all three now read from the same backend table). =====
+  
   const DAILY_TARGET = 5000;
   const GRID_SIZE = 30;
   const CURRENT_FUNDS = 30153.15; // set directly in code — not user-editable
   const START_DATE = '2026-01-01';
-  
+
+  // Baseline carried over from before this table had full history.
+  // BASE_DATE is the last day already "baked into" BASE_STREAK / BASE_PROFIT
+  // below (its own close is included in both). Any entry logged AFTER this
+  // date is added on top automatically — nothing else needs to change when
+  // you log a new day.
+  const BASE_DATE = '2026-08-13';
+  const BASE_STREAK = 38;
+  const BASE_PROFIT = 235444; // includes BASE_DATE's own close (4378)
   async function fetchCloses(){
   try {
     const entries = await api.get('/trading/entries');
@@ -515,35 +524,51 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     const tKey = todayKey();
     const hasToday = closes.hasOwnProperty(tKey);
     const brokenCount = entries.filter(([,v]) => v < 0).length;
+// Only days logged AFTER the baseline count toward it — BASE_DATE's own
+    // close is already inside BASE_PROFIT / BASE_STREAK, so it's excluded
+    // here to avoid double-counting.
+    const futureEntries = entries.filter(([date]) => date > BASE_DATE);
+    const dayCount = BASE_STREAK + futureEntries.length;
 
-    // Calculate stats from logged daily P&L
-const dayCount = entries.length;
-
-const actualTotal =
-    entries.reduce((total, entry) => {
+    const futureTotal = futureEntries.reduce((total, entry) => {
         return total + Number(entry[1] || 0);
     }, 0);
+    const actualTotal = BASE_PROFIT + futureTotal;
 
-const expectedTotal = DAILY_TARGET * dayCount;
-const paceDelta = actualTotal - expectedTotal;
+    const expectedTotal = DAILY_TARGET * dayCount;
+    const paceDelta = actualTotal - expectedTotal;
 
-const surplusTotal = entries.reduce((total, entry) => {
-    const pnl = Number(entry[1] || 0);
-    return total + Math.max(0, pnl - DAILY_TARGET);
-}, 0);
+// Current streak — starts from the baseline and keeps counting forward;
+// any losing day after the baseline resets it to 0 from that point on.
+let streak = BASE_STREAK;
 
-// Current streak
-let streak = 0;
-
-for (let i = entries.length - 1; i >= 0; i--) {
-    const pnl = Number(entries[i][1] || 0);
-
-    if (pnl >= 0) {
+for (const [, pnl] of futureEntries) {
+    if (Number(pnl) >= 0) {
         streak++;
     } else {
-        break;
+        streak = 0;
     }
 }
+
+// Best streak — same idea, tracked across the baseline + future entries.
+let best = BASE_STREAK;
+let current = BASE_STREAK;
+
+for (const entry of futureEntries) {
+    const pnl = Number(entry[1] || 0);
+
+    if (pnl >= 0) {
+        current++;
+        best = Math.max(best, current);
+    } else {
+        current = 0;
+    }
+}
+
+// Surplus Vault = total profit minus what the streak "owes" at the daily
+// target (streak × ₹5,000) — recalculates automatically as streak/profit grow.
+const surplusTotal = actualTotal - (streak * DAILY_TARGET);
+    
 
 // Best streak
 let best = 0;
