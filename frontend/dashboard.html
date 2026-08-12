@@ -9,8 +9,11 @@
 <link rel="stylesheet" href="css/cards.css">
 <link rel="stylesheet" href="css/animations.css">
 <link rel="stylesheet" href="css/dashboard.css">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&family=Fraunces:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="dash-body">
+
+<div class="prism-bg"></div>
 
 <div class="app-shell">
   <aside class="sidebar" id="sidebar"></aside>
@@ -19,109 +22,147 @@
     <div class="page-header fade-up">
       <div>
         <div class="eyebrow" id="today-date">Today</div>
-        <h1>Welcome back</h1>
+        <h1 class="dash-h1">Welcome back</h1>
       </div>
     </div>
 
-    <div class="quote-banner fade-up fade-up-1">"<span id="quote"></span>"</div>
+    <div class="quote-holo fade-up fade-up-1"><div class="quote-inner">"<span id="quote"></span>"</div></div>
 
     <div class="stat-strip fade-up fade-up-1">
-      <div class="stat-chip">
-        <div class="sc-icon">🌱</div>
-        <div>
-          <div class="sc-value" id="qs-standards">—</div>
-          <div class="sc-label">Today's Score</div>
-        </div>
+      <div class="pill p1">
+        <div class="ic">🌱</div>
+        <div class="v" id="qs-standards">—</div>
+        <div class="l">Today's Score</div>
       </div>
-      <div class="stat-chip">
-        <div class="sc-icon">💰</div>
-        <div>
-          <div class="sc-value" id="qs-networth">—</div>
-          <div class="sc-label">Net Worth</div>
-        </div>
+      <div class="pill p2">
+        <div class="ic">💰</div>
+        <div class="v" id="qs-networth">—</div>
+        <div class="l">Net Worth</div>
       </div>
-      <div class="stat-chip">
-        <div class="sc-icon">🛡️</div>
-        <div>
-          <div class="sc-value" id="qs-streak">—</div>
-          <div class="sc-label">Guardian Streak</div>
-        </div>
+      <div class="pill p3">
+        <div class="ic">🛡️</div>
+        <div class="v" id="qs-streak">—</div>
+        <div class="l">Guardian Streak</div>
       </div>
-      <div class="stat-chip">
-        <div class="sc-icon">💪</div>
-        <div>
-          <div class="sc-value" id="qs-discipline">—</div>
-          <div class="sc-label">Discipline Today</div>
-        </div>
+      <div class="pill p4">
+        <div class="ic">💪</div>
+        <div class="v" id="qs-discipline">—</div>
+        <div class="l">Discipline Today</div>
       </div>
     </div>
 
-    <div class="grid grid-3">
-      <div class="card overview-card fade-up fade-up-1">
-        <div class="card-title"><h3>🌱 Daily Standards</h3></div>
-        <div class="sunrise-arc" id="standards-arc"></div>
-        <div class="stat-label" id="standards-status">Loading…</div>
-      </div>
-
-      <div class="card overview-card fade-up fade-up-2">
-        <div class="card-title"><h3>💰 Finance</h3></div>
-        <div class="sunrise-arc" id="finance-arc"></div>
-        <div class="stat-value" id="finance-total"></div>
-        <div class="stat-label" id="finance-goal">Loading…</div>
-      </div>
-
-      <div class="card overview-card fitness-radar-card fade-up fade-up-3">
-        <div class="card-title">
-          <h3>💪 Fitness</h3>
-          <span class="badge" id="fitness-badge">—</span>
-        </div>
-
-        <svg class="radar-chart" viewBox="0 0 220 184" id="fitness-radar-svg">
-          <defs>
-            <linearGradient id="radarFillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#3ECF8E"/>
-              <stop offset="55%" stop-color="#4FD1E8"/>
-              <stop offset="100%" stop-color="#B98BFF"/>
-            </linearGradient>
-          </defs>
-          <g class="radar-grid" id="radar-grid"></g>
-          <g class="radar-axis-labels" id="radar-axis-labels"></g>
-          <polygon id="radar-shape" class="radar-shape" points=""></polygon>
-          <g id="radar-dots"></g>
+    <!-- Daily Standards — radial burst dial (unique motif) -->
+    <div class="card burst-card fade-up fade-up-1">
+      <div class="card-title"><h3>🌱 Daily Standards</h3></div>
+      <div class="burst-wrap">
+        <svg width="100%" height="150" viewBox="0 0 200 150" style="position:absolute; inset:0;">
+          <defs><linearGradient id="tickGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF6F61"/><stop offset="100%" stop-color="#FFD166"/></linearGradient></defs>
+          <g id="standards-ticks"></g>
         </svg>
-
-        <div class="radar-legend" id="fitness-legend"></div>
-        <div class="stat-label" id="fitness-status">Loading…</div>
+        <div class="burst-center"><div class="big" id="standards-big">—</div><div class="sub">out of 10</div></div>
       </div>
+      <div class="arc-status" id="standards-status">Loading…</div>
     </div>
 
-    <div class="card tg-card fade-up fade-up-2">
+    <!-- Finance — liquid capsule gauge (unique motif) -->
+    <div class="card capsule-card fade-up fade-up-2">
+      <div class="card-title"><h3>💰 Finance</h3><span class="badge" id="finance-badge">—</span></div>
+      <div class="capsule">
+        <div class="capsule-fill" id="finance-fill"></div>
+        <div class="capsule-label" id="finance-total">—</div>
+      </div>
+      <div class="capsule-foot"><span id="finance-goal">Loading…</span></div>
+    </div>
+
+    <!-- Fitness — Discipline Radar -->
+    <div class="card radar-card fitness-radar-card fade-up fade-up-3">
+      <div class="card-title">
+        <h3>💪 Fitness</h3>
+        <span class="badge" id="fitness-badge">—</span>
+      </div>
+
+      <svg class="radar-chart" viewBox="0 0 220 184" id="fitness-radar-svg">
+        <defs>
+          <linearGradient id="radarFillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4FD1E8"/>
+            <stop offset="45%" stop-color="#B98BFF"/>
+            <stop offset="100%" stop-color="#FF6FD8"/>
+          </linearGradient>
+        </defs>
+        <g class="radar-grid" id="radar-grid"></g>
+        <g class="radar-axis-labels" id="radar-axis-labels"></g>
+        <polygon id="radar-shape" class="radar-shape" points=""></polygon>
+        <g id="radar-dots"></g>
+      </svg>
+
+      <div class="radar-legend" id="fitness-legend"></div>
+      <div class="stat-label" id="fitness-status">Loading…</div>
+    </div>
+
+    <!-- Dream Reactor — embedded mini Spire, links to the full reactor page -->
+    <div class="card reactor-mini fade-up fade-up-1">
+      <div class="card-title"><h3>⚡ Dream Reactor</h3><span class="badge" id="reactor-badge">—</span></div>
+      <div class="reactor-stage" id="dashReactorStage">
+        <svg viewBox="0 0 400 170" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
+          <defs>
+            <radialGradient id="dnP" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#B28CFF" stop-opacity=".5"/><stop offset="100%" stop-color="#B28CFF" stop-opacity="0"/></radialGradient>
+            <radialGradient id="dnT" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#5FE9C8" stop-opacity=".4"/><stop offset="100%" stop-color="#5FE9C8" stop-opacity="0"/></radialGradient>
+            <linearGradient id="dtrunk" x1="0" y1="60" x2="0" y2="0"><stop offset="0%" stop-color="#B28CFF"/><stop offset="100%" stop-color="#7FE7C4"/></linearGradient>
+          </defs>
+          <g class="dspNebula"><circle cx="90" cy="35" r="55" fill="url(#dnP)"/><circle cx="310" cy="35" r="55" fill="url(#dnT)"/></g>
+          <g class="dspStars">
+            <circle cx="30" cy="18" r="1.2" fill="#fff" opacity=".8"/><circle cx="70" cy="10" r="1" fill="#fff" opacity=".6"/>
+            <circle cx="330" cy="14" r="1.2" fill="#fff" opacity=".8"/><circle cx="370" cy="24" r="1" fill="#fff" opacity=".6"/>
+            <circle cx="200" cy="8" r="1" fill="#fff" opacity=".7"/>
+          </g>
+          <ellipse class="dspRootGlow" cx="200" cy="152" rx="52" ry="9" fill="#7FE7C4" opacity=".18"/>
+          <g class="dspCore" transform="translate(200,95)">
+            <polygon points="-6,60 6,60 4,6 -4,6" fill="url(#dtrunk)"/>
+            <polygon class="dspGem" points="-4,36 -28,23 -30,30 -6,43" fill="#7FA8FF"/>
+            <polygon class="dspGem" points="4,30 26,16 30,23 7,37" fill="#D68CFF"/>
+            <polygon class="dspGem" points="-2,18 -20,3 -24,10 -5,25" fill="#FF9FD6"/>
+            <polygon class="dspGem" points="2,12 18,-3 23,2 5,19" fill="#7FE7C4"/>
+            <polygon class="dspGem" points="0,-25 -10,-8 0,0 10,-8" fill="#FFD166"/>
+            <circle class="dspGem" cx="0" cy="-8" r="4.4" fill="#EAF7FF"/>
+          </g>
+          <g class="dspGuardian"><ellipse cx="55" cy="55" rx="16" ry="65" fill="#0C1230" opacity=".85"/><ellipse cx="60" cy="90" rx="2.2" ry="3.4" fill="#7FE7FF" opacity=".9"/></g>
+          <g class="dspShadow"><ellipse cx="345" cy="55" rx="16" ry="65" fill="#0A0308" opacity=".85"/><ellipse cx="340" cy="90" rx="2.4" ry="3.6" fill="#FF3B1F" opacity=".55"/><ellipse cx="349" cy="91" rx="2.4" ry="3.6" fill="#FF3B1F" opacity=".55"/></g>
+        </svg>
+      </div>
+      <div class="reactor-stat-row">
+        <div class="rstat charge"><div class="v" id="reactor-charge">—</div><div class="l">Charge</div></div>
+        <div class="rstat leak"><div class="v" id="reactor-leaks">—</div><div class="l">Leaks Today</div></div>
+        <div class="rstat"><div class="v" id="reactor-streak">—</div><div class="l">Streak</div></div>
+      </div>
+      <a class="open-link" href="reactor.html">Open full Dream Reactor →</a>
+    </div>
+
+    <!-- Trade Guardian — shield badge (unique motif) -->
+    <div class="card shield-card fade-up fade-up-2">
       <div class="card-title">
         <h3>🛡️ Trade Guardian &amp; Wealth Growth</h3>
         <span class="badge" id="tg-badge">Loading</span>
       </div>
-      <div class="tg-stats">
-        <div>
-          <div class="stat-label">Day Streak</div>
-          <div class="stat-value" id="tg-streak">0</div>
-        </div>
-        <div>
-          <div class="stat-label">Capital Guarded</div>
-          <div class="stat-value" id="tg-guarded">₹0</div>
+      <div class="shield-row">
+        <div class="shield-ring" id="tg-shield-ring"><span>🛡️</span></div>
+        <div class="tg-stats">
+          <div class="tg-stat">Day Streak <b id="tg-streak">0</b></div>
+          <div class="tg-stat">Capital Guarded <b id="tg-guarded">₹0</b></div>
+          <div class="tg-stat">Progress <b id="tg-pct">0%</b></div>
         </div>
       </div>
-      <div class="progress-track"><div class="progress-fill" id="tg-bar-fill"></div></div>
-      <div class="stat-label" id="tg-bar-label" style="margin-top:8px;">—</div>
-      <a href="trading.html" class="card-link">Open Trade Guardian →</a>
+      <div class="tg-foot" id="tg-bar-label">—</div>
+      <a href="trading.html" class="open-link">Open Trade Guardian →</a>
     </div>
 
-    <div class="card vision-card fade-up fade-up-3">
+    <!-- Vision Board — constellation (unique motif) -->
+    <div class="card constellation-card fade-up fade-up-3">
       <div class="card-title">
         <h3>🌟 Vision Board</h3>
-        <span class="stat-value" id="vision-count" style="font-size:1.4rem;">0</span>
+        <span class="badge good" id="vision-count">0</span>
       </div>
-      <div class="vision-chips" id="vision-chips"></div>
-      <a href="vision.html" class="card-link">View full board →</a>
+      <div id="vision-chips"></div>
+      <a href="vision.html" class="open-link">View full board →</a>
     </div>
   </main>
 </div>
@@ -133,4 +174,4 @@
 <script src="js/app.js"></script>
 <script src="js/dashboard.js"></script>
 </body>
-          </html>
+</html>
