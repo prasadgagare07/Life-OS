@@ -21,11 +21,26 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const controller = new AbortController();
+const timeout = setTimeout(() => controller.abort(), 10000);
+
+let res;
+
+try {
+  res = await fetch(`${API_BASE}${path}`, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    signal: controller.signal,
   });
+} catch (err) {
+  if (err.name === 'AbortError') {
+    throw new Error('Request timed out. Please try again.');
+  }
+  throw err;
+} finally {
+  clearTimeout(timeout);
+}
 
   // A 401 from the login endpoint itself means "wrong passcode" — that should
   // show as an error message, not trigger a logout-redirect (there's no
