@@ -114,3 +114,5 @@ document.getElementById('revoke-others-btn').addEventListener('click', async () 
 
 document.getElementById('sessions-list').innerHTML = '<p class="sessions-empty">TEST — JavaScript is running</p>';
 loadSessions();
+document.getElementById('sessions-list').innerHTML =
+  '<p class="sessions-empty">TEST — settings.js is running</p>';
