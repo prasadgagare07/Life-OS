@@ -515,65 +515,50 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     const hasToday = closes.hasOwnProperty(tKey);
     const brokenCount = entries.filter(([,v]) => v < 0).length;
 
-    async function render(){
-    const closes = await fetchCloses();
-    const entries = sortedEntries(closes);
-    const tKey = todayKey();
-    const hasToday = closes.hasOwnProperty(tKey);
-    const brokenCount = entries.filter(([,v]) => v < 0).length;
-
     // Calculate stats from logged daily P&L
-    const dayCount = entries.length;
+const dayCount = entries.length;
 
-    const actualTotal = entries.reduce(
-        (total, [, pnl]) => total + Number(pnl || 0),
-        0
-    );
+const actualTotal = entries.reduce((total, entry) => {
+    return total + Number(entry[1] || 0);
+}, 0);
 
-    const surplusTotal = entries.reduce(
-        (total, [, pnl]) => {
-            const value = Number(pnl || 0);
-            return total + Math.max(0, value - DAILY_TARGET);
-        },
-        0
-    );
+const expectedTotal = DAILY_TARGET * dayCount;
+const paceDelta = actualTotal - expectedTotal;
 
-    const expectedTotal = DAILY_TARGET * dayCount;
-    const paceDelta = actualTotal - expectedTotal;
+const surplusTotal = entries.reduce((total, entry) => {
+    const pnl = Number(entry[1] || 0);
+    return total + Math.max(0, pnl - DAILY_TARGET);
+}, 0);
 
-    // Current streak
-    let streak = 0;
+// Current streak
+let streak = 0;
 
-    for (let i = entries.length - 1; i >= 0; i--) {
-        const [, pnl] = entries[i];
-        const value = Number(pnl || 0);
+for (let i = entries.length - 1; i >= 0; i--) {
+    const pnl = Number(entries[i][1] || 0);
 
-        if (value >= 0) {
-            streak++;
-        } else {
-            break;
-        }
+    if (pnl >= 0) {
+        streak++;
+    } else {
+        break;
     }
+}
 
-    // Best streak
-    let best = 0;
-    let current = 0;
+// Best streak
+let best = 0;
+let current = 0;
 
-    for (const [, pnl] of entries) {
-        const value = Number(pnl || 0);
+for (const entry of entries) {
+    const pnl = Number(entry[1] || 0);
 
-        if (value >= 0) {
-            current++;
-            best = Math.max(best, current);
-        } else {
-            current = 0;
-        }
+    if (pnl >= 0) {
+        current++;
+        best = Math.max(best, current);
+    } else {
+        current = 0;
     }
+}
 
-    // Top stats
-    document.getElementById('streakVal').textContent = streak;
-
-    // Top stats
+// Top stats
 document.getElementById('streakVal').textContent = streak;
 document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
 document.getElementById('bestVal').textContent = best;
@@ -586,10 +571,12 @@ document.getElementById('currentFundsVal').textContent =
   });
 
 const profitEl = document.getElementById('profitTotalVal');
+
 profitEl.textContent = '₹' + actualTotal.toLocaleString('en-IN', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2
 });
+
 profitEl.classList.toggle('neg', actualTotal < 0);
 
     // Account details
