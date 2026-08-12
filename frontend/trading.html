@@ -436,8 +436,8 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   // calendar — all three now read from the same backend table). =====
   const DAILY_TARGET = 5000;
   const GRID_SIZE = 30;
-  const CURRENT_FUNDS = 9700; // set directly in code — not user-editable
-  const START_DATE = '2026-08-11';
+  const CURRENT_FUNDS = 30153.50; // set directly in code — not user-editable
+  const START_DATE = '2026-07-06';
   
   async function fetchCloses(){
   try {
@@ -525,16 +525,23 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     const best = Math.max(computeBestStreak(entries), streak);
 
     // Top stats
-    document.getElementById('streakVal').textContent = streak;
-    document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
-    document.getElementById('bestVal').textContent = best;
+document.getElementById('streakVal').textContent = STREAK;
+document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
+document.getElementById('bestVal').textContent = best;
 
-    // Current Funds + Profit Total
-    document.getElementById('currentFundsVal').textContent =
-      '₹' + CURRENT_FUNDS.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const profitEl = document.getElementById('profitTotalVal');
-    profitEl.textContent = fmtRupee(actualTotal);
-    profitEl.classList.toggle('neg', actualTotal < 0);
+// Current Funds + Profit Total
+document.getElementById('currentFundsVal').textContent =
+  '₹' + CURRENT_FUNDS.toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+const profitEl = document.getElementById('profitTotalVal');
+profitEl.textContent = '₹' + PROFIT_TOTAL.toLocaleString('en-IN', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+profitEl.classList.toggle('neg', PROFIT_TOTAL < 0);
 
     // Account details
     const acc = await fetchAccount();
@@ -607,7 +614,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     }
 
     // Surplus Vault
-    document.getElementById('vaultVal').textContent = fmtRupee(surplusTotal);
+document.getElementById('vaultVal').textContent = fmtRupee(SURPLUS_VAULT);
 
     // Pace Check
     document.getElementById('expectVal').textContent = fmtRupee(expectedTotal);
