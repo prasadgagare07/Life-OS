@@ -20,7 +20,9 @@
   animation:prismDrift 20s ease-in-out infinite alternate;
 }
 @keyframes prismDrift{ 0%{ transform:scale(1) rotate(0deg);} 100%{ transform:scale(1.15) rotate(6deg);} }
-.app-shell{ position:relative; z-index:1; }
+.app-shell {
+  position: relative;
+}
 
 /* ===== header — bold gradient wordmark + holographic-edge quote ===== */
 .dash-h1{
