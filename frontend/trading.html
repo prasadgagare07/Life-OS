@@ -515,14 +515,63 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     const hasToday = closes.hasOwnProperty(tKey);
     const brokenCount = entries.filter(([,v]) => v < 0).length;
 
-    const actualTotal = 231065.89;
-const surplusTotal = 46065.89;
-const dayCount = 37;
-const expectedTotal = DAILY_TARGET * dayCount;
-const paceDelta = actualTotal - expectedTotal;
+    async function render(){
+    const closes = await fetchCloses();
+    const entries = sortedEntries(closes);
+    const tKey = todayKey();
+    const hasToday = closes.hasOwnProperty(tKey);
+    const brokenCount = entries.filter(([,v]) => v < 0).length;
 
-const streak = 37;
-const best = 37;
+    // Calculate stats from logged daily P&L
+    const dayCount = entries.length;
+
+    const actualTotal = entries.reduce(
+        (total, [, pnl]) => total + Number(pnl || 0),
+        0
+    );
+
+    const surplusTotal = entries.reduce(
+        (total, [, pnl]) => {
+            const value = Number(pnl || 0);
+            return total + Math.max(0, value - DAILY_TARGET);
+        },
+        0
+    );
+
+    const expectedTotal = DAILY_TARGET * dayCount;
+    const paceDelta = actualTotal - expectedTotal;
+
+    // Current streak
+    let streak = 0;
+
+    for (let i = entries.length - 1; i >= 0; i--) {
+        const [, pnl] = entries[i];
+        const value = Number(pnl || 0);
+
+        if (value >= 0) {
+            streak++;
+        } else {
+            break;
+        }
+    }
+
+    // Best streak
+    let best = 0;
+    let current = 0;
+
+    for (const [, pnl] of entries) {
+        const value = Number(pnl || 0);
+
+        if (value >= 0) {
+            current++;
+            best = Math.max(best, current);
+        } else {
+            current = 0;
+        }
+    }
+
+    // Top stats
+    document.getElementById('streakVal').textContent = streak;
 
     // Top stats
 document.getElementById('streakVal').textContent = streak;
