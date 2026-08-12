@@ -436,7 +436,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   // calendar — all three now read from the same backend table). =====
   const DAILY_TARGET = 5000;
   const GRID_SIZE = 30;
-  const CURRENT_FUNDS = 30153.50; // set directly in code — not user-editable
+  const CURRENT_FUNDS = 30153.15; // set directly in code — not user-editable
   const START_DATE = '2026-07-06';
   
   async function fetchCloses(){
@@ -517,15 +517,15 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 
     const actualTotal = 231065.89;
 const surplusTotal = 46065.89;
-    const dayCount = entries.length;
-    const expectedTotal = DAILY_TARGET * dayCount;
-    const paceDelta = actualTotal - expectedTotal;
+const dayCount = 37;
+const expectedTotal = DAILY_TARGET * dayCount;
+const paceDelta = actualTotal - expectedTotal;
 
-    const streak = 37;
+const streak = 37;
 const best = 37;
 
     // Top stats
-document.getElementById('streakVal').textContent = STREAK;
+document.getElementById('streakVal').textContent = streak;
 document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
 document.getElementById('bestVal').textContent = best;
 
@@ -537,11 +537,11 @@ document.getElementById('currentFundsVal').textContent =
   });
 
 const profitEl = document.getElementById('profitTotalVal');
-profitEl.textContent = '₹' + PROFIT_TOTAL.toLocaleString('en-IN', {
+profitEl.textContent = '₹' + actualTotal.toLocaleString('en-IN', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2
 });
-profitEl.classList.toggle('neg', PROFIT_TOTAL < 0);
+profitEl.classList.toggle('neg', actualTotal < 0);
 
     // Account details
     const acc = await fetchAccount();
@@ -614,7 +614,7 @@ profitEl.classList.toggle('neg', PROFIT_TOTAL < 0);
     }
 
     // Surplus Vault
-document.getElementById('vaultVal').textContent = fmtRupee(SURPLUS_VAULT);
+document.getElementById('vaultVal').textContent = fmtRupee(surplusTotal);
 
     // Pace Check
     document.getElementById('expectVal').textContent = fmtRupee(expectedTotal);
