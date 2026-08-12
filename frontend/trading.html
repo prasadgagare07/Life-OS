@@ -511,6 +511,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   async function render(){
     const closes = await fetchCloses();
     const entries = sortedEntries(closes);
+    console.log("TRADE ENTRIES:", entries);
     const tKey = todayKey();
     const hasToday = closes.hasOwnProperty(tKey);
     const brokenCount = entries.filter(([,v]) => v < 0).length;
@@ -518,9 +519,10 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     // Calculate stats from logged daily P&L
 const dayCount = entries.length;
 
-const actualTotal = entries.reduce((total, entry) => {
-    return total + Number(entry[1] || 0);
-}, 0);
+const actualTotal =
+    entries.reduce((total, entry) => {
+        return total + Number(entry[1] || 0);
+    }, 0);
 
 const expectedTotal = DAILY_TARGET * dayCount;
 const paceDelta = actualTotal - expectedTotal;
