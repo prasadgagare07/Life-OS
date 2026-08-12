@@ -6,7 +6,7 @@ async function loadDashboard() {
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
-  const [standardsR, financeR, fitnessEntriesR, visionR, tradingR, engineR] =
+  const [standardsR, financeR, fitnessEntriesR, visionR, tradingR, engineR, reactorTodayR, reactorStatsR] =
     await Promise.allSettled([
       api.get('/standards/today'),
       api.get('/finance'),
@@ -14,6 +14,8 @@ async function loadDashboard() {
       api.get('/vision'),
       api.get('/trading/entries'),
       api.get(`/financial-engine?date=${todayStr}`),
+      api.get('/reactor/today'),
+      api.get('/reactor/stats?days=30'),
     ]);
 
   // Each section renders independently — one failed endpoint no longer
@@ -25,40 +27,81 @@ async function loadDashboard() {
   const disciplinePct = renderFitness(val(fitnessEntriesR, [])[0] || null);
   renderVision(val(visionR, []));
   const { streak, guarded } = renderTradeGuardian(val(tradingR, []), val(engineR, null));
+  renderReactorMini(val(reactorTodayR, null), val(reactorStatsR, null));
 
   renderQuickStats({ standardsScore, financeTotal, streak, guarded, disciplinePct });
 
-  [standardsR, financeR, fitnessEntriesR, visionR, tradingR, engineR]
+  [standardsR, financeR, fitnessEntriesR, visionR, tradingR, engineR, reactorTodayR, reactorStatsR]
     .filter(r => r.status === 'rejected')
     .forEach(r => console.error(r.reason));
 }
 
+/* ===== Daily Standards — radial burst dial ===== */
 function renderStandards(data) {
-  // /standards/today returns { entry, best } — not the entry itself.
   const entry = data?.entry;
   const score = entry ? Number(entry.avg_score) : 0;
-  renderSunriseArc(document.getElementById('standards-arc'), score * 10, score.toFixed(1));
-  document.getElementById('standards-status').textContent = entry
-    ? 'Logged for today'
-    : 'Not logged yet today';
+
+  const g = document.getElementById('standards-ticks');
+  g.innerHTML = '';
+  const total = 24, lit = Math.round(total * (score / 10));
+  for (let i = 0; i < total; i++) {
+    const angle = (i / total) * 360;
+    const rad = angle * Math.PI / 180;
+    const cx = 100, cy = 75, r1 = 50, r2 = 62;
+    const x1 = cx + r1 * Math.cos(rad), y1 = cy + r1 * Math.sin(rad);
+    const x2 = cx + r2 * Math.cos(rad), y2 = cy + r2 * Math.sin(rad);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('stroke', i < lit ? 'url(#tickGrad)' : 'rgba(255,255,255,.15)');
+    line.setAttribute('stroke-width', '3');
+    line.setAttribute('stroke-linecap', 'round');
+    g.appendChild(line);
+  }
+
+  document.getElementById('standards-big').textContent = score.toFixed(1);
+  document.getElementById('standards-status').textContent = entry ? 'Logged for today' : 'Not logged yet today';
   return score;
 }
 
+/* ===== Finance — liquid capsule gauge ===== */
 function renderFinance(finance) {
+  const fill = document.getElementById('finance-fill');
+  const label = document.getElementById('finance-total');
+  const goal = document.getElementById('finance-goal');
+  const badge = document.getElementById('finance-badge');
+
   if (!finance) {
-    renderSunriseArc(document.getElementById('finance-arc'), 0, '—');
-    document.getElementById('finance-total').textContent = '—';
-    document.getElementById('finance-goal').textContent = 'Unable to load';
+    fill.style.width = '0%';
+    label.textContent = '—';
+    goal.textContent = 'Unable to load';
+    badge.textContent = '—';
+    badge.className = 'badge';
     return 0;
   }
+
   const total = Number(finance.bank_balance) + Number(finance.market_funds) + Number(finance.emergency_fund);
-  const goalPct = finance.goal_amount ? (total / Number(finance.goal_amount)) * 100 : 0;
-  renderSunriseArc(document.getElementById('finance-arc'), goalPct, Math.round(goalPct) + '%');
-  document.getElementById('finance-total').textContent = formatINR(total);
-  document.getElementById('finance-goal').textContent = `of ${formatINR(finance.goal_amount)} goal`;
+  const goalAmount = Number(finance.goal_amount) || 0;
+  const rawPct = goalAmount ? (total / goalAmount) * 100 : 0;
+  const shownPct = Math.min(rawPct, 100);
+
+  fill.style.width = shownPct + '%';
+  label.textContent = formatINR(total);
+
+  if (rawPct > 100) {
+    goal.textContent = `Past your ${formatINR(goalAmount)} goal — worth raising it`;
+    badge.textContent = 'Goal reached';
+    badge.className = 'badge warn';
+  } else {
+    goal.textContent = `of ${formatINR(goalAmount)} goal`;
+    badge.textContent = Math.round(rawPct) + '%';
+    badge.className = 'badge good';
+  }
+
   return total;
 }
 
+/* ===== Fitness — Discipline Radar (unchanged logic) ===== */
 const FITNESS_TARGETS = { steps: 10000, protein_g: 100, water_l: 3, sleep_hours: 7, workout_minutes: 45 };
 const RADAR_AXES = [
   { key: 'steps',           label: 'STEPS',   unit: '' },
@@ -145,12 +188,48 @@ function renderFitness(entry) {
   return Math.round(avgPct);
 }
 
+/* ===== Dream Reactor — mini Spire embedded in the dashboard ===== */
+function renderReactorMini(today, stats) {
+  const badge = document.getElementById('reactor-badge');
+  const chargeEl = document.getElementById('reactor-charge');
+  const leaksEl = document.getElementById('reactor-leaks');
+  const streakEl = document.getElementById('reactor-streak');
+  const stage = document.getElementById('dashReactorStage');
+
+  if (!today) {
+    badge.textContent = 'Unavailable';
+    badge.className = 'badge';
+    chargeEl.textContent = '—';
+    leaksEl.textContent = '—';
+    streakEl.textContent = '—';
+    return;
+  }
+
+  const charge = Math.round(today.charge);
+  chargeEl.textContent = charge + '%';
+  leaksEl.textContent = today.leaks;
+  streakEl.textContent = stats ? '🔥 ' + stats.streak : '—';
+
+  badge.textContent = charge + '% charged';
+  badge.className = 'badge ' + (charge >= 60 ? 'good' : charge >= 35 ? 'warn' : 'bad');
+
+  // gems dim slightly below half charge — a light echo of the full
+  // reactor page's dynamic Spire, without duplicating its whole engine
+  const gemOpacity = 0.35 + 0.65 * Math.min(charge / 100, 1);
+  stage.querySelectorAll('.dspGem').forEach(el => { el.style.opacity = gemOpacity; });
+}
+
+/* ===== Vision Board — constellation ===== */
 function renderVision(goals) {
   const chipsEl = document.getElementById('vision-chips');
   document.getElementById('vision-count').textContent = goals.length;
 
   if (!goals.length) {
-    chipsEl.innerHTML = '<span class="stat-label">No vision goals yet — add your first one.</span>';
+    chipsEl.innerHTML = `
+      <div class="const-empty">
+        <div class="star">✨</div>
+        <p>No vision goals yet — add your first one and watch your constellation grow.</p>
+      </div>`;
     return;
   }
 
@@ -160,11 +239,14 @@ function renderVision(goals) {
     byCategory[cat] = (byCategory[cat] || 0) + 1;
   });
 
-  chipsEl.innerHTML = Object.entries(byCategory)
-    .map(([cat, count]) => `<span class="badge vc-chip">${cat} · ${count}</span>`)
-    .join('');
+  chipsEl.innerHTML = '<div class="const-chips">' +
+    Object.entries(byCategory)
+      .map(([cat, count]) => `<span class="const-chip">✦ ${cat} · ${count}</span>`)
+      .join('') +
+    '</div>';
 }
 
+/* ===== Trade Guardian — shield badge ===== */
 function computeGuardianStreak(entries) {
   // entries come back sorted ascending by entry_date (backend/models/trading.model.js)
   let streak = 0;
@@ -183,28 +265,32 @@ function renderTradeGuardian(entries, engine) {
   document.getElementById('tg-guarded').textContent = formatINR(guarded);
 
   const badge = document.getElementById('tg-badge');
-  const fill = document.getElementById('tg-bar-fill');
-  const label = document.getElementById('tg-bar-label');
+  const ring = document.getElementById('tg-shield-ring');
+  const pctEl = document.getElementById('tg-pct');
+  const foot = document.getElementById('tg-bar-label');
 
   if (!engine) {
     badge.textContent = 'Unavailable';
     badge.className = 'badge';
-    fill.style.width = '0%';
-    label.textContent = 'Could not load projection';
+    ring.style.background = 'conic-gradient(rgba(255,255,255,.15) 0%, rgba(255,255,255,.08) 0)';
+    pctEl.textContent = '—';
+    foot.textContent = 'Could not load projection';
     return { streak, guarded };
   }
 
   if (engine.diversified) {
     badge.textContent = '💎 Diversified';
     badge.className = 'badge good';
-    fill.style.width = '100%';
-    label.textContent = `Earning ${formatINR(engine.currentDailyIncome)}/day since ${engine.diversificationDate}`;
+    ring.style.background = 'conic-gradient(#3ECF8E 100%, rgba(255,255,255,.08) 0)';
+    pctEl.textContent = '100%';
+    foot.textContent = `Earning ${formatINR(engine.currentDailyIncome)}/day since ${engine.diversificationDate}`;
   } else {
     badge.textContent = '📈 Growth Phase';
     badge.className = 'badge warn';
     const pct = clamp(Math.round((engine.tradeGuardianCash / 300000) * 100), 0, 100);
-    fill.style.width = pct + '%';
-    label.textContent = `${formatINR(engine.tradeGuardianCash)} of ₹3,00,000 (${pct}%)`;
+    ring.style.background = `conic-gradient(#FF6FD8 ${pct}%, rgba(255,255,255,.08) 0)`;
+    pctEl.textContent = pct + '%';
+    foot.textContent = `${formatINR(engine.tradeGuardianCash)} of ₹3,00,000 toward diversification`;
   }
 
   return { streak, guarded };
