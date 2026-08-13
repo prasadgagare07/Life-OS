@@ -1,12 +1,9 @@
 const pool =
   require('../config/db');
 
-const engine =
-  require('../services/financialEngine.service');
-
 
 // ==========================================
-// Financial Time Explorer constants
+// Financial Time Explorer
 // ==========================================
 
 const FTE_START_DATE =
@@ -26,15 +23,13 @@ const PHASE2_DAILY =
 
 
 // ==========================================
-// Fixed starting actual profit
+// Fixed actual daily profits
 // ==========================================
 //
-// 12 Aug 2026 = ₹6,659
-// 13 Aug 2026 = ₹4,378
+// 12 Aug = ₹6,659
+// 13 Aug = ₹4,378
 //
-// These are used as the starting history.
-// From later real dates, Trade Guardian
-// becomes the source of actual profit.
+// These are DAILY profits.
 // ==========================================
 
 const FIXED_ACTUALS = {
@@ -49,7 +44,7 @@ const FIXED_ACTUALS = {
 
 
 // ==========================================
-// Parse YYYY-MM-DD safely
+// Date helpers
 // ==========================================
 
 function parseDateOnly(value) {
@@ -70,36 +65,7 @@ function parseDateOnly(value) {
     m - 1,
     d
   );
-}
 
-
-// ==========================================
-// Format date
-// ==========================================
-
-function formatDateOnly(date) {
-
-  const y =
-    date.getFullYear();
-
-  const m =
-    String(
-      date.getMonth() + 1
-    ).padStart(
-      2,
-      '0'
-    );
-
-  const d =
-    String(
-      date.getDate()
-    ).padStart(
-      2,
-      '0'
-    );
-
-
-  return `${y}-${m}-${d}`;
 }
 
 
@@ -110,16 +76,12 @@ function formatDateOnly(date) {
 function calculateEstimate(date) {
 
   const selected =
-    parseDateOnly(
-      date
-    );
-
+    parseDateOnly(date);
 
   const start =
     parseDateOnly(
       FTE_START_DATE
     );
-
 
   const milestone =
     parseDateOnly(
@@ -127,7 +89,7 @@ function calculateEstimate(date) {
     );
 
 
-  // Before 12 Aug
+  // Before start
 
   if (
     selected < start
@@ -151,6 +113,7 @@ function calculateEstimate(date) {
 
   // ========================================
   // PHASE 1
+  //
   // 12 Aug → 10 Oct
   // ₹5,000/day
   // ========================================
@@ -188,9 +151,11 @@ function calculateEstimate(date) {
 
   // ========================================
   // PHASE 2
+  //
   // Starts 11 Oct
   //
-  // ₹8,333/day
+  // ₹3,00,000 already completed
+  // + ₹8,333 for each new day
   // ========================================
 
   const phase2Start =
@@ -218,8 +183,11 @@ function calculateEstimate(date) {
       PHASE2_DAILY,
 
     plannedProfit:
-      phase2Days *
-      PHASE2_DAILY
+      PHASE1_TARGET +
+      (
+        phase2Days *
+        PHASE2_DAILY
+      )
 
   };
 
@@ -238,7 +206,7 @@ async function getActualForDate(date) {
 
 
   // ========================================
-  // Fixed starting history
+  // Fixed actuals for 12 & 13 Aug
   // ========================================
 
   if (
@@ -247,12 +215,36 @@ async function getActualForDate(date) {
     ] !== undefined
   ) {
 
+    let cumulative =
+      0;
+
+
+    for (
+      const fixedDate
+      of Object.keys(
+        FIXED_ACTUALS
+      )
+    ) {
+
+      if (
+        fixedDate <=
+        dateOnly
+      ) {
+
+        cumulative +=
+          FIXED_ACTUALS[
+            fixedDate
+          ];
+
+      }
+
+    }
+
+
     return {
 
       actualTotal:
-        FIXED_ACTUALS[
-          dateOnly
-        ],
+        cumulative,
 
       dailyProfit:
         FIXED_ACTUALS[
@@ -265,7 +257,14 @@ async function getActualForDate(date) {
 
 
   // ========================================
-  // Trade Guardian actual data
+  // Actual Trade Guardian profit
+  // ========================================
+  //
+  // For dates after 13 Aug:
+  //
+  // ₹6,659
+  // + ₹4,378
+  // + actual Trade Guardian profit
   // ========================================
 
   const {
@@ -285,7 +284,6 @@ async function getActualForDate(date) {
     FROM trading_entries
 
     WHERE entry_date = $1
-
     `,
 
     [
@@ -307,12 +305,8 @@ async function getActualForDate(date) {
   }
 
 
-  // ========================================
-  // Calculate cumulative actual profit
-  // ========================================
-
   const {
-    rows: cumulativeRows
+    rows: laterRows
   } = await pool.query(
 
     `
@@ -326,9 +320,8 @@ async function getActualForDate(date) {
     FROM trading_entries
 
     WHERE entry_date >= $1
-
       AND entry_date <= $2
-
+      AND entry_date >= '2026-08-14'
     `,
 
     [
@@ -339,11 +332,19 @@ async function getActualForDate(date) {
   );
 
 
-  const actualTotal =
+  const laterActual =
     Number(
-      cumulativeRows[0]
+      laterRows[0]
         ?.actual_total || 0
     );
+
+
+  // Add fixed 12 + 13 Aug profits
+
+  const actualTotal =
+    6659 +
+    4378 +
+    laterActual;
 
 
   return {
@@ -368,9 +369,7 @@ async function getActualForDate(date) {
 async function getTimeExplorer(date) {
 
   const selected =
-    parseDateOnly(
-      date
-    );
+    parseDateOnly(date);
 
 
   const today =
@@ -395,10 +394,6 @@ async function getTimeExplorer(date) {
       date
     );
 
-
-  // ========================================
-  // Date type
-  // ========================================
 
   let type;
 
@@ -431,9 +426,7 @@ async function getTimeExplorer(date) {
 
 
   // ========================================
-  // Actual Trade Guardian data
-  //
-  // Only dates that have arrived.
+  // Actual data only when date has arrived
   // ========================================
 
   if (
