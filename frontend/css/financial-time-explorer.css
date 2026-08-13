@@ -117,3 +117,226 @@
   .fte-total{font-size:1.9rem;}
   .fte-cell{font-size:.72rem;}
 }
+/* ==========================================================
+   SURPLUS VAULT
+========================================================== */
+
+.fte-vault-card{
+    margin-bottom:20px;
+}
+
+.fte-vault-label{
+    font-size:11px;
+    letter-spacing:2px;
+    font-weight:800;
+    color:var(--text-muted,#94A3B8);
+}
+
+.fte-vault-amount{
+    margin-top:6px;
+    font-size:32px;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+}
+
+.fte-vault-description{
+    margin:6px 0 18px;
+    color:var(--text-muted,#94A3B8);
+    font-size:12px;
+}
+
+.fte-vault-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 0;
+    font-size:13px;
+}
+
+.fte-vault-row span{
+    color:var(--text-muted,#94A3B8);
+}
+
+.fte-vault-row b{
+    font-variant-numeric:tabular-nums;
+}
+
+.fte-vault-divider{
+    height:1px;
+    background:rgba(255,255,255,.08);
+    margin:10px 0 18px;
+}
+
+.fte-withdraw-title{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.fte-withdraw-input{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    width:100%;
+    height:46px;
+    padding:0 14px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    box-sizing:border-box;
+}
+
+.fte-withdraw-input span{
+    color:#94A3B8;
+}
+
+.fte-withdraw-input input{
+    width:100%;
+    height:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:#fff;
+    font-size:15px;
+}
+
+.fte-withdraw-btn{
+    width:100%;
+    margin-top:10px;
+    height:44px;
+    border:0;
+    border-radius:11px;
+    background:linear-gradient(
+        90deg,
+        #10B981,
+        #34D399
+    );
+    color:#06140F;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.fte-withdraw-schedule{
+    margin-top:15px;
+    padding:13px;
+    border-radius:12px;
+    background:rgba(16,185,129,.08);
+    border:1px solid rgba(16,185,129,.2);
+}
+
+.fte-withdraw-schedule.hidden{
+    display:none;
+}
+
+.fte-withdraw-schedule > div{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:6px 0;
+    font-size:12px;
+}
+
+.fte-withdraw-schedule span{
+    color:#94A3B8;
+}
+
+.fte-withdraw-schedule b{
+    text-align:right;
+}
+
+
+/* ==========================================================
+   PHASE 2 / ₹3L
+========================================================== */
+
+.fte-phase-card{
+    margin-bottom:20px;
+}
+
+.fte-phase-status{
+    margin-top:10px;
+    font-size:24px;
+    font-weight:800;
+}
+
+.fte-phase-status.phase1{
+    color:#F59E0B;
+}
+
+.fte-phase-status.phase2{
+    color:#10B981;
+}
+
+.fte-phase-date{
+    margin-top:6px;
+    color:#94A3B8;
+    font-size:13px;
+}
+
+.fte-phase-date b{
+    color:#fff;
+}
+
+.fte-distribution{
+    margin-top:18px;
+}
+
+.fte-distribution-title{
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.fte-distribution-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    font-size:12px;
+}
+
+.fte-distribution-row span{
+    color:#94A3B8;
+}
+
+.fte-distribution-row b{
+    font-variant-numeric:tabular-nums;
+}
+
+.fte-distribution-divider{
+    height:1px;
+    background:rgba(255,255,255,.08);
+    margin:10px 0 15px;
+}
+
+
+/* ==========================================================
+   PHASE 2 CALENDAR
+========================================================== */
+
+.fte-cell.phase2{
+    border-color:rgba(16,185,129,.35);
+}
+
+.fte-cell.milestone-day{
+    border:2px solid #F59E0B !important;
+    box-shadow:
+        0 0 12px rgba(245,158,11,.25);
+}
+
+
+@media(max-width:480px){
+
+    .fte-vault-amount{
+        font-size:27px;
+    }
+
+    .fte-phase-status{
+        font-size:21px;
+    }
+
+    .fte-distribution-row{
+        font-size:11px;
+    }
+
+   }
