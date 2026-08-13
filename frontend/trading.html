@@ -616,32 +616,47 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 
     // Tower headline + day count
     document.querySelector('.target-line .amt').textContent = fmtRupee(actualTotal);
-    document.querySelector('.tower-head .day-count').textContent = `DAY ${entries.length} / ${GRID_SIZE}`;
-
+    document.querySelector('.tower-head .day-count').textContent = `DAY ${streak} / ${GRID_SIZE}`;
     // Tower grid
     const towerGrid = document.getElementById('towerGrid');
     towerGrid.innerHTML = '';
-    const gridLen = Math.max(GRID_SIZE, entries.length);
-    for (let i = 0; i < gridLen; i++) {
-      const step = document.createElement('div');
-      step.className = 'tower-step';
-      const entry = entries[i];
-      if (entry) {
-        const [date, amt] = entry;
-        if (amt < 0) {
-          step.classList.add('broken');
-          step.textContent = '✕';
-        } else {
-          step.classList.add('done');
-          step.textContent = i + 1;
-        }
-        step.title = `${date}: ${fmtRupee(amt)}`;
-        if (date === tKey) step.classList.add('today');
+    const gridLen = Math.max(GRID_SIZE, streak);
+
+for (let i = 0; i < gridLen; i++) {
+  const step = document.createElement('div');
+  step.className = 'tower-step';
+
+  if (i < BASE_STREAK) {
+    step.classList.add('done');
+    step.textContent = i + 1;
+    step.title = `Day ${i + 1}: Baseline streak`;
+  } else {
+    const futureIndex = i - BASE_STREAK;
+    const entry = futureEntries[futureIndex];
+
+    if (entry) {
+      const [date, amt] = entry;
+
+      if (amt < 0) {
+        step.classList.add('broken');
+        step.textContent = '✕';
       } else {
+        step.classList.add('done');
         step.textContent = i + 1;
       }
-      towerGrid.appendChild(step);
+
+      step.title = `${date}: ${fmtRupee(amt)}`;
+
+      if (date === tKey) {
+        step.classList.add('today');
+      }
+    } else {
+      step.textContent = i + 1;
     }
+  }
+
+  towerGrid.appendChild(step);
+}
 
     // Surplus Vault
     document.getElementById('vaultVal').textContent = fmtRupee(surplusTotal);
