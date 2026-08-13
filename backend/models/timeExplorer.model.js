@@ -1,53 +1,234 @@
-const pool = require('../config/db');
-const engine = require('../services/financialEngine.service');
+const pool =
+  require('../config/db');
 
-// Reuse the exact same projection formula the rest of the app uses
-// (backend/services/financialEngine.service.js), so the calendar and the
-// hero numbers can never drift apart.
-async function getSimulation(date) {
-  return engine.calculate(date);
-}
+const engine =
+  require('../services/financialEngine.service');
 
-// Real cumulative Trade Guardian profit, summed from logged trading entries
-// up to and including the given date. Only meaningful during the growth
-// phase (before diversification) — once diversified, income is
-// formula-driven, not manually traded, so there's nothing to compare.
-async function getActualTotal(date) {
-  const { rows } = await pool.query(
-    `SELECT COALESCE(SUM(profit), 0) AS actual_total
-     FROM trading_entries
-     WHERE entry_date <= $1`,
-    [date]
+
+// ==========================================
+// Get actual Trade Guardian profit
+// ==========================================
+
+async function getActualForDate(date) {
+
+  const {
+    rows
+  } = await pool.query(
+
+    `
+    SELECT
+
+      COALESCE(
+        SUM(profit),
+        0
+      ) AS actual_total,
+
+      MAX(profit)
+        FILTER (
+          WHERE entry_date = $1
+        ) AS daily_profit,
+
+      COUNT(*)
+        FILTER (
+          WHERE entry_date = $1
+        ) AS today_entries
+
+    FROM trading_entries
+
+    WHERE entry_date >= $2
+
+      AND entry_date <= $1
+
+    `,
+
+    [
+      date,
+
+      engine.START_DATE
+        .toISOString()
+        .slice(0, 10)
+    ]
+
   );
-  return Number(rows[0].actual_total);
-}
 
-async function getTimeExplorer(date) {
-  const estimated = await getSimulation(date);
+  if (
+    !rows.length ||
+    Number(
+      rows[0].today_entries
+    ) === 0
+  ) {
 
-  const today = new Date().toISOString().split('T')[0];
-  const type = date < today ? 'past' : date === today ? 'current' : 'future';
+    return null;
 
-  let comparison = null;
-
-  // Only compare actual vs plan for growth-phase days that have already
-  // happened (today or earlier) — future days have no logged trades yet.
-  if (!estimated.diversified && date <= today) {
-    const actualTotal = await getActualTotal(date);
-    const estimatedTotal = estimated.tradeGuardianCash;
-    comparison = {
-      actualTotal,
-      estimatedTotal,
-      delta: actualTotal - estimatedTotal,
-      status: actualTotal >= estimatedTotal ? 'ahead' : 'behind'
-    };
   }
 
-  return { type, estimated, comparison };
+  return {
+
+    actualTotal:
+      Number(
+        rows[0].actual_total
+      ),
+
+    dailyProfit:
+      Number(
+        rows[0].daily_profit
+      )
+
+  };
+
 }
 
+
+// ==========================================
+// Parse YYYY-MM-DD safely
+// ==========================================
+
+function parseDateOnly(value) {
+
+  const [
+    y,
+    m,
+    d
+  ] =
+    String(value)
+      .slice(0, 10)
+      .split('-')
+      .map(Number);
+
+  return new Date(
+    y,
+    m - 1,
+    d
+  );
+}
+
+
+// ==========================================
+// Main Financial Time Explorer calculation
+// ==========================================
+
+async function getTimeExplorer(date) {
+
+  const estimated =
+    engine.calculate(
+      date
+    );
+
+  const today =
+    new Date();
+
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  const selected =
+    parseDateOnly(
+      date
+    );
+
+  const start =
+    parseDateOnly(
+      engine.START_DATE
+        .toISOString()
+        .slice(0, 10)
+    );
+
+
+  let type;
+
+  if (
+    selected < today
+  ) {
+
+    type = 'past';
+
+  } else if (
+    selected.getTime() ===
+    today.getTime()
+  ) {
+
+    type = 'current';
+
+  } else {
+
+    type = 'future';
+
+  }
+
+
+  let comparison =
+    null;
+
+
+  // ========================================
+  // Only dates from 12 Aug onward
+  // and dates that have arrived
+  // use Trade Guardian actual data.
+  // ========================================
+
+  if (
+    selected <= today &&
+    selected >= start
+  ) {
+
+    const actual =
+      await getActualForDate(
+        date
+      );
+
+
+    if (actual) {
+
+      comparison = {
+
+        actualTotal:
+          actual.actualTotal,
+
+        dailyProfit:
+          actual.dailyProfit,
+
+        estimatedTotal:
+          estimated.plannedProfit,
+
+        delta:
+          actual.actualTotal -
+          estimated.plannedProfit,
+
+        status:
+          actual.actualTotal >=
+          estimated.plannedProfit
+
+            ? 'ahead'
+
+            : 'behind'
+
+      };
+
+    }
+
+  }
+
+
+  return {
+
+    type,
+
+    estimated,
+
+    comparison
+
+  };
+
+}
+
+
 module.exports = {
-  getSimulation,
-  getActualTotal,
-  getTimeExplorer
+
+  getTimeExplorer,
+
+  getActualForDate
+
 };
