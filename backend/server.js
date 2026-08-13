@@ -65,6 +65,17 @@ await pool.query(
 );
 console.log('🔧 Reactor passcode force-reset to "ignite"');
 
+    // TEMPORARY — force-resets the Financial Time Explorer passcode to
+    // 917283 on next deploy, since the previous passcode was lost.
+    // Remove this block after logging in once.
+const fteHash = await bcrypt.hash('917283', 10);
+await pool.query(
+  `INSERT INTO auth_settings (page, passcode_hash) VALUES ('financial-time-explorer', $1)
+   ON CONFLICT (page) DO UPDATE SET passcode_hash = $1, updated_at = now()`,
+  [fteHash]
+);
+console.log('🔧 Financial Time Explorer passcode force-reset to "917283"');
+
     // Every page gets its own passcode, seeded with a known default word so
     // it can be logged into for the first time. Change each one from
     // Settings — Settings' own default passcode is "control".
