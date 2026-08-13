@@ -4,9 +4,6 @@
 //
 // START: 12 Aug 2026
 //
-// 12 Aug = ₹6,659 actual profit
-// 13 Aug = ₹4,378 actual profit
-//
 // Before milestone:
 //   Background estimate = ₹5,000/day
 //   Actual Trade Guardian profit replaces estimate
@@ -19,17 +16,23 @@
 //   ₹40,000 Savings remains
 //   ₹3L itself is considered deployed
 //
+// Phase 2 background distribution:
+//   Savings      = 20%
+//   Freedom Fund = 70%
+//   Emergency    = 10%
+//
+// These percentages are NOT shown in frontend.
+//
 // Surplus Vault:
 //   All actual cumulative Trade Guardian profit
 //
 // Withdrawal:
 //   Fixed date = 11 Oct 2026
-//   Button becomes active only at ₹3,00,000
+//   Button active only when actual profit >= ₹3,00,000
 //
 // Withdrawal Amount:
 //   Completely independent
-//   Stays ₹0
-//
+//   Always starts at ₹0
 // ==========================================
 
 
@@ -89,7 +92,7 @@ const comparisonCache = {};
 
 
 // ==========================================
-// Helpers
+// HELPERS
 // ==========================================
 
 function todayMidnight() {
@@ -159,7 +162,7 @@ function formatINR(amount) {
 
 
 // ==========================================
-// Projection
+// PROJECTION
 // ==========================================
 
 function project(date) {
@@ -180,10 +183,15 @@ function project(date) {
     ) {
 
         return {
+
             phase: 0,
+
             dayNumber: 0,
+
             dailyEstimate: 0,
+
             estimatedProfit: 0
+
         };
 
     }
@@ -191,6 +199,7 @@ function project(date) {
 
     // ======================================
     // PHASE 1
+    // 12 Aug → 10 Oct
     // ======================================
 
     if (
@@ -225,11 +234,13 @@ function project(date) {
                 PHASE1_DAILY
 
         };
+
     }
 
 
     // ======================================
     // PHASE 2
+    // 11 Oct = DAY 1
     // ======================================
 
     const phase2Days =
@@ -257,11 +268,12 @@ function project(date) {
             PHASE2_DAILY
 
     };
+
 }
 
 
 // ==========================================
-// Actual Trade Guardian
+// ACTUAL TRADE GUARDIAN
 // ==========================================
 
 async function fetchComparison(dateStr) {
@@ -273,6 +285,7 @@ async function fetchComparison(dateStr) {
         return comparisonCache[
             dateStr
         ];
+
     }
 
 
@@ -303,17 +316,19 @@ async function fetchComparison(dateStr) {
             dateStr
         ] =
             null;
+
     }
 
 
     return comparisonCache[
         dateStr
     ];
+
 }
 
 
 // ==========================================
-// Calendar
+// CALENDAR LABEL
 // ==========================================
 
 function renderMonthLabel() {
@@ -333,8 +348,13 @@ function renderMonthLabel() {
                 year: "numeric"
             }
         );
+
 }
 
+
+// ==========================================
+// CALENDAR
+// ==========================================
 
 async function renderGrid() {
 
@@ -342,6 +362,10 @@ async function renderGrid() {
         document.getElementById(
             "fteGrid"
         );
+
+
+    if (!grid)
+        return;
 
 
     grid.innerHTML = "";
@@ -388,6 +412,7 @@ async function renderGrid() {
         grid.appendChild(
             empty
         );
+
     }
 
 
@@ -495,16 +520,27 @@ async function renderGrid() {
             }
 
 
+            // ==================================
+            // DATE CLICK
+            // ==================================
+
             cell.addEventListener(
                 "click",
-                () => {
+                async () => {
 
                     selected =
-                        dt;
+                        new Date(dt);
 
-                    renderGrid();
 
-                    renderDetail(
+                    await renderGrid();
+
+
+                    await renderDetail(
+                        dt
+                    );
+
+
+                    renderPhase2(
                         dt
                     );
 
@@ -529,11 +565,16 @@ async function renderGrid() {
         grid.appendChild(
             cell
         );
+
     }
 
 
     renderMonthLabel();
 
+
+    // ======================================
+    // Actual vs estimated colouring
+    // ======================================
 
     await Promise.all(
 
@@ -554,20 +595,25 @@ async function renderGrid() {
 
 
                 cell.classList.add(
+
                     cmp.status === "ahead"
+
                         ? "actual-good"
+
                         : "actual-bad"
+
                 );
 
             }
         )
 
     );
+
 }
 
 
 // ==========================================
-// Detail
+// DETAIL
 // ==========================================
 
 async function renderDetail(dt) {
@@ -580,18 +626,9 @@ async function renderDetail(dt) {
         todayMidnight();
 
 
-    document.getElementById(
-        "fteDHead"
-    ).textContent =
-
-        dt.toLocaleDateString(
-            "en-US",
-            {
-                weekday: "short",
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-            }
+    const head =
+        document.getElementById(
+            "fteDHead"
         );
 
 
@@ -613,6 +650,31 @@ async function renderDetail(dt) {
         );
 
 
+    if (
+        !head ||
+        !tag ||
+        !rows ||
+        !total
+    ) {
+
+        return;
+
+    }
+
+
+    head.textContent =
+
+        dt.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+
     let cmp =
         null;
 
@@ -630,7 +692,7 @@ async function renderDetail(dt) {
 
 
     // ======================================
-    // ACTUAL TRADE GUARDIAN DATA
+    // ACTUAL
     // ======================================
 
     if (
@@ -710,7 +772,9 @@ async function renderDetail(dt) {
 
         `;
 
+
         return;
+
     }
 
 
@@ -756,6 +820,7 @@ async function renderDetail(dt) {
         </div>
 
     `;
+
 }
 
 
@@ -829,11 +894,13 @@ async function renderSurplusVault() {
 
 
         return;
+
     }
 
 
     // ======================================
-    // SURPLUS VAULT = ACTUAL PROFIT
+    // ALL ACTUAL PROFIT
+    // GOES TO SURPLUS VAULT
     // ======================================
 
     vault.textContent =
@@ -844,6 +911,7 @@ async function renderSurplusVault() {
 
     // ======================================
     // WITHDRAW BUTTON
+    // ONLY ACTIVE AT ₹3L
     // ======================================
 
     if (button) {
@@ -887,18 +955,9 @@ function withdrawSurplus() {
     ) {
 
         return;
+
     }
 
-
-    /*
-      Important:
-
-      Withdrawal Amount is NOT connected
-      to this ₹3L withdrawal.
-
-      We only mark the Surplus Vault
-      as withdrawn.
-    */
 
     localStorage.setItem(
         STORAGE_KEY,
@@ -935,125 +994,208 @@ function withdrawSurplus() {
             "Withdrawn";
 
     }
+
 }
 
 
 // ==========================================
-// PHASE 2 FUNDS
+// PHASE 2 DIVERSIFICATION
+// ==========================================
+//
+// 11 Oct = Day 1
+//
+// Starting:
+//   Savings = ₹40,000
+//   Freedom = ₹0
+//   Emergency = ₹0
+//
+// Every day:
+//   ₹8,333 total growth
+//
+// Background:
+//   Savings      20%
+//   Freedom Fund 70%
+//   Emergency    10%
+//
+// Percentages are NOT displayed.
 // ==========================================
 
-function renderPhase2Funds() {
+function renderPhase2(selectedDate) {
 
-    const savings =
+    const phaseCard =
         document.getElementById(
-            "fteSavings"
+            "ftePhaseCard"
         );
 
 
-    const freedom =
+    const savingsEl =
         document.getElementById(
-            "fteFreedomFund"
+            "fteSavingsAmount"
         );
 
 
-    const emergency =
+    const freedomEl =
         document.getElementById(
-            "fteEmergencyFund"
+            "fteFreedomAmount"
+        );
+
+
+    const emergencyEl =
+        document.getElementById(
+            "fteEmergencyAmount"
         );
 
 
     if (
-        !savings ||
-        !freedom ||
-        !emergency
+        !phaseCard ||
+        !savingsEl ||
+        !freedomEl ||
+        !emergencyEl
     ) {
 
         return;
+
     }
 
 
-    const today =
-        todayMidnight();
+    const phase2Start =
+        new Date(
+            FTE_PHASE2_START
+        );
 
 
-    // Before 11 Oct
+    const selectedDateOnly =
+        new Date(
+            selectedDate
+        );
+
+
+    selectedDateOnly.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    // ======================================
+    // BEFORE 11 OCT
+    // ======================================
+
     if (
-        today <
-        FTE_PHASE2_START
+        selectedDateOnly <
+        phase2Start
     ) {
 
-        savings.textContent =
-            "₹40,000";
-
-        freedom.textContent =
-            "₹0";
-
-        emergency.textContent =
-            "₹0";
+        phaseCard.style.display =
+            "none";
 
         return;
+
     }
 
+
+    // ======================================
+    // SHOW AFTER 11 OCT
+    // ======================================
+
+    phaseCard.style.display =
+        "block";
+
+
+    // ======================================
+    // 11 OCT = DAY 1
+    // ======================================
 
     const days =
         Math.floor(
             (
-                today -
-                FTE_PHASE2_START
+                selectedDateOnly -
+                phase2Start
             ) /
             86400000
         ) + 1;
 
 
-    /*
-      Distribution percentages are
-      intentionally kept hidden.
+    // ======================================
+    // DAILY GROWTH
+    // ======================================
 
-      Savings = 20%
-      Freedom Fund = 70%
-      Emergency Fund = 10%
-    */
-
-    const savingsGrowth =
-        PHASE2_DAILY *
-        0.20 *
-        days;
+    const dailyGrowth =
+        PHASE2_DAILY;
 
 
-    const freedomGrowth =
-        PHASE2_DAILY *
-        0.70 *
-        days;
+    // ======================================
+    // BACKEND DISTRIBUTION
+    // ======================================
+
+    const savingsDaily =
+        dailyGrowth * 0.20;
 
 
-    const emergencyGrowth =
-        PHASE2_DAILY *
-        0.10 *
-        days;
+    const freedomDaily =
+        dailyGrowth * 0.70;
 
 
-    savings.textContent =
-        formatINR(
-            INITIAL_SAVINGS +
-            savingsGrowth
+    const emergencyDaily =
+        dailyGrowth * 0.10;
+
+
+    // ======================================
+    // RUNNING BALANCES
+    // ======================================
+
+    const savings =
+        INITIAL_SAVINGS +
+        (
+            savingsDaily *
+            days
         );
 
 
-    freedom.textContent =
+    const freedom =
+        freedomDaily *
+        days;
+
+
+    const emergency =
+        emergencyDaily *
+        days;
+
+
+    // ======================================
+    // FRONTEND
+    // NO PERCENTAGES
+    // ======================================
+
+    savingsEl.textContent =
         formatINR(
-            freedomGrowth
+            Math.round(
+                savings
+            )
         );
 
 
-    emergency.textContent =
+    freedomEl.textContent =
         formatINR(
-            emergencyGrowth
+            Math.round(
+                freedom
+            )
         );
+
+
+    emergencyEl.textContent =
+        formatINR(
+            Math.round(
+                emergency
+            )
+        );
+
 }
 
 
 // ==========================================
-// Navigation
+// NAVIGATION
 // ==========================================
 
 document.getElementById(
@@ -1075,6 +1217,7 @@ document.getElementById(
 
 
     renderGrid();
+
 };
 
 
@@ -1097,6 +1240,7 @@ document.getElementById(
 
 
     renderGrid();
+
 };
 
 
@@ -1123,7 +1267,7 @@ document.getElementById(
 
 
 // ==========================================
-// Jump to Date
+// JUMP TO DATE
 // ==========================================
 
 const jumpInput =
@@ -1145,7 +1289,7 @@ document.getElementById(
 
 document.getElementById(
     "fteJumpGo"
-).onclick = () => {
+).onclick = async () => {
 
     const value =
         document.getElementById(
@@ -1178,13 +1322,18 @@ document.getElementById(
 
 
     selected =
-        dt;
+        new Date(dt);
 
 
-    renderGrid();
+    await renderGrid();
 
 
-    renderDetail(
+    await renderDetail(
+        dt
+    );
+
+
+    renderPhase2(
         dt
     );
 
@@ -1204,15 +1353,21 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
-        renderGrid();
+        await renderGrid();
+
 
         await renderDetail(
             selected
         );
 
+
         await renderSurplusVault();
 
-        renderPhase2Funds();
+
+        // Correct function
+        renderPhase2(
+            selected
+        );
 
     }
 );
@@ -1222,9 +1377,17 @@ document.addEventListener(
 // WITHDRAW BUTTON
 // ==========================================
 
-document.getElementById(
-    "fteWithdrawButton"
-).addEventListener(
-    "click",
-    withdrawSurplus
-);
+const withdrawButton =
+    document.getElementById(
+        "fteWithdrawButton"
+    );
+
+
+if (withdrawButton) {
+
+    withdrawButton.addEventListener(
+        "click",
+        withdrawSurplus
+    );
+
+}
