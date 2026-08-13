@@ -3,244 +3,427 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>LifeOS — Financial Time Explorer</title>
+
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/cards.css">
 <link rel="stylesheet" href="css/financial-time-explorer.css">
 </head>
+
 <body>
 
 <div class="app-shell">
+
   <aside class="sidebar" id="sidebar"></aside>
 
   <main class="main-content">
 
-    <div class="page-header">
-      <div>
-        <div class="eyebrow">WEALTH SIMULATION</div>
-        <h1>Financial Time Explorer</h1>
-      </div>
-    </div>
-    <p class="fte-subtitle">Tap any date — days, months, even years out — to see your projected Trade Guardian capital.</p>
-
-    <div class="fte-milestone" id="fteMilestone">🔥 Loading…</div>
     <!-- ==========================================
-     SURPLUS VAULT
-========================================== -->
+         PAGE HEADER
+    =========================================== -->
 
-<section class="card fte-vault-card">
+    <div class="page-header">
 
-  <div class="fte-vault-label">
-    SURPLUS VAULT
-  </div>
+      <div>
 
-  <div
-    class="fte-vault-amount"
-    id="fteSurplusVault"
-  >
-    ₹0
-  </div>
+        <div class="eyebrow">
+          WEALTH SIMULATION
+        </div>
 
-  <p class="fte-vault-description">
-    Actual Trade Guardian profit available
-    before withdrawal.
-  </p>
+        <h1>
+          Financial Time Explorer
+        </h1>
+
+      </div>
+
+    </div>
 
 
-  <div class="fte-vault-row">
-
-    <span>
-      Actual profit
-    </span>
-
-    <b id="fteActualProfit">
-      ₹0
-    </b>
-
-  </div>
+    <p class="fte-subtitle">
+      Tap any date — days, months, even years out —
+      to see your projected Trade Guardian capital.
+    </p>
 
 
-  <div class="fte-vault-row">
+    <!-- ==========================================
+         MILESTONE STATUS
+    =========================================== -->
 
-    <span>
-      In Withdrawal
-    </span>
-
-    <b id="fteWithdrawalBalance">
-      ₹0
-    </b>
-
-  </div>
-
-
-  <div class="fte-vault-divider"></div>
+    <div
+      class="fte-milestone"
+      id="fteMilestone"
+    >
+      🔥 Loading…
+    </div>
 
 
-  <div class="fte-withdraw-title">
-    Move Profit to Withdrawal
-  </div>
+    <!-- ==========================================
+         TOP MONEY BOXES
+    =========================================== -->
+
+    <div class="fte-money-grid">
 
 
-  <div class="fte-withdraw-input">
+      <!-- SURPLUS VAULT -->
 
-    <span>₹</span>
+      <section class="card fte-money-card surplus-vault-card">
 
-    <input
-      type="number"
-      id="fteWithdrawalAmount"
-      min="0"
-      step="100"
-      placeholder="Enter amount"
+        <div class="fte-money-label">
+          SURPLUS VAULT
+        </div>
+
+        <div
+          class="fte-money-value"
+          id="fteSurplusVault"
+        >
+          ₹0
+        </div>
+
+        <div class="fte-money-info">
+
+          <span>
+            Withdrawal date
+          </span>
+
+          <strong>
+            11 Oct 2026
+          </strong>
+
+        </div>
+
+        <button
+          type="button"
+          id="fteWithdrawButton"
+          class="fte-withdraw-main-btn"
+          disabled
+        >
+          Withdraw
+        </button>
+
+      </section>
+
+
+      <!-- WITHDRAWAL AMOUNT -->
+
+      <section class="card fte-money-card">
+
+        <div class="fte-money-label">
+          WITHDRAWAL AMOUNT
+        </div>
+
+        <div
+          class="fte-money-value"
+          id="fteWithdrawalAmount"
+        >
+          ₹0
+        </div>
+
+      </section>
+
+
+    </div>
+
+
+    <!-- ==========================================
+         AFTER ₹3L MILESTONE
+         
+         The ₹3L itself is considered deployed.
+         Only ₹40,000 Savings remains visible.
+    =========================================== -->
+
+    <section
+      class="card fte-funds-card"
+      id="ftePhase2Funds"
     >
 
-  </div>
+      <div class="fte-money-label">
+        AFTER MILESTONE
+      </div>
+
+      <div class="fte-funds-date">
+        Starting 11 Oct 2026
+      </div>
 
 
-  <button
-    type="button"
-    id="fteMoveToWithdrawal"
-    class="fte-withdraw-btn"
-  >
-    Move to Withdrawal
-  </button>
+      <!-- SAVINGS -->
+
+      <div class="fte-fund-row">
+
+        <div>
+
+          <span>
+            Savings
+          </span>
+
+          <small>
+            Initial savings
+          </small>
+
+        </div>
+
+        <strong id="fteSavings">
+          ₹40,000
+        </strong>
+
+      </div>
 
 
-  <div
-    id="fteWithdrawalSchedule"
-    class="fte-withdraw-schedule hidden"
-  >
+      <!-- FREEDOM FUND -->
 
-    <div>
-      <span>
-        First Withdrawal
-      </span>
+      <div class="fte-fund-row">
 
-      <b id="fteFirstWithdrawalDate">
+        <div>
+
+          <span>
+            Freedom Fund
+          </span>
+
+          <small>
+            Growing daily
+          </small>
+
+        </div>
+
+        <strong id="fteFreedomFund">
+          ₹0
+        </strong>
+
+      </div>
+
+
+      <!-- EMERGENCY FUND -->
+
+      <div class="fte-fund-row">
+
+        <div>
+
+          <span>
+            Emergency Fund
+          </span>
+
+          <small>
+            Growing daily
+          </small>
+
+        </div>
+
+        <strong id="fteEmergencyFund">
+          ₹0
+        </strong>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- ==========================================
+         CALENDAR
+    =========================================== -->
+
+    <section class="card fte-card">
+
+      <div class="fte-nav-row">
+
+        <div
+          class="fte-ym"
+          id="fteYmLabel"
+        >
+          —
+        </div>
+
+        <div class="fte-nav-btns">
+
+          <button
+            id="ftePrevY"
+            type="button"
+            title="Previous year"
+          >
+            «
+          </button>
+
+          <button
+            id="ftePrevM"
+            type="button"
+            title="Previous month"
+          >
+            ‹
+          </button>
+
+          <button
+            id="fteNextM"
+            type="button"
+            title="Next month"
+          >
+            ›
+          </button>
+
+          <button
+            id="fteNextY"
+            type="button"
+            title="Next year"
+          >
+            »
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- JUMP TO DATE -->
+
+      <div class="fte-jump-row">
+
+        <button
+          class="fte-jump"
+          id="fteJumpToggle"
+          type="button"
+        >
+          Jump to date
+        </button>
+
+      </div>
+
+
+      <div
+        class="fte-jump-input"
+        id="fteJumpInput"
+      >
+
+        <input
+          type="date"
+          id="fteJumpDate"
+        >
+
+        <button
+          id="fteJumpGo"
+          type="button"
+        >
+          Go
+        </button>
+
+      </div>
+
+
+      <!-- DAYS -->
+
+      <div class="fte-dow">
+
+        <span>Sun</span>
+        <span>Mon</span>
+        <span>Tue</span>
+        <span>Wed</span>
+        <span>Thu</span>
+        <span>Fri</span>
+        <span>Sat</span>
+
+      </div>
+
+
+      <!-- CALENDAR GRID -->
+
+      <div
+        class="fte-grid"
+        id="fteGrid"
+      ></div>
+
+
+      <!-- LEGEND -->
+
+      <div class="fte-legend">
+
+        <span>
+          <i class="fte-sw fte-p1"></i>
+          Growth phase
+        </span>
+
+        <span>
+          <i class="fte-sw fte-p2"></i>
+          Diversified
+        </span>
+
+        <span>
+          <i class="fte-sw fte-ms"></i>
+          ₹3L milestone
+        </span>
+
+        <span>
+          <i class="fte-sw fte-good"></i>
+          Ahead of plan
+        </span>
+
+        <span>
+          <i class="fte-sw fte-bad"></i>
+          Behind plan
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         SELECTED DATE DETAILS
+    =========================================== -->
+
+    <section
+      class="card fte-detail"
+      id="fteDetail"
+    >
+
+      <div
+        class="fte-dhead"
+        id="fteDHead"
+      >
         —
-      </b>
-    </div>
+      </div>
 
-
-    <div>
-      <span>
-        Withdrawal Amount
+      <span
+        class="fte-dtag"
+        id="fteDTag"
+      >
+        —
       </span>
 
-      <b id="fteScheduledAmount">
+      <div
+        class="fte-total"
+        id="fteTotal"
+      >
         ₹0
-      </b>
-    </div>
+      </div>
+
+      <div
+        class="fte-rows"
+        id="fteRows"
+      ></div>
+
+    </section>
 
 
-    <div>
-      <span>
-        Cycle
-      </span>
+  </main>
 
-      <b>
-        Every 7 days
-      </b>
-    </div>
-
-
-    <div>
-      <span>
-        Next Withdrawal
-      </span>
-
-      <b id="fteNextWithdrawalDate">
-        —
-      </b>
-    </div>
-
-  </div>
-
-</section>
+</div>
 
 
 <!-- ==========================================
-     ₹3L MILESTONE / PHASE 2
+     JAVASCRIPT
 ========================================== -->
 
-<section class="card fte-phase-card">
-
-  <div class="fte-vault-label">
-    ₹3,00,000 PROFIT MILESTONE
-  </div>
-
-
-  <div
-    class="fte-phase-status"
-    id="ftePhaseStatus"
-  >
-    Phase 1
-  </div>
-
-
-  <div
-    class="fte-phase-date"
-    id="ftePhaseDate"
-  >
-    Target: 10 Oct 2026
-  </div>
-
-
-  <div
-    class="fte-distribution"
-    id="fteDistribution"
-  >
-
-  </div>
-
-</section>
-    <section class="card fte-card">
-      <div class="fte-nav-row">
-        <div class="fte-ym" id="fteYmLabel">—</div>
-        <div class="fte-nav-btns">
-          <button id="ftePrevY" type="button" title="Previous year">«</button>
-          <button id="ftePrevM" type="button" title="Previous month">‹</button>
-          <button id="fteNextM" type="button" title="Next month">›</button>
-          <button id="fteNextY" type="button" title="Next year">»</button>
-        </div>
-      </div>
-
-      <div class="fte-jump-row">
-        <button class="fte-jump" id="fteJumpToggle" type="button">Jump to date</button>
-      </div>
-      <div class="fte-jump-input" id="fteJumpInput">
-        <input type="date" id="fteJumpDate">
-        <button id="fteJumpGo" type="button">Go</button>
-      </div>
-
-      <div class="fte-dow">
-        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-      </div>
-      <div class="fte-grid" id="fteGrid"></div>
-
-      <div class="fte-legend">
-        <span><i class="fte-sw fte-p1"></i>Growth phase</span>
-        <span><i class="fte-sw fte-p2"></i>Diversified</span>
-        <span><i class="fte-sw fte-ms"></i>₹3L milestone</span>
-        <span><i class="fte-sw fte-good"></i>Ahead of plan</span>
-        <span><i class="fte-sw fte-bad"></i>Behind plan</span>
-      </div>
-    </section>
-
-    <section class="card fte-detail" id="fteDetail">
-      <div class="fte-dhead" id="fteDHead">—</div>
-      <span class="fte-dtag" id="fteDTag">—</span>
-      <div class="fte-total" id="fteTotal">₹0</div>
-      <div class="fte-rows" id="fteRows"></div>
-    </section>
-
-  </main>
-</div>
-
 <script src="js/api.js"></script>
+
 <script src="js/auth.js"></script>
+
 <script src="js/utils.js"></script>
+
 <script src="js/app.js"></script>
-<script src="js/financial-time-explorer.js?v=20260814"></script>
+
+<script
+  src="js/financial-time-explorer.js?v=20260814"
+></script>
+
+
 </body>
 </html>
