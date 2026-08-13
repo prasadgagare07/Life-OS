@@ -1,741 +1,1527 @@
-// ===============================
+// ==========================================
 // LifeOS — Financial Time Explorer
+// ==========================================
 //
-// Tracking starts: 12 Aug 2026
-// Planned profit: ₹5,000/day
-// Actual profit: Trade Guardian
-// ===============================
+// START: 12 Aug 2026
+// PHASE 1: ₹5,000/day
+// MILESTONE: ₹3,00,000 on 10 Oct
+// PHASE 2: ₹8,333/day
+//
+// Actual profit = Trade Guardian
+//
+// Surplus Vault:
+// Actual cumulative profit
+// minus amount moved to Withdrawal
+//
+// Withdrawal:
+// No date until money is moved
+// First withdrawal = 7 days after money enters
+// Next withdrawals = every 7 days
+// ==========================================
 
-const FTE_START = new Date(2026, 7, 12);
-FTE_START.setHours(0, 0, 0, 0);
 
-const P1_DAILY = 5000;
-const TARGET = 300000;
+const FTE_START =
+    new Date(
+        "2026-08-12T00:00:00"
+    );
 
-function todayMidnight() {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
 
-function sameDay(a, b) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
+const FTE_MILESTONE =
+    new Date(
+        "2026-10-10T00:00:00"
+    );
 
-function toISO(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
 
-  return `${y}-${m}-${day}`;
-}
+const PHASE1_DAILY =
+    5000;
 
-function project(date) {
-  const target = new Date(date);
-  target.setHours(0, 0, 0, 0);
 
-  let days = Math.floor(
-    (target - FTE_START) / 86400000
-  );
+const PHASE1_TARGET =
+    300000;
 
-  days = Math.max(days, 0);
 
-  // 12 Aug = Day 1
-  // 13 Aug = Day 2
-  const dayNumber = days + 1;
+const PHASE2_DAILY =
+    8333;
 
-  const plannedProfit = dayNumber * P1_DAILY;
 
-  return {
-    days,
-    dayNumber,
-    plannedProfit,
-    total: plannedProfit,
+const STORAGE_KEY =
+    "lifeos_fte_withdrawal";
 
-    isMilestoneDay:
-      plannedProfit === TARGET,
 
-    milestoneReached:
-      plannedProfit >= TARGET
-  };
-}
+let viewYear =
+    FTE_START.getFullYear();
 
-let viewYear = FTE_START.getFullYear();
-let viewMonth = FTE_START.getMonth();
 
-let selected = new Date(FTE_START);
+let viewMonth =
+    FTE_START.getMonth();
+
+
+let selected =
+    new Date(FTE_START);
+
 
 const comparisonCache = {};
 
-async function fetchComparison(dateStr) {
 
-  if (dateStr in comparisonCache) {
-    return comparisonCache[dateStr];
-  }
+// ==========================================
+// Helpers
+// ==========================================
 
-  try {
+function todayMidnight() {
 
-    const res = await api.get(
-      `/time-explorer?date=${dateStr}`
+    const d =
+        new Date();
+
+    d.setHours(
+        0,
+        0,
+        0,
+        0
     );
 
-    comparisonCache[dateStr] =
-      res.comparison || null;
-
-  } catch (error) {
-
-    console.error(
-      'Financial Time Explorer error:',
-      error
-    );
-
-    comparisonCache[dateStr] = null;
-  }
-
-  return comparisonCache[dateStr];
+    return d;
 }
+
+
+function sameDay(
+    a,
+    b
+) {
+
+    return (
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate()
+    );
+}
+
+
+function toISO(d) {
+
+    const y =
+        d.getFullYear();
+
+    const m =
+        String(
+            d.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const day =
+        String(
+            d.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    return `${y}-${m}-${day}`;
+}
+
+
+function formatINR(
+    amount
+) {
+
+    return new Intl.NumberFormat(
+        "en-IN",
+        {
+            style:
+                "currency",
+
+            currency:
+                "INR",
+
+            maximumFractionDigits:
+                0
+
+        }
+    ).format(
+        Number(amount) || 0
+    );
+}
+
+
+function formatDate(
+    dateString
+) {
+
+    if (!dateString)
+        return "—";
+
+
+    return new Date(
+        `${dateString}T00:00:00`
+    ).toLocaleDateString(
+        "en-IN",
+        {
+            day:
+                "numeric",
+
+            month:
+                "short",
+
+            year:
+                "numeric"
+        }
+    );
+}
+
+
+// ==========================================
+// Projection
+// ==========================================
+
+function project(
+    date
+) {
+
+    const target =
+        new Date(date);
+
+    target.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    if (
+        target < FTE_START
+    ) {
+
+        return {
+
+            phase:
+                0,
+
+            dayNumber:
+                0,
+
+            dailyEstimate:
+                0,
+
+            estimatedProfit:
+                0
+
+        };
+    }
+
+
+    // ======================================
+    // PHASE 1
+    // ======================================
+
+    if (
+        target < FTE_MILESTONE
+    ) {
+
+        const days =
+            Math.floor(
+                (
+                    target -
+                    FTE_START
+                ) /
+                86400000
+            );
+
+
+        const dayNumber =
+            days + 1;
+
+
+        return {
+
+            phase:
+                1,
+
+            dayNumber,
+
+            dailyEstimate:
+                PHASE1_DAILY,
+
+            estimatedProfit:
+                dayNumber *
+                PHASE1_DAILY
+
+        };
+    }
+
+
+    // ======================================
+    // PHASE 2
+    // ======================================
+
+    const phase2Days =
+        Math.floor(
+            (
+                target -
+                FTE_MILESTONE
+            ) /
+            86400000
+        );
+
+
+    return {
+
+        phase:
+            2,
+
+        dayNumber:
+            Math.floor(
+                (
+                    target -
+                    FTE_START
+                ) /
+                86400000
+            ) + 1,
+
+        dailyEstimate:
+            PHASE2_DAILY,
+
+        estimatedProfit:
+            PHASE1_TARGET +
+            (
+                phase2Days *
+                PHASE2_DAILY
+            )
+
+    };
+}
+
+
+// ==========================================
+// Withdrawal local state
+// ==========================================
+
+function getWithdrawalState() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                STORAGE_KEY
+            )
+        ) || {
+
+            balance:
+                0,
+
+            firstDate:
+                null,
+
+            amount:
+                0
+
+        };
+
+    } catch {
+
+        return {
+
+            balance:
+                0,
+
+            firstDate:
+                null,
+
+            amount:
+                0
+
+        };
+    }
+}
+
+
+function saveWithdrawalState(
+    state
+) {
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(
+            state
+        )
+    );
+}
+
+
+// ==========================================
+// Actual Trade Guardian
+// ==========================================
+
+async function fetchComparison(
+    dateStr
+) {
+
+    if (
+        dateStr in comparisonCache
+    ) {
+
+        return comparisonCache[
+            dateStr
+        ];
+    }
+
+
+    try {
+
+        const res =
+            await api.get(
+                `/time-explorer?date=${dateStr}`
+            );
+
+
+        comparisonCache[
+            dateStr
+        ] =
+            res.comparison ||
+            null;
+
+
+    } catch (error) {
+
+        console.error(
+            "Financial Time Explorer:",
+            error
+        );
+
+
+        comparisonCache[
+            dateStr
+        ] =
+            null;
+    }
+
+
+    return comparisonCache[
+        dateStr
+    ];
+}
+
+
+// ==========================================
+// Calendar
+// ==========================================
 
 function renderMonthLabel() {
 
-  document.getElementById(
-    'fteYmLabel'
-  ).textContent =
-    new Date(
-      viewYear,
-      viewMonth,
-      1
-    ).toLocaleDateString(
-      'en-US',
-      {
-        month: 'long',
-        year: 'numeric'
-      }
-    );
+    document.getElementById(
+        "fteYmLabel"
+    ).textContent =
+
+        new Date(
+            viewYear,
+            viewMonth,
+            1
+        ).toLocaleDateString(
+            "en-US",
+            {
+                month:
+                    "long",
+
+                year:
+                    "numeric"
+            }
+        );
 }
+
 
 async function renderGrid() {
 
-  const grid =
-    document.getElementById('fteGrid');
+    const grid =
+        document.getElementById(
+            "fteGrid"
+        );
 
-  grid.innerHTML = '';
 
-  const today =
-    todayMidnight();
+    grid.innerHTML = "";
 
-  const first =
-    new Date(
-      viewYear,
-      viewMonth,
-      1
-    );
 
-  const firstDow =
-    first.getDay();
+    const today =
+        todayMidnight();
 
-  const daysInMonth =
-    new Date(
-      viewYear,
-      viewMonth + 1,
-      0
-    ).getDate();
 
-  // Empty cells before first day
-  for (
-    let i = 0;
-    i < firstDow;
-    i++
-  ) {
+    const first =
+        new Date(
+            viewYear,
+            viewMonth,
+            1
+        );
 
-    const e =
-      document.createElement('div');
 
-    e.className =
-      'fte-cell empty';
+    const firstDow =
+        first.getDay();
 
-    grid.appendChild(e);
-  }
 
-  const cellRefs = [];
+    const daysInMonth =
+        new Date(
+            viewYear,
+            viewMonth + 1,
+            0
+        ).getDate();
 
-  for (
-    let d = 1;
-    d <= daysInMonth;
-    d++
-  ) {
 
-    const dt =
-      new Date(
-        viewYear,
-        viewMonth,
-        d
-      );
-
-    const e =
-      document.createElement('div');
-
-    e.className =
-      'fte-cell';
-
-    e.textContent = d;
-
-    // Before tracking started
-    if (
-      dt < FTE_START &&
-      !sameDay(dt, FTE_START)
+    for (
+        let i = 0;
+        i < firstDow;
+        i++
     ) {
 
-      e.classList.add(
-        'disabled'
-      );
+        const empty =
+            document.createElement(
+                "div"
+            );
 
-    } else {
+        empty.className =
+            "fte-cell empty";
 
-      const p =
-        project(dt);
-
-      e.classList.add(
-        p.isMilestoneDay
-          ? 'milestone-day'
-          : 'phase1'
-      );
-
-      if (
-        sameDay(dt, today)
-      ) {
-        e.classList.add(
-          'today'
+        grid.appendChild(
+            empty
         );
-      }
-
-      if (
-        sameDay(dt, selected)
-      ) {
-        e.classList.add(
-          'selected'
-        );
-      }
-
-      e.addEventListener(
-        'click',
-        () => {
-
-          selected = dt;
-
-          renderGrid();
-
-          renderDetail(dt);
-        }
-      );
-
-      // Only dates that have actually arrived
-      // can have Trade Guardian data.
-      if (dt <= today) {
-
-        cellRefs.push({
-          dt,
-          el: e
-        });
-
-      }
     }
 
-    grid.appendChild(e);
-  }
 
-  renderMonthLabel();
+    const actualDates = [];
 
-  // Compare actual Trade Guardian result
-  // against the ₹5,000/day plan.
-  await Promise.all(
-    cellRefs.map(
-      async ({ dt, el }) => {
 
-        const cmp =
-          await fetchComparison(
-            toISO(dt)
-          );
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
 
-        if (!cmp) return;
+        const dt =
+            new Date(
+                viewYear,
+                viewMonth,
+                day
+            );
+
+
+        const cell =
+            document.createElement(
+                "div"
+            );
+
+
+        cell.className =
+            "fte-cell";
+
+
+        cell.textContent =
+            day;
+
 
         if (
-          cmp.status === 'ahead'
+            dt < FTE_START
         ) {
 
-          el.classList.add(
-            'actual-good'
-          );
+            cell.classList.add(
+                "disabled"
+            );
 
         } else {
 
-          el.classList.add(
-            'actual-bad'
-          );
-        }
-      }
-    )
-  );
-}
+            const p =
+                project(dt);
 
-async function renderDetail(dt) {
 
-  const p =
-    project(dt);
+            if (
+                p.phase === 2
+            ) {
 
-  const today =
-    todayMidnight();
+                cell.classList.add(
+                    "phase2"
+                );
 
-  document.getElementById(
-    'fteDHead'
-  ).textContent =
-    dt.toLocaleDateString(
-      'en-US',
-      {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      }
-    );
+            } else {
 
-  const tag =
-    document.getElementById(
-      'fteDTag'
-    );
+                cell.classList.add(
+                    "phase1"
+                );
 
-  const rows =
-    document.getElementById(
-      'fteRows'
-    );
+            }
 
-  const totalEl =
-    document.getElementById(
-      'fteTotal'
-    );
 
-  // Before 12 Aug
-  if (dt < FTE_START) {
+            if (
+                sameDay(
+                    dt,
+                    FTE_MILESTONE
+                )
+            ) {
 
-    tag.textContent =
-      '⏳ Before tracking started';
+                cell.classList.add(
+                    "milestone-day"
+                );
 
-    tag.className =
-      'fte-dtag phase1';
+            }
 
-    totalEl.textContent =
-      formatINR(0);
 
-    rows.innerHTML = `
-      <div class="fte-delta info">
-        Financial Time Explorer starts on 12 Aug 2026.
-      </div>
-    `;
+            if (
+                sameDay(
+                    dt,
+                    today
+                )
+            ) {
 
-    return;
-  }
+                cell.classList.add(
+                    "today"
+                );
 
-  let cmp = null;
+            }
 
-  // Actual dates can use Trade Guardian
-  if (
-    dt <= today &&
-    dt >= FTE_START
-  ) {
 
-    cmp =
-      await fetchComparison(
-        toISO(dt)
-      );
-  }
+            if (
+                sameDay(
+                    dt,
+                    selected
+                )
+            ) {
 
-  // =====================================
-  // ACTUAL TRADE GUARDIAN DATA
-  // =====================================
+                cell.classList.add(
+                    "selected"
+                );
 
-  if (cmp) {
+            }
 
-    const ahead =
-      cmp.status === 'ahead';
 
-    tag.textContent =
-      ahead
-        ? '✅ Ahead of plan'
-        : '⚠️ Behind plan';
+            cell.addEventListener(
+                "click",
+                () => {
 
-    tag.className =
-      'fte-dtag ' +
-      (
-        ahead
-          ? 'actual-good'
-          : 'actual-bad'
-      );
+                    selected =
+                        dt;
 
-    totalEl.textContent =
-      formatINR(
-        cmp.actualTotal
-      );
+                    renderGrid();
 
-    const delta =
-      Math.abs(cmp.delta);
+                    renderDetail(
+                        dt
+                    );
 
-    rows.innerHTML = `
+                }
+            );
 
-      <div class="fte-row">
-        <div class="n">
-          Today's profit
-        </div>
 
-        <div class="v">
-          ${formatINR(
-            cmp.dailyProfit
-          )}
-        </div>
-      </div>
+            if (
+                dt <= today
+            ) {
 
-      <div class="fte-row">
-        <div class="n">
-          Actual cumulative profit
-        </div>
+                actualDates.push({
+                    dt,
+                    cell
+                });
 
-        <div class="v">
-          ${formatINR(
-            cmp.actualTotal
-          )}
-        </div>
-      </div>
+            }
 
-      <div class="fte-row">
-        <div class="n">
-          Estimated cumulative profit
-        </div>
-
-        <div class="v sub">
-          ${formatINR(
-            cmp.estimatedTotal
-          )}
-        </div>
-      </div>
-
-      <div class="fte-delta ${
-        ahead
-          ? 'good'
-          : 'bad'
-      }">
-
-        ${
-          ahead
-            ? '📈 Ahead by'
-            : '📉 Behind by'
         }
 
-        ${formatINR(delta)}
 
-      </div>
+        grid.appendChild(
+            cell
+        );
+    }
 
-    `;
 
-    return;
-  }
+    renderMonthLabel();
 
-  // =====================================
-  // REAL DATE BUT NO TRADE GUARDIAN ENTRY
-  // =====================================
 
-  if (dt <= today) {
+    await Promise.all(
+
+        actualDates.map(
+            async ({
+                dt,
+                cell
+            }) => {
+
+                const cmp =
+                    await fetchComparison(
+                        toISO(dt)
+                    );
+
+
+                if (!cmp)
+                    return;
+
+
+                cell.classList.add(
+                    cmp.status === "ahead"
+                        ? "actual-good"
+                        : "actual-bad"
+                );
+
+            }
+        )
+
+    );
+}
+
+
+// ==========================================
+// Detail
+// ==========================================
+
+async function renderDetail(
+    dt
+) {
+
+    const p =
+        project(dt);
+
+
+    const today =
+        todayMidnight();
+
+
+    document.getElementById(
+        "fteDHead"
+    ).textContent =
+
+        dt.toLocaleDateString(
+            "en-US",
+            {
+                weekday:
+                    "short",
+
+                day:
+                    "numeric",
+
+                month:
+                    "short",
+
+                year:
+                    "numeric"
+            }
+        );
+
+
+    const tag =
+        document.getElementById(
+            "fteDTag"
+        );
+
+
+    const rows =
+        document.getElementById(
+            "fteRows"
+        );
+
+
+    const total =
+        document.getElementById(
+            "fteTotal"
+        );
+
+
+    let cmp =
+        null;
+
+
+    if (
+        dt <= today
+    ) {
+
+        cmp =
+            await fetchComparison(
+                toISO(dt)
+            );
+    }
+
+
+    // ======================================
+    // ACTUAL
+    // ======================================
+
+    if (
+        cmp
+    ) {
+
+        const ahead =
+            cmp.status ===
+            "ahead";
+
+
+        tag.textContent =
+            ahead
+                ? "✅ Ahead of plan"
+                : "⚠️ Behind plan";
+
+
+        tag.className =
+            "fte-dtag " +
+            (
+                ahead
+                    ? "actual-good"
+                    : "actual-bad"
+            );
+
+
+        total.textContent =
+            formatINR(
+                cmp.actualTotal
+            );
+
+
+        rows.innerHTML = `
+
+            <div class="fte-row">
+
+                <div class="n">
+                    Today's actual profit
+                </div>
+
+                <div class="v">
+                    ${formatINR(
+                        cmp.dailyProfit
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="fte-row">
+
+                <div class="n">
+                    Actual cumulative profit
+                </div>
+
+                <div class="v">
+                    ${formatINR(
+                        cmp.actualTotal
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="fte-row">
+
+                <div class="n">
+                    Estimated cumulative profit
+                </div>
+
+                <div class="v sub">
+                    ${formatINR(
+                        cmp.estimatedTotal
+                    )}
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // ======================================
+    // PROJECTION
+    // ======================================
 
     tag.textContent =
-      '⏳ Waiting for Trade Guardian';
+        p.phase === 2
+            ? "📈 Diversified Growth"
+            : "📈 Projected";
+
 
     tag.className =
-      'fte-dtag phase1';
+        "fte-dtag " +
+        (
+            p.phase === 2
+                ? "phase2"
+                : "phase1"
+        );
 
-    totalEl.textContent =
-      formatINR(
-        p.plannedProfit
-      );
+
+    total.textContent =
+        formatINR(
+            p.estimatedProfit
+        );
+
 
     rows.innerHTML = `
 
-      <div class="fte-row">
+        <div class="fte-row">
 
-        <div class="n">
-          Estimated cumulative profit
+            <div class="n">
+                Estimated cumulative profit
+            </div>
+
+            <div class="v">
+                ${formatINR(
+                    p.estimatedProfit
+                )}
+            </div>
+
         </div>
 
-        <div class="v">
-          ${formatINR(
-            p.plannedProfit
-          )}
+
+        <div class="fte-row">
+
+            <div class="n">
+                Daily estimated growth
+            </div>
+
+            <div class="v">
+                ${formatINR(
+                    p.dailyEstimate
+                )}
+            </div>
+
         </div>
 
-      </div>
 
-      <div class="fte-delta info">
+        <div class="fte-delta info">
 
-        No Trade Guardian result
-        has been logged for this date yet.
+            ${
+                p.phase === 2
+                    ? "70% Freedom • 20% Savings • 10% Emergency"
+                    : "₹5,000/day Growth Phase"
+            }
 
-      </div>
+        </div>
 
     `;
-
-    return;
-  }
-
-  // =====================================
-  // FUTURE PROJECTION
-  // =====================================
-
-  tag.textContent =
-    p.isMilestoneDay
-      ? '🏁 ₹3L milestone'
-      : '📈 Projected';
-
-  tag.className =
-    'fte-dtag ' +
-    (
-      p.isMilestoneDay
-        ? 'milestone-day'
-        : 'phase1'
-    );
-
-  totalEl.textContent =
-    formatINR(
-      p.plannedProfit
-    );
-
-  rows.innerHTML = `
-
-    <div class="fte-row">
-
-      <div class="n">
-        Estimated cumulative profit
-      </div>
-
-      <div class="v">
-        ${formatINR(
-          p.plannedProfit
-        )}
-      </div>
-
-    </div>
-
-    <div class="fte-delta info">
-
-      Day ${p.dayNumber}
-      • ₹5,000/day projection
-
-    </div>
-
-  `;
 }
 
-async function renderMilestone() {
 
-  const today =
-    todayMidnight();
+// ==========================================
+// SURPLUS VAULT
+// ==========================================
 
-  const p =
-    project(today);
+async function renderSurplusVault() {
 
-  const el =
+    const today =
+        todayMidnight();
+
+
+    const cmp =
+        await fetchComparison(
+            toISO(today)
+        );
+
+
+    const actualProfit =
+        cmp
+            ? Number(
+                cmp.actualTotal
+            )
+            : 0;
+
+
+    const state =
+        getWithdrawalState();
+
+
+    const surplus =
+        Math.max(
+            0,
+            actualProfit -
+            state.balance
+        );
+
+
+    const vault =
+        document.getElementById(
+            "fteSurplusVault"
+        );
+
+
+    const actual =
+        document.getElementById(
+            "fteActualProfit"
+        );
+
+
+    const withdrawal =
+        document.getElementById(
+            "fteWithdrawalBalance"
+        );
+
+
+    if (vault) {
+
+        vault.textContent =
+            formatINR(
+                surplus
+            );
+    }
+
+
+    if (actual) {
+
+        actual.textContent =
+            formatINR(
+                actualProfit
+            );
+    }
+
+
+    if (withdrawal) {
+
+        withdrawal.textContent =
+            formatINR(
+                state.balance
+            );
+    }
+
+
+    renderWithdrawalSchedule(
+        state
+    );
+}
+
+
+// ==========================================
+// Move amount to Withdrawal
+// ==========================================
+
+function moveToWithdrawal() {
+
+    const input =
+        document.getElementById(
+            "fteWithdrawalAmount"
+        );
+
+
+    const amount =
+        Number(
+            input.value
+        );
+
+
+    if (
+        !amount ||
+        amount <= 0
+    ) {
+
+        alert(
+            "Enter a valid withdrawal amount."
+        );
+
+        return;
+    }
+
+
+    const today =
+        todayMidnight();
+
+
+    const state =
+        getWithdrawalState();
+
+
+    state.balance +=
+        amount;
+
+
+    state.amount =
+        amount;
+
+
+    // First withdrawal = 7 days
+    // after the money enters Withdrawal.
+
+    const firstDate =
+        new Date(
+            today.getTime() +
+            (
+                7 *
+                86400000
+            )
+        );
+
+
+    state.firstDate =
+        toISO(
+            firstDate
+        );
+
+
+    saveWithdrawalState(
+        state
+    );
+
+
+    input.value =
+        "";
+
+
+    renderSurplusVault();
+}
+
+
+// ==========================================
+// Withdrawal schedule
+// ==========================================
+
+function renderWithdrawalSchedule(
+    state
+) {
+
+    const box =
+        document.getElementById(
+            "fteWithdrawalSchedule"
+        );
+
+
+    if (!box)
+        return;
+
+
+    // NOTHING IN WITHDRAWAL
+    if (
+        !state.balance ||
+        !state.firstDate
+    ) {
+
+        box.classList.add(
+            "hidden"
+        );
+
+        return;
+    }
+
+
+    box.classList.remove(
+        "hidden"
+    );
+
+
     document.getElementById(
-      'fteMilestone'
-    );
+        "fteFirstWithdrawalDate"
+    ).textContent =
+        formatDate(
+            state.firstDate
+        );
 
-  const cmp =
-    await fetchComparison(
-      toISO(today)
-    );
 
-  if (cmp) {
+    document.getElementById(
+        "fteScheduledAmount"
+    ).textContent =
+        formatINR(
+            state.amount
+        );
 
-    const ahead =
-      cmp.status === 'ahead';
 
-    el.innerHTML = `
+    const nextDate =
+        getNextWithdrawalDate(
+            state.firstDate
+        );
 
-      🔥
 
-      <b>
-        ${formatINR(
-          cmp.actualTotal
-        )}
-      </b>
-
-      actual of
-
-      <b>
-        ${formatINR(
-          cmp.estimatedTotal
-        )}
-      </b>
-
-      planned ·
-
-      ${
-        ahead
-          ? `${formatINR(
-              Math.abs(cmp.delta)
-            )} ahead of pace`
-          : `${formatINR(
-              Math.abs(cmp.delta)
-            )} behind pace`
-      }
-
-    `;
-
-    return;
-  }
-
-  el.innerHTML = `
-
-    🔥 Day
-
-    <b>
-      ${p.dayNumber}
-    </b>
-
-    ·
-
-    <b>
-      ${formatINR(
-        p.plannedProfit
-      )}
-    </b>
-
-    estimated at ₹5,000/day
-
-  `;
+    document.getElementById(
+        "fteNextWithdrawalDate"
+    ).textContent =
+        formatDate(
+            nextDate
+        );
 }
 
-// =====================================
-// MONTH / YEAR NAVIGATION
-// =====================================
+
+function getNextWithdrawalDate(
+    firstDate
+) {
+
+    const first =
+        new Date(
+            `${firstDate}T00:00:00`
+        );
+
+
+    const today =
+        todayMidnight();
+
+
+    if (
+        today <= first
+    ) {
+
+        return firstDate;
+    }
+
+
+    const days =
+        Math.floor(
+            (
+                today -
+                first
+            ) /
+            86400000
+        );
+
+
+    const cycles =
+        Math.floor(
+            days / 7
+        ) + 1;
+
+
+    const next =
+        new Date(
+            first.getTime() +
+            cycles *
+            7 *
+            86400000
+        );
+
+
+    return toISO(
+        next
+    );
+}
+
+
+// ==========================================
+// ₹3L + Phase 2 display
+// ==========================================
+
+async function renderPhase2() {
+
+    const status =
+        document.getElementById(
+            "ftePhaseStatus"
+        );
+
+
+    const date =
+        document.getElementById(
+            "ftePhaseDate"
+        );
+
+
+    const distribution =
+        document.getElementById(
+            "fteDistribution"
+        );
+
+
+    if (!status)
+        return;
+
+
+    const today =
+        todayMidnight();
+
+
+    const cmp =
+        await fetchComparison(
+            toISO(today)
+        );
+
+
+    const actual =
+        cmp
+            ? Number(
+                cmp.actualTotal
+            )
+            : 0;
+
+
+    if (
+        actual >=
+        PHASE1_TARGET
+    ) {
+
+        status.textContent =
+            "🚀 Phase 2 Active";
+
+
+        status.className =
+            "fte-phase-status phase2";
+
+
+        date.innerHTML = `
+            ₹3,00,000 milestone
+            achieved on or before
+            <b>10 Oct 2026</b>
+        `;
+
+
+    } else {
+
+        status.textContent =
+            "🎯 Phase 1";
+
+
+        status.className =
+            "fte-phase-status phase1";
+
+
+        date.innerHTML = `
+            ₹3,00,000 milestone:
+            <b>10 Oct 2026</b>
+        `;
+
+    }
+
+
+    distribution.innerHTML = `
+
+        <div class="fte-distribution-title">
+            ₹3L Distribution
+        </div>
+
+
+        <div class="fte-distribution-row">
+
+            <span>
+                Personal Use
+            </span>
+
+            <b>
+                ₹1,00,000
+            </b>
+
+        </div>
+
+
+        <div class="fte-distribution-row">
+
+            <span>
+                Investment 1
+            </span>
+
+            <b>
+                ₹80,000
+            </b>
+
+        </div>
+
+
+        <div class="fte-distribution-row">
+
+            <span>
+                Investment 2
+            </span>
+
+            <b>
+                ₹50,000
+            </b>
+
+        </div>
+
+
+        <div class="fte-distribution-row">
+
+            <span>
+                Investment 3
+            </span>
+
+            <b>
+                ₹30,000
+            </b>
+
+        </div>
+
+
+        <div class="fte-distribution-row">
+
+            <span>
+                Initial Savings
+            </span>
+
+            <b>
+                ₹40,000
+            </b>
+
+        </div>
+
+
+        <div class="fte-distribution-divider"></div>
+
+
+        <div class="fte-distribution-title">
+            After 10 Oct — ₹8,333/day
+        </div>
+
+
+        <div class="fte-distribution-row">
+            <span>Freedom Fund — 70%</span>
+            <b>₹5,833/day</b>
+        </div>
+
+
+        <div class="fte-distribution-row">
+            <span>Savings — 20%</span>
+            <b>₹1,667/day</b>
+        </div>
+
+
+        <div class="fte-distribution-row">
+            <span>Emergency — 10%</span>
+            <b>₹833/day</b>
+        </div>
+
+    `;
+}
+
+
+// ==========================================
+// Navigation
+// ==========================================
 
 document.getElementById(
-  'ftePrevM'
+    "ftePrevM"
 ).onclick = () => {
 
-  viewMonth--;
+    viewMonth--;
 
-  if (viewMonth < 0) {
+    if (
+        viewMonth < 0
+    ) {
 
-    viewMonth = 11;
+        viewMonth = 11;
+
+        viewYear--;
+
+    }
+
+    renderGrid();
+};
+
+
+document.getElementById(
+    "fteNextM"
+).onclick = () => {
+
+    viewMonth++;
+
+    if (
+        viewMonth > 11
+    ) {
+
+        viewMonth = 0;
+
+        viewYear++;
+
+    }
+
+    renderGrid();
+};
+
+
+document.getElementById(
+    "ftePrevY"
+).onclick = () => {
+
     viewYear--;
 
-  }
-
-  renderGrid();
+    renderGrid();
 };
 
+
 document.getElementById(
-  'fteNextM'
+    "fteNextY"
 ).onclick = () => {
 
-  viewMonth++;
-
-  if (viewMonth > 11) {
-
-    viewMonth = 0;
     viewYear++;
 
-  }
-
-  renderGrid();
+    renderGrid();
 };
 
-document.getElementById(
-  'ftePrevY'
-).onclick = () => {
 
-  viewYear--;
-
-  renderGrid();
-};
-
-document.getElementById(
-  'fteNextY'
-).onclick = () => {
-
-  viewYear++;
-
-  renderGrid();
-};
-
-// =====================================
-// JUMP TO DATE
-// =====================================
+// ==========================================
+// Jump
+// ==========================================
 
 const jumpInput =
-  document.getElementById(
-    'fteJumpInput'
-  );
-
-document.getElementById(
-  'fteJumpToggle'
-).onclick = () => {
-
-  jumpInput.classList.toggle(
-    'show'
-  );
-};
-
-document.getElementById(
-  'fteJumpGo'
-).onclick = () => {
-
-  const v =
     document.getElementById(
-      'fteJumpDate'
-    ).value;
-
-  if (!v) return;
-
-  const dt =
-    new Date(
-      v + 'T00:00:00'
+        "fteJumpInput"
     );
 
-  if (dt < FTE_START) return;
 
-  viewYear =
-    dt.getFullYear();
+document.getElementById(
+    "fteJumpToggle"
+).onclick = () => {
 
-  viewMonth =
-    dt.getMonth();
-
-  selected =
-    dt;
-
-  renderGrid();
-
-  renderDetail(dt);
-
-  jumpInput.classList.remove(
-    'show'
-  );
+    jumpInput.classList.toggle(
+        "show"
+    );
 };
 
-// =====================================
-// INITIAL LOAD
-// =====================================
 
-document.addEventListener(
-  'DOMContentLoaded',
-  () => {
+document.getElementById(
+    "fteJumpGo"
+).onclick = () => {
+
+    const value =
+        document.getElementById(
+            "fteJumpDate"
+        ).value;
+
+
+    if (!value)
+        return;
+
+
+    const dt =
+        new Date(
+            `${value}T00:00:00`
+        );
+
+
+    if (
+        dt < FTE_START
+    )
+        return;
+
+
+    viewYear =
+        dt.getFullYear();
+
+
+    viewMonth =
+        dt.getMonth();
+
+
+    selected =
+        dt;
+
 
     renderGrid();
 
     renderDetail(
-      selected
+        dt
     );
 
-    renderMilestone();
 
-  }
+    jumpInput.classList.remove(
+        "show"
+    );
+};
+
+
+// ==========================================
+// Withdrawal button
+// ==========================================
+
+document.getElementById(
+    "fteMoveToWithdrawal"
+).onclick =
+    moveToWithdrawal;
+
+
+// ==========================================
+// Initial load
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        renderGrid();
+
+        await renderDetail(
+            selected
+        );
+
+        await renderSurplusVault();
+
+        await renderPhase2();
+
+    }
 );
