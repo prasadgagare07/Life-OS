@@ -3,33 +3,46 @@
 // ==========================================
 //
 // START: 12 Aug 2026
-// PHASE 1: ₹5,000/day
-// MILESTONE: ₹3,00,000 on 10 Oct
-// PHASE 2: ₹8,333/day
 //
-// Actual profit = Trade Guardian
+// 12 Aug = ₹6,659 actual profit
+// 13 Aug = ₹4,378 actual profit
+//
+// Before milestone:
+//   Background estimate = ₹5,000/day
+//   Actual Trade Guardian profit replaces estimate
+//
+// 10 Oct 2026:
+//   ₹3,00,000 milestone
+//
+// 11 Oct 2026:
+//   Phase 2 starts — Day 1
+//   ₹40,000 Savings remains
+//   ₹3L itself is considered deployed
 //
 // Surplus Vault:
-// Actual cumulative profit
-// minus amount moved to Withdrawal
+//   All actual cumulative Trade Guardian profit
 //
 // Withdrawal:
-// No date until money is moved
-// First withdrawal = 7 days after money enters
-// Next withdrawals = every 7 days
+//   Fixed date = 11 Oct 2026
+//   Button becomes active only at ₹3,00,000
+//
+// Withdrawal Amount:
+//   Completely independent
+//   Stays ₹0
+//
 // ==========================================
 
 
 const FTE_START =
-    new Date(
-        "2026-08-12T00:00:00"
-    );
+    new Date("2026-08-12T00:00:00");
 
 
 const FTE_MILESTONE =
-    new Date(
-        "2026-10-10T00:00:00"
-    );
+    new Date("2026-10-10T00:00:00");
+
+
+const FTE_PHASE2_START =
+    new Date("2026-10-11T00:00:00");
 
 
 const PHASE1_DAILY =
@@ -44,8 +57,20 @@ const PHASE2_DAILY =
     8333;
 
 
+const INITIAL_SAVINGS =
+    40000;
+
+
+const SURPLUS_WITHDRAWAL_TARGET =
+    300000;
+
+
+const SURPLUS_WITHDRAWAL_DATE =
+    "11 Oct 2026";
+
+
 const STORAGE_KEY =
-    "lifeos_fte_withdrawal";
+    "lifeos_fte_surplus_withdrawn";
 
 
 let viewYear =
@@ -83,10 +108,7 @@ function todayMidnight() {
 }
 
 
-function sameDay(
-    a,
-    b
-) {
+function sameDay(a, b) {
 
     return (
         a.getFullYear() === b.getFullYear() &&
@@ -121,51 +143,17 @@ function toISO(d) {
 }
 
 
-function formatINR(
-    amount
-) {
+function formatINR(amount) {
 
     return new Intl.NumberFormat(
         "en-IN",
         {
-            style:
-                "currency",
-
-            currency:
-                "INR",
-
-            maximumFractionDigits:
-                0
-
+            style: "currency",
+            currency: "INR",
+            maximumFractionDigits: 0
         }
     ).format(
         Number(amount) || 0
-    );
-}
-
-
-function formatDate(
-    dateString
-) {
-
-    if (!dateString)
-        return "—";
-
-
-    return new Date(
-        `${dateString}T00:00:00`
-    ).toLocaleDateString(
-        "en-IN",
-        {
-            day:
-                "numeric",
-
-            month:
-                "short",
-
-            year:
-                "numeric"
-        }
     );
 }
 
@@ -174,9 +162,7 @@ function formatDate(
 // Projection
 // ==========================================
 
-function project(
-    date
-) {
+function project(date) {
 
     const target =
         new Date(date);
@@ -194,20 +180,12 @@ function project(
     ) {
 
         return {
-
-            phase:
-                0,
-
-            dayNumber:
-                0,
-
-            dailyEstimate:
-                0,
-
-            estimatedProfit:
-                0
-
+            phase: 0,
+            dayNumber: 0,
+            dailyEstimate: 0,
+            estimatedProfit: 0
         };
+
     }
 
 
@@ -216,7 +194,7 @@ function project(
     // ======================================
 
     if (
-        target < FTE_MILESTONE
+        target <= FTE_MILESTONE
     ) {
 
         const days =
@@ -235,8 +213,7 @@ function project(
 
         return {
 
-            phase:
-                1,
+            phase: 1,
 
             dayNumber,
 
@@ -259,93 +236,27 @@ function project(
         Math.floor(
             (
                 target -
-                FTE_MILESTONE
+                FTE_PHASE2_START
             ) /
             86400000
-        );
+        ) + 1;
 
 
     return {
 
-        phase:
-            2,
+        phase: 2,
 
         dayNumber:
-            Math.floor(
-                (
-                    target -
-                    FTE_START
-                ) /
-                86400000
-            ) + 1,
+            phase2Days,
 
         dailyEstimate:
             PHASE2_DAILY,
 
         estimatedProfit:
-            PHASE1_TARGET +
-            (
-                phase2Days *
-                PHASE2_DAILY
-            )
+            phase2Days *
+            PHASE2_DAILY
 
     };
-}
-
-
-// ==========================================
-// Withdrawal local state
-// ==========================================
-
-function getWithdrawalState() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(
-                STORAGE_KEY
-            )
-        ) || {
-
-            balance:
-                0,
-
-            firstDate:
-                null,
-
-            amount:
-                0
-
-        };
-
-    } catch {
-
-        return {
-
-            balance:
-                0,
-
-            firstDate:
-                null,
-
-            amount:
-                0
-
-        };
-    }
-}
-
-
-function saveWithdrawalState(
-    state
-) {
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(
-            state
-        )
-    );
 }
 
 
@@ -353,9 +264,7 @@ function saveWithdrawalState(
 // Actual Trade Guardian
 // ==========================================
 
-async function fetchComparison(
-    dateStr
-) {
+async function fetchComparison(dateStr) {
 
     if (
         dateStr in comparisonCache
@@ -420,11 +329,8 @@ function renderMonthLabel() {
         ).toLocaleDateString(
             "en-US",
             {
-                month:
-                    "long",
-
-                year:
-                    "numeric"
+                month: "long",
+                year: "numeric"
             }
         );
 }
@@ -664,9 +570,7 @@ async function renderGrid() {
 // Detail
 // ==========================================
 
-async function renderDetail(
-    dt
-) {
+async function renderDetail(dt) {
 
     const p =
         project(dt);
@@ -683,17 +587,10 @@ async function renderDetail(
         dt.toLocaleDateString(
             "en-US",
             {
-                weekday:
-                    "short",
-
-                day:
-                    "numeric",
-
-                month:
-                    "short",
-
-                year:
-                    "numeric"
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric"
             }
         );
 
@@ -728,11 +625,12 @@ async function renderDetail(
             await fetchComparison(
                 toISO(dt)
             );
+
     }
 
 
     // ======================================
-    // ACTUAL
+    // ACTUAL TRADE GUARDIAN DATA
     // ======================================
 
     if (
@@ -740,8 +638,7 @@ async function renderDetail(
     ) {
 
         const ahead =
-            cmp.status ===
-            "ahead";
+            cmp.status === "ahead";
 
 
         tag.textContent =
@@ -818,7 +715,7 @@ async function renderDetail(
 
 
     // ======================================
-    // PROJECTION
+    // FUTURE PROJECTION
     // ======================================
 
     tag.textContent =
@@ -858,32 +755,6 @@ async function renderDetail(
 
         </div>
 
-
-        <div class="fte-row">
-
-            <div class="n">
-                Daily estimated growth
-            </div>
-
-            <div class="v">
-                ${formatINR(
-                    p.dailyEstimate
-                )}
-            </div>
-
-        </div>
-
-
-        <div class="fte-delta info">
-
-            ${
-                p.phase === 2
-                    ? "70% Freedom • 20% Savings • 10% Emergency"
-                    : "₹5,000/day Growth Phase"
-            }
-
-        </div>
-
     `;
 }
 
@@ -912,308 +783,97 @@ async function renderSurplusVault() {
             : 0;
 
 
-    const state =
-        getWithdrawalState();
-
-
-    const surplus =
-        Math.max(
-            0,
-            actualProfit -
-            state.balance
-        );
-
-
     const vault =
         document.getElementById(
             "fteSurplusVault"
         );
 
 
-    const actual =
+    const button =
         document.getElementById(
-            "fteActualProfit"
+            "fteWithdrawButton"
         );
 
 
-    const withdrawal =
-        document.getElementById(
-            "fteWithdrawalBalance"
-        );
+    if (!vault)
+        return;
 
 
-    if (vault) {
+    const withdrawn =
+        localStorage.getItem(
+            STORAGE_KEY
+        ) === "true";
+
+
+    // ======================================
+    // AFTER WITHDRAWAL
+    // ======================================
+
+    if (
+        withdrawn
+    ) {
 
         vault.textContent =
-            formatINR(
-                surplus
-            );
-    }
+            "₹0";
 
 
-    if (actual) {
+        if (button) {
 
-        actual.textContent =
-            formatINR(
-                actualProfit
-            );
-    }
+            button.disabled =
+                true;
 
+            button.textContent =
+                "Withdrawn";
 
-    if (withdrawal) {
+        }
 
-        withdrawal.textContent =
-            formatINR(
-                state.balance
-            );
-    }
-
-
-    renderWithdrawalSchedule(
-        state
-    );
-}
-
-
-// ==========================================
-// Move amount to Withdrawal
-// ==========================================
-
-function moveToWithdrawal() {
-
-    const input =
-        document.getElementById(
-            "fteWithdrawalAmount"
-        );
-
-
-    const amount =
-        Number(
-            input.value
-        );
-
-
-    if (
-        !amount ||
-        amount <= 0
-    ) {
-
-        alert(
-            "Enter a valid withdrawal amount."
-        );
 
         return;
     }
 
 
-    const today =
-        todayMidnight();
+    // ======================================
+    // SURPLUS VAULT = ACTUAL PROFIT
+    // ======================================
 
-
-    const state =
-        getWithdrawalState();
-
-
-    state.balance +=
-        amount;
-
-
-    state.amount =
-        amount;
-
-
-    // First withdrawal = 7 days
-    // after the money enters Withdrawal.
-
-    const firstDate =
-        new Date(
-            today.getTime() +
-            (
-                7 *
-                86400000
-            )
-        );
-
-
-    state.firstDate =
-        toISO(
-            firstDate
-        );
-
-
-    saveWithdrawalState(
-        state
-    );
-
-
-    input.value =
-        "";
-
-
-    renderSurplusVault();
-}
-
-
-// ==========================================
-// Withdrawal schedule
-// ==========================================
-
-function renderWithdrawalSchedule(
-    state
-) {
-
-    const box =
-        document.getElementById(
-            "fteWithdrawalSchedule"
-        );
-
-
-    if (!box)
-        return;
-
-
-    // NOTHING IN WITHDRAWAL
-    if (
-        !state.balance ||
-        !state.firstDate
-    ) {
-
-        box.classList.add(
-            "hidden"
-        );
-
-        return;
-    }
-
-
-    box.classList.remove(
-        "hidden"
-    );
-
-
-    document.getElementById(
-        "fteFirstWithdrawalDate"
-    ).textContent =
-        formatDate(
-            state.firstDate
-        );
-
-
-    document.getElementById(
-        "fteScheduledAmount"
-    ).textContent =
+    vault.textContent =
         formatINR(
-            state.amount
+            actualProfit
         );
 
 
-    const nextDate =
-        getNextWithdrawalDate(
-            state.firstDate
-        );
+    // ======================================
+    // WITHDRAW BUTTON
+    // ======================================
 
+    if (button) {
 
-    document.getElementById(
-        "fteNextWithdrawalDate"
-    ).textContent =
-        formatDate(
-            nextDate
-        );
-}
+        button.disabled =
+            actualProfit <
+            SURPLUS_WITHDRAWAL_TARGET;
 
-
-function getNextWithdrawalDate(
-    firstDate
-) {
-
-    const first =
-        new Date(
-            `${firstDate}T00:00:00`
-        );
-
-
-    const today =
-        todayMidnight();
-
-
-    if (
-        today <= first
-    ) {
-
-        return firstDate;
     }
 
-
-    const days =
-        Math.floor(
-            (
-                today -
-                first
-            ) /
-            86400000
-        );
-
-
-    const cycles =
-        Math.floor(
-            days / 7
-        ) + 1;
-
-
-    const next =
-        new Date(
-            first.getTime() +
-            cycles *
-            7 *
-            86400000
-        );
-
-
-    return toISO(
-        next
-    );
 }
 
 
 // ==========================================
-// ₹3L + Phase 2 display
+// WITHDRAW SURPLUS VAULT
 // ==========================================
 
-async function renderPhase2() {
-
-    const status =
-        document.getElementById(
-            "ftePhaseStatus"
-        );
-
-
-    const date =
-        document.getElementById(
-            "ftePhaseDate"
-        );
-
-
-    const distribution =
-        document.getElementById(
-            "fteDistribution"
-        );
-
-
-    if (!status)
-        return;
-
+function withdrawSurplus() {
 
     const today =
         todayMidnight();
 
 
     const cmp =
-        await fetchComparison(
+        comparisonCache[
             toISO(today)
-        );
+        ];
 
 
-    const actual =
+    const actualProfit =
         cmp
             ? Number(
                 cmp.actualTotal
@@ -1222,141 +882,173 @@ async function renderPhase2() {
 
 
     if (
-        actual >=
-        PHASE1_TARGET
+        actualProfit <
+        SURPLUS_WITHDRAWAL_TARGET
     ) {
 
-        status.textContent =
-            "🚀 Phase 2 Active";
+        return;
+    }
 
 
-        status.className =
-            "fte-phase-status phase2";
+    /*
+      Important:
+
+      Withdrawal Amount is NOT connected
+      to this ₹3L withdrawal.
+
+      We only mark the Surplus Vault
+      as withdrawn.
+    */
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        "true"
+    );
 
 
-        date.innerHTML = `
-            ₹3,00,000 milestone
-            achieved on or before
-            <b>10 Oct 2026</b>
-        `;
+    const vault =
+        document.getElementById(
+            "fteSurplusVault"
+        );
 
 
-    } else {
-
-        status.textContent =
-            "🎯 Phase 1";
-
-
-        status.className =
-            "fte-phase-status phase1";
+    const button =
+        document.getElementById(
+            "fteWithdrawButton"
+        );
 
 
-        date.innerHTML = `
-            ₹3,00,000 milestone:
-            <b>10 Oct 2026</b>
-        `;
+    if (vault) {
+
+        vault.textContent =
+            "₹0";
 
     }
 
 
-    distribution.innerHTML = `
+    if (button) {
 
-        <div class="fte-distribution-title">
-            ₹3L Distribution
-        </div>
+        button.disabled =
+            true;
 
+        button.textContent =
+            "Withdrawn";
 
-        <div class="fte-distribution-row">
-
-            <span>
-                Personal Use
-            </span>
-
-            <b>
-                ₹1,00,000
-            </b>
-
-        </div>
+    }
+}
 
 
-        <div class="fte-distribution-row">
+// ==========================================
+// PHASE 2 FUNDS
+// ==========================================
 
-            <span>
-                Investment 1
-            </span>
+function renderPhase2Funds() {
 
-            <b>
-                ₹80,000
-            </b>
-
-        </div>
-
-
-        <div class="fte-distribution-row">
-
-            <span>
-                Investment 2
-            </span>
-
-            <b>
-                ₹50,000
-            </b>
-
-        </div>
+    const savings =
+        document.getElementById(
+            "fteSavings"
+        );
 
 
-        <div class="fte-distribution-row">
-
-            <span>
-                Investment 3
-            </span>
-
-            <b>
-                ₹30,000
-            </b>
-
-        </div>
+    const freedom =
+        document.getElementById(
+            "fteFreedomFund"
+        );
 
 
-        <div class="fte-distribution-row">
-
-            <span>
-                Initial Savings
-            </span>
-
-            <b>
-                ₹40,000
-            </b>
-
-        </div>
+    const emergency =
+        document.getElementById(
+            "fteEmergencyFund"
+        );
 
 
-        <div class="fte-distribution-divider"></div>
+    if (
+        !savings ||
+        !freedom ||
+        !emergency
+    ) {
+
+        return;
+    }
 
 
-        <div class="fte-distribution-title">
-            After 10 Oct — ₹8,333/day
-        </div>
+    const today =
+        todayMidnight();
 
 
-        <div class="fte-distribution-row">
-            <span>Freedom Fund — 70%</span>
-            <b>₹5,833/day</b>
-        </div>
+    // Before 11 Oct
+    if (
+        today <
+        FTE_PHASE2_START
+    ) {
+
+        savings.textContent =
+            "₹40,000";
+
+        freedom.textContent =
+            "₹0";
+
+        emergency.textContent =
+            "₹0";
+
+        return;
+    }
 
 
-        <div class="fte-distribution-row">
-            <span>Savings — 20%</span>
-            <b>₹1,667/day</b>
-        </div>
+    const days =
+        Math.floor(
+            (
+                today -
+                FTE_PHASE2_START
+            ) /
+            86400000
+        ) + 1;
 
 
-        <div class="fte-distribution-row">
-            <span>Emergency — 10%</span>
-            <b>₹833/day</b>
-        </div>
+    /*
+      Distribution percentages are
+      intentionally kept hidden.
 
-    `;
+      Savings = 20%
+      Freedom Fund = 70%
+      Emergency Fund = 10%
+    */
+
+    const savingsGrowth =
+        PHASE2_DAILY *
+        0.20 *
+        days;
+
+
+    const freedomGrowth =
+        PHASE2_DAILY *
+        0.70 *
+        days;
+
+
+    const emergencyGrowth =
+        PHASE2_DAILY *
+        0.10 *
+        days;
+
+
+    savings.textContent =
+        formatINR(
+            INITIAL_SAVINGS +
+            savingsGrowth
+        );
+
+
+    freedom.textContent =
+        formatINR(
+            freedomGrowth
+        );
+
+
+    emergency.textContent =
+        formatINR(
+            emergencyGrowth
+        );
 }
 
 
@@ -1370,6 +1062,7 @@ document.getElementById(
 
     viewMonth--;
 
+
     if (
         viewMonth < 0
     ) {
@@ -1379,6 +1072,7 @@ document.getElementById(
         viewYear--;
 
     }
+
 
     renderGrid();
 };
@@ -1390,6 +1084,7 @@ document.getElementById(
 
     viewMonth++;
 
+
     if (
         viewMonth > 11
     ) {
@@ -1399,6 +1094,7 @@ document.getElementById(
         viewYear++;
 
     }
+
 
     renderGrid();
 };
@@ -1411,6 +1107,7 @@ document.getElementById(
     viewYear--;
 
     renderGrid();
+
 };
 
 
@@ -1421,11 +1118,12 @@ document.getElementById(
     viewYear++;
 
     renderGrid();
+
 };
 
 
 // ==========================================
-// Jump
+// Jump to Date
 // ==========================================
 
 const jumpInput =
@@ -1441,6 +1139,7 @@ document.getElementById(
     jumpInput.classList.toggle(
         "show"
     );
+
 };
 
 
@@ -1484,6 +1183,7 @@ document.getElementById(
 
     renderGrid();
 
+
     renderDetail(
         dt
     );
@@ -1492,21 +1192,12 @@ document.getElementById(
     jumpInput.classList.remove(
         "show"
     );
+
 };
 
 
 // ==========================================
-// Withdrawal button
-// ==========================================
-
-document.getElementById(
-    "fteMoveToWithdrawal"
-).onclick =
-    moveToWithdrawal;
-
-
-// ==========================================
-// Initial load
+// INITIAL LOAD
 // ==========================================
 
 document.addEventListener(
@@ -1521,7 +1212,19 @@ document.addEventListener(
 
         await renderSurplusVault();
 
-        await renderPhase2();
+        renderPhase2Funds();
 
     }
+);
+
+
+// ==========================================
+// WITHDRAW BUTTON
+// ==========================================
+
+document.getElementById(
+    "fteWithdrawButton"
+).addEventListener(
+    "click",
+    withdrawSurplus
 );
