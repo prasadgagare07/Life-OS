@@ -122,83 +122,12 @@
 
       </section>
 
-
     </div>
-
-      <!-- SAVINGS -->
-
-      <div class="fte-fund-row">
-
-        <div>
-
-          <span>
-            Savings
-          </span>
-
-          <small>
-            Initial savings
-          </small>
-
-        </div>
-
-        <strong id="fteSavings">
-          ₹40,000
-        </strong>
-
-      </div>
-
-
-      <!-- FREEDOM FUND -->
-
-      <div class="fte-fund-row">
-
-        <div>
-
-          <span>
-            Freedom Fund
-          </span>
-
-          <small>
-            Growing daily
-          </small>
-
-        </div>
-
-        <strong id="fteFreedomFund">
-          ₹0
-        </strong>
-
-      </div>
-
-
-      <!-- EMERGENCY FUND -->
-
-      <div class="fte-fund-row">
-
-        <div>
-
-          <span>
-            Emergency Fund
-          </span>
-
-          <small>
-            Growing daily
-          </small>
-
-        </div>
-
-        <strong id="fteEmergencyFund">
-          ₹0
-        </strong>
-
-      </div>
-
-
-    </section>
 
 
     <!-- ==========================================
          CALENDAR
+         Diversification is NOT shown here
     =========================================== -->
 
     <section class="card fte-card">
@@ -319,11 +248,6 @@
         </span>
 
         <span>
-          <i class="fte-sw fte-p2"></i>
-          Diversified
-        </span>
-
-        <span>
           <i class="fte-sw fte-ms"></i>
           ₹3L milestone
         </span>
@@ -380,108 +304,90 @@
 
     </section>
 
-    <!-- ==========================================
-     PHASE 2 DIVERSIFICATION
-========================================== -->
-
-<section
-  class="card fte-phase-card"
-  id="ftePhaseCard"
-  style="display:none;"
->
-
-  <div class="fte-vault-label">
-    AFTER ₹3,00,000 MILESTONE
-  </div>
-
-  <div class="fte-phase-date">
-    Starting 11 Oct 2026
-  </div>
-
-  <div class="fte-distribution">
-
-    <div class="fte-distribution-row">
-
-      <span>
-        Savings
-      </span>
-
-      <b id="fteSavingsAmount">
-        ₹40,000
-      </b>
-
-    </div>
-
-
-    <div class="fte-distribution-row">
-
-      <span>
-        Freedom Fund
-      </span>
-
-      <b id="fteFreedomAmount">
-        ₹0
-      </b>
-
-    </div>
-
-
-    <div class="fte-distribution-row">
-
-      <span>
-        Emergency Fund
-      </span>
-
-      <b id="fteEmergencyAmount">
-        ₹0
-      </b>
-
-    </div>
-
-  </div>
-
-</section>
 
     <!-- ==========================================
-     AFTER MILESTONE — FUND GROWTH
-========================================== -->
+         PHASE 2 — FUND GROWTH
+         
+         Hidden before 11 Oct 2026.
+         
+         From 11 Oct:
+         Savings      = ₹40,000 + 20% growth
+         Freedom Fund = 70% growth
+         Emergency    = 10% growth
+         
+         This is the ONLY diversification box.
+    =========================================== -->
 
-<section
-  class="card fte-phase-card hidden"
-  id="ftePhaseCard"
->
+    <section
+      class="card fte-phase-card"
+      id="ftePhaseCard"
+      style="display:none;"
+    >
 
-  <div class="fte-vault-label">
-    AFTER ₹3,00,000 MILESTONE
-  </div>
+      <div class="fte-vault-label">
+        AFTER ₹3,00,000 MILESTONE
+      </div>
 
-  <div
-    class="fte-phase-date"
-    id="ftePhaseDate"
-  >
-    Starting 11 Oct 2026
-  </div>
 
-  <div class="fte-distribution">
+      <div
+        class="fte-phase-date"
+        id="ftePhaseDate"
+      >
+        Starting 11 Oct 2026
+      </div>
 
-    <div class="fte-distribution-row">
-      <span>Savings</span>
-      <b id="fteSavingsAmount">₹40,000</b>
-    </div>
 
-    <div class="fte-distribution-row">
-      <span>Freedom Fund</span>
-      <b id="fteFreedomAmount">₹0</b>
-    </div>
+      <div class="fte-distribution">
 
-    <div class="fte-distribution-row">
-      <span>Emergency Fund</span>
-      <b id="fteEmergencyAmount">₹0</b>
-    </div>
 
-  </div>
+        <!-- SAVINGS -->
 
-</section>
+        <div class="fte-distribution-row">
+
+          <span>
+            Savings
+          </span>
+
+          <b id="fteSavingsAmount">
+            ₹40,000
+          </b>
+
+        </div>
+
+
+        <!-- FREEDOM FUND -->
+
+        <div class="fte-distribution-row">
+
+          <span>
+            Freedom Fund
+          </span>
+
+          <b id="fteFreedomAmount">
+            ₹0
+          </b>
+
+        </div>
+
+
+        <!-- EMERGENCY FUND -->
+
+        <div class="fte-distribution-row">
+
+          <span>
+            Emergency Fund
+          </span>
+
+          <b id="fteEmergencyAmount">
+            ₹0
+          </b>
+
+        </div>
+
+
+      </div>
+
+    </section>
 
 
   </main>
