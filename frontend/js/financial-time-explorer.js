@@ -826,49 +826,69 @@ async function renderDetail(dt) {
 
 // ==========================================
 // SURPLUS VAULT
-// ==========================================
+// =========================================
 
 async function renderSurplusVault() {
 
     const today =
         todayMidnight();
 
-
     const cmp =
         await fetchComparison(
             toISO(today)
         );
 
-
     const actualProfit =
         cmp
-            ? Number(
-                cmp.actualTotal
-            )
+            ? Number(cmp.actualTotal)
             : 0;
-
 
     const vault =
         document.getElementById(
             "fteSurplusVault"
         );
 
-
     const button =
         document.getElementById(
             "fteWithdrawButton"
         );
 
-
     if (!vault)
         return;
 
 
-    const withdrawn =
-        localStorage.getItem(
-            STORAGE_KEY
-        ) === "true";
+    // ======================================
+    // SURPLUS VAULT
+    //
+    // ALL actual Trade Guardian profit
+    // stays here until the ₹3L withdrawal
+    // button is actually pressed.
+    // ======================================
 
+    vault.textContent =
+        formatINR(
+            actualProfit
+        );
+
+
+    // ======================================
+    // WITHDRAW BUTTON
+    //
+    // Enabled only after ₹3,00,000
+    // ======================================
+
+    if (button) {
+
+        button.disabled =
+            actualProfit <
+            SURPLUS_WITHDRAWAL_TARGET;
+
+        button.textContent =
+            "Withdraw";
+
+    }
+
+}
 
     // ======================================
     // AFTER WITHDRAWAL
