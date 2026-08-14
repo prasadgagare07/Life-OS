@@ -121,17 +121,18 @@ async function start() {
     // ==========================================
 
     const DEFAULT_PAGE_PASSCODES = {
-      dashboard: 'horizon',
-      'daily-standards': 'discipline',
-      standards: 'consistency',
-      finance: 'abundance',
-      'financial-time-explorer': 'foresight',
-      'time-explorer': 'patience',
-      fitness: 'strength',
-      vision: 'purpose',
-      trading: 'courage',
-      settings: 'control',
-    };
+  dashboard: 'horizon',
+  'daily-standards': 'discipline',
+  standards: 'consistency',
+  finance: 'abundance',
+  'financial-time-explorer': 'foresight',
+  'time-explorer': 'patience',
+  fitness: 'strength',
+  vision: 'purpose',
+  trading: 'courage',
+  settings: 'control',
+  'weekly-withdrawal': 'confirmed',
+};
 
     const { rows: existingPages } = await pool.query(
       `SELECT page FROM auth_settings`
@@ -242,6 +243,13 @@ const weeklyWithdrawalV2Migration = fs.readFileSync(
 );
 
 await pool.query(weeklyWithdrawalV2Migration);
+
+const weeklyWithdrawalMethodsMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '015_weekly_withdrawal_methods.sql'),
+  'utf8'
+);
+
+await pool.query(weeklyWithdrawalMethodsMigration);
 
 console.log('✅ Weekly Withdrawal database initialized');
 
