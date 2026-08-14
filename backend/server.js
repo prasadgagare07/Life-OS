@@ -155,8 +155,13 @@ const tradingAccountMigration = fs.readFileSync(
   path.join(__dirname, 'database', '007_trading_account.sql'),
   'utf8'
 );
+// Weekly Withdrawal account + daily profits + withdrawal history
+const weeklyWithdrawalMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '012_weekly_withdrawal.sql'),
+  'utf8'
+);
 
-await pool.query(tradingAccountMigration);
+await pool.query(weeklyWithdrawalMigration);
 
 // Sessions Migration — lets Settings show which devices are logged into
 // each page, and lets you force-log-out a specific device.
