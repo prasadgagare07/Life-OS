@@ -76,15 +76,15 @@ async function setWithdrawalAccount(req, res) {
       });
     }
 
-    if (mode === 'upi' && !upi_id) {
+    if (mode === 'upi' && !/^[^\s@]+@[^\s@]+$/.test(String(upi_id || '').trim())) {
       return res.status(400).json({
-        error: 'UPI ID is required'
+        error: 'Valid UPI ID is required'
       });
     }
 
     if (
       mode === 'bank' &&
-      (!account_number || !bank_name || !ifsc_code)
+      (!account_number || !bank_name || !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(String(ifsc_code || '').trim().toUpperCase()))
     ) {
       return res.status(400).json({
         error:
@@ -94,7 +94,7 @@ async function setWithdrawalAccount(req, res) {
 
     if (
       (mode === 'usdt' || mode === 'tron') &&
-      !wallet_address
+      !/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(String(wallet_address || '').trim())
     ) {
       return res.status(400).json({
         error: 'Wallet address is required'
@@ -206,7 +206,15 @@ async function withdrawProfit(req, res) {
 
     const result =
       await WeeklyWithdrawal.withdrawProfit(
-        profit
+        profit,
+        {
+          method: req.body.mode,
+          upi_id: req.body.upi_id,
+          account_number: req.body.account_number,
+          bank_name: req.body.bank_name,
+          ifsc_code: req.body.ifsc_code,
+          wallet_address: req.body.wallet_address
+        }
       );
 
     res.json(result);
