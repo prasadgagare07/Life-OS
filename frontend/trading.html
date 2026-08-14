@@ -267,6 +267,237 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 .quote-card{margin-top:22px; text-align:center; padding:20px; border-radius:18px; border:1px solid var(--border);
   background:linear-gradient(160deg, rgba(34,197,94,0.08), rgba(13,21,18,0.4));}
 .quote-card p{font-size:13.5px; font-weight:700; line-height:1.6; color:#d1fae5;}
+/* ==========================================
+   WEEKLY WITHDRAWAL ACCOUNT
+========================================== */
+
+.weekly-section{
+  margin-top:22px;
+  background:
+    linear-gradient(
+      160deg,
+      rgba(56,189,248,.10),
+      rgba(13,21,18,.95)
+    );
+  border:1px solid rgba(56,189,248,.30);
+  border-radius:20px;
+  padding:18px 16px;
+}
+
+.weekly-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.weekly-label{
+  font-size:9px;
+  color:#38bdf8;
+  letter-spacing:1.5px;
+  font-family:'JetBrains Mono',monospace;
+}
+
+.weekly-header h2{
+  margin-top:4px;
+  font-family:'Anton',sans-serif;
+  font-size:24px;
+  letter-spacing:1px;
+  color:#fff;
+}
+
+.weekly-header p{
+  margin-top:3px;
+  font-size:9.5px;
+  color:var(--muted);
+}
+
+.flip-account-btn{
+  border:1px solid rgba(56,189,248,.35);
+  background:rgba(56,189,248,.10);
+  color:#38bdf8;
+  padding:8px 10px;
+  border-radius:999px;
+  font-family:'Poppins',sans-serif;
+  font-size:8.5px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.weekly-funds-row{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
+.weekly-card{
+  flex:1;
+  background:rgba(255,255,255,.025);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:13px 10px;
+  text-align:center;
+}
+
+.weekly-card.profit{
+  border-color:rgba(34,197,94,.30);
+}
+
+.weekly-card-label{
+  font-size:8px;
+  color:var(--muted);
+  letter-spacing:.5px;
+  font-family:'JetBrains Mono',monospace;
+}
+
+.weekly-card-value{
+  margin-top:7px;
+  font-family:'Anton',sans-serif;
+  font-size:20px;
+}
+
+.weekly-card.profit .weekly-card-value{
+  color:var(--green-glow);
+}
+
+.weekly-withdraw-box{
+  margin-top:14px;
+  padding:16px;
+  border-radius:16px;
+  background:rgba(34,197,94,.08);
+  border:1px solid rgba(34,197,94,.25);
+  text-align:center;
+}
+
+.weekly-withdraw-head{
+  display:flex;
+  justify-content:space-between;
+  font-size:8px;
+  color:var(--muted);
+  font-family:'JetBrains Mono',monospace;
+}
+
+#weeklyWithdrawStatus{
+  color:var(--green-glow);
+}
+
+.weekly-withdraw-amount{
+  margin-top:6px;
+  font-family:'Anton',sans-serif;
+  font-size:32px;
+  color:var(--green-glow);
+  text-shadow:0 0 20px rgba(34,197,94,.35);
+}
+
+.weekly-withdraw-btn{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(
+    90deg,
+    var(--green),
+    var(--green-glow)
+  );
+  color:#04150a;
+  font-family:'Poppins',sans-serif;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.weekly-withdraw-btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+.weekly-vault{
+  margin-top:14px;
+  padding:15px;
+  border-radius:16px;
+  background:rgba(251,191,36,.08);
+  border:1px solid rgba(251,191,36,.28);
+}
+
+.weekly-vault-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:9px;
+  color:#fbbf24;
+  font-weight:700;
+  letter-spacing:.7px;
+}
+
+.weekly-vault-amount{
+  margin-top:7px;
+  font-family:'Anton',sans-serif;
+  font-size:27px;
+  color:#fbbf24;
+}
+
+.weekly-vault p{
+  margin-top:5px;
+  font-size:9px;
+  color:#cfc39b;
+  line-height:1.5;
+}
+
+.withdraw-history{
+  margin-top:15px;
+  padding:15px;
+  border-radius:16px;
+  background:rgba(255,255,255,.025);
+  border:1px solid var(--border);
+}
+
+.withdraw-history-title{
+  font-size:10px;
+  color:#38bdf8;
+  font-weight:700;
+  letter-spacing:1px;
+  margin-bottom:10px;
+}
+
+.withdraw-history-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+  gap:8px;
+}
+
+.withdraw-history-row:last-child{
+  border-bottom:none;
+}
+
+.withdraw-date{
+  font-size:9px;
+  color:var(--muted);
+  font-family:'JetBrains Mono',monospace;
+}
+
+.withdraw-amount{
+  font-size:12px;
+  font-weight:800;
+  color:var(--green-glow);
+}
+
+.withdraw-meta{
+  font-size:8px;
+  color:#7f8b84;
+  text-align:right;
+}
+
+.empty-history{
+  text-align:center;
+  padding:12px 0;
+  font-size:9px;
+  color:var(--muted);
+  }
 </style>
 </head>
 <body>
@@ -987,7 +1218,548 @@ renderRuleBook();
 // Check every minute so the 10 PM unlock happens automatically
 // without requiring a page refresh.
 setInterval(renderRuleBook, 60000);
+/* ==========================================
+   WEEKLY WITHDRAWAL ACCOUNT
+========================================== */
 
+const WEEKLY_FUNDS_KEY =
+  'lifeos_weekly_withdrawal_funds';
+
+const WEEKLY_VAULT_KEY =
+  'lifeos_weekly_withdrawal_vault';
+
+const WEEKLY_HISTORY_KEY =
+  'lifeos_weekly_withdrawal_history';
+
+const WEEKLY_COUNT_KEY =
+  'lifeos_weekly_withdrawal_count';
+
+const WEEKLY_TARGET =
+  5000;
+
+
+/* ------------------------------------------
+   STORAGE HELPERS
+------------------------------------------ */
+
+function getWeeklyFunds(){
+
+  return Number(
+    localStorage.getItem(
+      WEEKLY_FUNDS_KEY
+    ) || 0
+  );
+
+}
+
+
+function getWeeklyVault(){
+
+  return Number(
+    localStorage.getItem(
+      WEEKLY_VAULT_KEY
+    ) || 0
+  );
+
+}
+
+
+function getWeeklyCount(){
+
+  return Number(
+    localStorage.getItem(
+      WEEKLY_COUNT_KEY
+    ) || 0
+  );
+
+}
+
+
+function getWeeklyHistory(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        WEEKLY_HISTORY_KEY
+      )
+    ) || [];
+
+  }catch{
+
+    return [];
+
+  }
+
+}
+
+
+/* ------------------------------------------
+   TODAY'S PROFIT
+------------------------------------------ */
+
+async function getWeeklyTodayProfit(){
+
+  const closes =
+    await fetchCloses();
+
+  const today =
+    todayKey();
+
+  if(
+    !closes.hasOwnProperty(today)
+  ){
+
+    return 0;
+
+  }
+
+  return Number(
+    closes[today] || 0
+  );
+
+}
+
+
+/* ------------------------------------------
+   WITHDRAWABLE AMOUNT
+------------------------------------------ */
+
+/*
+   Example:
+
+   Profit = ₹7,658
+   Withdrawal = ₹5,000
+   Surplus Vault = ₹2,658
+
+   Profit = ₹2,748
+   Withdrawal = ₹2,748
+   Surplus Vault = ₹0
+*/
+
+function calculateWeeklyWithdrawal(
+  profit
+){
+
+  const withdrawal =
+    Math.min(
+      Math.max(profit, 0),
+      WEEKLY_TARGET
+    );
+
+  const surplus =
+    Math.max(
+      profit - WEEKLY_TARGET,
+      0
+    );
+
+  return {
+    withdrawal,
+    surplus
+  };
+
+}
+
+
+/* ------------------------------------------
+   RENDER WEEKLY ACCOUNT
+------------------------------------------ */
+
+async function renderWeeklyAccount(){
+
+  const profit =
+    await getWeeklyTodayProfit();
+
+  const funds =
+    getWeeklyFunds();
+
+  const vault =
+    getWeeklyVault();
+
+  const count =
+    getWeeklyCount();
+
+  const calc =
+    calculateWeeklyWithdrawal(
+      profit
+    );
+
+
+  const fundsEl =
+    document.getElementById(
+      'weeklyCurrentFunds'
+    );
+
+  const profitEl =
+    document.getElementById(
+      'weeklyTodayProfit'
+    );
+
+  const withdrawEl =
+    document.getElementById(
+      'weeklyWithdrawAmount'
+    );
+
+  const vaultEl =
+    document.getElementById(
+      'weeklyVaultAmount'
+    );
+
+  const countEl =
+    document.getElementById(
+      'weeklyVaultCount'
+    );
+
+  const button =
+    document.getElementById(
+      'weeklyWithdrawBtn'
+    );
+
+
+  if(fundsEl){
+
+    fundsEl.textContent =
+      fmtRupee(funds);
+
+  }
+
+
+  if(profitEl){
+
+    profitEl.textContent =
+      fmtRupee(profit);
+
+  }
+
+
+  if(withdrawEl){
+
+    withdrawEl.textContent =
+      fmtRupee(
+        calc.withdrawal
+      );
+
+  }
+
+
+  if(vaultEl){
+
+    vaultEl.textContent =
+      fmtRupee(vault);
+
+  }
+
+
+  if(countEl){
+
+    countEl.textContent =
+      `${count} / 15 WITHDRAWALS`;
+
+  }
+
+
+  if(button){
+
+    button.disabled =
+      calc.withdrawal <= 0;
+
+  }
+
+
+  renderWeeklyHistory();
+
+}
+
+
+/* ------------------------------------------
+   WITHDRAW
+------------------------------------------ */
+
+async function weeklyWithdraw(){
+
+  const profit =
+    await getWeeklyTodayProfit();
+
+
+  const calc =
+    calculateWeeklyWithdrawal(
+      profit
+    );
+
+
+  if(
+    calc.withdrawal <= 0
+  ){
+
+    alert(
+      "No profit available for withdrawal today."
+    );
+
+    return;
+
+  }
+
+
+  const currentFunds =
+    getWeeklyFunds();
+
+
+  const currentVault =
+    getWeeklyVault();
+
+
+  const currentCount =
+    getWeeklyCount();
+
+
+  /*
+     Only the amount above ₹5,000
+     goes into the Surplus Vault.
+  */
+
+  const newVault =
+    currentVault +
+    calc.surplus;
+
+
+  const newCount =
+    currentCount + 1;
+
+
+  /*
+     Every 15th withdrawal:
+     record the vault amount in history
+     and reset the vault.
+  */
+
+  let finalVault =
+    newVault;
+
+  let vaultEvent =
+    null;
+
+
+  if(
+    newCount % 15 === 0
+  ){
+
+    vaultEvent =
+      newVault;
+
+    finalVault =
+      0;
+
+  }
+
+
+  /*
+     Add withdrawn amount to the
+     account's current funds.
+  */
+
+  const newFunds =
+    currentFunds +
+    calc.withdrawal;
+
+
+  localStorage.setItem(
+    WEEKLY_FUNDS_KEY,
+    newFunds
+  );
+
+
+  localStorage.setItem(
+    WEEKLY_VAULT_KEY,
+    finalVault
+  );
+
+
+  localStorage.setItem(
+    WEEKLY_COUNT_KEY,
+    newCount
+  );
+
+
+  const history =
+    getWeeklyHistory();
+
+
+  history.unshift({
+
+    date: new Date().toLocaleDateString(
+      'en-IN'
+    ),
+
+    amount:
+      calc.withdrawal,
+
+    profit:
+      profit,
+
+    surplus:
+      calc.surplus,
+
+    withdrawalNumber:
+      newCount,
+
+    vaultReleased:
+      vaultEvent
+
+  });
+
+
+  localStorage.setItem(
+    WEEKLY_HISTORY_KEY,
+    JSON.stringify(history)
+  );
+
+
+  await renderWeeklyAccount();
+
+
+  alert(
+    `Withdrawal recorded: ${fmtRupee(calc.withdrawal)}`
+  );
+
+}
+
+
+/* ------------------------------------------
+   HISTORY
+------------------------------------------ */
+
+function renderWeeklyHistory(){
+
+  const container =
+    document.getElementById(
+      'weeklyWithdrawalHistory'
+    );
+
+  if(!container)
+    return;
+
+
+  const history =
+    getWeeklyHistory();
+
+
+  if(
+    history.length === 0
+  ){
+
+    container.innerHTML =
+      `<div class="empty-history">
+        No withdrawals yet.
+      </div>`;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    history.map(item => {
+
+      let meta =
+        `Profit ${fmtRupee(item.profit)}`;
+
+      if(
+        item.vaultReleased !== null &&
+        item.vaultReleased !== undefined
+      ){
+
+        meta +=
+          ` • 🏦 Vault released ${fmtRupee(item.vaultReleased)}`;
+
+      }
+
+
+      return `
+
+        <div class="withdraw-history-row">
+
+          <div>
+
+            <div class="withdraw-date">
+              ${item.date}
+            </div>
+
+            <div class="withdraw-meta">
+              Withdrawal #${item.withdrawalNumber}
+            </div>
+
+          </div>
+
+          <div style="text-align:right">
+
+            <div class="withdraw-amount">
+              ${fmtRupee(item.amount)}
+            </div>
+
+            <div class="withdraw-meta">
+              ${meta}
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join('');
+
+}
+
+
+/* ------------------------------------------
+   FLIP ACCOUNT
+------------------------------------------ */
+
+document
+  .getElementById(
+    'flipWeeklyBtn'
+  )
+  ?.addEventListener(
+    'click',
+    () => {
+
+      document
+        .querySelector(
+          '.weekly-section'
+        )
+        ?.scrollIntoView({
+          behavior:'smooth',
+          block:'start'
+        });
+
+    }
+  );
+
+
+/* ------------------------------------------
+   WITHDRAW BUTTON
+------------------------------------------ */
+
+document
+  .getElementById(
+    'weeklyWithdrawBtn'
+  )
+  ?.addEventListener(
+    'click',
+    weeklyWithdraw
+  );
+
+
+/* ------------------------------------------
+   INITIAL LOAD
+------------------------------------------ */
+
+renderWeeklyAccount();
+
+setInterval(
+  renderWeeklyAccount,
+  60000
+);
 </script>
 </body>
   </html>
