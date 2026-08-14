@@ -130,6 +130,21 @@ async function withdrawProfit(req, res) {
     const profit =
       Number(req.body.profit);
 
+    const passcode = String(req.body.passcode || '');
+    const expectedPasscode = String(process.env.WEEKLY_WITHDRAWAL_PASSCODE || '');
+
+    if (!expectedPasscode) {
+      return res.status(503).json({
+        error: 'Weekly withdrawal passcode is not configured'
+      });
+    }
+
+    if (passcode !== expectedPasscode) {
+      return res.status(401).json({
+        error: 'Invalid withdrawal passcode'
+      });
+    }
+
 
     if (!Number.isFinite(profit) || profit < 0) {
 
@@ -206,79 +221,7 @@ async function withdraw(req, res) {
 
 }
 
-// SET WEEKLY WITHDRAWAL ACCOUNT
-async function setWithdrawalAccount(req, res) {
-  try {
-    const {
-      withdrawal_method,
-      upi_id,
-      account_number,
-      bank_name,
-      ifsc_code,
-      wallet_address
-    } = req.body;
 
-    const allowedMethods = [
-      'upi',
-      'bank',
-      'usdt',
-      'tron'
-    ];
-
-    if (!allowedMethods.includes(withdrawal_method)) {
-      return res.status(400).json({
-        error: 'Invalid withdrawal method'
-      });
-    }
-
-    if (withdrawal_method === 'upi' && !upi_id) {
-      return res.status(400).json({
-        error: 'UPI ID is required'
-      });
-    }
-
-    if (
-      withdrawal_method === 'bank' &&
-      (!account_number || !bank_name || !ifsc_code)
-    ) {
-      return res.status(400).json({
-        error: 'Account number, bank name and IFSC code are required'
-      });
-    }
-
-    if (
-      (withdrawal_method === 'usdt' ||
-       withdrawal_method === 'tron') &&
-      !wallet_address
-    ) {
-      return res.status(400).json({
-        error: 'Wallet address is required'
-      });
-    }
-
-    const account =
-      await WeeklyWithdrawal.setWithdrawalAccount({
-        withdrawal_method,
-        upi_id: withdrawal_method === 'upi' ? upi_id : null,
-        account_number: withdrawal_method === 'bank' ? account_number : null,
-        bank_name: withdrawal_method === 'bank' ? bank_name : null,
-        ifsc_code: withdrawal_method === 'bank' ? ifsc_code : null,
-        wallet_address:
-          withdrawal_method === 'usdt' || withdrawal_method === 'tron'
-            ? wallet_address
-            : null
-      });
-
-    res.json(account);
-
-  } catch (err) {
-    console.error(err);
-
-    res.status(500).json({
-      error: 'Failed to save withdrawal account'
-    });
-  }
-}
 // HISTORY
 
 async function history(req, res) {
@@ -330,7 +273,6 @@ async function entries(req, res) {
 module.exports = {
   getAccount,
   setFunds,
-  setWithdrawalAccount,
   addDailyProfit,
   withdrawProfit,
   withdraw,
