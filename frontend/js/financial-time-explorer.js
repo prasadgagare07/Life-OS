@@ -1131,7 +1131,23 @@ if (investmentCard) {
         "flex";
 }
 
+// ======================================
+// FIXED INVESTMENT
+// Starts only from 11 Oct 2026
+// Does NOT grow daily
+// ======================================
 
+const investmentEl =
+    document.getElementById(
+        "fteInvestmentAmount"
+    );
+
+if (investmentEl) {
+
+    investmentEl.textContent =
+        formatINR(160000);
+
+}
     // ======================================
     // 11 Oct = DAY 1
     // ======================================
