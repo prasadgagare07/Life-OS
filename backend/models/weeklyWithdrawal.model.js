@@ -58,100 +58,41 @@ async function setFunds(amount) {
 // withdrawProfit() below handles everything)
 // ==========================================
 
+// ==========================================
+// LOG DAILY PROFIT (Weekly Withdrawal's own,
+// separate from Trade Guardian's entries).
+// This ONLY records the entry — it does NOT
+// touch current_funds or surplus_vault.
+// Those are only updated when you click
+// Withdraw (see withdrawProfit below).
+// ==========================================
+
 async function addDailyProfit(entryDate, profit) {
 
-  const withdrawalAmount =
-    Math.min(Number(profit), 5000);
-
-  const surplusAmount =
-    Math.max(Number(profit) - 5000, 0);
-
-
-  const client =
-    await pool.connect();
-
-
-  try {
-
-    await client.query('BEGIN');
-
-
-    const entry =
-      await client.query(`
-        INSERT INTO weekly_withdrawal_entries
-          (
-            entry_date,
-            profit,
-            withdrawal_amount,
-            surplus_amount
-          )
-        VALUES
-          ($1, $2, $3, $4)
-
-        ON CONFLICT (entry_date)
-        DO UPDATE SET
-          profit = EXCLUDED.profit,
-          withdrawal_amount = EXCLUDED.withdrawal_amount,
-          surplus_amount = EXCLUDED.surplus_amount
-
-        RETURNING *
-      `, [
-        entryDate,
+  const { rows } = await pool.query(`
+    INSERT INTO weekly_withdrawal_entries
+      (
+        entry_date,
         profit,
-        withdrawalAmount,
-        surplusAmount
-      ]);
+        withdrawal_amount,
+        surplus_amount
+      )
+    VALUES
+      ($1, $2, 0, 0)
 
+    ON CONFLICT (entry_date)
+    DO UPDATE SET
+      profit = EXCLUDED.profit
 
-    const account =
-      await client.query(`
-        UPDATE weekly_withdrawal_account
-        SET
-          current_funds =
-            current_funds + $1,
+    RETURNING *
+  `, [
+    entryDate,
+    profit
+  ]);
 
-          surplus_vault =
-            surplus_vault + $2,
-
-          updated_at = now()
-
-        WHERE id = (
-          SELECT id
-          FROM weekly_withdrawal_account
-          ORDER BY id
-          LIMIT 1
-        )
-
-        RETURNING *
-      `, [
-        withdrawalAmount,
-        surplusAmount
-      ]);
-
-
-    await client.query('COMMIT');
-
-
-    return {
-      entry: entry.rows[0],
-      account: account.rows[0]
-    };
-
-  } catch (error) {
-
-    await client.query('ROLLBACK');
-
-    throw error;
-
-  } finally {
-
-    client.release();
-
-  }
+  return { entry: rows[0] };
 
 }
-
-
 // ==========================================
 // WITHDRAW TODAY'S PROFIT
 //
