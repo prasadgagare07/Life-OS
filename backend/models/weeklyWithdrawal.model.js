@@ -198,13 +198,14 @@ async function withdrawProfit(profit, withdrawalAccount = {}) {
       await client.query(`
         UPDATE weekly_withdrawal_account
         SET
-          current_funds = current_funds,
-          surplus_vault = $1,
-          withdrawal_count = $2,
+          current_funds = current_funds + $1,
+          surplus_vault = $2,
+          withdrawal_count = $3,
           updated_at = now()
-        WHERE id = $3
+        WHERE id = $4
         RETURNING *
       `, [
+        withdrawalAmount,
         finalVault,
         newCount,
         current.id
