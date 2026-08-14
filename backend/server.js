@@ -230,15 +230,11 @@ async function start() {
 
     // Use the latest Weekly Withdrawal migration.
     const weeklyWithdrawalMigration = fs.readFileSync(
-      path.join(
-        __dirname,
-        'database',
-        '013_weekly_withdrawal.sql'
-      ),
-      'utf8'
-    );
+  path.join(__dirname, 'database', '013_weekly_withdrawal.sql'),
+  'utf8'
+);
 
-    await pool.query(weeklyWithdrawalMigration);
+await pool.query(weeklyWithdrawalMigration);
 
     console.log('✅ Weekly Withdrawal database initialized');
 
