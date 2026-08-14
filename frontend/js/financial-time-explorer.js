@@ -1437,3 +1437,60 @@ if (withdrawButton) {
     );
 
 }
+// ==========================================
+// WITHDRAWAL AMOUNT BOX
+//
+// Shows today's Weekly Withdrawal amount
+// (Trade Guardian -> Weekly Withdrawal
+// section): min(today's profit, ₹5,000).
+// ==========================================
+
+async function renderWithdrawalAmountBox() {
+
+    const box =
+        document.getElementById(
+            "fteWithdrawalAmount"
+        );
+
+    if (!box)
+        return;
+
+    try {
+
+        const entries =
+            await api.get("/trading/entries");
+
+        const today =
+            toISO(new Date());
+
+        const todayEntry =
+            entries.find(
+                (e) => e.entry_date === today
+            );
+
+        const profit =
+            Number(todayEntry?.profit || 0);
+
+        const withdrawalAmount =
+            Math.min(Math.max(profit, 0), 5000);
+
+        box.textContent =
+            formatINR(withdrawalAmount);
+
+    } catch (error) {
+
+        console.error(
+            "Withdrawal Amount box:",
+            error
+        );
+
+    }
+
+}
+
+renderWithdrawalAmountBox();
+
+setInterval(
+    renderWithdrawalAmountBox,
+    60000
+);
