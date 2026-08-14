@@ -498,19 +498,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   font-size:9px;
   color:var(--muted);
   }
-
-/* WEEKLY WITHDRAWAL ACCOUNT METHOD */
-.weekly-method-card{margin-top:14px;padding:15px;border-radius:16px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.25);}
-.weekly-method-title{font-size:10px;color:#38bdf8;font-weight:800;letter-spacing:1px;}
-.weekly-method-sub{margin-top:4px;font-size:9px;color:var(--muted);line-height:1.4;}
-.weekly-method-select{width:100%;margin-top:12px;padding:11px 12px;border-radius:12px;border:1px solid rgba(56,189,248,.3);background:#0b1310;color:#fff;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;outline:none;}
-.weekly-method-fields{margin-top:10px;display:grid;gap:8px;}
-.weekly-method-input{width:100%;padding:11px 12px;border-radius:11px;border:1px solid var(--border);background:#08100d;color:#fff;font-family:'Poppins',sans-serif;font-size:11px;outline:none;}
-.weekly-method-input:focus{border-color:#38bdf8;box-shadow:0 0 0 2px rgba(56,189,248,.08);}
-.weekly-method-hint{font-size:8.5px;color:#7f8b84;line-height:1.4;}
-.weekly-save-method-btn{width:100%;margin-top:10px;padding:11px;border:1px solid rgba(56,189,248,.35);border-radius:12px;background:rgba(56,189,248,.12);color:#38bdf8;font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:800;cursor:pointer;}
-.weekly-method-status{margin-top:7px;text-align:center;font-size:8.5px;color:#34d399;min-height:12px;}
-
 </style>
 </head>
 <body>
@@ -544,12 +531,110 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     </div>
   </div>
 
+  <div class="weekly-header">
+    <div>
+      <div class="weekly-label">💸 NEW ACCOUNT</div>
+      <h2>WEEKLY WITHDRAWAL</h2>
+      <p>Daily profits • Withdraw consistently</p>
+    </div>
+  </div>
 
+  <div class="weekly-funds-row">
 
+    <div class="weekly-card">
+      <div class="weekly-card-label">💼 CURRENT FUNDS</div>
+      <div class="weekly-card-value" id="weeklyCurrentFunds">
+        ₹0
+      </div>
+    </div>
 
+    <div class="weekly-card profit">
+      <div class="weekly-card-label">📈 TODAY'S PROFIT</div>
+      <div class="weekly-card-value" id="weeklyTodayProfit">
+        ₹0
+      </div>
+    </div>
 
+  </div>
 
+  <div class="weekly-funds-row">
 
+    <div class="weekly-card">
+      <div class="weekly-card-label">🔥 WEEKLY STREAK</div>
+      <div class="weekly-card-value" id="weeklyStreakVal">0</div>
+    </div>
+
+    <div class="weekly-card profit">
+      <div class="weekly-card-label">📊 TOTAL PROFIT</div>
+      <div class="weekly-card-value" id="weeklyTotalProfit">₹0</div>
+    </div>
+
+  </div>
+
+  <button id="weeklyLogBtn" style="width:100%; margin-top:12px; padding:12px; border:1px solid rgba(56,189,248,.35); border-radius:12px; background:rgba(56,189,248,.10); color:#38bdf8; font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:700; cursor:pointer;">
+    📝 Log Today's Weekly Profit
+  </button>
+
+  <div class="weekly-withdraw-box">
+
+    <div class="weekly-withdraw-head">
+      <span>WITHDRAWABLE TODAY</span>
+      <span id="weeklyWithdrawStatus">READY</span>
+    </div>
+
+    <div class="weekly-withdraw-amount" id="weeklyWithdrawAmount">
+      ₹0
+    </div>
+
+    <button id="weeklyWithdrawBtn" class="weekly-withdraw-btn">
+      💸 WITHDRAW
+    </button>
+
+  </div>
+
+  <div class="weekly-vault">
+
+    <div class="weekly-vault-head">
+      <span>🏦 SURPLUS VAULT</span>
+      <span id="weeklyVaultCount">0 / 15 WITHDRAWALS</span>
+    </div>
+
+    <div class="weekly-vault-amount" id="weeklyVaultAmount">
+      ₹0
+    </div>
+
+    <p>
+      Amount above ₹5,000/day is stored here.
+      Vault is reviewed every 15 completed withdrawals.
+    </p>
+
+  </div>
+
+  <div class="withdraw-history">
+
+    <div class="withdraw-history-title">
+      📜 WITHDRAWAL HISTORY
+    </div>
+
+    <div id="weeklyWithdrawalHistory">
+      <div class="empty-history">
+        No withdrawals yet.
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<!-- /weeklyView -->
+
+  </div>
+  <!-- /guardianView -->
+
+<div id="weeklyView" style="display:none;">
+<div class="weekly-section">
+  <!-- placeholder-marker -->
+</div>
+</div>
 
   <div class="stats-row">
     <div class="stat-card streak">
@@ -663,126 +748,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   </div>
   <!-- /guardianView -->
 
-<div id="weeklyView" style="display:none;">
-<div class="weekly-section">
-  <div class="weekly-header">
-    <div>
-      <div class="weekly-label">💸 NEW ACCOUNT</div>
-      <h2>WEEKLY WITHDRAWAL</h2>
-      <p>Daily profits • Withdraw consistently</p>
-    </div>
-  </div>
-
-  <div class="weekly-funds-row">
-
-    <div class="weekly-card">
-      <div class="weekly-card-label">💼 CURRENT FUNDS</div>
-      <div class="weekly-card-value" id="weeklyCurrentFunds">
-        ₹0
-      </div>
-    </div>
-
-    <div class="weekly-card profit">
-      <div class="weekly-card-label">📈 TODAY'S PROFIT</div>
-      <div class="weekly-card-value" id="weeklyTodayProfit">
-        ₹0
-      </div>
-    </div>
-
-  </div>
-
-  <div class="weekly-funds-row">
-
-    <div class="weekly-card">
-      <div class="weekly-card-label">🔥 WEEKLY STREAK</div>
-      <div class="weekly-card-value" id="weeklyStreakVal">0</div>
-    </div>
-
-    <div class="weekly-card profit">
-      <div class="weekly-card-label">📊 TOTAL PROFIT</div>
-      <div class="weekly-card-value" id="weeklyTotalProfit">₹0</div>
-    </div>
-
-  </div>
-
-  <button id="weeklyLogBtn" style="width:100%; margin-top:12px; padding:12px; border:1px solid rgba(56,189,248,.35); border-radius:12px; background:rgba(56,189,248,.10); color:#38bdf8; font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:700; cursor:pointer;">
-    📝 Log Today's Weekly Profit
-  </button>
-
-
-  <div class="weekly-method-card">
-    <div class="weekly-method-title">🏦 WITHDRAWAL ACCOUNT</div>
-    <div class="weekly-method-sub">Choose where your weekly withdrawal should be sent.</div>
-
-    <select id="weeklyWithdrawalMethod" class="weekly-method-select">
-      <option value="upi">UPI</option>
-      <option value="bank">Bank Account</option>
-      <option value="usdt">USDT (TRC20)</option>
-      <option value="tron">TRON</option>
-    </select>
-
-    <div id="weeklyMethodFields" class="weekly-method-fields"></div>
-
-    <button id="saveWeeklyWithdrawalAccount" class="weekly-save-method-btn">
-      💾 SAVE WITHDRAWAL ACCOUNT
-    </button>
-    <div id="weeklyMethodStatus" class="weekly-method-status"></div>
-  </div>
-
-  <div class="weekly-withdraw-box">
-
-    <div class="weekly-withdraw-head">
-      <span>WITHDRAWABLE TODAY</span>
-      <span id="weeklyWithdrawStatus">READY</span>
-    </div>
-
-    <div class="weekly-withdraw-amount" id="weeklyWithdrawAmount">
-      ₹0
-    </div>
-
-    <button id="weeklyWithdrawBtn" class="weekly-withdraw-btn">
-      💸 WITHDRAW
-    </button>
-
-  </div>
-
-  <div class="weekly-vault">
-
-    <div class="weekly-vault-head">
-      <span>🏦 SURPLUS VAULT</span>
-      <span id="weeklyVaultCount">0 / 15 WITHDRAWALS</span>
-    </div>
-
-    <div class="weekly-vault-amount" id="weeklyVaultAmount">
-      ₹0
-    </div>
-
-    <p>
-      Amount above ₹5,000/day is stored here.
-      Vault is reviewed every 15 completed withdrawals.
-    </p>
-
-  </div>
-
-  <div class="withdraw-history">
-
-    <div class="withdraw-history-title">
-      📜 WITHDRAWAL HISTORY
-    </div>
-
-    <div id="weeklyWithdrawalHistory">
-      <div class="empty-history">
-        No withdrawals yet.
-      </div>
-    </div>
-
-  </div>
-
-</div>
-</div>
-<!-- /weeklyView -->
-
-
 </div>
 </main>
 </div>
@@ -797,7 +762,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   // calendar — all three now read from the same backend table). =====
 
   const DAILY_TARGET = 5000;
-  const GRID_SIZE = 100;
+  const GRID_SIZE = 50;
   const CURRENT_FUNDS = 30153.15; // set directly in code — not user-editable
   const START_DATE = '2026-01-01';
 
@@ -1295,7 +1260,7 @@ const WEEKLY_TARGET = 5000;
 // CURRENT_FUNDS/BASE_PROFIT/BASE_STREAK above. They're the
 // "starting point" this account is seeded with — everything
 // logged/withdrawn afterward adds on top automatically.
-const WEEKLY_BASE_FUNDS = 30000;
+const WEEKLY_BASE_FUNDS = 27000;
 const WEEKLY_BASE_PROFIT = 0;
 const WEEKLY_BASE_STREAK = 0;
 
@@ -1338,66 +1303,12 @@ async function saveWeeklyProfit(entry_date, profit){
   return await api.post('/weekly-withdrawal/profit', { entry_date, profit });
 }
 
-async function postWeeklyWithdrawal(profit){
-  return await api.post('/weekly-withdrawal/withdraw-profit', { profit, withdrawal_account: getWeeklyWithdrawalMethod() });
+async function postWeeklyWithdrawal(profit, passcode){
+  return await api.post('/weekly-withdrawal/withdraw-profit', {
+    profit,
+    passcode
+  });
 }
-
-const WEEKLY_METHOD_KEY = 'weekly_withdrawal_method';
-
-function getWeeklyWithdrawalMethod(){
-  try { return JSON.parse(localStorage.getItem(WEEKLY_METHOD_KEY)) || {}; }
-  catch { return {}; }
-}
-
-function renderWeeklyMethodFields(data = getWeeklyWithdrawalMethod()){
-  const select = document.getElementById('weeklyWithdrawalMethod');
-  const fields = document.getElementById('weeklyMethodFields');
-  if(!select || !fields) return;
-  const method = data.method || select.value || 'upi';
-  select.value = method;
-  const input = (id, placeholder, value='') => `<input id="${id}" class="weekly-method-input" type="text" placeholder="${placeholder}" value="${String(value || '').replace(/"/g,'&quot;')}">`;
-  if(method === 'upi'){
-    fields.innerHTML = input('weeklyUpiId','UPI ID, e.g. name@upi',data.upi_id);
-  } else if(method === 'bank'){
-    fields.innerHTML = input('weeklyBankAccount','Account number',data.account_number) + input('weeklyBankName','Bank name',data.bank_name) + input('weeklyIfsc','IFSC code, e.g. HDFC0001234',data.ifsc_code);
-  } else if(method === 'usdt'){
-    fields.innerHTML = input('weeklyWalletAddress','USDT TRC20 wallet address',data.wallet_address) + '<div class="weekly-method-hint">Only TRC20 network wallet addresses are accepted.</div>';
-  } else {
-    fields.innerHTML = input('weeklyTronAddress','TRON wallet address',data.wallet_address) + '<div class="weekly-method-hint">Only TRON network wallet addresses are accepted.</div>';
-  }
-}
-
-function collectWeeklyWithdrawalMethod(){
-  const method = document.getElementById('weeklyWithdrawalMethod')?.value || 'upi';
-  const data = { method };
-  if(method === 'upi') data.upi_id = document.getElementById('weeklyUpiId')?.value.trim() || '';
-  if(method === 'bank'){
-    data.account_number = document.getElementById('weeklyBankAccount')?.value.trim() || '';
-    data.bank_name = document.getElementById('weeklyBankName')?.value.trim() || '';
-    data.ifsc_code = document.getElementById('weeklyIfsc')?.value.trim().toUpperCase() || '';
-  }
-  if(method === 'usdt' || method === 'tron') data.wallet_address = document.getElementById(method === 'usdt' ? 'weeklyWalletAddress' : 'weeklyTronAddress')?.value.trim() || '';
-  return data;
-}
-
-function validateWeeklyWithdrawalMethod(data){
-  if(data.method === 'upi') return /.+@.+/.test(data.upi_id);
-  if(data.method === 'bank') return !!data.account_number && !!data.bank_name && /^[A-Z]{4}0[A-Z0-9]{6}$/i.test(data.ifsc_code);
-  return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(data.wallet_address || '');
-}
-
-async function saveWeeklyWithdrawalMethod(){
-  const data = collectWeeklyWithdrawalMethod();
-  if(!validateWeeklyWithdrawalMethod(data)){
-    alert(data.method === 'upi' ? 'Enter a valid UPI ID.' : data.method === 'bank' ? 'Enter account number, bank name and a valid IFSC code.' : 'Enter a valid TRON/TRC20 wallet address starting with T.');
-    return;
-  }
-  localStorage.setItem(WEEKLY_METHOD_KEY, JSON.stringify(data));
-  try { await api.put('/weekly-withdrawal/withdrawal-account', data); } catch(e) { console.warn('Could not sync withdrawal account to server', e); }
-  const status = document.getElementById('weeklyMethodStatus');
-  if(status) status.textContent = '✓ Withdrawal account saved';
-}
-
 
 
 /* ------------------------------------------
@@ -1454,19 +1365,6 @@ async function renderWeeklyAccount(){
     fetchWeeklyHistory(),
     fetchWeeklyEntries()
   ]);
-
-  const savedMethod = getWeeklyWithdrawalMethod();
-  if (!savedMethod.method && account && account.withdrawal_method) {
-    localStorage.setItem(WEEKLY_METHOD_KEY, JSON.stringify({
-      method: account.withdrawal_method,
-      upi_id: account.upi_id || '',
-      account_number: account.bank_account_number || '',
-      bank_name: account.bank_name || '',
-      ifsc_code: account.ifsc_code || '',
-      wallet_address: account.wallet_address || ''
-    }));
-    renderWeeklyMethodFields();
-  }
 
   const sorted = weeklySortedEntries(entries);
   const today = todayKey();
@@ -1588,9 +1486,18 @@ async function weeklyWithdraw(){
     return;
   }
 
+  const passcode = prompt('Enter your withdrawal verification passcode:');
+
+  if(passcode === null) return;
+
+  if(!passcode.trim()){
+    alert('Passcode is required.');
+    return;
+  }
+
   try {
 
-    const result = await postWeeklyWithdrawal(profit);
+    const result = await postWeeklyWithdrawal(profit, passcode.trim());
 
     await renderWeeklyAccount();
 
@@ -1607,7 +1514,14 @@ async function weeklyWithdraw(){
 
   } catch (err) {
     console.error(err);
-    showToast('Withdrawal failed', 'error');
+
+    if (err && (err.status === 401 || /Invalid withdrawal passcode/i.test(err.message || ''))) {
+      alert('❌ Incorrect withdrawal passcode.');
+    } else if (err && /passcode is not configured/i.test(err.message || '')) {
+      alert('Withdrawal passcode is not configured on the server.');
+    } else {
+      showToast('Withdrawal failed', 'error');
+    }
   }
 
 }
@@ -1639,25 +1553,13 @@ function renderWeeklyHistory(history){
       meta += ` • 🏦 Vault released ${fmtRupee(Number(item.vault_released))}`;
     }
 
-    const dateLabel = new Date(
-  item.withdrawal_at || item.created_at || item.withdrawal_date
-).toLocaleString('en-IN', {
-  day: '2-digit',
-  month: 'short',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: true
-});
+    const dateLabel = new Date(item.withdrawal_date).toLocaleDateString('en-IN');
 
     return `
       <div class="withdraw-history-row">
         <div>
           <div class="withdraw-date">${dateLabel}</div>
-<div class="withdraw-meta">
-  Withdrawal #${item.withdrawal_number ?? '-'} •
-  <span style="color:#22c55e;font-weight:800;">✓ SUCCESS</span>
-</div>
+          <div class="withdraw-meta">Withdrawal #${item.withdrawal_number ?? '-'}</div>
         </div>
         <div style="text-align:right">
           <div class="withdraw-amount">${fmtRupee(Number(item.amount))}</div>
@@ -1714,11 +1616,6 @@ document
 document
   .getElementById('weeklyLogBtn')
   ?.addEventListener('click', weeklyLogProfit);
-
-const weeklyMethodSelect = document.getElementById('weeklyWithdrawalMethod');
-weeklyMethodSelect?.addEventListener('change', () => renderWeeklyMethodFields());
-document.getElementById('saveWeeklyWithdrawalAccount')?.addEventListener('click', saveWeeklyWithdrawalMethod);
-renderWeeklyMethodFields();
 
 
 /* ------------------------------------------
