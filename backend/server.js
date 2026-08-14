@@ -155,6 +155,13 @@ const tradingAccountMigration = fs.readFileSync(
   path.join(__dirname, 'database', '007_trading_account.sql'),
   'utf8'
 );
+
+ const weeklyWithdrawalMigration = fs.readFileSync(
+  path.join(__dirname, 'database', '013_weekly_withdrawal.sql'),
+  'utf8'
+);
+
+await pool.query(weeklyWithdrawalMigration);
 // Weekly Withdrawal account + daily profits + withdrawal history
 const weeklyWithdrawalMigration = fs.readFileSync(
   path.join(__dirname, 'database', '012_weekly_withdrawal.sql'),
