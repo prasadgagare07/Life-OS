@@ -531,110 +531,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     </div>
   </div>
 
-  <div class="weekly-header">
-    <div>
-      <div class="weekly-label">💸 NEW ACCOUNT</div>
-      <h2>WEEKLY WITHDRAWAL</h2>
-      <p>Daily profits • Withdraw consistently</p>
-    </div>
-  </div>
 
-  <div class="weekly-funds-row">
-
-    <div class="weekly-card">
-      <div class="weekly-card-label">💼 CURRENT FUNDS</div>
-      <div class="weekly-card-value" id="weeklyCurrentFunds">
-        ₹0
-      </div>
-    </div>
-
-    <div class="weekly-card profit">
-      <div class="weekly-card-label">📈 TODAY'S PROFIT</div>
-      <div class="weekly-card-value" id="weeklyTodayProfit">
-        ₹0
-      </div>
-    </div>
-
-  </div>
-
-  <div class="weekly-funds-row">
-
-    <div class="weekly-card">
-      <div class="weekly-card-label">🔥 WEEKLY STREAK</div>
-      <div class="weekly-card-value" id="weeklyStreakVal">0</div>
-    </div>
-
-    <div class="weekly-card profit">
-      <div class="weekly-card-label">📊 TOTAL PROFIT</div>
-      <div class="weekly-card-value" id="weeklyTotalProfit">₹0</div>
-    </div>
-
-  </div>
-
-  <button id="weeklyLogBtn" style="width:100%; margin-top:12px; padding:12px; border:1px solid rgba(56,189,248,.35); border-radius:12px; background:rgba(56,189,248,.10); color:#38bdf8; font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:700; cursor:pointer;">
-    📝 Log Today's Weekly Profit
-  </button>
-
-  <div class="weekly-withdraw-box">
-
-    <div class="weekly-withdraw-head">
-      <span>WITHDRAWABLE TODAY</span>
-      <span id="weeklyWithdrawStatus">READY</span>
-    </div>
-
-    <div class="weekly-withdraw-amount" id="weeklyWithdrawAmount">
-      ₹0
-    </div>
-
-    <button id="weeklyWithdrawBtn" class="weekly-withdraw-btn">
-      💸 WITHDRAW
-    </button>
-
-  </div>
-
-  <div class="weekly-vault">
-
-    <div class="weekly-vault-head">
-      <span>🏦 SURPLUS VAULT</span>
-      <span id="weeklyVaultCount">0 / 15 WITHDRAWALS</span>
-    </div>
-
-    <div class="weekly-vault-amount" id="weeklyVaultAmount">
-      ₹0
-    </div>
-
-    <p>
-      Amount above ₹5,000/day is stored here.
-      Vault is reviewed every 15 completed withdrawals.
-    </p>
-
-  </div>
-
-  <div class="withdraw-history">
-
-    <div class="withdraw-history-title">
-      📜 WITHDRAWAL HISTORY
-    </div>
-
-    <div id="weeklyWithdrawalHistory">
-      <div class="empty-history">
-        No withdrawals yet.
-      </div>
-    </div>
-
-  </div>
-
-</div>
-<!-- /weeklyView -->
-
-  </div>
-  <!-- /guardianView -->
-
-<div id="weeklyView" style="display:none;">
-<div class="weekly-section">
-  <!-- placeholder-marker -->
-</div>
-</div>
 
   <div class="stats-row">
     <div class="stat-card streak">
@@ -747,6 +644,105 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
 
   </div>
   <!-- /guardianView -->
+
+<div id="weeklyView" style="display:none;">
+  <div class="weekly-section">
+
+  <div class="weekly-header">
+    <div>
+      <div class="weekly-label">💸 NEW ACCOUNT</div>
+      <h2>WEEKLY WITHDRAWAL</h2>
+      <p>Daily profits • Withdraw consistently</p>
+    </div>
+  </div>
+
+  <div class="weekly-funds-row">
+
+    <div class="weekly-card">
+      <div class="weekly-card-label">💼 CURRENT FUNDS</div>
+      <div class="weekly-card-value" id="weeklyCurrentFunds">
+        ₹0
+      </div>
+    </div>
+
+    <div class="weekly-card profit">
+      <div class="weekly-card-label">📈 TODAY'S PROFIT</div>
+      <div class="weekly-card-value" id="weeklyTodayProfit">
+        ₹0
+      </div>
+    </div>
+
+  </div>
+
+  <div class="weekly-funds-row">
+
+    <div class="weekly-card">
+      <div class="weekly-card-label">🔥 WEEKLY STREAK</div>
+      <div class="weekly-card-value" id="weeklyStreakVal">0</div>
+    </div>
+
+    <div class="weekly-card profit">
+      <div class="weekly-card-label">📊 TOTAL PROFIT</div>
+      <div class="weekly-card-value" id="weeklyTotalProfit">₹0</div>
+    </div>
+
+  </div>
+
+  <button id="weeklyLogBtn" style="width:100%; margin-top:12px; padding:12px; border:1px solid rgba(56,189,248,.35); border-radius:12px; background:rgba(56,189,248,.10); color:#38bdf8; font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:700; cursor:pointer;">
+    📝 Log Today's Weekly Profit
+  </button>
+
+  <div class="weekly-withdraw-box">
+
+    <div class="weekly-withdraw-head">
+      <span>WITHDRAWABLE TODAY</span>
+      <span id="weeklyWithdrawStatus">READY</span>
+    </div>
+
+    <div class="weekly-withdraw-amount" id="weeklyWithdrawAmount">
+      ₹0
+    </div>
+
+    <button id="weeklyWithdrawBtn" class="weekly-withdraw-btn">
+      💸 WITHDRAW
+    </button>
+
+  </div>
+
+  <div class="weekly-vault">
+
+    <div class="weekly-vault-head">
+      <span>🏦 SURPLUS VAULT</span>
+      <span id="weeklyVaultCount">0 / 15 WITHDRAWALS</span>
+    </div>
+
+    <div class="weekly-vault-amount" id="weeklyVaultAmount">
+      ₹0
+    </div>
+
+    <p>
+      Amount above ₹5,000/day is stored here.
+      Vault is reviewed every 15 completed withdrawals.
+    </p>
+
+  </div>
+
+  <div class="withdraw-history">
+
+    <div class="withdraw-history-title">
+      📜 WITHDRAWAL HISTORY
+    </div>
+
+    <div id="weeklyWithdrawalHistory">
+      <div class="empty-history">
+        No withdrawals yet.
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+<!-- /weeklyView -->
 
 </div>
 </main>
@@ -1303,11 +1299,8 @@ async function saveWeeklyProfit(entry_date, profit){
   return await api.post('/weekly-withdrawal/profit', { entry_date, profit });
 }
 
-async function postWeeklyWithdrawal(profit, passcode){
-  return await api.post('/weekly-withdrawal/withdraw-profit', {
-    profit,
-    passcode
-  });
+async function postWeeklyWithdrawal(profit){
+  return await api.post('/weekly-withdrawal/withdraw-profit', { profit });
 }
 
 
@@ -1486,18 +1479,9 @@ async function weeklyWithdraw(){
     return;
   }
 
-  const passcode = prompt('Enter your withdrawal verification passcode:');
-
-  if(passcode === null) return;
-
-  if(!passcode.trim()){
-    alert('Passcode is required.');
-    return;
-  }
-
   try {
 
-    const result = await postWeeklyWithdrawal(profit, passcode.trim());
+    const result = await postWeeklyWithdrawal(profit);
 
     await renderWeeklyAccount();
 
@@ -1514,14 +1498,7 @@ async function weeklyWithdraw(){
 
   } catch (err) {
     console.error(err);
-
-    if (err && (err.status === 401 || /Invalid withdrawal passcode/i.test(err.message || ''))) {
-      alert('❌ Incorrect withdrawal passcode.');
-    } else if (err && /passcode is not configured/i.test(err.message || '')) {
-      alert('Withdrawal passcode is not configured on the server.');
-    } else {
-      showToast('Withdrawal failed', 'error');
-    }
+    showToast('Withdrawal failed', 'error');
   }
 
 }
