@@ -4,6 +4,7 @@ const authController = require('../controllers/auth.controller');
 const requireAuth = require('../middleware/auth');
 
 router.post('/login', authController.login);
+router.post('/verify', authController.verifyPasscode);
 router.post('/change-passcode', requireAuth(['settings']), authController.changePasscode);
 
 // Session management — Settings is the one place that can see and revoke
