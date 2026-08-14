@@ -121,6 +121,44 @@ async function addDailyProfit(req, res) {
 }
 
 
+// WITHDRAW TODAY'S PROFIT (5k cap + surplus vault + 15th release)
+
+async function withdrawProfit(req, res) {
+
+  try {
+
+    const profit =
+      Number(req.body.profit);
+
+
+    if (!Number.isFinite(profit) || profit < 0) {
+
+      return res.status(400).json({
+        error: 'Valid non-negative profit is required'
+      });
+
+    }
+
+
+    const result =
+      await WeeklyWithdrawal.withdrawProfit(profit);
+
+
+    res.json(result);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to withdraw profit'
+    });
+
+  }
+
+}
+
+
 // WITHDRAW
 
 async function withdraw(req, res) {
@@ -221,6 +259,7 @@ module.exports = {
   getAccount,
   setFunds,
   addDailyProfit,
+  withdrawProfit,
   withdraw,
   history,
   entries
