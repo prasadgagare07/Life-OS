@@ -227,7 +227,8 @@ async function withdrawProfit(profit, withdrawalAccount = {}) {
             bank_account_number,
             bank_name,
             ifsc_code,
-            wallet_address
+            wallet_address,
+            status
           )
         VALUES
           (
@@ -244,7 +245,8 @@ async function withdrawProfit(profit, withdrawalAccount = {}) {
             $8,
             $9,
             $10,
-            $11
+            $11,
+            'SUCCESS'
           )
         RETURNING *
       `, [
@@ -341,14 +343,16 @@ async function addWithdrawal(amount, note = null) {
             withdrawal_date,
             amount,
             source,
-            note
+            note,
+            status
           )
         VALUES
           (
             CURRENT_DATE,
             $1,
             'WEEKLY WITHDRAWAL',
-            $2
+            $2,
+            'SUCCESS'
           )
         RETURNING *
       `, [
@@ -414,7 +418,15 @@ async function getHistory() {
       surplus_amount,
       withdrawal_number,
       vault_released,
-      created_at
+      withdrawal_method,
+      upi_id,
+      bank_account_number,
+      bank_name,
+      ifsc_code,
+      wallet_address,
+      status,
+      created_at,
+      created_at::text AS withdrawal_time
     FROM weekly_withdrawal_history
     ORDER BY withdrawal_date DESC, id DESC
   `);
