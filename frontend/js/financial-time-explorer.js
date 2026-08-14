@@ -1056,6 +1056,11 @@ function renderPhase2(selectedDate) {
         return;
     }
 
+    const investmentCard =
+    document.getElementById(
+        "fteInvestmentCard"
+    );
+
 
     const phase2Start =
         new Date(
@@ -1095,6 +1100,21 @@ function renderPhase2(selectedDate) {
         return;
     }
 
+    if (
+    selected < phase2Start
+) {
+
+    phaseCard.style.display =
+        "none";
+
+    if (investmentCard) {
+        investmentCard.style.display =
+            "none";
+    }
+
+    return;
+    }
+
 
     // ======================================
     // AFTER 11 OCT
@@ -1102,6 +1122,14 @@ function renderPhase2(selectedDate) {
 
     phaseCard.style.display =
         "block";
+
+    phaseCard.style.display =
+    "block";
+
+if (investmentCard) {
+    investmentCard.style.display =
+        "flex";
+}
 
 
     // ======================================
