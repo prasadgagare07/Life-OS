@@ -173,26 +173,10 @@ async function withdrawProfit(req, res) {
     const profit =
       Number(req.body.profit);
 
-    const passcode =
-      String(req.body.passcode || '');
-
-    const expectedPasscode =
-      String(
-        process.env.WEEKLY_WITHDRAWAL_PASSCODE || ''
-      );
-
-    if (!expectedPasscode) {
-      return res.status(503).json({
-        error:
-          'Weekly withdrawal passcode is not configured'
-      });
-    }
-
-    if (passcode !== expectedPasscode) {
-      return res.status(401).json({
-        error: 'Invalid withdrawal passcode'
-      });
-    }
+    // Passcode confirmation now happens on the frontend via
+    // POST /api/auth/verify (page: 'weekly-withdrawal') BEFORE this
+    // endpoint is ever called — see the Weekly Withdrawal modal.
+    // No passcode check needed here.
 
     if (
       !Number.isFinite(profit) ||
