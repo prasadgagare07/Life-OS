@@ -823,76 +823,53 @@ async function renderDetail(dt) {
 
 }
 
-
 // ==========================================
 // SURPLUS VAULT
-// =========================================
+// ==========================================
 
 async function renderSurplusVault() {
 
     const today =
         todayMidnight();
 
+
     const cmp =
         await fetchComparison(
             toISO(today)
         );
+
 
     const actualProfit =
         cmp
             ? Number(cmp.actualTotal)
             : 0;
 
+
     const vault =
         document.getElementById(
             "fteSurplusVault"
         );
+
 
     const button =
         document.getElementById(
             "fteWithdrawButton"
         );
 
+
     if (!vault)
         return;
 
 
     // ======================================
-    // SURPLUS VAULT
-    //
-    // ALL actual Trade Guardian profit
-    // stays here until the ₹3L withdrawal
-    // button is actually pressed.
+    // CHECK IF USER ALREADY WITHDREW
     // ======================================
 
-    vault.textContent =
-        formatINR(
-            actualProfit
-        );
+    const withdrawn =
+        localStorage.getItem(
+            STORAGE_KEY
+        ) === "true";
 
-
-    // ======================================
-    // WITHDRAW BUTTON
-    //
-    // Enabled only after ₹3,00,000
-    // ======================================
-
-    if (button) {
-
-        button.disabled =
-            actualProfit <
-            SURPLUS_WITHDRAWAL_TARGET;
-
-        button.textContent =
-            "Withdraw";
-
-    }
-
-}
-
-    // ======================================
-    // AFTER WITHDRAWAL
-    // ======================================
 
     if (
         withdrawn
@@ -919,8 +896,9 @@ async function renderSurplusVault() {
 
 
     // ======================================
-    // ALL ACTUAL PROFIT
-    // GOES TO SURPLUS VAULT
+    // SURPLUS VAULT
+    //
+    // ALL ACTUAL TRADE GUARDIAN PROFIT
     // ======================================
 
     vault.textContent =
@@ -931,7 +909,8 @@ async function renderSurplusVault() {
 
     // ======================================
     // WITHDRAW BUTTON
-    // ONLY ACTIVE AT ₹3L
+    //
+    // Active only at ₹3,00,000
     // ======================================
 
     if (button) {
@@ -940,10 +919,12 @@ async function renderSurplusVault() {
             actualProfit <
             SURPLUS_WITHDRAWAL_TARGET;
 
+        button.textContent =
+            "Withdraw";
+
     }
 
 }
-
 
 // ==========================================
 // WITHDRAW SURPLUS VAULT
@@ -1047,18 +1028,15 @@ function renderPhase2(selectedDate) {
             "ftePhaseCard"
         );
 
-
     const savingsEl =
         document.getElementById(
             "fteSavingsAmount"
         );
 
-
     const freedomEl =
         document.getElementById(
             "fteFreedomAmount"
         );
-
 
     const emergencyEl =
         document.getElementById(
@@ -1072,25 +1050,27 @@ function renderPhase2(selectedDate) {
         !freedomEl ||
         !emergencyEl
     ) {
-
         return;
-
     }
 
 
     const phase2Start =
         new Date(
-            FTE_PHASE2_START
+            "2026-10-11T00:00:00"
         );
 
+    phase2Start.setHours(
+        0,
+        0,
+        0,
+        0
+    );
 
-    const selectedDateOnly =
-        new Date(
-            selectedDate
-        );
 
+    const selected =
+        new Date(selectedDate);
 
-    selectedDateOnly.setHours(
+    selected.setHours(
         0,
         0,
         0,
@@ -1103,20 +1083,18 @@ function renderPhase2(selectedDate) {
     // ======================================
 
     if (
-        selectedDateOnly <
-        phase2Start
+        selected < phase2Start
     ) {
 
         phaseCard.style.display =
             "none";
 
         return;
-
     }
 
 
     // ======================================
-    // SHOW AFTER 11 OCT
+    // AFTER 11 OCT
     // ======================================
 
     phaseCard.style.display =
@@ -1124,13 +1102,13 @@ function renderPhase2(selectedDate) {
 
 
     // ======================================
-    // 11 OCT = DAY 1
+    // 11 Oct = DAY 1
     // ======================================
 
     const days =
         Math.floor(
             (
-                selectedDateOnly -
+                selected -
                 phase2Start
             ) /
             86400000
@@ -1138,35 +1116,41 @@ function renderPhase2(selectedDate) {
 
 
     // ======================================
-    // DAILY GROWTH
+    // DAILY PHASE 2 GROWTH
     // ======================================
 
     const dailyGrowth =
-        PHASE2_DAILY;
+        8333;
 
 
     // ======================================
-    // BACKEND DISTRIBUTION
+    // DISTRIBUTION
     // ======================================
 
     const savingsDaily =
         dailyGrowth * 0.20;
 
-
     const freedomDaily =
         dailyGrowth * 0.70;
-
 
     const emergencyDaily =
         dailyGrowth * 0.10;
 
 
     // ======================================
-    // RUNNING BALANCES
+    // STARTING SAVINGS
+    // ======================================
+
+    const initialSavings =
+        40000;
+
+
+    // ======================================
+    // CUMULATIVE TOTALS
     // ======================================
 
     const savings =
-        INITIAL_SAVINGS +
+        initialSavings +
         (
             savingsDaily *
             days
@@ -1184,8 +1168,7 @@ function renderPhase2(selectedDate) {
 
 
     // ======================================
-    // FRONTEND
-    // NO PERCENTAGES
+    // DISPLAY
     // ======================================
 
     savingsEl.textContent =
@@ -1212,7 +1195,6 @@ function renderPhase2(selectedDate) {
         );
 
 }
-
 
 // ==========================================
 // NAVIGATION
