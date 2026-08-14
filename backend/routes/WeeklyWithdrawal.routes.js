@@ -29,7 +29,14 @@ router.post(
 );
 
 
-// Withdrawal
+// Withdraw today's profit (5k cap + surplus vault + 15th release)
+router.post(
+  '/withdraw-profit',
+  controller.withdrawProfit
+);
+
+
+// Withdrawal (manual — legacy)
 router.post(
   '/withdraw',
   controller.withdraw
