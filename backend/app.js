@@ -11,7 +11,7 @@ const financialEngineRoutes = require('./routes/financialEngine.routes');
 const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 const tradingRoutes = require('./routes/trading.routes');
 const weeklyWithdrawalRoutes =
-  require('./routes/weeklyWithdrawal.routes');
+  require('./routes/WeeklyWithdrawal.routes');
 const reactorRoutes = require('./routes/reactor.routes');   // ✅ require can go here, fine
 
 const app = express();   // ✅ app must be created BEFORE any app.use(...)
