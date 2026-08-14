@@ -10,11 +10,10 @@ const visionRoutes = require('./routes/vision.routes');
 const financialEngineRoutes = require('./routes/financialEngine.routes');
 const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 const tradingRoutes = require('./routes/trading.routes');
-const WeeklyWithdrawalRoutes =
-  require('./routes/WeeklyWithdrawal.routes');
-const reactorRoutes = require('./routes/reactor.routes');   // ✅ require can go here, fine
+const weeklyWithdrawalRoutes = require('./routes/WeeklyWithdrawal.routes');
+const reactorRoutes = require('./routes/reactor.routes');
 
-const app = express();   // ✅ app must be created BEFORE any app.use(...)
+const app = express();
 
 app.use(cors());
 app.use(express.json());
@@ -27,25 +26,36 @@ app.use('/api/vision', visionRoutes);
 app.use('/api/financial-engine', financialEngineRoutes);
 app.use('/api/time-explorer', timeExplorerRoutes);
 app.use('/api/trading', tradingRoutes);
+
 app.use(
   '/api/weekly-withdrawal',
   weeklyWithdrawalRoutes
 );
-app.use('/api/reactor', reactorRoutes);   // ✅ app.use lines go here, after const app = express()
+
+app.use('/api/reactor', reactorRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    time: new Date().toISOString()
+  });
 });
 
-app.use(express.static(path.join(__dirname, '..', 'frontend'), {
-  etag: false,
-  lastModified: false,
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
-      res.setHeader('Cache-Control', 'no-store');
+app.use(
+  express.static(path.join(__dirname, '..', 'frontend'), {
+    etag: false,
+    lastModified: false,
+    setHeaders: (res, filePath) => {
+      if (
+        filePath.endsWith('.html') ||
+        filePath.endsWith('.js') ||
+        filePath.endsWith('.css')
+      ) {
+        res.setHeader('Cache-Control', 'no-store');
+      }
     }
-  }
-}));
+  })
+);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
@@ -53,7 +63,9 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).json({ error: 'Internal server error' });
+  res.status(500).json({
+    error: 'Internal server error'
+  });
 });
 
 module.exports = app;
