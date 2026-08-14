@@ -1,1607 +1,4134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trade Guardian</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{background:#05080a;color:#fff;font-family:'Poppins',sans-serif;overflow-x:hidden;}
-body{padding-bottom:40px;}
-
-:root{
-  --green:#22c55e; --green-glow:#34d399; --red:#ef4444; --red-glow:#f87171;
-  --card:#0d1512; --border:#1e2b25; --muted:#8a978f;
-}
-
-.wrap{max-width:520px; margin:0 auto; padding:22px 16px;}
-
-.app-shell{
-  display:flex;
-  min-height:100vh;
-}
-
-.main-content{
-  flex:1;
-  min-width:0;
-}
-
-.sidebar{
-  width:220px;
-  flex-shrink:0;
-  background:#080c0a;
-  border-right:1px solid var(--border);
-  padding:28px 18px;
-  display:flex;
-  flex-direction:column;
-  gap:28px;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-family:'Anton',sans-serif;
-  font-size:18px;
-  letter-spacing:.5px;
-  color:#fff;
-}
-
-.brand .mark{
-  width:34px;
-  height:34px;
-  border-radius:10px;
-  background:linear-gradient(135deg,var(--green),var(--green-glow));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
-}
-
-.nav-links{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  flex:1;
-}
-
-.nav-link{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px 12px;
-  border-radius:12px;
-  color:var(--muted);
-  font-size:13.5px;
-  font-weight:600;
-  min-height:44px;
-  transition:background .15s ease,color .15s ease;
-}
-
-.nav-link:hover{ background:var(--card); color:#fff; }
-
-.nav-link.active{
-  background:var(--card);
-  color:#fff;
-  box-shadow:inset 3px 0 0 var(--green-glow);
-}
-
-.nav-link .icon{ font-size:16px; }
-
-.sidebar-footer{
-  border-top:1px solid var(--border);
-  padding-top:14px;
-  font-size:11.5px;
-  color:var(--muted);
-}
-
-.sidebar-toggle{
-  display:none;
-  position:fixed;
-  top:14px;
-  left:14px;
-  z-index:1100;
-  width:44px;
-  height:44px;
-  border-radius:12px;
-  background:var(--card);
-  border:1px solid var(--border);
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  padding:0;
-}
-
-.sidebar-toggle span{
-  display:block;
-  width:20px;
-  height:2px;
-  background:#fff;
-  border-radius:2px;
-}
-
-.sidebar-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  z-index:999;
-}
-
-.sidebar-overlay.visible{ display:block; }
-
-@media(max-width:768px){
-  .app-shell{ flex-direction:column; }
-  .sidebar-toggle{ display:flex; }
-  .main-content{ padding-top:76px; }
-
-  .sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    height:100vh;
-    width:260px;
-    max-width:80vw;
-    transform:translateX(-100%);
-    transition:transform .25s ease;
-    z-index:1050;
-    overflow-y:auto;
-  }
-
-  .sidebar.open{ transform:translateX(0); }
-}
-
-header{text-align:center; margin-bottom:18px;}
-.shield-emoji{font-size:34px; filter:drop-shadow(0 0 14px rgba(34,197,94,.6)); animation:shieldPulse 3s ease-in-out infinite;}
-@keyframes shieldPulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.08);}}
-h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-top:6px;
-  background:linear-gradient(90deg,#22c55e,#34d399,#22c55e); background-size:200% auto;
-  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-  animation:shine 4s linear infinite;}
-@keyframes shine{to{background-position:200% center;}}
-.tagline{font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.3px;}
-
-.funds-row{display:flex; gap:10px; margin-top:20px;}
-.funds-card{flex:1; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px 14px; text-align:center;}
-.funds-card.profit{border-color:rgba(34,197,94,0.35);}
-.funds-card .fc-lbl{font-size:9px; color:var(--muted); letter-spacing:.5px; font-family:'JetBrains Mono',monospace;}
-.funds-card .fc-amt{font-family:'Anton',sans-serif; font-size:22px; margin-top:8px; color:#fff;}
-.funds-card.profit .fc-amt{color:var(--green-glow);}
-.funds-card.profit .fc-amt.neg{color:var(--red-glow);}
-
-.account-section{margin-top:16px; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px;}
-.account-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
-.account-head h4{font-size:11px; letter-spacing:1px; color:#38bdf8; font-weight:700;}
-.acct-edit-btn{background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#38bdf8; font-size:9.5px; padding:5px 12px; border-radius:999px; cursor:pointer; font-family:'Poppins',sans-serif; font-weight:600;}
-.account-row{display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); gap:12px;}
-.account-row:last-child{border-bottom:none;}
-.acc-lbl{font-size:10.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; letter-spacing:.3px; flex-shrink:0;}
-.acc-val{font-size:12.5px; color:#dcded9; font-weight:600; text-align:right; word-break:break-all; overflow-wrap:anywhere; flex:1; min-width:0;}
-
-.stats-row{display:flex; gap:10px; margin-top:20px;}
-.stat-card{flex:1; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px 10px; text-align:center;}
-.stat-card .ic{font-size:18px;}
-.stat-card .val{font-family:'Anton',sans-serif; font-size:19px; margin-top:6px;}
-.stat-card .lbl{font-size:8.5px; color:var(--muted); letter-spacing:.5px; margin-top:2px; font-family:'JetBrains Mono',monospace;}
-.stat-card.streak .val{color:#fbbf24;}
-.stat-card.guarded .val{color:var(--green-glow);}
-.stat-card.best .val{color:#a78bfa;}
-
-.today-status{margin-top:18px; border-radius:20px; padding:20px; text-align:center; position:relative; overflow:hidden;
-  background:linear-gradient(160deg, rgba(34,197,94,0.14), rgba(13,21,18,0.6)); border:1px solid rgba(34,197,94,0.35);}
-.today-status.broken{background:linear-gradient(160deg, rgba(239,68,68,0.16), rgba(21,13,13,0.6)); border-color:rgba(239,68,68,0.4);}
-.today-status .status-icon{font-size:30px;}
-.today-status h3{font-family:'Anton',sans-serif; font-size:15px; margin-top:8px; letter-spacing:.5px;}
-.today-status p{font-size:10.5px; color:var(--muted); margin-top:4px;}
-.today-status.disciplined h3{color:var(--green-glow);}
-.today-status.broken h3{color:var(--red-glow);}
-
-.tower-section{margin-top:22px; background:var(--card); border:1px solid var(--border); border-radius:20px; padding:18px 16px 16px;}
-.tower-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;}
-.tower-head h4{font-size:11px; letter-spacing:2px; color:var(--green-glow); font-weight:700;}
-.tower-head .day-count{font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
-.target-line{text-align:center; margin:10px 0 16px;}
-.target-line .amt{font-family:'Anton',sans-serif; font-size:32px; color:var(--green-glow); text-shadow:0 0 24px rgba(34,197,94,.4);}
-.target-line .of{font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace; margin-top:2px;}
-
-.tower-grid{display:grid; grid-template-columns:repeat(10,1fr); gap:5px;}
-.tower-step{aspect-ratio:1/1; border-radius:5px; background:#161f1a; border:1px solid #223028; display:flex; align-items:center; justify-content:center; font-size:9px; color:#4a5a50; position:relative;}
-.tower-step.done{background:linear-gradient(160deg, var(--green-glow), var(--green)); color:#04150a; font-weight:800; box-shadow:0 0 10px rgba(34,197,94,.5);}
-.tower-step.broken{background:linear-gradient(160deg, var(--red-glow), var(--red)); color:#2a0505; font-weight:800; box-shadow:0 0 12px rgba(239,68,68,.6); animation:crackFlash 1.8s ease-in-out infinite;}
-@keyframes crackFlash{0%,100%{filter:brightness(1);} 50%{filter:brightness(1.3);}}
-.tower-step.today{border-color:#fbbf24; box-shadow:0 0 0 2px #fbbf24;}
-
-.legend-row{display:flex; gap:14px; justify-content:center; margin-top:12px; font-size:8.5px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
-.legend-row span{display:flex; align-items:center; gap:4px;}
-.legend-dot{width:8px; height:8px; border-radius:2px; display:inline-block;}
-
-.vault-section{margin-top:16px; background:linear-gradient(160deg, rgba(251,191,36,0.12), var(--card)); border:1px solid rgba(251,191,36,0.3); border-radius:18px; padding:16px;}
-.vault-head{display:flex; align-items:center; justify-content:space-between;}
-.vault-head h4{font-size:11px; letter-spacing:1px; color:#fbbf24; font-weight:700;}
-.vault-head .vault-sub{font-size:8.5px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
-.vault-amt{font-family:'Anton',sans-serif; font-size:30px; color:#fbbf24; text-shadow:0 0 20px rgba(251,191,36,.4); margin-top:8px;}
-.vault-note{font-size:10px; color:#e2d5a8; margin-top:6px; line-height:1.5;}
-.vault-note b{color:#fbbf24;}
-
-.pace-section{margin-top:16px; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px;}
-.pace-section h4{font-size:11px; letter-spacing:1px; color:#38bdf8; font-weight:700; margin-bottom:14px;}
-.pace-compare{display:flex; gap:10px;}
-.pace-col{flex:1; text-align:center; padding:12px 8px; border-radius:14px; background:rgba(255,255,255,0.03); border:1px solid var(--border);}
-.pace-col .pc-lbl{font-size:8.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; letter-spacing:.5px;}
-.pace-col .pc-amt{font-family:'Anton',sans-serif; font-size:18px; margin-top:6px;}
-.pace-col.expect .pc-amt{color:#94a3b8;}
-.pace-col.actual .pc-amt{color:var(--green-glow);}
-.pace-col.actual.behind .pc-amt{color:var(--red-glow);}
-.pace-status{margin-top:14px; text-align:center; padding:10px; border-radius:12px; font-size:12px; font-weight:800;}
-.pace-status.ahead{background:rgba(34,197,94,0.14); color:var(--green-glow); border:1px solid rgba(34,197,94,0.35);}
-.pace-status.behind{background:rgba(239,68,68,0.14); color:var(--red-glow); border:1px solid rgba(239,68,68,0.35);}
-
-.greed-panel{margin-top:16px; background:linear-gradient(160deg, rgba(239,68,68,0.1), var(--card)); border:1px solid rgba(239,68,68,0.3); border-radius:18px; padding:16px;}
-.greed-panel h4{font-size:11px; letter-spacing:1px; color:var(--red-glow); font-weight:700; display:flex; align-items:center; gap:6px;}
-.compare-row{display:flex; align-items:center; gap:10px; margin-top:14px;}
-.compare-bar{flex:1;}
-.compare-bar .bar-track{height:14px; border-radius:8px; background:#1a1010; overflow:hidden; margin-bottom:5px;}
-.compare-bar .bar-fill{height:100%; border-radius:8px;}
-.compare-bar.good .bar-fill{background:linear-gradient(90deg,var(--green),var(--green-glow)); width:100%;}
-.compare-bar.bad .bar-fill{background:linear-gradient(90deg,var(--red),var(--red-glow)); width:27%;}
-.compare-bar .cap{font-size:9px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
-.compare-bar .num{font-size:12px; font-weight:800;}
-.compare-bar.good .num{color:var(--green-glow);}
-.compare-bar.bad .num{color:var(--red-glow);}
-.greed-line{text-align:center; font-size:11px; color:#fca5a5; margin-top:14px; font-weight:600; line-height:1.5;}
-.greed-line b{color:var(--red-glow);}
-
-.rules-section{margin-top:22px;}
-.sec-title{font-size:11px; letter-spacing:2px; color:var(--green-glow); font-weight:700; margin-bottom:10px; padding-left:2px;}
-.rule-row{display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-bottom:9px; cursor:pointer; transition:.15s;}
-.rule-row.done{border-color:rgba(34,197,94,0.5); background:linear-gradient(90deg, rgba(34,197,94,0.1), var(--card));}
-.rule-row .r-ic{font-size:16px; width:24px; text-align:center;}
-.rule-row .r-txt{flex:1; font-size:12.5px; color:#dcded9;}
-.rule-row.done .r-txt{color:#fff;}
-.rule-chk{width:20px; height:20px; border-radius:6px; border:1.5px solid #2a3a32; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;}
-.rule-row.done .rule-chk{background:var(--green); border-color:var(--green); color:#04150a;}
-
-.quote-card{margin-top:22px; text-align:center; padding:20px; border-radius:18px; border:1px solid var(--border);
-  background:linear-gradient(160deg, rgba(34,197,94,0.08), rgba(13,21,18,0.4));}
-.quote-card p{font-size:13.5px; font-weight:700; line-height:1.6; color:#d1fae5;}
-/* ==========================================
-   WEEKLY WITHDRAWAL ACCOUNT
-========================================== */
-
-.weekly-section{
-  margin-top:22px;
-  background:
-    linear-gradient(
-      160deg,
-      rgba(56,189,248,.10),
-      rgba(13,21,18,.95)
-    );
-  border:1px solid rgba(56,189,248,.30);
-  border-radius:20px;
-  padding:18px 16px;
-}
-
-.weekly-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-}
-
-.weekly-label{
-  font-size:9px;
-  color:#38bdf8;
-  letter-spacing:1.5px;
-  font-family:'JetBrains Mono',monospace;
-}
-
-.weekly-header h2{
-  margin-top:4px;
-  font-family:'Anton',sans-serif;
-  font-size:24px;
-  letter-spacing:1px;
-  color:#fff;
-}
-
-.weekly-header p{
-  margin-top:3px;
-  font-size:9.5px;
-  color:var(--muted);
-}
-
-.flip-account-btn{
-  border:1px solid rgba(56,189,248,.35);
-  background:rgba(56,189,248,.10);
-  color:#38bdf8;
-  padding:8px 10px;
-  border-radius:999px;
-  font-family:'Poppins',sans-serif;
-  font-size:8.5px;
-  font-weight:700;
-  cursor:pointer;
-  white-space:nowrap;
-}
-
-.weekly-funds-row{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-}
-
-.weekly-card{
-  flex:1;
-  background:rgba(255,255,255,.025);
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:13px 10px;
-  text-align:center;
-}
-
-.weekly-card.profit{
-  border-color:rgba(34,197,94,.30);
-}
-
-.weekly-card-label{
-  font-size:8px;
-  color:var(--muted);
-  letter-spacing:.5px;
-  font-family:'JetBrains Mono',monospace;
-}
-
-.weekly-card-value{
-  margin-top:7px;
-  font-family:'Anton',sans-serif;
-  font-size:20px;
-}
-
-.weekly-card.profit .weekly-card-value{
-  color:var(--green-glow);
-}
-
-.weekly-withdraw-box{
-  margin-top:14px;
-  padding:16px;
-  border-radius:16px;
-  background:rgba(34,197,94,.08);
-  border:1px solid rgba(34,197,94,.25);
-  text-align:center;
-}
-
-.weekly-withdraw-head{
-  display:flex;
-  justify-content:space-between;
-  font-size:8px;
-  color:var(--muted);
-  font-family:'JetBrains Mono',monospace;
-}
-
-#weeklyWithdrawStatus{
-  color:var(--green-glow);
-}
-
-.weekly-withdraw-amount{
-  margin-top:6px;
-  font-family:'Anton',sans-serif;
-  font-size:32px;
-  color:var(--green-glow);
-  text-shadow:0 0 20px rgba(34,197,94,.35);
-}
-
-.weekly-withdraw-btn{
-  width:100%;
-  margin-top:12px;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(
-    90deg,
-    var(--green),
-    var(--green-glow)
-  );
-  color:#04150a;
-  font-family:'Poppins',sans-serif;
-  font-size:11px;
-  font-weight:800;
-  cursor:pointer;
-}
-
-.weekly-withdraw-btn:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-}
-
-.weekly-vault{
-  margin-top:14px;
-  padding:15px;
-  border-radius:16px;
-  background:rgba(251,191,36,.08);
-  border:1px solid rgba(251,191,36,.28);
-}
-
-.weekly-vault-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:9px;
-  color:#fbbf24;
-  font-weight:700;
-  letter-spacing:.7px;
-}
-
-.weekly-vault-amount{
-  margin-top:7px;
-  font-family:'Anton',sans-serif;
-  font-size:27px;
-  color:#fbbf24;
-}
-
-.weekly-vault p{
-  margin-top:5px;
-  font-size:9px;
-  color:#cfc39b;
-  line-height:1.5;
-}
-
-.withdraw-history{
-  margin-top:15px;
-  padding:15px;
-  border-radius:16px;
-  background:rgba(255,255,255,.025);
-  border:1px solid var(--border);
-}
-
-.withdraw-history-title{
-  font-size:10px;
-  color:#38bdf8;
-  font-weight:700;
-  letter-spacing:1px;
-  margin-bottom:10px;
-}
-
-.withdraw-history-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid var(--border);
-  gap:8px;
-}
-
-.withdraw-history-row:last-child{
-  border-bottom:none;
-}
-
-.withdraw-date{
-  font-size:9px;
-  color:var(--muted);
-  font-family:'JetBrains Mono',monospace;
-}
-
-.withdraw-amount{
-  font-size:12px;
-  font-weight:800;
-  color:var(--green-glow);
-}
-
-.withdraw-meta{
-  font-size:8px;
-  color:#7f8b84;
-  text-align:right;
-}
-
-.empty-history{
-  text-align:center;
-  padding:12px 0;
-  font-size:9px;
-  color:var(--muted);
-  }
-</style>
-</head>
-<body>
-
-<div class="app-shell">
-<aside class="sidebar" id="sidebar"></aside>
-<main class="main-content">
-
-<div class="wrap">
-
-  <header>
-    <div class="shield-emoji">🛡️</div>
-    <h1>TRADE GUARDIAN</h1>
-    <div class="tagline">Protecting my consistency. Guarding my capital.</div>
-  </header>
-
-  <button id="flipAccountBtn" class="flip-account-btn" style="display:block; margin:0 auto 18px;">
-    🔄 FLIP TO WEEKLY WITHDRAWAL
-  </button>
-
-  <div id="guardianView">
-
-  <div class="funds-row">
-    <div class="funds-card">
-      <div class="fc-lbl">💼 CURRENT FUNDS</div>
-      <div class="fc-amt" id="currentFundsVal">₹0</div>
-    </div>
-    <div class="funds-card profit">
-      <div class="fc-lbl">📈 PROFIT TOTAL</div>
-      <div class="fc-amt" id="profitTotalVal">₹0</div>
-    </div>
-  </div>
-
-
-
-  <div class="stats-row">
-    <div class="stat-card streak">
-      <div class="ic">🔥</div>
-      <div class="val" id="streakVal">0</div>
-      <div class="lbl">DAY STREAK</div>
-    </div>
-    <div class="stat-card guarded">
-      <div class="ic">🛡️</div>
-      <div class="val" id="guardedVal">₹0</div>
-      <div class="lbl">CAPITAL GUARDED</div>
-    </div>
-    <div class="stat-card best">
-      <div class="ic">🏆</div>
-      <div class="val" id="bestVal">0</div>
-      <div class="lbl">BEST STREAK</div>
-    </div>
-  </div>
-
-  <div class="today-status disciplined" id="todayStatus">
-    <div class="status-icon" id="statusIcon">✅</div>
-    <h3 id="statusTitle">TODAY: DISCIPLINED</h3>
-    <p id="statusSub">Stopped at target. Capital protected. Streak alive.</p>
-    <button id="logBtn" style="margin-top:14px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:10px 20px; border-radius:999px; font-size:11.5px; font-weight:700; cursor:pointer;">✏️ Log / Edit Today's Close</button>
-  </div>
-
-  <div class="tower-section">
-    <div class="tower-head">
-      <h4>THE COMPOUND EFFECT</h4>
-      <div class="day-count">DAY 0 / 30</div>
-    </div>
-    <div class="target-line">
-      <div class="amt">₹0</div>
-      <div class="of">GUARDED SO FAR &nbsp;•&nbsp; TARGET ₹1,50,000 IN 30 DAYS</div>
-    </div>
-    <div class="tower-grid" id="towerGrid"></div>
-    <div class="legend-row">
-      <span><i class="legend-dot" style="background:var(--green-glow);"></i>Disciplined</span>
-      <span><i class="legend-dot" style="background:var(--red-glow);"></i>Greed broke it</span>
-      <span><i class="legend-dot" style="background:#161f1a;border:1px solid #223028;"></i>Not yet</span>
-    </div>
-  </div>
-
-  <div class="vault-section">
-    <div class="vault-head">
-      <h4>💰 SURPLUS VAULT</h4>
-      <div class="vault-sub">EXTRA BEYOND ₹5,000/DAY</div>
-    </div>
-    <div class="vault-amt" id="vaultVal">₹0</div>
-    <div class="vault-note">Every rupee earned <b>above your daily target</b> lands here — separate from your core streak count, so you can see exactly how much "extra" discipline has earned you.</div>
-  </div>
-
-  <div class="pace-section">
-    <h4>📊 PACE CHECK — AHEAD OR BEHIND?</h4>
-    <div class="pace-compare">
-      <div class="pace-col expect">
-        <div class="pc-lbl">EXPECTED AT ₹5K/DAY</div>
-        <div class="pc-amt" id="expectVal">₹0</div>
-      </div>
-      <div class="pace-col actual" id="actualCol">
-        <div class="pc-lbl">YOUR ACTUAL TOTAL</div>
-        <div class="pc-amt" id="actualVal">₹0</div>
-      </div>
-    </div>
-    <div class="pace-status" id="paceStatus">—</div>
-  </div>
-
-  <div class="greed-panel">
-    <h4>⚠️ ONE GREEDY DAY vs 8 DISCIPLINED DAYS</h4>
-    <div class="compare-row">
-      <div class="compare-bar good">
-        <div class="bar-track"><div class="bar-fill"></div></div>
-        <div class="cap">8 DISCIPLINED DAYS</div>
-        <div class="num">+₹40,000</div>
-      </div>
-    </div>
-    <div class="compare-row">
-      <div class="compare-bar bad">
-        <div class="bar-track"><div class="bar-fill"></div></div>
-        <div class="cap">1 REVENGE-TRADE DAY</div>
-        <div class="num">−₹40,000</div>
-      </div>
-    </div>
-    <div class="greed-line">One <b>greedy overtrade</b> can erase what <b>8 disciplined days</b> built. Discipline is slow. Greed is instant. Choose slow.</div>
-  </div>
-
-  <div class="rules-section">
-    <div class="sec-title">📋 TODAY'S DISCIPLINE RULES</div>
-    <div id="rulesList"></div>
-  </div>
-
-  <div class="account-section">
-    <div class="account-head">
-      <h4>🏦 ACCOUNT DETAILS</h4>
-      <button id="editAccountBtn" class="acct-edit-btn">✏️ Edit</button>
-    </div>
-    <div class="account-row">
-      <span class="acc-lbl">UPI ID</span>
-      <span class="acc-val" id="upiVal">Not set</span>
-    </div>
-    <div class="account-row">
-      <span class="acc-lbl">BANK NAME</span>
-      <span class="acc-val" id="bankVal">Not set</span>
-    </div>
-  </div>
-
-  <div class="quote-card">
-    <p>"Greed steals in an instant what discipline builds in a month."</p>
-  </div>
-
-  </div>
-  <!-- /guardianView -->
-
-<div id="weeklyView" style="display:none;">
-  <div class="weekly-section">
-
-  <div class="weekly-header">
-    <div>
-      <div class="weekly-label">💸 NEW ACCOUNT</div>
-      <h2>WEEKLY WITHDRAWAL</h2>
-      <p>Daily profits • Withdraw consistently</p>
-    </div>
-  </div>
-
-  <div class="weekly-funds-row">
-
-    <div class="weekly-card">
-      <div class="weekly-card-label">💼 CURRENT FUNDS</div>
-      <div class="weekly-card-value" id="weeklyCurrentFunds">
-        ₹0
-      </div>
-    </div>
-
-    <div class="weekly-card profit">
-      <div class="weekly-card-label">📈 TODAY'S PROFIT</div>
-      <div class="weekly-card-value" id="weeklyTodayProfit">
-        ₹0
-      </div>
-    </div>
-
-  </div>
-
-  <div class="weekly-funds-row">
-
-    <div class="weekly-card">
-      <div class="weekly-card-label">🔥 WEEKLY STREAK</div>
-      <div class="weekly-card-value" id="weeklyStreakVal">0</div>
-    </div>
-
-    <div class="weekly-card profit">
-      <div class="weekly-card-label">📊 TOTAL PROFIT</div>
-      <div class="weekly-card-value" id="weeklyTotalProfit">₹0</div>
-    </div>
-
-  </div>
-
-  <button id="weeklyLogBtn" style="width:100%; margin-top:12px; padding:12px; border:1px solid rgba(56,189,248,.35); border-radius:12px; background:rgba(56,189,248,.10); color:#38bdf8; font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:700; cursor:pointer;">
-    📝 Log Today's Weekly Profit
-  </button>
-
-  <div class="weekly-withdraw-box">
-
-    <div class="weekly-withdraw-head">
-      <span>WITHDRAWABLE TODAY</span>
-      <span id="weeklyWithdrawStatus">READY</span>
-    </div>
-
-    <div class="weekly-withdraw-amount" id="weeklyWithdrawAmount">
-      ₹0
-    </div>
-
-    <button id="weeklyWithdrawBtn" class="weekly-withdraw-btn">
-      💸 WITHDRAW
-    </button>
-
-  </div>
-
-  <div class="weekly-vault">
-
-    <div class="weekly-vault-head">
-      <span>🏦 SURPLUS VAULT</span>
-      <span id="weeklyVaultCount">0 / 15 WITHDRAWALS</span>
-    </div>
-
-    <div class="weekly-vault-amount" id="weeklyVaultAmount">
-      ₹0
-    </div>
-
-    <p>
-      Amount above ₹5,000/day is stored here.
-      Vault is reviewed every 15 completed withdrawals.
-    </p>
-
-  </div>
-
-  <div class="withdraw-history">
-
-    <div class="withdraw-history-title">
-      📜 WITHDRAWAL HISTORY
-    </div>
-
-    <div id="weeklyWithdrawalHistory">
-      <div class="empty-history">
-        No withdrawals yet.
-      </div>
-    </div>
-
-  </div>
-  </div>
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Trade Guardian</title>  <link rel="preconnect" href="https://fonts.googleapis.com">  
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">  <style>  
+*{  
+  margin:0;  
+  padding:0;  
+  box-sizing:border-box;  
+}  
+  
+html,  
+body{  
+  background:#05080a;  
+  color:#fff;  
+  font-family:'Poppins',sans-serif;  
+  overflow-x:hidden;  
+}  
+  
+body{  
+  padding-bottom:40px;  
+}  
+  
+:root{  
+  --green:#22c55e;  
+  --green-glow:#34d399;  
+  --red:#ef4444;  
+  --red-glow:#f87171;  
+  --card:#0d1512;  
+  --border:#1e2b25;  
+  --muted:#8a978f;  
+}  
+  
+button{  
+  font-family:'Poppins',sans-serif;  
+}  
+  
+.app-shell{  
+  display:flex;  
+  min-height:100vh;  
+}  
+  
+.main-content{  
+  flex:1;  
+  min-width:0;  
+}  
+  
+.sidebar{  
+  width:220px;  
+  flex-shrink:0;  
+  background:#080c0a;  
+  border-right:1px solid var(--border);  
+  padding:28px 18px;  
+  display:flex;  
+  flex-direction:column;  
+  gap:28px;  
+}  
+  
+.brand{  
+  display:flex;  
+  align-items:center;  
+  gap:10px;  
+  font-family:'Anton',sans-serif;  
+  font-size:18px;  
+  letter-spacing:.5px;  
+  color:#fff;  
+}  
+  
+.brand .mark{  
+  width:34px;  
+  height:34px;  
+  border-radius:10px;  
+  background:linear-gradient(135deg,var(--green),var(--green-glow));  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  font-size:16px;  
+}  
+  
+.nav-links{  
+  display:flex;  
+  flex-direction:column;  
+  gap:4px;  
+  flex:1;  
+}  
+  
+.nav-link{  
+  display:flex;  
+  align-items:center;  
+  gap:10px;  
+  padding:11px 12px;  
+  border-radius:12px;  
+  color:var(--muted);  
+  font-size:13.5px;  
+  font-weight:600;  
+  min-height:44px;  
+  transition:background .15s ease,color .15s ease;  
+}  
+  
+.nav-link:hover{  
+  background:var(--card);  
+  color:#fff;  
+}  
+  
+.nav-link.active{  
+  background:var(--card);  
+  color:#fff;  
+  box-shadow:inset 3px 0 0 var(--green-glow);  
+}  
+  
+.nav-link .icon{  
+  font-size:16px;  
+}  
+  
+.sidebar-footer{  
+  border-top:1px solid var(--border);  
+  padding-top:14px;  
+  font-size:11.5px;  
+  color:var(--muted);  
+}  
+  
+.sidebar-toggle{  
+  display:none;  
+  position:fixed;  
+  top:14px;  
+  left:14px;  
+  z-index:1100;  
+  width:44px;  
+  height:44px;  
+  border-radius:12px;  
+  background:var(--card);  
+  border:1px solid var(--border);  
+  flex-direction:column;  
+  align-items:center;  
+  justify-content:center;  
+  gap:4px;  
+  padding:0;  
+}  
+  
+.sidebar-toggle span{  
+  display:block;  
+  width:20px;  
+  height:2px;  
+  background:#fff;  
+  border-radius:2px;  
+}  
+  
+.sidebar-overlay{  
+  display:none;  
+  position:fixed;  
+  inset:0;  
+  background:rgba(0,0,0,.6);  
+  z-index:999;  
+}  
+  
+.sidebar-overlay.visible{  
+  display:block;  
+}  
+  
+@media(max-width:768px){  
+  
+  .app-shell{  
+    flex-direction:column;  
+  }  
+  
+  .sidebar-toggle{  
+    display:flex;  
+  }  
+  
+  .main-content{  
+    padding-top:76px;  
+  }  
+  
+  .sidebar{  
+    position:fixed;  
+    top:0;  
+    left:0;  
+    height:100vh;  
+    width:260px;  
+    max-width:80vw;  
+    transform:translateX(-100%);  
+    transition:transform .25s ease;  
+    z-index:1050;  
+    overflow-y:auto;  
+  }  
+  
+  .sidebar.open{  
+    transform:translateX(0);  
+  }  
+}  
+  
+.wrap{  
+  max-width:520px;  
+  margin:0 auto;  
+  padding:22px 16px;  
+}  
+  
+header{  
+  text-align:center;  
+  margin-bottom:18px;  
+}  
+  
+.shield-emoji{  
+  font-size:34px;  
+  filter:drop-shadow(0 0 14px rgba(34,197,94,.6));  
+  animation:shieldPulse 3s ease-in-out infinite;  
+}  
+  
+@keyframes shieldPulse{  
+  0%,100%{transform:scale(1);}  
+  50%{transform:scale(1.08);}  
+}  
+  
+h1{  
+  font-family:'Anton',sans-serif;  
+  font-size:26px;  
+  letter-spacing:1px;  
+  margin-top:6px;  
+  background:linear-gradient(  
+    90deg,  
+    #22c55e,  
+    #34d399,  
+    #22c55e  
+  );  
+  background-size:200% auto;  
+  -webkit-background-clip:text;  
+  background-clip:text;  
+  -webkit-text-fill-color:transparent;  
+  animation:shine 4s linear infinite;  
+}  
+  
+@keyframes shine{  
+  to{  
+    background-position:200% center;  
+  }  
+}  
+  
+.tagline{  
+  font-size:11.5px;  
+  color:var(--muted);  
+  margin-top:4px;  
+  letter-spacing:.3px;  
+}  
+  
+/* ================================  
+   FUNDS  
+================================ */  
+  
+.funds-row{  
+  display:flex;  
+  gap:10px;  
+  margin-top:20px;  
+}  
+  
+.funds-card{  
+  flex:1;  
+  background:var(--card);  
+  border:1px solid var(--border);  
+  border-radius:16px;  
+  padding:16px 14px;  
+  text-align:center;  
+}  
+  
+.funds-card.profit{  
+  border-color:rgba(34,197,94,.35);  
+}  
+  
+.funds-card .fc-lbl{  
+  font-size:9px;  
+  color:var(--muted);  
+  letter-spacing:.5px;  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.funds-card .fc-amt{  
+  font-family:'Anton',sans-serif;  
+  font-size:22px;  
+  margin-top:8px;  
+  color:#fff;  
+}  
+  
+.funds-card.profit .fc-amt{  
+  color:var(--green-glow);  
+}  
+  
+.funds-card.profit .fc-amt.neg{  
+  color:var(--red-glow);  
+}  
+  
+/* ================================  
+   ACCOUNT  
+================================ */  
+  
+.account-section{  
+  margin-top:16px;  
+  background:var(--card);  
+  border:1px solid var(--border);  
+  border-radius:18px;  
+  padding:16px;  
+}  
+  
+.account-head{  
+  display:flex;  
+  align-items:center;  
+  justify-content:space-between;  
+  margin-bottom:12px;  
+}  
+  
+.account-head h4{  
+  font-size:11px;  
+  letter-spacing:1px;  
+  color:#38bdf8;  
+  font-weight:700;  
+}  
+  
+.acct-edit-btn{  
+  background:rgba(56,189,248,.12);  
+  border:1px solid rgba(56,189,248,.35);  
+  color:#38bdf8;  
+  font-size:9.5px;  
+  padding:5px 12px;  
+  border-radius:999px;  
+  cursor:pointer;  
+  font-family:'Poppins',sans-serif;  
+  font-weight:600;  
+}  
+  
+.account-row{  
+  display:flex;  
+  justify-content:space-between;  
+  align-items:center;  
+  padding:9px 0;  
+  border-bottom:1px solid var(--border);  
+  gap:12px;  
+}  
+  
+.account-row:last-child{  
+  border-bottom:none;  
+}  
+  
+.acc-lbl{  
+  font-size:10.5px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+  letter-spacing:.3px;  
+  flex-shrink:0;  
+}  
+  
+.acc-val{  
+  font-size:12.5px;  
+  color:#dcded9;  
+  font-weight:600;  
+  text-align:right;  
+  word-break:break-all;  
+  overflow-wrap:anywhere;  
+  flex:1;  
+  min-width:0;  
+}  
+  
+/* ================================  
+   STATS  
+================================ */  
+  
+.stats-row{  
+  display:flex;  
+  gap:10px;  
+  margin-top:20px;  
+}  
+  
+.stat-card{  
+  flex:1;  
+  background:var(--card);  
+  border:1px solid var(--border);  
+  border-radius:16px;  
+  padding:14px 10px;  
+  text-align:center;  
+}  
+  
+.stat-card .ic{  
+  font-size:18px;  
+}  
+  
+.stat-card .val{  
+  font-family:'Anton',sans-serif;  
+  font-size:19px;  
+  margin-top:6px;  
+}  
+  
+.stat-card .lbl{  
+  font-size:8.5px;  
+  color:var(--muted);  
+  letter-spacing:.5px;  
+  margin-top:2px;  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.stat-card.streak .val{  
+  color:#fbbf24;  
+}  
+  
+.stat-card.guarded .val{  
+  color:var(--green-glow);  
+}  
+  
+.stat-card.best .val{  
+  color:#a78bfa;  
+}  
+  
+/* ================================  
+   TODAY STATUS  
+================================ */  
+  
+.today-status{  
+  margin-top:18px;  
+  border-radius:20px;  
+  padding:20px;  
+  text-align:center;  
+  position:relative;  
+  overflow:hidden;  
+  background:  
+    linear-gradient(  
+      160deg,  
+      rgba(34,197,94,.14),  
+      rgba(13,21,18,.6)  
+    );  
+  border:1px solid rgba(34,197,94,.35);  
+}  
+  
+.today-status.broken{  
+  background:  
+    linear-gradient(  
+      160deg,  
+      rgba(239,68,68,.16),  
+      rgba(21,13,13,.6)  
+    );  
+  border-color:rgba(239,68,68,.4);  
+}  
+  
+.today-status .status-icon{  
+  font-size:30px;  
+}  
+  
+.today-status h3{  
+  font-family:'Anton',sans-serif;  
+  font-size:15px;  
+  margin-top:8px;  
+  letter-spacing:.5px;  
+}  
+  
+.today-status p{  
+  font-size:10.5px;  
+  color:var(--muted);  
+  margin-top:4px;  
+}  
+  
+.today-status.disciplined h3{  
+  color:var(--green-glow);  
+}  
+  
+.today-status.broken h3{  
+  color:var(--red-glow);  
+}  
+  
+/* ================================  
+   TOWER  
+================================ */  
+  
+.tower-section{  
+  margin-top:22px;  
+  background:var(--card);  
+  border:1px solid var(--border);  
+  border-radius:20px;  
+  padding:18px 16px 16px;  
+}  
+  
+.tower-head{  
+  display:flex;  
+  justify-content:space-between;  
+  align-items:baseline;  
+  margin-bottom:4px;  
+}  
+  
+.tower-head h4{  
+  font-size:11px;  
+  letter-spacing:2px;  
+  color:var(--green-glow);  
+  font-weight:700;  
+}  
+  
+.tower-head .day-count{  
+  font-size:10px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.target-line{  
+  text-align:center;  
+  margin:10px 0 16px;  
+}  
+  
+.target-line .amt{  
+  font-family:'Anton',sans-serif;  
+  font-size:32px;  
+  color:var(--green-glow);  
+  text-shadow:0 0 24px rgba(34,197,94,.4);  
+}  
+  
+.target-line .of{  
+  font-size:10px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+  margin-top:2px;  
+}  
+  
+.tower-grid{  
+  display:grid;  
+  grid-template-columns:repeat(10,1fr);  
+  gap:5px;  
+}  
+  
+.tower-step{  
+  aspect-ratio:1/1;  
+  border-radius:5px;  
+  background:#161f1a;  
+  border:1px solid #223028;  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  font-size:9px;  
+  color:#4a5a50;  
+  position:relative;  
+}  
+  
+.tower-step.done{  
+  background:  
+    linear-gradient(  
+      160deg,  
+      var(--green-glow),  
+      var(--green)  
+    );  
+  color:#04150a;  
+  font-weight:800;  
+  box-shadow:0 0 10px rgba(34,197,94,.5);  
+}  
+  
+.tower-step.broken{  
+  background:  
+    linear-gradient(  
+      160deg,  
+      var(--red-glow),  
+      var(--red)  
+    );  
+  color:#2a0505;  
+  font-weight:800;  
+  box-shadow:0 0 12px rgba(239,68,68,.6);  
+  animation:crackFlash 1.8s ease-in-out infinite;  
+}  
+  
+@keyframes crackFlash{  
+  0%,100%{filter:brightness(1);}  
+  50%{filter:brightness(1.3);}  
+}  
+  
+.tower-step.today{  
+  border-color:#fbbf24;  
+  box-shadow:0 0 0 2px #fbbf24;  
+}  
+  
+.legend-row{  
+  display:flex;  
+  gap:14px;  
+  justify-content:center;  
+  margin-top:12px;  
+  font-size:8.5px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.legend-row span{  
+  display:flex;  
+  align-items:center;  
+  gap:4px;  
+}  
+  
+.legend-dot{  
+  width:8px;  
+  height:8px;  
+  border-radius:2px;  
+  display:inline-block;  
+}  
+  
+/* ================================  
+   VAULT  
+================================ */  
+  
+.vault-section{  
+  margin-top:16px;  
+  background:  
+    linear-gradient(  
+      160deg,  
+      rgba(251,191,36,.12),  
+      var(--card)  
+    );  
+  border:1px solid rgba(251,191,36,.3);  
+  border-radius:18px;  
+  padding:16px;  
+}  
+  
+.vault-head{  
+  display:flex;  
+  align-items:center;  
+  justify-content:space-between;  
+}  
+  
+.vault-head h4{  
+  font-size:11px;  
+  letter-spacing:1px;  
+  color:#fbbf24;  
+  font-weight:700;  
+}  
+  
+.vault-head .vault-sub{  
+  font-size:8.5px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.vault-amt{  
+  font-family:'Anton',sans-serif;  
+  font-size:30px;  
+  color:#fbbf24;  
+  text-shadow:0 0 20px rgba(251,191,36,.4);  
+  margin-top:8px;  
+}  
+  
+.vault-note{  
+  font-size:10px;  
+  color:#e2d5a8;  
+  margin-top:6px;  
+  line-height:1.5;  
+}  
+  
+.vault-note b{  
+  color:#fbbf24;  
+}  
+  
+/* ================================  
+   PACE  
+================================ */  
+  
+.pace-section{  
+  margin-top:16px;  
+  background:var(--card);  
+  border:1px solid var(--border);  
+  border-radius:18px;  
+  padding:16px;  
+}  
+  
+.pace-section h4{  
+  font-size:11px;  
+  letter-spacing:1px;  
+  color:#38bdf8;  
+  font-weight:700;  
+  margin-bottom:14px;  
+}  
+  
+.pace-compare{  
+  display:flex;  
+  gap:10px;  
+}  
+  
+.pace-col{  
+  flex:1;  
+  text-align:center;  
+  padding:12px 8px;  
+  border-radius:14px;  
+  background:rgba(255,255,255,.03);  
+  border:1px solid var(--border);  
+}  
+  
+.pace-col .pc-lbl{  
+  font-size:8.5px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+  letter-spacing:.5px;  
+}  
+  
+.pace-col .pc-amt{  
+  font-family:'Anton',sans-serif;  
+  font-size:18px;  
+  margin-top:6px;  
+}  
+  
+.pace-col.expect .pc-amt{  
+  color:#94a3b8;  
+}  
+  
+.pace-col.actual .pc-amt{  
+  color:var(--green-glow);  
+}  
+  
+.pace-col.actual.behind .pc-amt{  
+  color:var(--red-glow);  
+}  
+  
+.pace-status{  
+  margin-top:14px;  
+  text-align:center;  
+  padding:10px;  
+  border-radius:12px;  
+  font-size:12px;  
+  font-weight:800;  
+}  
+  
+.pace-status.ahead{  
+  background:rgba(34,197,94,.14);  
+  color:var(--green-glow);  
+  border:1px solid rgba(34,197,94,.35);  
+}  
+  
+.pace-status.behind{  
+  background:rgba(239,68,68,.14);  
+  color:var(--red-glow);  
+  border:1px solid rgba(239,68,68,.35);  
+}  
+  
+/* ================================  
+   GREED  
+================================ */  
+  
+.greed-panel{  
+  margin-top:16px;  
+  background:  
+    linear-gradient(  
+      160deg,  
+      rgba(239,68,68,.1),  
+      var(--card)  
+    );  
+  border:1px solid rgba(239,68,68,.3);  
+  border-radius:18px;  
+  padding:16px;  
+}  
+  
+.greed-panel h4{  
+  font-size:11px;  
+  letter-spacing:1px;  
+  color:var(--red-glow);  
+  font-weight:700;  
+  display:flex;  
+  align-items:center;  
+  gap:6px;  
+}  
+  
+.compare-row{  
+  display:flex;  
+  align-items:center;  
+  gap:10px;  
+  margin-top:14px;  
+}  
+  
+.compare-bar{  
+  flex:1;  
+}  
+  
+.compare-bar .bar-track{  
+  height:14px;  
+  border-radius:8px;  
+  background:#1a1010;  
+  overflow:hidden;  
+  margin-bottom:5px;  
+}  
+  
+.compare-bar .bar-fill{  
+  height:100%;  
+  border-radius:8px;  
+}  
+  
+.compare-bar.good .bar-fill{  
+  background:  
+    linear-gradient(  
+      90deg,  
+      var(--green),  
+      var(--green-glow)  
+    );  
+  width:100%;  
+}  
+  
+.compare-bar.bad .bar-fill{  
+  background:  
+    linear-gradient(  
+      90deg,  
+      var(--red),  
+      var(--red-glow)  
+    );  
+  width:27%;  
+}  
+  
+.compare-bar .cap{  
+  font-size:9px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.compare-bar .num{  
+  font-size:12px;  
+  font-weight:800;  
+}  
+  
+.compare-bar.good .num{  
+  color:var(--green-glow);  
+}  
+  
+.compare-bar.bad .num{  
+  color:var(--red-glow);  
+}  
+  
+.greed-line{  
+  text-align:center;  
+  font-size:11px;  
+  color:#fca5a5;  
+  margin-top:14px;  
+  font-weight:600;  
+  line-height:1.5;  
+}  
+  
+.greed-line b{  
+  color:var(--red-glow);  
+}  
+  
+/* ================================  
+   RULES  
+================================ */  
+  
+.rules-section{  
+  margin-top:22px;  
+}  
+  
+.sec-title{  
+  font-size:11px;  
+  letter-spacing:2px;  
+  color:var(--green-glow);  
+  font-weight:700;  
+  margin-bottom:10px;  
+  padding-left:2px;  
+}  
+  
+.rule-row{  
+  display:flex;  
+  align-items:center;  
+  gap:12px;  
+  background:var(--card);  
+  border:1px solid var(--border);  
+  border-radius:14px;  
+  padding:12px 14px;  
+  margin-bottom:9px;  
+  cursor:pointer;  
+  transition:.15s;  
+}  
+  
+.rule-row.done{  
+  border-color:rgba(34,197,94,.5);  
+  background:  
+    linear-gradient(  
+      90deg,  
+      rgba(34,197,94,.1),  
+      var(--card)  
+    );  
+}  
+  
+.rule-row .r-ic{  
+  font-size:16px;  
+  width:24px;  
+  text-align:center;  
+}  
+  
+.rule-row .r-txt{  
+  flex:1;  
+  font-size:12.5px;  
+  color:#dcded9;  
+}  
+  
+.rule-row.done .r-txt{  
+  color:#fff;  
+}  
+  
+.rule-chk{  
+  width:20px;  
+  height:20px;  
+  border-radius:6px;  
+  border:1.5px solid #2a3a32;  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  font-size:11px;  
+  flex-shrink:0;  
+}  
+  
+.rule-row.done .rule-chk{  
+  background:var(--green);  
+  border-color:var(--green);  
+  color:#04150a;  
+}  
+  
+/* ================================  
+   QUOTE  
+================================ */  
+  
+.quote-card{  
+  margin-top:22px;  
+  text-align:center;  
+  padding:20px;  
+  border-radius:18px;  
+  border:1px solid var(--border);  
+  background:  
+    linear-gradient(  
+      160deg,  
+      rgba(34,197,94,.08),  
+      rgba(13,21,18,.4)  
+    );  
+}  
+  
+.quote-card p{  
+  font-size:13.5px;  
+  font-weight:700;  
+  line-height:1.6;  
+  color:#d1fae5;  
+}  
+  
+/* ==================================================  
+   WEEKLY WITHDRAWAL ACCOUNT  
+================================================== */  
+  
+.weekly-section{  
+  margin-top:22px;  
+  background:  
+    linear-gradient(  
+      160deg,  
+      rgba(56,189,248,.10),  
+      rgba(13,21,18,.95)  
+    );  
+  border:1px solid rgba(56,189,248,.30);  
+  border-radius:20px;  
+  padding:18px 16px;  
+}  
+  
+.weekly-header{  
+  display:flex;  
+  justify-content:space-between;  
+  align-items:flex-start;  
+  gap:12px;  
+}  
+  
+.weekly-label{  
+  font-size:9px;  
+  color:#38bdf8;  
+  letter-spacing:1.5px;  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.weekly-header h2{  
+  margin-top:4px;  
+  font-family:'Anton',sans-serif;  
+  font-size:24px;  
+  letter-spacing:1px;  
+  color:#fff;  
+}  
+  
+.weekly-header p{  
+  margin-top:3px;  
+  font-size:9.5px;  
+  color:var(--muted);  
+}  
+  
+.flip-account-btn{  
+  border:1px solid rgba(56,189,248,.35);  
+  background:rgba(56,189,248,.10);  
+  color:#38bdf8;  
+  padding:8px 10px;  
+  border-radius:999px;  
+  font-family:'Poppins',sans-serif;  
+  font-size:8.5px;  
+  font-weight:700;  
+  cursor:pointer;  
+  white-space:nowrap;  
+}  
+  
+.flip-account-btn:hover{  
+  background:rgba(56,189,248,.18);  
+}  
+  
+.weekly-funds-row{  
+  display:flex;  
+  gap:10px;  
+  margin-top:16px;  
+}  
+  
+.weekly-card{  
+  flex:1;  
+  background:rgba(255,255,255,.025);  
+  border:1px solid var(--border);  
+  border-radius:15px;  
+  padding:13px 10px;  
+  text-align:center;  
+}  
+  
+.weekly-card.profit{  
+  border-color:rgba(34,197,94,.30);  
+}  
+  
+.weekly-card-label{  
+  font-size:8px;  
+  color:var(--muted);  
+  letter-spacing:.5px;  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.weekly-card-value{  
+  margin-top:7px;  
+  font-family:'Anton',sans-serif;  
+  font-size:20px;  
+}  
+  
+.weekly-card.profit .weekly-card-value{  
+  color:var(--green-glow);  
+}  
+  
+.weekly-withdraw-box{  
+  margin-top:14px;  
+  padding:16px;  
+  border-radius:16px;  
+  background:rgba(34,197,94,.08);  
+  border:1px solid rgba(34,197,94,.25);  
+  text-align:center;  
+}  
+  
+.weekly-withdraw-head{  
+  display:flex;  
+  justify-content:space-between;  
+  font-size:8px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+#weeklyWithdrawStatus{  
+  color:var(--green-glow);  
+}  
+  
+.weekly-withdraw-amount{  
+  margin-top:6px;  
+  font-family:'Anton',sans-serif;  
+  font-size:32px;  
+  color:var(--green-glow);  
+  text-shadow:0 0 20px rgba(34,197,94,.35);  
+}  
+  
+.weekly-withdraw-btn{  
+  width:100%;  
+  margin-top:12px;  
+  padding:12px;  
+  border:none;  
+  border-radius:12px;  
+  background:  
+    linear-gradient(  
+      90deg,  
+      var(--green),  
+      var(--green-glow)  
+    );  
+  color:#04150a;  
+  font-family:'Poppins',sans-serif;  
+  font-size:11px;  
+  font-weight:800;  
+  cursor:pointer;  
+}  
+  
+.weekly-withdraw-btn:disabled{  
+  opacity:.35;  
+  cursor:not-allowed;  
+}  
+  
+.weekly-vault{  
+  margin-top:14px;  
+  padding:15px;  
+  border-radius:16px;  
+  background:rgba(251,191,36,.08);  
+  border:1px solid rgba(251,191,36,.28);  
+}  
+  
+.weekly-vault-head{  
+  display:flex;  
+  justify-content:space-between;  
+  align-items:center;  
+  font-size:9px;  
+  color:#fbbf24;  
+  font-weight:700;  
+  letter-spacing:.7px;  
+}  
+  
+.weekly-vault-amount{  
+  margin-top:7px;  
+  font-family:'Anton',sans-serif;  
+  font-size:27px;  
+  color:#fbbf24;  
+}  
+  
+.weekly-vault p{  
+  margin-top:5px;  
+  font-size:9px;  
+  color:#cfc39b;  
+  line-height:1.5;  
+}  
+  
+.withdraw-history{  
+  margin-top:15px;  
+  padding:15px;  
+  border-radius:16px;  
+  background:rgba(255,255,255,.025);  
+  border:1px solid var(--border);  
+}  
+  
+.withdraw-history-title{  
+  font-size:10px;  
+  color:#38bdf8;  
+  font-weight:700;  
+  letter-spacing:1px;  
+  margin-bottom:10px;  
+}  
+  
+.withdraw-history-row{  
+  display:flex;  
+  justify-content:space-between;  
+  align-items:center;  
+  padding:10px 0;  
+  border-bottom:1px solid var(--border);  
+  gap:8px;  
+}  
+  
+.withdraw-history-row:last-child{  
+  border-bottom:none;  
+}  
+  
+.withdraw-date{  
+  font-size:9px;  
+  color:var(--muted);  
+  font-family:'JetBrains Mono',monospace;  
+}  
+  
+.withdraw-amount{  
+  font-size:12px;  
+  font-weight:800;  
+  color:var(--green-glow);  
+}  
+  
+.withdraw-meta{  
+  font-size:8px;  
+  color:#7f8b84;  
+  text-align:right;  
+}  
+  
+.empty-history{  
+  text-align:center;  
+  padding:12px 0;  
+  font-size:9px;  
+  color:var(--muted);  
+}  
+  
+/* ================================  
+   TOAST  
+================================ */  
+  
+.toast{  
+  position:fixed;  
+  left:50%;  
+  bottom:22px;  
+  transform:translate(-50%,120px);  
+  z-index:3000;  
+  min-width:240px;  
+  max-width:90vw;  
+  padding:12px 16px;  
+  border-radius:12px;  
+  background:#101815;  
+  border:1px solid var(--border);  
+  box-shadow:0 15px 40px rgba(0,0,0,.5);  
+  font-size:11px;  
+  font-weight:600;  
+  text-align:center;  
+  opacity:0;  
+  pointer-events:none;  
+  transition:.25s ease;  
+}  
+  
+.toast.show{  
+  transform:translate(-50%,0);  
+  opacity:1;  
+}  
+  
+.toast.success{  
+  border-color:rgba(34,197,94,.4);  
+  color:var(--green-glow);  
+}  
+  
+.toast.error{  
+  border-color:rgba(239,68,68,.4);  
+  color:var(--red-glow);  
+}  
+  
+/* ================================  
+   MOBILE  
+================================ */  
+  
+@media(max-width:480px){  
+  
+  .wrap{  
+    padding-left:12px;  
+    padding-right:12px;  
+  }  
+  
+  .funds-row,  
+  .weekly-funds-row{  
+    gap:7px;  
+  }  
+  
+  .funds-card{  
+    padding:14px 8px;  
+  }  
+  
+  .funds-card .fc-amt{  
+    font-size:20px;  
+  }  
+  
+  .stat-card{  
+    padding:12px 6px;  
+  }  
+  
+  .stat-card .val{  
+    font-size:17px;  
+  }  
+  
+  .tower-grid{  
+    gap:4px;  
+  }  
+  
+  .tower-step{  
+    font-size:8px;  
+  }  
+  
+  .pace-compare{  
+    gap:7px;  
+  }  
+  
+  .weekly-header h2{  
+    font-size:21px;  
+  }  
+  
+  .weekly-withdraw-amount{  
+    font-size:29px;  
+  }  
+}  
+</style>  </head>  <body>  <div class="app-shell">    <aside class="sidebar" id="sidebar">  <div class="brand">  
+  <div class="mark">🛡️</div>  
+  <span>TRADE GUARDIAN</span>  
+</div>  
+
+<nav class="nav-links">  
+
+  <div class="nav-link active" id="navGuardian">  
+    <span class="icon">🛡️</span>  
+    <span>Trade Guardian</span>  
+  </div>  
+
+  <div class="nav-link" id="navWeekly">  
+    <span class="icon">💸</span>  
+    <span>Weekly Withdrawal</span>  
+  </div>  
+
+</nav>  
+
+<div class="sidebar-footer">  
+  Protecting consistency.<br>  
+  Guarding capital.  
 </div>
-<!-- /weeklyView -->
+
+  </aside>  <button
+class="sidebar-toggle"
+id="sidebarToggle"
+aria-label="Open navigation"
+
+> 
+
+<span></span>  
+<span></span>  
+<span></span>
+
+  </button>    <div class="sidebar-overlay" id="sidebarOverlay"></div>    <main class="main-content">  <div class="wrap">  
+
+  <header>  
+    <div class="shield-emoji">🛡️</div>  
+    <h1>TRADE GUARDIAN</h1>  
+    <div class="tagline">  
+      Protecting my consistency. Guarding my capital.  
+    </div>  
+  </header>  
+
+  <button  
+    id="flipAccountBtn"  
+    class="flip-account-btn"  
+    style="display:block;margin:0 auto 18px;"  
+  >  
+    🔄 FLIP TO WEEKLY WITHDRAWAL  
+  </button>  
+
+  <!-- ==================================================  
+       TRADE GUARDIAN VIEW  
+  ================================================== -->  
+
+  <div id="guardianView">  
+
+    <div class="funds-row">  
+
+      <div class="funds-card">  
+        <div class="fc-lbl">💼 CURRENT FUNDS</div>  
+        <div class="fc-amt" id="currentFundsVal">₹0</div>  
+      </div>  
+
+      <div class="funds-card profit">  
+        <div class="fc-lbl">📈 PROFIT TOTAL</div>  
+        <div class="fc-amt" id="profitTotalVal">₹0</div>  
+      </div>  
+
+    </div>  
+
+    <div class="stats-row">  
+
+      <div class="stat-card streak">  
+        <div class="ic">🔥</div>  
+        <div class="val" id="streakVal">0</div>  
+        <div class="lbl">DAY STREAK</div>  
+      </div>  
+
+      <div class="stat-card guarded">  
+        <div class="ic">🛡️</div>  
+        <div class="val" id="guardedVal">₹0</div>  
+        <div class="lbl">CAPITAL GUARDED</div>  
+      </div>  
+
+      <div class="stat-card best">  
+        <div class="ic">🏆</div>  
+        <div class="val" id="bestVal">0</div>  
+        <div class="lbl">BEST STREAK</div>  
+      </div>  
+
+    </div>  
+
+    <div  
+      class="today-status disciplined"  
+      id="todayStatus"  
+    >  
+
+      <div class="status-icon" id="statusIcon">✅</div>  
+
+      <h3 id="statusTitle">  
+        TODAY: DISCIPLINED  
+      </h3>  
+
+      <p id="statusSub">  
+        Stopped at target. Capital protected. Streak alive.  
+      </p>  
+
+      <button  
+        id="logBtn"  
+        style="  
+          margin-top:14px;  
+          background:rgba(255,255,255,.12);  
+          border:1px solid rgba(255,255,255,.25);  
+          color:#fff;  
+          padding:10px 20px;  
+          border-radius:999px;  
+          font-size:11.5px;  
+          font-weight:700;  
+          cursor:pointer;  
+        "  
+      >  
+        ✏️ Log / Edit Today's Close  
+      </button>  
+
+    </div>  
+
+    <div class="tower-section">  
+
+      <div class="tower-head">  
+
+        <h4>THE COMPOUND EFFECT</h4>  
+
+        <div class="day-count">  
+          DAY 0 / 30  
+        </div>  
+
+      </div>  
+
+      <div class="target-line">  
+
+        <div class="amt">₹0</div>  
+
+        <div class="of">  
+          GUARDED SO FAR  
+          &nbsp;•&nbsp;  
+          TARGET ₹1,50,000 IN 30 DAYS  
+        </div>  
+
+      </div>  
+
+      <div  
+        class="tower-grid"  
+        id="towerGrid"  
+      ></div>  
+
+      <div class="legend-row">  
+
+        <span>  
+          <i  
+            class="legend-dot"  
+            style="background:var(--green-glow);"  
+          ></i>  
+          Disciplined  
+        </span>  
+
+        <span>  
+          <i  
+            class="legend-dot"  
+            style="background:var(--red-glow);"  
+          ></i>  
+          Greed broke it  
+        </span>  
+
+        <span>  
+          <i  
+            class="legend-dot"  
+            style="  
+              background:#161f1a;  
+              border:1px solid #223028;  
+            "  
+          ></i>  
+          Not yet  
+        </span>  
+
+      </div>  
+
+    </div>  
+
+    <div class="vault-section">  
+
+      <div class="vault-head">  
+
+        <h4>💰 SURPLUS VAULT</h4>  
+
+        <div class="vault-sub">  
+          EXTRA BEYOND ₹5,000/DAY  
+        </div>  
+
+      </div>  
+
+      <div  
+        class="vault-amt"  
+        id="vaultVal"  
+      >  
+        ₹0  
+      </div>  
+
+      <div class="vault-note">  
+        Every rupee earned  
+        <b>above your daily target</b>  
+        lands here — separate from your core  
+        streak count, so you can see exactly how  
+        much "extra" discipline has earned you.  
+      </div>  
+
+    </div>  
+
+    <div class="pace-section">  
+
+      <h4>  
+        📊 PACE CHECK — AHEAD OR BEHIND?  
+      </h4>  
+
+      <div class="pace-compare">  
+
+        <div class="pace-col expect">  
+
+          <div class="pc-lbl">  
+            EXPECTED AT ₹5K/DAY  
+          </div>  
+
+          <div  
+            class="pc-amt"  
+            id="expectVal"  
+          >  
+            ₹0  
+          </div>  
+
+        </div>  
+
+        <div  
+          class="pace-col actual"  
+          id="actualCol"  
+        >  
+
+          <div class="pc-lbl">  
+            YOUR ACTUAL TOTAL  
+          </div>  
+
+          <div  
+            class="pc-amt"  
+            id="actualVal"  
+          >  
+            ₹0  
+          </div>  
+
+        </div>  
+
+      </div>  
+
+      <div  
+        class="pace-status"  
+        id="paceStatus"  
+      >  
+        —  
+      </div>  
+
+    </div>  
+
+    <div class="greed-panel">  
+
+      <h4>  
+        ⚠️ ONE GREEDY DAY vs 8 DISCIPLINED DAYS  
+      </h4>  
+
+      <div class="compare-row">  
+
+        <div class="compare-bar good">  
+
+          <div class="bar-track">  
+            <div class="bar-fill"></div>  
+          </div>  
+
+          <div class="cap">  
+            8 DISCIPLINED DAYS  
+          </div>  
+
+          <div class="num">  
+            +₹40,000  
+          </div>  
+
+        </div>  
+
+      </div>  
+
+      <div class="compare-row">  
+
+        <div class="compare-bar bad">  
+
+          <div class="bar-track">  
+            <div class="bar-fill"></div>  
+          </div>  
+
+          <div class="cap">  
+            1 REVENGE-TRADE DAY  
+          </div>  
+
+          <div class="num">  
+            −₹40,000  
+          </div>  
+
+        </div>  
+
+      </div>  
+
+      <div class="greed-line">  
+        One <b>greedy overtrade</b> can erase what  
+        <b>8 disciplined days</b> built.  
+        Discipline is slow. Greed is instant.  
+        Choose slow.  
+      </div>  
+
+    </div>  
+
+    <div class="rules-section">  
+
+      <div class="sec-title">  
+        📋 TODAY'S DISCIPLINE RULES  
+      </div>  
+
+      <div id="rulesList"></div>  
+
+    </div>  
+
+    <div class="account-section">  
+
+      <div class="account-head">  
+
+        <h4>🏦 ACCOUNT DETAILS</h4>  
+
+        <button  
+          id="editAccountBtn"  
+          class="acct-edit-btn"  
+        >  
+          ✏️ Edit  
+        </button>  
+
+      </div>  
+
+      <div class="account-row">  
+
+        <span class="acc-lbl">  
+          UPI ID  
+        </span>  
+
+        <span  
+          class="acc-val"  
+          id="upiVal"  
+        >  
+          Not set  
+        </span>  
+
+      </div>  
+
+      <div class="account-row">  
+
+        <span class="acc-lbl">  
+          BANK NAME  
+        </span>  
+
+        <span  
+          class="acc-val"  
+          id="bankVal"  
+        >  
+          Not set  
+        </span>  
+
+      </div>  
+
+    </div>  
+
+    <div class="quote-card">  
+
+      <p>  
+        "Greed steals in an instant what discipline  
+        builds in a month."  
+      </p>  
+
+    </div>  
+
+  </div>  
+
+  <!-- ==================================================  
+       WEEKLY WITHDRAWAL VIEW  
+  ================================================== -->  
+
+  <div  
+    id="weeklyView"  
+    style="display:none;"  
+  >  
+
+    <div class="weekly-section">  
+
+      <div class="weekly-header">  
+
+        <div>  
+
+          <div class="weekly-label">  
+            💸 NEW ACCOUNT  
+          </div>  
+
+          <h2>  
+            WEEKLY WITHDRAWAL  
+          </h2>  
+
+          <p>  
+            Daily profits • Withdraw consistently  
+          </p>  
+
+        </div>  
+
+      </div>  
+
+      <div class="weekly-funds-row">  
+
+        <div class="weekly-card">  
+
+          <div class="weekly-card-label">  
+            💼 CURRENT FUNDS  
+          </div>  
+
+          <div  
+            class="weekly-card-value"  
+            id="weeklyCurrentFunds"  
+          >  
+            ₹0  
+          </div>  
+
+        </div>  
+
+        <div class="weekly-card profit">  
+
+          <div class="weekly-card-label">  
+            📈 TODAY'S PROFIT  
+          </div>  
+
+          <div  
+            class="weekly-card-value"  
+            id="weeklyTodayProfit"  
+          >  
+            ₹0  
+          </div>  
+
+        </div>  
+
+      </div>  
+
+      <div class="weekly-funds-row">  
+
+        <div class="weekly-card">  
+
+          <div class="weekly-card-label">  
+            🔥 WEEKLY STREAK  
+          </div>  
+
+          <div  
+            class="weekly-card-value"  
+            id="weeklyStreakVal"  
+          >  
+            0  
+          </div>  
+
+        </div>  
+
+        <div class="weekly-card profit">  
+
+          <div class="weekly-card-label">  
+            📊 TOTAL PROFIT  
+          </div>  
+
+          <div  
+            class="weekly-card-value"  
+            id="weeklyTotalProfit"  
+          >  
+            ₹0  
+          </div>  
+
+        </div>  
+
+      </div>  
+
+      <button  
+        id="weeklyLogBtn"  
+        style="  
+          width:100%;  
+          margin-top:12px;  
+          padding:12px;  
+          border:1px solid rgba(56,189,248,.35);  
+          border-radius:12px;  
+          background:rgba(56,189,248,.10);  
+          color:#38bdf8;  
+          font-family:'Poppins',sans-serif;  
+          font-size:11.5px;  
+          font-weight:700;  
+          cursor:pointer;  
+        "  
+      >  
+        📝 Log Today's Weekly Profit  
+      </button>  
+
+      <div class="weekly-withdraw-box">  
+
+        <div class="weekly-withdraw-head">  
+
+          <span>  
+            WITHDRAWABLE TODAY  
+          </span>  
+
+          <span id="weeklyWithdrawStatus">  
+            READY  
+          </span>  
+
+        </div>  
+
+        <div  
+          class="weekly-withdraw-amount"  
+          id="weeklyWithdrawAmount"  
+        >  
+          ₹0  
+        </div>  
+
+        <button  
+          id="weeklyWithdrawBtn"  
+          class="weekly-withdraw-btn"  
+        >  
+          💸 WITHDRAW  
+        </button>  
+
+      </div>  
+
+      <div class="weekly-vault">  
+
+        <div class="weekly-vault-head">  
+
+          <span>  
+            🏦 SURPLUS VAULT  
+          </span>  
+
+          <span id="weeklyVaultCount">  
+            0 / 15 WITHDRAWALS  
+          </span>  
+
+        </div>  
+
+        <div  
+          class="weekly-vault-amount"  
+          id="weeklyVaultAmount"  
+        >  
+          ₹0  
+        </div>  
+
+        <p>  
+          Amount above ₹5,000/day is stored here.  
+          Vault is reviewed every 15 completed  
+          withdrawals.  
+        </p>  
+
+      </div>  
+
+      <div class="withdraw-history">  
+
+        <div class="withdraw-history-title">  
+          📜 WITHDRAWAL HISTORY  
+        </div>  
+
+        <div id="weeklyWithdrawalHistory">  
+
+          <div class="empty-history">  
+            No withdrawals yet.  
+          </div>  
+
+        </div>  
+
+      </div>  
+
+    </div>  
+
+  </div>  
 
 </div>
-</main>
-</div>
 
-<script src="js/api.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/app.js"></script>
-<script>
-  // ===== Persistence: real daily closes, saved on the server (shared with
-  // the Dashboard's "Trade Guardian" card and the Financial Time Explorer
-  // calendar — all three now read from the same backend table). =====
-
-  const DAILY_TARGET = 5000;
-  const GRID_SIZE = 50;
-  const CURRENT_FUNDS = 30153.15; // set directly in code — not user-editable
-  const START_DATE = '2026-01-01';
-
-  // Baseline carried over from before this table had full history.
-  // BASE_DATE is the last day already "baked into" BASE_STREAK / BASE_PROFIT
-  // below (its own close is included in both). Any entry logged AFTER this
-  // date is added on top automatically — nothing else needs to change when
-  // you log a new day.
-  const BASE_DATE = '2026-08-13';
-  const BASE_STREAK = 38;
-  const BASE_PROFIT = 235444; // includes BASE_DATE's own close (4378)
-
-  async function fetchCloses(){
-  try {
-    const entries = await api.get('/trading/entries');
-    const map = {};
-
-    entries
-      .filter(e => e.entry_date >= START_DATE)
-      .forEach(e => {
-        map[e.entry_date] = Number(e.profit);
-      });
-
-    return map;
-  } catch (err) {
-    console.error(err);
-    showToast('Could not load trading entries', 'error');
-    return {};
-  }
-}
-
-  async function saveClose(entry_date, profit){
-    await api.post('/trading/entries', { entry_date, profit });
-  }
-
-  async function fetchAccount(){
-    try {
-      return await api.get('/trading/account');
-    } catch (err) {
-      console.error(err);
-      showToast('Could not load account details', 'error');
-      return { upi_id: '', bank_name: '' };
-    }
-  }
-  async function saveAccount(upi_id, bank_name){
-    await api.put('/trading/account', { upi_id, bank_name });
-  }
-
-  function todayKey(){
-    const d = new Date();
-    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-  }
-
-  function fmtRupee(n){
-    const sign = n < 0 ? '−' : '';
-    return sign + '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
-  }
-
-  function sortedEntries(closes){
-    return Object.entries(closes).sort((a,b) => a[0] < b[0] ? -1 : 1); // chronological
-  }
-
-  function computeStreak(entries){
-    let streak = 0;
-    for(let i = entries.length - 1; i >= 0; i--){
-      if (entries[i][1] >= 0) streak++; else break;
-    }
-    return streak;
-  }
-
-  // Longest-ever run of non-negative days, computed straight from history —
-  // no separate counter to fall out of sync.
-  function computeBestStreak(entries){
-    let best = 0, run = 0;
-    for (const [, amt] of entries) {
-      if (amt >= 0) { run++; best = Math.max(best, run); }
-      else { run = 0; }
-    }
-    return best;
-  }
-
-  async function render(){
-    const closes = await fetchCloses();
-    const entries = sortedEntries(closes);
-    console.log("TRADE ENTRIES:", entries);
-    const tKey = todayKey();
-    const hasToday = closes.hasOwnProperty(tKey);
-    const brokenCount = entries.filter(([,v]) => v < 0).length;
-
-    // Only days logged AFTER the baseline count toward it — BASE_DATE's own
-    // close is already inside BASE_PROFIT / BASE_STREAK, so it's excluded
-    // here to avoid double-counting.
-    const futureEntries = entries.filter(([date]) => date > BASE_DATE);
-    const dayCount = BASE_STREAK + futureEntries.length;
-
-    const futureTotal = futureEntries.reduce((total, entry) => {
-        return total + Number(entry[1] || 0);
-    }, 0);
-    const actualTotal = BASE_PROFIT + futureTotal;
-
-    const expectedTotal = DAILY_TARGET * dayCount;
-    const paceDelta = actualTotal - expectedTotal;
-
-    // Current streak — starts from the baseline and keeps counting forward;
-    // any losing day after the baseline resets it to 0 from that point on.
-    let streak = BASE_STREAK;
-
-    for (const [, pnl] of futureEntries) {
-        if (Number(pnl) >= 0) {
-            streak++;
-        } else {
-            streak = 0;
-        }
-    }
-
-    // Best streak — same idea, tracked across the baseline + future entries.
-    let best = BASE_STREAK;
-    let current = BASE_STREAK;
-
-    for (const entry of futureEntries) {
-        const pnl = Number(entry[1] || 0);
-
-        if (pnl >= 0) {
-            current++;
-            best = Math.max(best, current);
-        } else {
-            current = 0;
-        }
-    }
-
-    // Surplus Vault = total profit minus what the streak "owes" at the daily
-    // target (streak × ₹5,000) — recalculates automatically as streak/profit grow.
-    const surplusTotal = actualTotal - (streak * DAILY_TARGET);
-
-    // Top stats
-    document.getElementById('streakVal').textContent = streak;
-    document.getElementById('guardedVal').textContent = fmtRupee(actualTotal);
-    document.getElementById('bestVal').textContent = best;
-
-    // Current Funds + Profit Total
-    document.getElementById('currentFundsVal').textContent =
-      '₹' + CURRENT_FUNDS.toLocaleString('en-IN', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-
-    const profitEl = document.getElementById('profitTotalVal');
-
-    profitEl.textContent = '₹' + actualTotal.toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-    profitEl.classList.toggle('neg', actualTotal < 0);
-
-    // Account details
-    const acc = await fetchAccount();
-    document.getElementById('upiVal').textContent = acc.upi_id ? acc.upi_id : 'Not set';
-    document.getElementById('bankVal').textContent = acc.bank_name ? acc.bank_name : 'Not set';
-
-    // Lock today's close once it's been saved — unlocks automatically at 12:00 AM
-    const logBtn = document.getElementById('logBtn');
-    if (hasToday) {
-      logBtn.disabled = true;
-      logBtn.textContent = '🔒 Locked Until 12:00 AM';
-      logBtn.style.opacity = '0.5';
-      logBtn.style.cursor = 'not-allowed';
-    } else {
-      logBtn.disabled = false;
-      logBtn.textContent = "✏️ Log Today's Close";
-      logBtn.style.opacity = '1';
-      logBtn.style.cursor = 'pointer';
-    }
-
-    // Today status card
-    const statusCard = document.getElementById('todayStatus');
-    const statusIcon = document.getElementById('statusIcon');
-    const statusTitle = document.getElementById('statusTitle');
-    const statusSub = document.getElementById('statusSub');
-    if (!hasToday) {
-      statusCard.className = 'today-status';
-      statusIcon.textContent = '⏳';
-      statusTitle.textContent = "TODAY: NOT LOGGED YET";
-      statusSub.textContent = "Log today's close once you're done trading.";
-    } else if (closes[tKey] >= 0) {
-      statusCard.className = 'today-status disciplined';
-      statusIcon.textContent = '✅';
-      statusTitle.textContent = 'TODAY: DISCIPLINED';
-      statusSub.textContent = `Closed at ${fmtRupee(closes[tKey])}. Capital protected. Streak alive.`;
-    } else {
-      statusCard.className = 'today-status broken';
-      statusIcon.textContent = '⚠️';
-      statusTitle.textContent = 'TODAY: DISCIPLINE BROKEN';
-      statusSub.textContent = `Closed at ${fmtRupee(closes[tKey])}. Streak reset. Guard it tomorrow.`;
-    }
-
-    // Tower headline + day count
-    document.querySelector('.target-line .amt').textContent = fmtRupee(actualTotal);
-    document.querySelector('.tower-head .day-count').textContent = `DAY ${streak} / ${GRID_SIZE}`;
-    // Tower grid
-    const towerGrid = document.getElementById('towerGrid');
-    towerGrid.innerHTML = '';
-    const gridLen = Math.max(GRID_SIZE, streak);
-
-for (let i = 0; i < gridLen; i++) {
-  const step = document.createElement('div');
-  step.className = 'tower-step';
-
-  if (i < BASE_STREAK) {
-    step.classList.add('done');
-    step.textContent = i + 1;
-    step.title = `Day ${i + 1}: Baseline streak`;
-  } else {
-    const futureIndex = i - BASE_STREAK;
-    const entry = futureEntries[futureIndex];
-
-    if (entry) {
-      const [date, amt] = entry;
-
-      if (amt < 0) {
-        step.classList.add('broken');
-        step.textContent = '✕';
-      } else {
-        step.classList.add('done');
-        step.textContent = i + 1;
-      }
-
-      step.title = `${date}: ${fmtRupee(amt)}`;
-
-      if (date === tKey) {
-        step.classList.add('today');
-      }
-    } else {
-      step.textContent = i + 1;
-    }
-  }
-
-  towerGrid.appendChild(step);
-}
-
-    // Surplus Vault
-    document.getElementById('vaultVal').textContent = fmtRupee(surplusTotal);
-
-    // Pace Check
-    document.getElementById('expectVal').textContent = fmtRupee(expectedTotal);
-    document.getElementById('actualVal').textContent = fmtRupee(actualTotal);
-    const actualCol = document.getElementById('actualCol');
-    const paceStatus = document.getElementById('paceStatus');
-    actualCol.classList.remove('behind');
-    if (paceDelta >= 0) {
-      paceStatus.className = 'pace-status ahead';
-      paceStatus.textContent = entries.length ? `🚀 ${fmtRupee(Math.abs(paceDelta))} AHEAD OF PACE` : 'Log a day to see your pace';
-    } else {
-      actualCol.classList.add('behind');
-      paceStatus.className = 'pace-status behind';
-      paceStatus.textContent = `🔻 ${fmtRupee(Math.abs(paceDelta))} BEHIND PACE`;
-    }
-  }
-
-  document.getElementById('logBtn').addEventListener('click', async () => {
-    const closes = await fetchCloses();
-    const tKey = todayKey();
-    if (closes.hasOwnProperty(tKey)) {
-      alert("Today's close is already saved and locked. It unlocks automatically at 12:00 AM.");
-      return;
-    }
-    const raw = prompt(
-      "Today's closing P&L (₹)\nEnter a loss as a negative number, e.g. -4000",
-      ''
-    );
-    if (raw === null) return;
-    const amt = Number(raw);
-    if (isNaN(amt)) { alert('Enter a valid number.'); return; }
-
-    try {
-      await saveClose(tKey, amt);
-      render();
-    } catch (err) {
-      console.error(err);
-      showToast('Could not save today\'s close — try again', 'error');
-    }
-  });
-
-  document.getElementById('editAccountBtn').addEventListener('click', async () => {
-    const acc = await fetchAccount();
-    const upi = prompt('Enter UPI ID', acc.upi_id || '');
-    if (upi === null) return;
-    const bank = prompt('Enter Bank Name', acc.bank_name || '');
-    if (bank === null) return;
-
-    try {
-      await saveAccount(upi.trim(), bank.trim());
-      render();
-    } catch (err) {
-      console.error(err);
-      showToast('Could not save account details — try again', 'error');
-    }
-  });
-
-  render();
-
-  // Re-render every minute so the lock releases automatically at 12:00 AM
-  // without requiring a page refresh.
-  setInterval(render, 60000);
-
-// ===== DAILY RULE BOOK =====
-
-const RULEBOOK_KEY = 'trade_guardian_rules';
-
-const RULES = [
-  { icon: '🎯', text: 'Stopped trading after hitting ₹5,000 target' },
-  { icon: '🚫', text: 'No revenge trade after a loss' },
-  { icon: '🛑', text: 'Followed stop-loss on every trade' },
-  { icon: '📉', text: 'Stayed within max trade count for the day' },
-  { icon: '⏳', text: 'Walked away after 2 consecutive losses' },
-  { icon: '📝', text: 'Journaled today’s trades honestly' }
-];
-
-function getRuleBookDate() {
-  const now = new Date();
-
-  return (
-    now.getFullYear() + '-' +
-    String(now.getMonth() + 1).padStart(2, '0') + '-' +
-    String(now.getDate()).padStart(2, '0')
-  );
-}
-
-function isAfter10PM() {
-  return new Date().getHours() >= 22;
-}
-
-function renderRuleBook() {
-  const rulesList = document.getElementById('rulesList');
-
-  if (!rulesList) return;
-
-  rulesList.innerHTML = '';
-
-  const today = getRuleBookDate();
-
-  let saved = null;
-
-  try {
-    saved = JSON.parse(localStorage.getItem(RULEBOOK_KEY));
-  } catch {
-    saved = null;
-  }
-
-  if (saved && saved.date !== today) {
-    saved = null;
-    localStorage.removeItem(RULEBOOK_KEY);
-  }
-
-  const locked =
-    saved &&
-    saved.date === today &&
-    saved.locked === true &&
-    !isAfter10PM();
-
-  const states =
-    saved && saved.date === today && Array.isArray(saved.rules)
-      ? saved.rules
-      : RULES.map(() => false);
-
-  RULES.forEach((rule, index) => {
-    const row = document.createElement('div');
-
-    row.className =
-      'rule-row' +
-      (states[index] ? ' done' : '');
-
-    row.innerHTML = `
-      <span class="r-ic">${rule.icon}</span>
-      <span class="r-txt">${rule.text}</span>
-      <span class="rule-chk">
-        ${states[index] ? '✓' : ''}
-      </span>
-    `;
-
-    if (!locked) {
-      row.addEventListener('click', () => {
-        row.classList.toggle('done');
-
-        const check = row.querySelector('.rule-chk');
-
-        check.textContent =
-          row.classList.contains('done') ? '✓' : '';
-      });
-    } else {
-      row.style.cursor = 'not-allowed';
-      row.style.opacity = '0.65';
-    }
-
-    rulesList.appendChild(row);
-  });
-
-  const oldButton =
-    document.getElementById('saveRulesBtn');
-
-  if (oldButton) oldButton.remove();
-
-  const oldMessage =
-    document.getElementById('ruleLockMessage');
-
-  if (oldMessage) oldMessage.remove();
-
-  if (!locked) {
-    const saveButton = document.createElement('button');
-
-    saveButton.id = 'saveRulesBtn';
-    saveButton.textContent = '🔒 SAVE & LOCK TODAY’S RULES';
-
-    saveButton.style.cssText = `
-      width:100%;
-      margin-top:12px;
-      padding:13px;
-      border:none;
-      border-radius:12px;
-      background:#22c55e;
-      color:#04150a;
-      font-family:Poppins,sans-serif;
-      font-size:11px;
-      font-weight:800;
-      cursor:pointer;
-    `;
-
-    saveButton.addEventListener('click', () => {
-      const states = [...document.querySelectorAll('.rule-row')]
-        .map(row => row.classList.contains('done'));
-
-      localStorage.setItem(
-        RULEBOOK_KEY,
-        JSON.stringify({
-          date: today,
-          rules: states,
-          locked: true,
-          savedAt: new Date().toISOString()
-        })
-      );
-
-      renderRuleBook();
-
-      showToast(
-        'Rules saved and locked until 10:00 PM.',
-        'success'
-      );
-    });
-
-    rulesList.parentElement.appendChild(saveButton);
-
-  } else {
-    const lockMessage = document.createElement('div');
-
-    lockMessage.id = 'ruleLockMessage';
-
-    lockMessage.textContent =
-      '🔒 RULES LOCKED — UNLOCKS AT 10:00 PM';
-
-    lockMessage.style.cssText = `
-      margin-top:12px;
-      padding:11px;
-      border-radius:12px;
-      text-align:center;
-      background:rgba(34,197,94,.08);
-      border:1px solid rgba(34,197,94,.25);
-      color:#34d399;
-      font-family:JetBrains Mono,monospace;
-      font-size:9px;
-      font-weight:700;
-    `;
-
-    rulesList.parentElement.appendChild(lockMessage);
-  }
-}
-
-// Initial render
-renderRuleBook();
-
-// Check every minute so the 10 PM unlock happens automatically
-// without requiring a page refresh.
-setInterval(renderRuleBook, 60000);
-
-/* ==========================================
-   WEEKLY WITHDRAWAL ACCOUNT
-   Fully independent from Trade Guardian:
-   its own Current Funds, its own Total
-   Profit, its own streak — all backed by
-   /api/weekly-withdrawal.
-========================================== */
-
-const WEEKLY_TARGET = 5000;
-
-// Set these yourself in code, same idea as Trade Guardian's
-// CURRENT_FUNDS/BASE_PROFIT/BASE_STREAK above. They're the
-// "starting point" this account is seeded with — everything
-// logged/withdrawn afterward adds on top automatically.
-const WEEKLY_BASE_FUNDS = 27000;
-const WEEKLY_BASE_PROFIT = 0;
-const WEEKLY_BASE_STREAK = 0;
-
-
-/* ------------------------------------------
-   API HELPERS
------------------------------------------- */
-
-async function fetchWeeklyAccount(){
-  try {
-    return await api.get('/weekly-withdrawal/account');
-  } catch (err) {
-    console.error(err);
-    showToast('Could not load Weekly Withdrawal account', 'error');
-    return { current_funds: 0, surplus_vault: 0, withdrawal_count: 0 };
-  }
-}
-
-async function fetchWeeklyHistory(){
-  try {
-    return await api.get('/weekly-withdrawal/history');
-  } catch (err) {
-    console.error(err);
-    showToast('Could not load withdrawal history', 'error');
-    return [];
-  }
-}
-
-async function fetchWeeklyEntries(){
-  try {
-    return await api.get('/weekly-withdrawal/entries');
-  } catch (err) {
-    console.error(err);
-    showToast('Could not load weekly profit entries', 'error');
-    return [];
-  }
-}
-
-async function saveWeeklyProfit(entry_date, profit){
-  return await api.post('/weekly-withdrawal/profit', { entry_date, profit });
-}
-
-async function postWeeklyWithdrawal(profit){
-  return await api.post('/weekly-withdrawal/withdraw-profit', { profit });
-}
-
-
-/* ------------------------------------------
-   DERIVED VALUES FROM WEEKLY'S OWN ENTRIES
------------------------------------------- */
-
-function weeklySortedEntries(entries){
-  return [...entries].sort((a, b) =>
-    a.entry_date < b.entry_date ? -1 : 1
-  );
-}
-
-function weeklyComputeStreak(sorted){
-  let streak = WEEKLY_BASE_STREAK;
-  for (const e of sorted) {
-    if (Number(e.profit) >= 0) streak++;
-    else streak = 0;
-  }
-  return streak;
-}
-
-function weeklyComputeTotalProfit(sorted){
-  const sum = sorted.reduce(
-    (total, e) => total + Number(e.profit || 0), 0
-  );
-  return WEEKLY_BASE_PROFIT + sum;
-}
-
-
-/* ------------------------------------------
-   WITHDRAWABLE PREVIEW (client-side only —
-   actual amounts are computed + saved by
-   the backend when you click Withdraw)
------------------------------------------- */
-
-function calculateWeeklyWithdrawal(profit){
-  const withdrawal = Math.min(Math.max(profit, 0), WEEKLY_TARGET);
-  const surplus = Math.max(profit - WEEKLY_TARGET, 0);
-  return { withdrawal, surplus };
-}
-
-
-/* ------------------------------------------
-   RENDER WEEKLY ACCOUNT
------------------------------------------- */
-
-let weeklyAlreadyWithdrawnToday = false;
-let weeklyAlreadyLoggedToday = false;
-
-async function renderWeeklyAccount(){
-
-  const [account, history, entries] = await Promise.all([
-    fetchWeeklyAccount(),
-    fetchWeeklyHistory(),
-    fetchWeeklyEntries()
-  ]);
-
-  const sorted = weeklySortedEntries(entries);
-  const today = todayKey();
-  const todayEntry = entries.find(e => e.entry_date === today);
-  const profit = todayEntry ? Number(todayEntry.profit) : 0;
-
-  weeklyAlreadyLoggedToday = !!todayEntry;
-
-  const funds = WEEKLY_BASE_FUNDS + Number(account.current_funds || 0);
-  const vault = Number(account.surplus_vault || 0);
-  const count = Number(account.withdrawal_count || 0);
-  const streak = weeklyComputeStreak(sorted);
-  const totalProfit = weeklyComputeTotalProfit(sorted);
-
-  const calc = calculateWeeklyWithdrawal(profit);
-
-  weeklyAlreadyWithdrawnToday =
-    history.some(h => h.withdrawal_date === today);
-
-  const fundsEl = document.getElementById('weeklyCurrentFunds');
-  const profitEl = document.getElementById('weeklyTodayProfit');
-  const streakEl = document.getElementById('weeklyStreakVal');
-  const totalProfitEl = document.getElementById('weeklyTotalProfit');
-  const withdrawEl = document.getElementById('weeklyWithdrawAmount');
-  const vaultEl = document.getElementById('weeklyVaultAmount');
-  const countEl = document.getElementById('weeklyVaultCount');
-  const statusEl = document.getElementById('weeklyWithdrawStatus');
-  const button = document.getElementById('weeklyWithdrawBtn');
-  const logBtn = document.getElementById('weeklyLogBtn');
-
-  if(fundsEl) fundsEl.textContent = fmtRupee(funds);
-  if(profitEl) profitEl.textContent = fmtRupee(profit);
-  if(streakEl) streakEl.textContent = streak;
-  if(totalProfitEl) totalProfitEl.textContent = fmtRupee(totalProfit);
-  if(withdrawEl) withdrawEl.textContent = fmtRupee(calc.withdrawal);
-  if(vaultEl) vaultEl.textContent = fmtRupee(vault);
-  if(countEl) countEl.textContent = `${count} / 15 WITHDRAWALS`;
-
-  if(statusEl){
-    statusEl.textContent =
-      weeklyAlreadyWithdrawnToday ? 'DONE TODAY' : 'READY';
-  }
-
-  if(button){
-    button.disabled =
-      calc.withdrawal <= 0 || weeklyAlreadyWithdrawnToday || !weeklyAlreadyLoggedToday;
-  }
-
-  if(logBtn){
-    logBtn.disabled = weeklyAlreadyLoggedToday;
-    logBtn.textContent = weeklyAlreadyLoggedToday
-      ? "🔒 Today's Profit Logged"
-      : "📝 Log Today's Weekly Profit";
-    logBtn.style.opacity = weeklyAlreadyLoggedToday ? '0.5' : '1';
-    logBtn.style.cursor = weeklyAlreadyLoggedToday ? 'not-allowed' : 'pointer';
-  }
-
-  renderWeeklyHistory(history);
-
-}
-
-
-/* ------------------------------------------
-   LOG TODAY'S WEEKLY PROFIT
------------------------------------------- */
-
-async function weeklyLogProfit(){
-
-  if(weeklyAlreadyLoggedToday){
-    alert("Today's Weekly profit is already logged.");
-    return;
-  }
-
-  const raw = prompt(
-    "Today's Weekly Withdrawal profit (₹)\nEnter a loss as a negative number, e.g. -1200",
-    ''
-  );
-
-  if(raw === null) return;
-
-  const amt = Number(raw);
-  if(isNaN(amt)){ alert('Enter a valid number.'); return; }
-
-  try {
-    await saveWeeklyProfit(todayKey(), amt);
-    await renderWeeklyAccount();
-  } catch (err) {
-    console.error(err);
-    showToast('Could not save weekly profit — try again', 'error');
-  }
-
-}
-
-
-/* ------------------------------------------
-   WITHDRAW
------------------------------------------- */
-
-async function weeklyWithdraw(){
-
-  if(weeklyAlreadyWithdrawnToday){
-    alert('Already withdrawn today.');
-    return;
-  }
-
-  if(!weeklyAlreadyLoggedToday){
-    alert("Log today's Weekly profit first.");
-    return;
-  }
-
-  const entries = await fetchWeeklyEntries();
-  const todayEntry = entries.find(e => e.entry_date === todayKey());
-  const profit = todayEntry ? Number(todayEntry.profit) : 0;
-
-  const calc = calculateWeeklyWithdrawal(profit);
-
-  if(calc.withdrawal <= 0){
-    alert('Nothing to withdraw today.');
-    return;
-  }
-
-  try {
-
-    const result = await postWeeklyWithdrawal(profit);
-
-    await renderWeeklyAccount();
-
-    let msg = `Withdrawal recorded: ${fmtRupee(result.history.amount)}`;
-
-    if(
-      result.history.vault_released !== null &&
-      result.history.vault_released !== undefined
-    ){
-      msg += `\n🏦 Surplus Vault released: ${fmtRupee(result.history.vault_released)}`;
-    }
-
-    alert(msg);
-
-  } catch (err) {
-    console.error(err);
-    showToast('Withdrawal failed', 'error');
-  }
-
-}
-
-
-/* ------------------------------------------
-   HISTORY
------------------------------------------- */
-
-function renderWeeklyHistory(history){
-
-  const container = document.getElementById('weeklyWithdrawalHistory');
-  if(!container) return;
-
-  if(!history || history.length === 0){
-    container.innerHTML =
-      `<div class="empty-history">No withdrawals yet.</div>`;
-    return;
-  }
-
-  container.innerHTML = history.map(item => {
-
-    let meta = `Profit ${fmtRupee(Number(item.profit || 0))}`;
-
-    if(
-      item.vault_released !== null &&
-      item.vault_released !== undefined
-    ){
-      meta += ` • 🏦 Vault released ${fmtRupee(Number(item.vault_released))}`;
-    }
-
-    const dateLabel = new Date(item.withdrawal_date).toLocaleDateString('en-IN');
-
-    return `
-      <div class="withdraw-history-row">
-        <div>
-          <div class="withdraw-date">${dateLabel}</div>
-          <div class="withdraw-meta">Withdrawal #${item.withdrawal_number ?? '-'}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="withdraw-amount">${fmtRupee(Number(item.amount))}</div>
-          <div class="withdraw-meta">${meta}</div>
-        </div>
-      </div>
-    `;
-
-  }).join('');
-
-}
-
-
-/* ------------------------------------------
-   FLIP ACCOUNT (true toggle, not scroll)
------------------------------------------- */
-
-let onWeeklyView = false;
-
-function toggleAccountView(){
-
-  onWeeklyView = !onWeeklyView;
-
-  const guardianView = document.getElementById('guardianView');
-  const weeklyView = document.getElementById('weeklyView');
-  const flipBtn = document.getElementById('flipAccountBtn');
-
-  if(guardianView) guardianView.style.display = onWeeklyView ? 'none' : '';
-  if(weeklyView) weeklyView.style.display = onWeeklyView ? '' : 'none';
-
-  if(flipBtn){
-    flipBtn.textContent = onWeeklyView
-      ? '🔄 FLIP TO TRADE GUARDIAN'
-      : '🔄 FLIP TO WEEKLY WITHDRAWAL';
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-}
-
-document
-  .getElementById('flipAccountBtn')
-  ?.addEventListener('click', toggleAccountView);
-
-
-/* ------------------------------------------
-   BUTTONS
------------------------------------------- */
-
-document
-  .getElementById('weeklyWithdrawBtn')
-  ?.addEventListener('click', weeklyWithdraw);
-
-document
-  .getElementById('weeklyLogBtn')
-  ?.addEventListener('click', weeklyLogProfit);
-
-
-/* ------------------------------------------
-   INITIAL LOAD
------------------------------------------- */
-
-renderWeeklyAccount();
-
-setInterval(renderWeeklyAccount, 60000);
-</script>
-</body>
-  </html>
+  </main>  </div>  <div  
+  class="toast"  
+  id="toast"  
+></div>  <script src="js/api.js"></script>  <script src="js/auth.js"></script>  <script src="js/utils.js"></script>  <script src="js/app.js"></script>  <script>  
+  
+/* ==================================================  
+   GLOBAL CONFIGURATION  
+================================================== */  
+  
+const DAILY_TARGET = 5000;  
+const GRID_SIZE = 50;  
+const CURRENT_FUNDS = 30153.15;  
+const START_DATE = '2026-01-01';  
+  
+const BASE_DATE = '2026-08-13';  
+const BASE_STREAK = 38;  
+const BASE_PROFIT = 235444;  
+  
+  
+/* ==================================================  
+   TOAST  
+================================================== */  
+  
+let toastTimer = null;  
+  
+function showLocalToast(message, type = 'success'){  
+  
+  const toast = document.getElementById('toast');  
+  
+  if(!toast) return;  
+  
+  toast.textContent = message;  
+  
+  toast.className =  
+    'toast show ' +  
+    (type === 'error' ? 'error' : 'success');  
+  
+  clearTimeout(toastTimer);  
+  
+  toastTimer = setTimeout(() => {  
+    toast.className = 'toast';  
+  }, 2800);  
+}  
+  
+  
+/* ==================================================  
+   SIDEBAR  
+================================================== */  
+  
+const sidebar =  
+  document.getElementById('sidebar');  
+  
+const sidebarToggle =  
+  document.getElementById('sidebarToggle');  
+  
+const sidebarOverlay =  
+  document.getElementById('sidebarOverlay');  
+  
+function closeSidebar(){  
+  
+  sidebar?.classList.remove('open');  
+  sidebarOverlay?.classList.remove('visible');  
+  
+}  
+  
+function openSidebar(){  
+  
+  sidebar?.classList.add('open');  
+  sidebarOverlay?.classList.add('visible');  
+  
+}  
+  
+sidebarToggle?.addEventListener(  
+  'click',  
+  () => {  
+  
+    if(sidebar?.classList.contains('open')){  
+      closeSidebar();  
+    }else{  
+      openSidebar();  
+    }  
+  
+  }  
+);  
+  
+sidebarOverlay?.addEventListener(  
+  'click',  
+  closeSidebar  
+);  
+  
+  
+/* ==================================================  
+   DATE / FORMATTING HELPERS  
+================================================== */  
+  
+function todayKey(){  
+  
+  const d = new Date();  
+  
+  return (  
+    d.getFullYear() +  
+    '-' +  
+    String(d.getMonth() + 1).padStart(2,'0') +  
+    '-' +  
+    String(d.getDate()).padStart(2,'0')  
+  );  
+  
+}  
+  
+function fmtRupee(n){  
+  
+  n = Number(n || 0);  
+  
+  const sign =  
+    n < 0 ? '−' : '';  
+  
+  return (  
+    sign +  
+    '₹' +  
+    Math.abs(Math.round(n))  
+      .toLocaleString('en-IN')  
+  );  
+  
+}  
+  
+  
+/* ==================================================  
+   TRADE GUARDIAN API  
+================================================== */  
+  
+async function fetchCloses(){  
+  
+  try{  
+  
+    const entries =  
+      await api.get('/trading/entries');  
+  
+    const map = {};  
+  
+    entries  
+      .filter(e => e.entry_date >= START_DATE)  
+      .forEach(e => {  
+  
+        map[e.entry_date] =  
+          Number(e.profit);  
+  
+      });  
+  
+    return map;  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    showLocalToast(  
+      'Could not load trading entries',  
+      'error'  
+    );  
+  
+    return {};  
+  
+  }  
+  
+}  
+  
+async function saveClose(  
+  entry_date,  
+  profit  
+){  
+  
+  return await api.post(  
+    '/trading/entries',  
+    {  
+      entry_date,  
+      profit  
+    }  
+  );  
+  
+}  
+  
+async function fetchAccount(){  
+  
+  try{  
+  
+    return await api.get(  
+      '/trading/account'  
+    );  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    showLocalToast(  
+      'Could not load account details',  
+      'error'  
+    );  
+  
+    return {  
+      upi_id:'',  
+      bank_name:''  
+    };  
+  
+  }  
+  
+}  
+  
+async function saveAccount(  
+  upi_id,  
+  bank_name  
+){  
+  
+  return await api.put(  
+    '/trading/account',  
+    {  
+      upi_id,  
+      bank_name  
+    }  
+  );  
+  
+}  
+  
+  
+/* ==================================================  
+   TRADE GUARDIAN CALCULATIONS  
+================================================== */  
+  
+function sortedEntries(closes){  
+  
+  return Object  
+    .entries(closes)  
+    .sort(  
+      (a,b) =>  
+        a[0] < b[0] ? -1 : 1  
+    );  
+  
+}  
+  
+function computeStreak(entries){  
+  
+  let streak = 0;  
+  
+  for(  
+    let i = entries.length - 1;  
+    i >= 0;  
+    i--  
+  ){  
+  
+    if(entries[i][1] >= 0){  
+      streak++;  
+    }else{  
+      break;  
+    }  
+  
+  }  
+  
+  return streak;  
+  
+}  
+  
+function computeBestStreak(entries){  
+  
+  let best = 0;  
+  let run = 0;  
+  
+  for(const [,amt] of entries){  
+  
+    if(amt >= 0){  
+  
+      run++;  
+  
+      best =  
+        Math.max(  
+          best,  
+          run  
+        );  
+  
+    }else{  
+  
+      run = 0;  
+  
+    }  
+  
+  }  
+  
+  return best;  
+  
+}  
+  
+  
+/* ==================================================  
+   RENDER TRADE GUARDIAN  
+================================================== */  
+  
+async function render(){  
+  
+  const closes =  
+    await fetchCloses();  
+  
+  const entries =  
+    sortedEntries(closes);  
+  
+  console.log(  
+    'TRADE ENTRIES:',  
+    entries  
+  );  
+  
+  const tKey =  
+    todayKey();  
+  
+  const hasToday =  
+    Object.prototype.hasOwnProperty  
+      .call(closes,tKey);  
+  
+  const futureEntries =  
+    entries.filter(  
+      ([date]) =>  
+        date > BASE_DATE  
+    );  
+  
+  const dayCount =  
+    BASE_STREAK +  
+    futureEntries.length;  
+  
+  const futureTotal =  
+    futureEntries.reduce(  
+      (total, entry) =>  
+        total + Number(entry[1] || 0),  
+      0  
+    );  
+  
+  const actualTotal =  
+    BASE_PROFIT +  
+    futureTotal;  
+  
+  const expectedTotal =  
+    DAILY_TARGET *  
+    dayCount;  
+  
+  const paceDelta =  
+    actualTotal -  
+    expectedTotal;  
+  
+  
+  /* -------------------------------  
+     CURRENT STREAK  
+  -------------------------------- */  
+  
+  let streak =  
+    BASE_STREAK;  
+  
+  for(  
+    const [,pnl]  
+    of futureEntries  
+  ){  
+  
+    if(Number(pnl) >= 0){  
+  
+      streak++;  
+  
+    }else{  
+  
+      streak = 0;  
+  
+    }  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     BEST STREAK  
+  -------------------------------- */  
+  
+  let best =  
+    BASE_STREAK;  
+  
+  let current =  
+    BASE_STREAK;  
+  
+  for(  
+    const entry  
+    of futureEntries  
+  ){  
+  
+    const pnl =  
+      Number(entry[1] || 0);  
+  
+    if(pnl >= 0){  
+  
+      current++;  
+  
+      best =  
+        Math.max(  
+          best,  
+          current  
+        );  
+  
+    }else{  
+  
+      current = 0;  
+  
+    }  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     SURPLUS  
+  -------------------------------- */  
+  
+  const surplusTotal =  
+    actualTotal -  
+    (streak * DAILY_TARGET);  
+  
+  
+  /* -------------------------------  
+     TOP STATS  
+  -------------------------------- */  
+  
+  const streakEl =  
+    document.getElementById(  
+      'streakVal'  
+    );  
+  
+  const guardedEl =  
+    document.getElementById(  
+      'guardedVal'  
+    );  
+  
+  const bestEl =  
+    document.getElementById(  
+      'bestVal'  
+    );  
+  
+  if(streakEl)  
+    streakEl.textContent =  
+      streak;  
+  
+  if(guardedEl)  
+    guardedEl.textContent =  
+      fmtRupee(actualTotal);  
+  
+  if(bestEl)  
+    bestEl.textContent =  
+      best;  
+  
+  
+  /* -------------------------------  
+     CURRENT FUNDS  
+  -------------------------------- */  
+  
+  const currentFundsEl =  
+    document.getElementById(  
+      'currentFundsVal'  
+    );  
+  
+  if(currentFundsEl){  
+  
+    currentFundsEl.textContent =  
+      '₹' +  
+      CURRENT_FUNDS.toLocaleString(  
+        'en-IN',  
+        {  
+          minimumFractionDigits:2,  
+          maximumFractionDigits:2  
+        }  
+      );  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     PROFIT TOTAL  
+  -------------------------------- */  
+  
+  const profitEl =  
+    document.getElementById(  
+      'profitTotalVal'  
+    );  
+  
+  if(profitEl){  
+  
+    profitEl.textContent =  
+      '₹' +  
+      actualTotal.toLocaleString(  
+        'en-IN',  
+        {  
+          minimumFractionDigits:2,  
+          maximumFractionDigits:2  
+        }  
+      );  
+  
+    profitEl.classList.toggle(  
+      'neg',  
+      actualTotal < 0  
+    );  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     ACCOUNT DETAILS  
+  -------------------------------- */  
+  
+  const acc =  
+    await fetchAccount();  
+  
+  const upiEl =  
+    document.getElementById(  
+      'upiVal'  
+    );  
+  
+  const bankEl =  
+    document.getElementById(  
+      'bankVal'  
+    );  
+  
+  if(upiEl){  
+  
+    upiEl.textContent =  
+      acc.upi_id  
+        ? acc.upi_id  
+        : 'Not set';  
+  
+  }  
+  
+  if(bankEl){  
+  
+    bankEl.textContent =  
+      acc.bank_name  
+        ? acc.bank_name  
+        : 'Not set';  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     LOG BUTTON  
+  -------------------------------- */  
+  
+  const logBtn =  
+    document.getElementById(  
+      'logBtn'  
+    );  
+  
+  if(logBtn){  
+  
+    if(hasToday){  
+  
+      logBtn.disabled = true;  
+  
+      logBtn.textContent =  
+        '🔒 Locked Until 12:00 AM';  
+  
+      logBtn.style.opacity = '.5';  
+  
+      logBtn.style.cursor =  
+        'not-allowed';  
+  
+    }else{  
+  
+      logBtn.disabled = false;  
+  
+      logBtn.textContent =  
+        "✏️ Log Today's Close";  
+  
+      logBtn.style.opacity = '1';  
+  
+      logBtn.style.cursor =  
+        'pointer';  
+  
+    }  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     TODAY STATUS  
+  -------------------------------- */  
+  
+  const statusCard =  
+    document.getElementById(  
+      'todayStatus'  
+    );  
+  
+  const statusIcon =  
+    document.getElementById(  
+      'statusIcon'  
+    );  
+  
+  const statusTitle =  
+    document.getElementById(  
+      'statusTitle'  
+    );  
+  
+  const statusSub =  
+    document.getElementById(  
+      'statusSub'  
+    );  
+  
+  if(!hasToday){  
+  
+    statusCard.className =  
+      'today-status';  
+  
+    statusIcon.textContent =  
+      '⏳';  
+  
+    statusTitle.textContent =  
+      'TODAY: NOT LOGGED YET';  
+  
+    statusSub.textContent =  
+      "Log today's close once you're done trading.";  
+  
+  }else if(  
+    closes[tKey] >= 0  
+  ){  
+  
+    statusCard.className =  
+      'today-status disciplined';  
+  
+    statusIcon.textContent =  
+      '✅';  
+  
+    statusTitle.textContent =  
+      'TODAY: DISCIPLINED';  
+  
+    statusSub.textContent =  
+      `Closed at ${fmtRupee(closes[tKey])}. Capital protected. Streak alive.`;  
+  
+  }else{  
+  
+    statusCard.className =  
+      'today-status broken';  
+  
+    statusIcon.textContent =  
+      '⚠️';  
+  
+    statusTitle.textContent =  
+      'TODAY: DISCIPLINE BROKEN';  
+  
+    statusSub.textContent =  
+      `Closed at ${fmtRupee(closes[tKey])}. Streak reset. Guard it tomorrow.`;  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     TOWER HEADER  
+  -------------------------------- */  
+  
+  const towerAmount =  
+    document.querySelector(  
+      '.target-line .amt'  
+    );  
+  
+  if(towerAmount)  
+    towerAmount.textContent =  
+      fmtRupee(actualTotal);  
+  
+  const dayCountEl =  
+    document.querySelector(  
+      '.tower-head .day-count'  
+    );  
+  
+  if(dayCountEl)  
+    dayCountEl.textContent =  
+      `DAY ${streak} / ${GRID_SIZE}`;  
+  
+  
+  /* -------------------------------  
+     TOWER GRID  
+  -------------------------------- */  
+  
+  const towerGrid =  
+    document.getElementById(  
+      'towerGrid'  
+    );  
+  
+  if(towerGrid){  
+  
+    towerGrid.innerHTML = '';  
+  
+    const gridLen =  
+      Math.max(  
+        GRID_SIZE,  
+        BASE_STREAK +  
+        futureEntries.length  
+      );  
+  
+    for(  
+      let i = 0;  
+      i < gridLen;  
+      i++  
+    ){  
+  
+      const step =  
+        document.createElement(  
+          'div'  
+        );  
+  
+      step.className =  
+        'tower-step';  
+  
+      if(i < BASE_STREAK){  
+  
+        step.classList.add(  
+          'done'  
+        );  
+  
+        step.textContent =  
+          i + 1;  
+  
+        step.title =  
+          `Day ${i + 1}: Baseline streak`;  
+  
+      }else{  
+  
+        const futureIndex =  
+          i - BASE_STREAK;  
+  
+        const entry =  
+          futureEntries[  
+            futureIndex  
+          ];  
+  
+        if(entry){  
+  
+          const [  
+            date,  
+            amt  
+          ] = entry;  
+  
+          if(amt < 0){  
+  
+            step.classList.add(  
+              'broken'  
+            );  
+  
+            step.textContent =  
+              '✕';  
+  
+          }else{  
+  
+            step.classList.add(  
+              'done'  
+            );  
+  
+            step.textContent =  
+              i + 1;  
+  
+          }  
+  
+          step.title =  
+            `${date}: ${fmtRupee(amt)}`;  
+  
+          if(date === tKey){  
+  
+            step.classList.add(  
+              'today'  
+            );  
+  
+          }  
+  
+        }else{  
+  
+          step.textContent =  
+            i + 1;  
+  
+        }  
+  
+      }  
+  
+      towerGrid.appendChild(  
+        step  
+      );  
+  
+    }  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     SURPLUS VAULT  
+  -------------------------------- */  
+  
+  const vaultEl =  
+    document.getElementById(  
+      'vaultVal'  
+    );  
+  
+  if(vaultEl)  
+    vaultEl.textContent =  
+      fmtRupee(surplusTotal);  
+  
+  
+  /* -------------------------------  
+     PACE  
+  -------------------------------- */  
+  
+  const expectEl =  
+    document.getElementById(  
+      'expectVal'  
+    );  
+  
+  const actualEl =  
+    document.getElementById(  
+      'actualVal'  
+    );  
+  
+  if(expectEl)  
+    expectEl.textContent =  
+      fmtRupee(expectedTotal);  
+  
+  if(actualEl)  
+    actualEl.textContent =  
+      fmtRupee(actualTotal);  
+  
+  const actualCol =  
+    document.getElementById(  
+      'actualCol'  
+    );  
+  
+  const paceStatus =  
+    document.getElementById(  
+      'paceStatus'  
+    );  
+  
+  actualCol?.classList.remove(  
+    'behind'  
+  );  
+  
+  if(paceDelta >= 0){  
+  
+    if(paceStatus){  
+  
+      paceStatus.className =  
+        'pace-status ahead';  
+  
+      paceStatus.textContent =  
+        entries.length  
+          ? `🚀 ${fmtRupee(Math.abs(paceDelta))} AHEAD OF PACE`  
+          : 'Log a day to see your pace';  
+  
+    }  
+  
+  }else{  
+  
+    actualCol?.classList.add(  
+      'behind'  
+    );  
+  
+    if(paceStatus){  
+  
+      paceStatus.className =  
+        'pace-status behind';  
+  
+      paceStatus.textContent =  
+        `🔻 ${fmtRupee(Math.abs(paceDelta))} BEHIND PACE`;  
+  
+    }  
+  
+  }  
+  
+}  
+  
+  
+/* ==================================================  
+   TRADE GUARDIAN LOG  
+================================================== */  
+  
+document  
+  .getElementById('logBtn')  
+  ?.addEventListener(  
+    'click',  
+    async () => {  
+  
+      const closes =  
+        await fetchCloses();  
+  
+      const tKey =  
+        todayKey();  
+  
+      if(  
+        Object.prototype.hasOwnProperty  
+          .call(closes,tKey)  
+      ){  
+  
+        alert(  
+          "Today's close is already saved and locked. It unlocks automatically at 12:00 AM."  
+        );  
+  
+        return;  
+  
+      }  
+  
+      const raw =  
+        prompt(  
+          "Today's closing P&L (₹)\nEnter a loss as a negative number, e.g. -4000",  
+          ''  
+        );  
+  
+      if(raw === null)  
+        return;  
+  
+      const amt =  
+        Number(raw);  
+  
+      if(isNaN(amt)){  
+  
+        alert(  
+          'Enter a valid number.'  
+        );  
+  
+        return;  
+  
+      }  
+  
+      try{  
+  
+        await saveClose(  
+          tKey,  
+          amt  
+        );  
+  
+        await render();  
+  
+        showLocalToast(  
+          "Today's close saved.",  
+          'success'  
+        );  
+  
+      }catch(err){  
+  
+        console.error(err);  
+  
+        showLocalToast(  
+          "Could not save today's close — try again",  
+          'error'  
+        );  
+  
+      }  
+  
+    }  
+  );  
+  
+  
+/* ==================================================  
+   ACCOUNT EDIT  
+================================================== */  
+  
+document  
+  .getElementById('editAccountBtn')  
+  ?.addEventListener(  
+    'click',  
+    async () => {  
+  
+      const acc =  
+        await fetchAccount();  
+  
+      const upi =  
+        prompt(  
+          'Enter UPI ID',  
+          acc.upi_id || ''  
+        );  
+  
+      if(upi === null)  
+        return;  
+  
+      const bank =  
+        prompt(  
+          'Enter Bank Name',  
+          acc.bank_name || ''  
+        );  
+  
+      if(bank === null)  
+        return;  
+  
+      try{  
+  
+        await saveAccount(  
+          upi.trim(),  
+          bank.trim()  
+        );  
+  
+        await render();  
+  
+        showLocalToast(  
+          'Account details saved.',  
+          'success'  
+        );  
+  
+      }catch(err){  
+  
+        console.error(err);  
+  
+        showLocalToast(  
+          'Could not save account details — try again',  
+          'error'  
+        );  
+  
+      }  
+  
+    }  
+  );  
+  
+  
+/* ==================================================  
+   DAILY RULE BOOK  
+================================================== */  
+  
+const RULEBOOK_KEY =  
+  'trade_guardian_rules';  
+  
+const RULES = [  
+  
+  {  
+    icon:'🎯',  
+    text:'Stopped trading after hitting ₹5,000 target'  
+  },  
+  
+  {  
+    icon:'🚫',  
+    text:'No revenge trade after a loss'  
+  },  
+  
+  {  
+    icon:'🛑',  
+    text:'Followed stop-loss on every trade'  
+  },  
+  
+  {  
+    icon:'📉',  
+    text:'Stayed within max trade count for the day'  
+  },  
+  
+  {  
+    icon:'⏳',  
+    text:'Walked away after 2 consecutive losses'  
+  },  
+  
+  {  
+    icon:'📝',  
+    text:'Journaled today’s trades honestly'  
+  }  
+  
+];  
+  
+function getRuleBookDate(){  
+  
+  const now =  
+    new Date();  
+  
+  return (  
+    now.getFullYear() +  
+    '-' +  
+    String(  
+      now.getMonth() + 1  
+    ).padStart(2,'0') +  
+    '-' +  
+    String(  
+      now.getDate()  
+    ).padStart(2,'0')  
+  );  
+  
+}  
+  
+function isAfter10PM(){  
+  
+  return new Date()  
+    .getHours() >= 22;  
+  
+}  
+  
+function renderRuleBook(){  
+  
+  const rulesList =  
+    document.getElementById(  
+      'rulesList'  
+    );  
+  
+  if(!rulesList)  
+    return;  
+  
+  rulesList.innerHTML = '';  
+  
+  const today =  
+    getRuleBookDate();  
+  
+  let saved = null;  
+  
+  try{  
+  
+    saved =  
+      JSON.parse(  
+        localStorage.getItem(  
+          RULEBOOK_KEY  
+        )  
+      );  
+  
+  }catch{  
+  
+    saved = null;  
+  
+  }  
+  
+  if(  
+    saved &&  
+    saved.date !== today  
+  ){  
+  
+    saved = null;  
+  
+    localStorage.removeItem(  
+      RULEBOOK_KEY  
+    );  
+  
+  }  
+  
+  const locked =  
+    saved &&  
+    saved.date === today &&  
+    saved.locked === true &&  
+    !isAfter10PM();  
+  
+  const states =  
+    saved &&  
+    saved.date === today &&  
+    Array.isArray(saved.rules)  
+      ? saved.rules  
+      : RULES.map(  
+          () => false  
+        );  
+  
+  RULES.forEach(  
+    (rule,index) => {  
+  
+      const row =  
+        document.createElement(  
+          'div'  
+        );  
+  
+      row.className =  
+        'rule-row' +  
+        (  
+          states[index]  
+            ? ' done'  
+            : ''  
+        );  
+  
+      row.innerHTML = `  
+        <span class="r-ic">${rule.icon}</span>  
+        <span class="r-txt">${rule.text}</span>  
+        <span class="rule-chk">  
+          ${states[index] ? '✓' : ''}  
+        </span>  
+      `;  
+  
+      if(!locked){  
+  
+        row.addEventListener(  
+          'click',  
+          () => {  
+  
+            row.classList.toggle(  
+              'done'  
+            );  
+  
+            const check =  
+              row.querySelector(  
+                '.rule-chk'  
+              );  
+  
+            check.textContent =  
+              row.classList.contains(  
+                'done'  
+              )  
+                ? '✓'  
+                : '';  
+  
+          }  
+        );  
+  
+      }else{  
+  
+        row.style.cursor =  
+          'not-allowed';  
+  
+        row.style.opacity =  
+          '.65';  
+  
+      }  
+  
+      rulesList.appendChild(  
+        row  
+      );  
+  
+    }  
+  );  
+  
+  const oldButton =  
+    document.getElementById(  
+      'saveRulesBtn'  
+    );  
+  
+  if(oldButton)  
+    oldButton.remove();  
+  
+  const oldMessage =  
+    document.getElementById(  
+      'ruleLockMessage'  
+    );  
+  
+  if(oldMessage)  
+    oldMessage.remove();  
+  
+  if(!locked){  
+  
+    const saveButton =  
+      document.createElement(  
+        'button'  
+      );  
+  
+    saveButton.id =  
+      'saveRulesBtn';  
+  
+    saveButton.textContent =  
+      '🔒 SAVE & LOCK TODAY’S RULES';  
+  
+    saveButton.style.cssText = `  
+      width:100%;  
+      margin-top:12px;  
+      padding:13px;  
+      border:none;  
+      border-radius:12px;  
+      background:#22c55e;  
+      color:#04150a;  
+      font-family:Poppins,sans-serif;  
+      font-size:11px;  
+      font-weight:800;  
+      cursor:pointer;  
+    `;  
+  
+    saveButton.addEventListener(  
+      'click',  
+      () => {  
+  
+        const states =  
+          [  
+            ...document.querySelectorAll(  
+              '.rule-row'  
+            )  
+          ].map(  
+            row =>  
+              row.classList.contains(  
+                'done'  
+              )  
+          );  
+  
+        localStorage.setItem(  
+          RULEBOOK_KEY,  
+          JSON.stringify({  
+            date:today,  
+            rules:states,  
+            locked:true,  
+            savedAt:  
+              new Date().toISOString()  
+          })  
+        );  
+  
+        renderRuleBook();  
+  
+        showLocalToast(  
+          'Rules saved and locked until 10:00 PM.',  
+          'success'  
+        );  
+  
+      }  
+    );  
+  
+    rulesList.parentElement  
+      .appendChild(  
+        saveButton  
+      );  
+  
+  }else{  
+  
+    const lockMessage =  
+      document.createElement(  
+        'div'  
+      );  
+  
+    lockMessage.id =  
+      'ruleLockMessage';  
+  
+    lockMessage.textContent =  
+      '🔒 RULES LOCKED — UNLOCKS AT 10:00 PM';  
+  
+    lockMessage.style.cssText = `  
+      margin-top:12px;  
+      padding:11px;  
+      border-radius:12px;  
+      text-align:center;  
+      background:rgba(34,197,94,.08);  
+      border:1px solid rgba(34,197,94,.25);  
+      color:#34d399;  
+      font-family:JetBrains Mono,monospace;  
+      font-size:9px;  
+      font-weight:700;  
+    `;  
+  
+    rulesList.parentElement  
+      .appendChild(  
+        lockMessage  
+      );  
+  
+  }  
+  
+}  
+  
+  
+/* ==================================================  
+   WEEKLY WITHDRAWAL ACCOUNT  
+================================================== */  
+  
+const WEEKLY_TARGET =  
+  5000;  
+  
+const WEEKLY_BASE_FUNDS =  
+  27000;  
+  
+const WEEKLY_BASE_PROFIT =  
+  0;  
+  
+const WEEKLY_BASE_STREAK =  
+  0;  
+  
+  
+/* ==================================================  
+   WEEKLY API HELPERS  
+================================================== */  
+  
+async function fetchWeeklyAccount(){  
+  
+  try{  
+  
+    return await api.get(  
+      '/weekly-withdrawal/account'  
+    );  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    showLocalToast(  
+      'Could not load Weekly Withdrawal account',  
+      'error'  
+    );  
+  
+    return {  
+      current_funds:0,  
+      surplus_vault:0,  
+      withdrawal_count:0  
+    };  
+  
+  }  
+  
+}  
+  
+async function fetchWeeklyHistory(){  
+  
+  try{  
+  
+    return await api.get(  
+      '/weekly-withdrawal/history'  
+    );  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    showLocalToast(  
+      'Could not load withdrawal history',  
+      'error'  
+    );  
+  
+    return [];  
+  
+  }  
+  
+}  
+  
+async function fetchWeeklyEntries(){  
+  
+  try{  
+  
+    return await api.get(  
+      '/weekly-withdrawal/entries'  
+    );  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    showLocalToast(  
+      'Could not load weekly profit entries',  
+      'error'  
+    );  
+  
+    return [];  
+  
+  }  
+  
+}  
+  
+async function saveWeeklyProfit(  
+  entry_date,  
+  profit  
+){  
+  
+  return await api.post(  
+    '/weekly-withdrawal/profit',  
+    {  
+      entry_date,  
+      profit  
+    }  
+  );  
+  
+}  
+  
+async function postWeeklyWithdrawal(  
+  profit  
+){  
+  
+  return await api.post(  
+    '/weekly-withdrawal/withdraw-profit',  
+    {  
+      profit  
+    }  
+  );  
+  
+}  
+  
+  
+/* ==================================================  
+   WEEKLY CALCULATIONS  
+================================================== */  
+  
+function weeklySortedEntries(  
+  entries  
+){  
+  
+  return [...entries].sort(  
+    (a,b) =>  
+      a.entry_date <  
+      b.entry_date  
+        ? -1  
+        : 1  
+  );  
+  
+}  
+  
+function weeklyComputeStreak(  
+  sorted  
+){  
+  
+  let streak =  
+    WEEKLY_BASE_STREAK;  
+  
+  for(  
+    const e of sorted  
+  ){  
+  
+    if(  
+      Number(e.profit) >= 0  
+    ){  
+  
+      streak++;  
+  
+    }else{  
+  
+      streak = 0;  
+  
+    }  
+  
+  }  
+  
+  return streak;  
+  
+}  
+  
+function weeklyComputeTotalProfit(  
+  sorted  
+){  
+  
+  const sum =  
+    sorted.reduce(  
+      (total,e) =>  
+        total +  
+        Number(  
+          e.profit || 0  
+        ),  
+      0  
+    );  
+  
+  return (  
+    WEEKLY_BASE_PROFIT +  
+    sum  
+  );  
+  
+}  
+  
+function calculateWeeklyWithdrawal(  
+  profit  
+){  
+  
+  const withdrawal =  
+    Math.min(  
+      Math.max(  
+        Number(profit) || 0,  
+        0  
+      ),  
+      WEEKLY_TARGET  
+    );  
+  
+  const surplus =  
+    Math.max(  
+      (Number(profit) || 0) -  
+      WEEKLY_TARGET,  
+      0  
+    );  
+  
+  return {  
+    withdrawal,  
+    surplus  
+  };  
+  
+}  
+  
+  
+/* ==================================================  
+   WEEKLY RENDER STATE  
+================================================== */  
+  
+let weeklyAlreadyWithdrawnToday =  
+  false;  
+  
+let weeklyAlreadyLoggedToday =  
+  false;  
+  
+  
+/* ==================================================  
+   RENDER WEEKLY ACCOUNT  
+================================================== */  
+  
+async function renderWeeklyAccount(){  
+  
+  const [  
+    account,  
+    history,  
+    entries  
+  ] = await Promise.all([  
+    fetchWeeklyAccount(),  
+    fetchWeeklyHistory(),  
+    fetchWeeklyEntries()  
+  ]);  
+  
+  const sorted =  
+    weeklySortedEntries(  
+      entries  
+    );  
+  
+  const today =  
+    todayKey();  
+  
+  const todayEntry =  
+    entries.find(  
+      e =>  
+        e.entry_date === today  
+    );  
+  
+  const profit =  
+    todayEntry  
+      ? Number(todayEntry.profit)  
+      : 0;  
+  
+  weeklyAlreadyLoggedToday =  
+    !!todayEntry;  
+  
+  const funds =  
+    WEEKLY_BASE_FUNDS +  
+    Number(  
+      account.current_funds || 0  
+    );  
+  
+  const vault =  
+    Number(  
+      account.surplus_vault || 0  
+    );  
+  
+  const count =  
+    Number(  
+      account.withdrawal_count || 0  
+    );  
+  
+  const streak =  
+    weeklyComputeStreak(  
+      sorted  
+    );  
+  
+  const totalProfit =  
+    weeklyComputeTotalProfit(  
+      sorted  
+    );  
+  
+  const calc =  
+    calculateWeeklyWithdrawal(  
+      profit  
+    );  
+  
+  weeklyAlreadyWithdrawnToday =  
+    history.some(  
+      h =>  
+        h.withdrawal_date === today  
+    );  
+  
+  
+  /* -------------------------------  
+     ELEMENTS  
+  -------------------------------- */  
+  
+  const fundsEl =  
+    document.getElementById(  
+      'weeklyCurrentFunds'  
+    );  
+  
+  const profitEl =  
+    document.getElementById(  
+      'weeklyTodayProfit'  
+    );  
+  
+  const streakEl =  
+    document.getElementById(  
+      'weeklyStreakVal'  
+    );  
+  
+  const totalProfitEl =  
+    document.getElementById(  
+      'weeklyTotalProfit'  
+    );  
+  
+  const withdrawEl =  
+    document.getElementById(  
+      'weeklyWithdrawAmount'  
+    );  
+  
+  const vaultEl =  
+    document.getElementById(  
+      'weeklyVaultAmount'  
+    );  
+  
+  const countEl =  
+    document.getElementById(  
+      'weeklyVaultCount'  
+    );  
+  
+  const statusEl =  
+    document.getElementById(  
+      'weeklyWithdrawStatus'  
+    );  
+  
+  const button =  
+    document.getElementById(  
+      'weeklyWithdrawBtn'  
+    );  
+  
+  const logBtn =  
+    document.getElementById(  
+      'weeklyLogBtn'  
+    );  
+  
+  
+  /* -------------------------------  
+     VALUES  
+  -------------------------------- */  
+  
+  if(fundsEl)  
+    fundsEl.textContent =  
+      fmtRupee(funds);  
+  
+  if(profitEl)  
+    profitEl.textContent =  
+      fmtRupee(profit);  
+  
+  if(streakEl)  
+    streakEl.textContent =  
+      streak;  
+  
+  if(totalProfitEl)  
+    totalProfitEl.textContent =  
+      fmtRupee(totalProfit);  
+  
+  if(withdrawEl)  
+    withdrawEl.textContent =  
+      fmtRupee(  
+        calc.withdrawal  
+      );  
+  
+  if(vaultEl)  
+    vaultEl.textContent =  
+      fmtRupee(vault);  
+  
+  if(countEl)  
+    countEl.textContent =  
+      `${count} / 15 WITHDRAWALS`;  
+  
+  
+  /* -------------------------------  
+     STATUS  
+  -------------------------------- */  
+  
+  if(statusEl){  
+  
+    if(weeklyAlreadyWithdrawnToday){  
+  
+      statusEl.textContent =  
+        'DONE TODAY';  
+  
+    }else if(  
+      !weeklyAlreadyLoggedToday  
+    ){  
+  
+      statusEl.textContent =  
+        'LOG PROFIT FIRST';  
+  
+    }else if(  
+      calc.withdrawal <= 0  
+    ){  
+  
+      statusEl.textContent =  
+        'NOTHING TO WITHDRAW';  
+  
+    }else{  
+  
+      statusEl.textContent =  
+        'READY';  
+  
+    }  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     WITHDRAW BUTTON  
+  -------------------------------- */  
+  
+  if(button){  
+  
+    button.disabled =  
+      calc.withdrawal <= 0 ||  
+      weeklyAlreadyWithdrawnToday ||  
+      !weeklyAlreadyLoggedToday;  
+  
+  }  
+  
+  
+  /* -------------------------------  
+     LOG BUTTON  
+  -------------------------------- */  
+  
+  if(logBtn){  
+  
+    logBtn.disabled =  
+      weeklyAlreadyLoggedToday;  
+  
+    logBtn.textContent =  
+      weeklyAlreadyLoggedToday  
+        ? "🔒 Today's Profit Logged"  
+        : "📝 Log Today's Weekly Profit";  
+  
+    logBtn.style.opacity =  
+      weeklyAlreadyLoggedToday  
+        ? '.5'  
+        : '1';  
+  
+    logBtn.style.cursor =  
+      weeklyAlreadyLoggedToday  
+        ? 'not-allowed'  
+        : 'pointer';  
+  
+  }  
+  
+  
+  renderWeeklyHistory(  
+    history  
+  );  
+  
+}  
+  
+  
+/* ==================================================  
+   WEEKLY LOG PROFIT  
+================================================== */  
+  
+async function weeklyLogProfit(){  
+  
+  if(weeklyAlreadyLoggedToday){  
+  
+    alert(  
+      "Today's Weekly profit is already logged."  
+    );  
+  
+    return;  
+  
+  }  
+  
+  const raw =  
+    prompt(  
+      "Today's Weekly Withdrawal profit (₹)\nEnter a loss as a negative number, e.g. -1200",  
+      ''  
+    );  
+  
+  if(raw === null)  
+    return;  
+  
+  const amt =  
+    Number(raw);  
+  
+  if(isNaN(amt)){  
+  
+    alert(  
+      'Enter a valid number.'  
+    );  
+  
+    return;  
+  
+  }  
+  
+  try{  
+  
+    await saveWeeklyProfit(  
+      todayKey(),  
+      amt  
+    );  
+  
+    await renderWeeklyAccount();  
+  
+    showLocalToast(  
+      "Today's Weekly profit saved.",  
+      'success'  
+    );  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    showLocalToast(  
+      'Could not save weekly profit — try again',  
+      'error'  
+    );  
+  
+  }  
+  
+}  
+  
+  
+/* ==================================================  
+   WEEKLY WITHDRAW  
+================================================== */  
+  
+async function weeklyWithdraw(){  
+  
+  if(weeklyAlreadyWithdrawnToday){  
+  
+    alert(  
+      'Already withdrawn today.'  
+    );  
+  
+    return;  
+  
+  }  
+  
+  if(!weeklyAlreadyLoggedToday){  
+  
+    alert(  
+      "Log today's Weekly profit first."  
+    );  
+  
+    return;  
+  
+  }  
+  
+  const entries =  
+    await fetchWeeklyEntries();  
+  
+  const todayEntry =  
+    entries.find(  
+      e =>  
+        e.entry_date ===  
+        todayKey()  
+    );  
+  
+  const profit =  
+    todayEntry  
+      ? Number(todayEntry.profit)  
+      : 0;  
+  
+  const calc =  
+    calculateWeeklyWithdrawal(  
+      profit  
+    );  
+  
+  if(calc.withdrawal <= 0){  
+  
+    alert(  
+      'Nothing to withdraw today.'  
+    );  
+  
+    return;  
+  
+  }  
+  
+  try{  
+  
+    const result =  
+      await postWeeklyWithdrawal(  
+        profit  
+      );  
+  
+    await renderWeeklyAccount();  
+  
+    let msg =  
+      `Withdrawal recorded: ${fmtRupee(  
+        result.history.amount  
+      )}`;  
+  
+    if(  
+      result.history.vault_released !== null &&  
+      result.history.vault_released !== undefined  
+    ){  
+  
+      msg +=  
+        `\n🏦 Surplus Vault released: ${fmtRupee(  
+          result.history.vault_released  
+        )}`;  
+  
+    }  
+  
+    alert(msg);  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    showLocalToast(  
+      'Withdrawal failed',  
+      'error'  
+    );  
+  
+  }  
+  
+}  
+  
+  
+/* ==================================================  
+   WEEKLY HISTORY  
+================================================== */  
+  
+function renderWeeklyHistory(  
+  history  
+){  
+  
+  const container =  
+    document.getElementById(  
+      'weeklyWithdrawalHistory'  
+    );  
+  
+  if(!container)  
+    return;  
+  
+  if(  
+    !history ||  
+    history.length === 0  
+  ){  
+  
+    container.innerHTML =  
+      `<div class="empty-history">No withdrawals yet.</div>`;  
+  
+    return;  
+  
+  }  
+  
+  container.innerHTML =  
+    history.map(  
+      item => {  
+  
+        let meta =  
+          `Profit ${fmtRupee(  
+            Number(  
+              item.profit || 0  
+            )  
+          )}`;  
+  
+        if(  
+          item.vault_released !== null &&  
+          item.vault_released !== undefined  
+        ){  
+  
+          meta +=  
+            ` • 🏦 Vault released ${fmtRupee(  
+              Number(  
+                item.vault_released  
+              )  
+            )}`;  
+  
+        }  
+  
+        const dateLabel =  
+          new Date(  
+            item.withdrawal_date  
+          ).toLocaleDateString(  
+            'en-IN'  
+          );  
+  
+        return `  
+          <div class="withdraw-history-row">  
+  
+            <div>  
+  
+              <div class="withdraw-date">  
+                ${dateLabel}  
+              </div>  
+  
+              <div class="withdraw-meta">  
+                Withdrawal #${  
+                  item.withdrawal_number ??  
+                  '-'  
+                }  
+              </div>  
+  
+            </div>  
+  
+            <div style="text-align:right">  
+  
+              <div class="withdraw-amount">  
+                ${fmtRupee(  
+                  Number(item.amount)  
+                )}  
+              </div>  
+  
+              <div class="withdraw-meta">  
+                ${meta}  
+              </div>  
+  
+            </div>  
+  
+          </div>  
+        `;  
+  
+      }  
+    ).join('');  
+  
+}  
+  
+  
+/* ==================================================  
+   ACCOUNT VIEW TOGGLE  
+================================================== */  
+  
+let onWeeklyView =  
+  false;  
+  
+function setAccountView(  
+  weekly  
+){  
+  
+  onWeeklyView =  
+    !!weekly;  
+  
+  const guardianView =  
+    document.getElementById(  
+      'guardianView'  
+    );  
+  
+  const weeklyView =  
+    document.getElementById(  
+      'weeklyView'  
+    );  
+  
+  const flipBtn =  
+    document.getElementById(  
+      'flipAccountBtn'  
+    );  
+  
+  const navGuardian =  
+    document.getElementById(  
+      'navGuardian'  
+    );  
+  
+  const navWeekly =  
+    document.getElementById(  
+      'navWeekly'  
+    );  
+  
+  if(guardianView){  
+  
+    guardianView.style.display =  
+      onWeeklyView  
+        ? 'none'  
+        : '';  
+  
+  }  
+  
+  if(weeklyView){  
+  
+    weeklyView.style.display =  
+      onWeeklyView  
+        ? ''  
+        : 'none';  
+  
+  }  
+  
+  if(flipBtn){  
+  
+    flipBtn.textContent =  
+      onWeeklyView  
+        ? '🔄 FLIP TO TRADE GUARDIAN'  
+        : '🔄 FLIP TO WEEKLY WITHDRAWAL';  
+  
+  }  
+  
+  navGuardian?.classList.toggle(  
+    'active',  
+    !onWeeklyView  
+  );  
+  
+  navWeekly?.classList.toggle(  
+    'active',  
+    onWeeklyView  
+  );  
+  
+  closeSidebar();  
+  
+  window.scrollTo({  
+    top:0,  
+    behavior:'smooth'  
+  });  
+  
+}  
+  
+function toggleAccountView(){  
+  
+  setAccountView(  
+    !onWeeklyView  
+  );  
+  
+}  
+  
+document  
+  .getElementById(  
+    'flipAccountBtn'  
+  )  
+  ?.addEventListener(  
+    'click',  
+    toggleAccountView  
+  );  
+  
+document  
+  .getElementById(  
+    'navGuardian'  
+  )  
+  ?.addEventListener(  
+    'click',  
+    () =>  
+      setAccountView(false)  
+  );  
+  
+document  
+  .getElementById(  
+    'navWeekly'  
+  )  
+  ?.addEventListener(  
+    'click',  
+    () =>  
+      setAccountView(true)  
+  );  
+  
+  
+/* ==================================================  
+   WEEKLY BUTTONS  
+================================================== */  
+  
+document  
+  .getElementById(  
+    'weeklyWithdrawBtn'  
+  )  
+  ?.addEventListener(  
+    'click',  
+    weeklyWithdraw  
+  );  
+  
+document  
+  .getElementById(  
+    'weeklyLogBtn'  
+  )  
+  ?.addEventListener(  
+    'click',  
+    weeklyLogProfit  
+  );  
+  
+  
+/* ==================================================  
+   INITIAL LOAD  
+================================================== */  
+  
+(async function initTradeGuardian(){  
+  
+  try{  
+  
+    await render();  
+  
+  }catch(err){  
+  
+    console.error(  
+      'Trade Guardian initialization failed:',  
+      err  
+    );  
+  
+  }  
+  
+  renderRuleBook();  
+  
+  try{  
+  
+    await renderWeeklyAccount();  
+  
+  }catch(err){  
+  
+    console.error(  
+      'Weekly Withdrawal initialization failed:',  
+      err  
+    );  
+  
+  }  
+  
+})();  
+  
+  
+/* ==================================================  
+   AUTOMATIC REFRESH  
+================================================== */  
+  
+setInterval(  
+  () => {  
+  
+    render()  
+      .catch(console.error);  
+  
+  },  
+  60000  
+);  
+  
+setInterval(  
+  () => {  
+  
+    renderRuleBook();  
+  
+  },  
+  60000  
+);  
+  
+setInterval(  
+  () => {  
+  
+    renderWeeklyAccount()  
+      .catch(console.error);  
+  
+  },  
+  60000  
+);  
+  
+</script>  </body>  
+</html>
