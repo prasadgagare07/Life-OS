@@ -255,19 +255,22 @@ function project(date) {
 
     return {
 
-        phase: 2,
+    phase: 2,
 
-        dayNumber:
-            phase2Days,
+    dayNumber:
+        phase2Days,
 
-        dailyEstimate:
-            PHASE2_DAILY,
+    dailyEstimate:
+        PHASE2_DAILY,
 
-        estimatedProfit:
+    estimatedProfit:
+        INITIAL_SAVINGS +
+        (
             phase2Days *
             PHASE2_DAILY
+        )
 
-    };
+};
 
 }
 
