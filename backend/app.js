@@ -10,7 +10,7 @@ const visionRoutes = require('./routes/vision.routes');
 const financialEngineRoutes = require('./routes/financialEngine.routes');
 const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 const tradingRoutes = require('./routes/trading.routes');
-const weeklyWithdrawalRoutes =
+const WeeklyWithdrawalRoutes =
   require('./routes/WeeklyWithdrawal.routes');
 const reactorRoutes = require('./routes/reactor.routes');   // ✅ require can go here, fine
 
