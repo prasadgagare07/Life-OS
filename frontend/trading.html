@@ -294,6 +294,93 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     </div>
   </div>
 
+  <!-- ==========================================
+     WEEKLY WITHDRAWAL ACCOUNT
+========================================== -->
+
+<div class="weekly-section">
+
+  <div class="weekly-header">
+    <div>
+      <div class="weekly-label">💸 NEW ACCOUNT</div>
+      <h2>WEEKLY WITHDRAWAL</h2>
+      <p>Daily profits • Withdraw consistently</p>
+    </div>
+
+    <button id="flipWeeklyBtn" class="flip-account-btn">
+      🔄 FLIP ACCOUNT
+    </button>
+  </div>
+
+  <div class="weekly-funds-row">
+
+    <div class="weekly-card">
+      <div class="weekly-card-label">💼 CURRENT FUNDS</div>
+      <div class="weekly-card-value" id="weeklyCurrentFunds">
+        ₹0
+      </div>
+    </div>
+
+    <div class="weekly-card profit">
+      <div class="weekly-card-label">📈 TODAY'S PROFIT</div>
+      <div class="weekly-card-value" id="weeklyTodayProfit">
+        ₹0
+      </div>
+    </div>
+
+  </div>
+
+  <div class="weekly-withdraw-box">
+
+    <div class="weekly-withdraw-head">
+      <span>WITHDRAWABLE TODAY</span>
+      <span id="weeklyWithdrawStatus">READY</span>
+    </div>
+
+    <div class="weekly-withdraw-amount" id="weeklyWithdrawAmount">
+      ₹0
+    </div>
+
+    <button id="weeklyWithdrawBtn" class="weekly-withdraw-btn">
+      💸 WITHDRAW
+    </button>
+
+  </div>
+
+  <div class="weekly-vault">
+
+    <div class="weekly-vault-head">
+      <span>🏦 SURPLUS VAULT</span>
+      <span id="weeklyVaultCount">0 / 15 WITHDRAWALS</span>
+    </div>
+
+    <div class="weekly-vault-amount" id="weeklyVaultAmount">
+      ₹0
+    </div>
+
+    <p>
+      Amount above ₹5,000/day is stored here.
+      Vault is reviewed every 15 completed withdrawals.
+    </p>
+
+  </div>
+
+  <div class="withdraw-history">
+
+    <div class="withdraw-history-title">
+      📜 WITHDRAWAL HISTORY
+    </div>
+
+    <div id="weeklyWithdrawalHistory">
+      <div class="empty-history">
+        No withdrawals yet.
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
   <div class="stats-row">
     <div class="stat-card streak">
       <div class="ic">🔥</div>
