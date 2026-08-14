@@ -330,6 +330,7 @@ async function entries(req, res) {
 module.exports = {
   getAccount,
   setFunds,
+  setWithdrawalAccount,
   addDailyProfit,
   withdrawProfit,
   withdraw,
