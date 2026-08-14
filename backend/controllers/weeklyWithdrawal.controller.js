@@ -105,7 +105,7 @@ async function setWithdrawalAccount(req, res) {
     // This requires the model to expose setWithdrawalAccount().
     const result =
       await WeeklyWithdrawal.setWithdrawalAccount({
-        mode,
+        method: mode,
         upi_id: upi_id || null,
         account_number: account_number || null,
         bank_name: bank_name || null,
