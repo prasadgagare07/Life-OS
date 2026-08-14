@@ -10,6 +10,8 @@ const visionRoutes = require('./routes/vision.routes');
 const financialEngineRoutes = require('./routes/financialEngine.routes');
 const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 const tradingRoutes = require('./routes/trading.routes');
+const weeklyWithdrawalRoutes =
+  require('./routes/weeklyWithdrawal.routes');
 const reactorRoutes = require('./routes/reactor.routes');   // ✅ require can go here, fine
 
 const app = express();   // ✅ app must be created BEFORE any app.use(...)
@@ -25,6 +27,10 @@ app.use('/api/vision', visionRoutes);
 app.use('/api/financial-engine', financialEngineRoutes);
 app.use('/api/time-explorer', timeExplorerRoutes);
 app.use('/api/trading', tradingRoutes);
+app.use(
+  '/api/weekly-withdrawal',
+  weeklyWithdrawalRoutes
+);
 app.use('/api/reactor', reactorRoutes);   // ✅ app.use lines go here, after const app = express()
 
 app.get('/api/health', (req, res) => {
