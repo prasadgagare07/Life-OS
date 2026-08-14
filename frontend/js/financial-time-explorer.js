@@ -1123,9 +1123,6 @@ function renderPhase2(selectedDate) {
     phaseCard.style.display =
         "block";
 
-    phaseCard.style.display =
-    "block";
-
 if (investmentCard) {
     investmentCard.style.display =
         "flex";
