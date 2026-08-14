@@ -14,6 +14,12 @@ async function getAccount() {
       current_funds,
       surplus_vault,
       withdrawal_count,
+      withdrawal_method,
+      upi_id,
+      bank_account_number,
+      bank_name,
+      ifsc_code,
+      wallet_address,
       updated_at
     FROM weekly_withdrawal_account
     ORDER BY id
@@ -48,6 +54,39 @@ async function setFunds(amount) {
       surplus_vault,
       updated_at
   `, [amount]);
+
+  return rows[0];
+}
+
+
+// ==========================================
+// WITHDRAWAL ACCOUNT DETAILS
+// ==========================================
+
+async function setWithdrawalAccount(data = {}) {
+
+  const { rows } = await pool.query(`
+    UPDATE weekly_withdrawal_account
+    SET
+      withdrawal_method = $1,
+      upi_id = $2,
+      bank_account_number = $3,
+      bank_name = $4,
+      ifsc_code = $5,
+      wallet_address = $6,
+      updated_at = now()
+    WHERE id = (
+      SELECT id FROM weekly_withdrawal_account ORDER BY id LIMIT 1
+    )
+    RETURNING *
+  `, [
+    data.method || null,
+    data.upi_id || null,
+    data.account_number || null,
+    data.bank_name || null,
+    data.ifsc_code || null,
+    data.wallet_address || null
+  ]);
 
   return rows[0];
 }
@@ -104,7 +143,7 @@ async function addDailyProfit(entryDate, profit) {
 // balance is released (logged in history) and reset to 0.
 // ==========================================
 
-async function withdrawProfit(profit) {
+async function withdrawProfit(profit, withdrawalAccount = {}) {
 
   const numericProfit =
     Math.max(Number(profit) || 0, 0);
@@ -156,20 +195,20 @@ async function withdrawProfit(profit) {
       isReleaseWithdrawal ? 0 : vaultBeforeReset;
 
     const updatedAccount =
-  await client.query(`
-    UPDATE weekly_withdrawal_account
-    SET
-      current_funds = current_funds,
-      surplus_vault = $1,
-      withdrawal_count = $2,
-      updated_at = now()
-    WHERE id = $3
-    RETURNING *
-  `, [
-    finalVault,
-    newCount,
-    current.id
-  ]);
+      await client.query(`
+        UPDATE weekly_withdrawal_account
+        SET
+          current_funds = current_funds,
+          surplus_vault = $1,
+          withdrawal_count = $2,
+          updated_at = now()
+        WHERE id = $3
+        RETURNING *
+      `, [
+        finalVault,
+        newCount,
+        current.id
+      ]);
 
     const historyRow =
       await client.query(`
@@ -182,7 +221,13 @@ async function withdrawProfit(profit) {
             profit,
             surplus_amount,
             withdrawal_number,
-            vault_released
+            vault_released,
+            withdrawal_method,
+            upi_id,
+            bank_account_number,
+            bank_name,
+            ifsc_code,
+            wallet_address
           )
         VALUES
           (
@@ -193,7 +238,13 @@ async function withdrawProfit(profit) {
             $2,
             $3,
             $4,
-            $5
+            $5,
+            $6,
+            $7,
+            $8,
+            $9,
+            $10,
+            $11
           )
         RETURNING *
       `, [
@@ -201,7 +252,13 @@ async function withdrawProfit(profit) {
         numericProfit,
         surplusAmount,
         newCount,
-        vaultReleased
+        vaultReleased,
+        withdrawalAccount.method || null,
+        withdrawalAccount.upi_id || null,
+        withdrawalAccount.account_number || null,
+        withdrawalAccount.bank_name || null,
+        withdrawalAccount.ifsc_code || null,
+        withdrawalAccount.wallet_address || null
       ]);
 
     await client.query('COMMIT');
@@ -390,6 +447,7 @@ async function getEntries() {
 module.exports = {
   getAccount,
   setFunds,
+  setWithdrawalAccount,
   addDailyProfit,
   withdrawProfit,
   addWithdrawal,
