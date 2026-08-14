@@ -1218,24 +1218,264 @@ renderRuleBook();
 // Check every minute so the 10 PM unlock happens automatically
 // without requiring a page refresh.
 setInterval(renderRuleBook, 60000);
+
 /* ==========================================
    WEEKLY WITHDRAWAL ACCOUNT
+   (backed by /api/weekly-withdrawal — same
+   Postgres database as the rest of the app,
+   so funds/vault/history are identical on
+   every device.)
 ========================================== */
 
-const WEEKLY_FUNDS_KEY =
-  'lifeos_weekly_withdrawal_funds';
+const WEEKLY_TARGET = 5000;
 
-const WEEKLY_VAULT_KEY =
-  'lifeos_weekly_withdrawal_vault';
 
-const WEEKLY_HISTORY_KEY =
-  'lifeos_weekly_withdrawal_history';
+/* ------------------------------------------
+   TODAY'S PROFIT
+   (reuses the same Trade Guardian entries
+   the tower/pace sections already use)
+------------------------------------------ */
 
-const WEEKLY_COUNT_KEY =
-  'lifeos_weekly_withdrawal_count';
+async function getWeeklyTodayProfit(){
 
-const WEEKLY_TARGET =
-  5000;
+  const closes = await fetchCloses();
+  const today = todayKey();
+
+  if(!closes.hasOwnProperty(today)){
+    return 0;
+  }
+
+  return Number(closes[today] || 0);
+
+}
+
+
+/* ------------------------------------------
+   WITHDRAWABLE PREVIEW (client-side only —
+   actual amounts are computed + saved by
+   the backend when you click Withdraw)
+------------------------------------------ */
+
+/*
+   Example:
+   Profit = ₹7,658 -> Withdrawal ₹5,000, Surplus ₹2,658
+   Profit = ₹2,748 -> Withdrawal ₹2,748, Surplus ₹0
+*/
+
+function calculateWeeklyWithdrawal(profit){
+
+  const withdrawal =
+    Math.min(Math.max(profit, 0), WEEKLY_TARGET);
+
+  const surplus =
+    Math.max(profit - WEEKLY_TARGET, 0);
+
+  return { withdrawal, surplus };
+
+}
+
+
+/* ------------------------------------------
+   API HELPERS
+------------------------------------------ */
+
+async function fetchWeeklyAccount(){
+  try {
+    return await api.get('/weekly-withdrawal/account');
+  } catch (err) {
+    console.error(err);
+    showToast('Could not load Weekly Withdrawal account', 'error');
+    return { current_funds: 0, surplus_vault: 0, withdrawal_count: 0 };
+  }
+}
+
+async function fetchWeeklyHistory(){
+  try {
+    return await api.get('/weekly-withdrawal/history');
+  } catch (err) {
+    console.error(err);
+    showToast('Could not load withdrawal history', 'error');
+    return [];
+  }
+}
+
+async function postWeeklyWithdrawal(profit){
+  return await api.post('/weekly-withdrawal/withdraw-profit', { profit });
+}
+
+
+/* ------------------------------------------
+   RENDER WEEKLY ACCOUNT
+------------------------------------------ */
+
+let weeklyAlreadyWithdrawnToday = false;
+
+async function renderWeeklyAccount(){
+
+  const [profit, account, history] = await Promise.all([
+    getWeeklyTodayProfit(),
+    fetchWeeklyAccount(),
+    fetchWeeklyHistory()
+  ]);
+
+  const funds = Number(account.current_funds || 0);
+  const vault = Number(account.surplus_vault || 0);
+  const count = Number(account.withdrawal_count || 0);
+
+  const calc = calculateWeeklyWithdrawal(profit);
+
+  const today = todayKey();
+  weeklyAlreadyWithdrawnToday =
+    history.some(h => h.withdrawal_date === today);
+
+  const fundsEl = document.getElementById('weeklyCurrentFunds');
+  const profitEl = document.getElementById('weeklyTodayProfit');
+  const withdrawEl = document.getElementById('weeklyWithdrawAmount');
+  const vaultEl = document.getElementById('weeklyVaultAmount');
+  const countEl = document.getElementById('weeklyVaultCount');
+  const statusEl = document.getElementById('weeklyWithdrawStatus');
+  const button = document.getElementById('weeklyWithdrawBtn');
+
+  if(fundsEl) fundsEl.textContent = fmtRupee(funds);
+  if(profitEl) profitEl.textContent = fmtRupee(profit);
+  if(withdrawEl) withdrawEl.textContent = fmtRupee(calc.withdrawal);
+  if(vaultEl) vaultEl.textContent = fmtRupee(vault);
+  if(countEl) countEl.textContent = `${count} / 15 WITHDRAWALS`;
+
+  if(statusEl){
+    statusEl.textContent =
+      weeklyAlreadyWithdrawnToday ? 'DONE TODAY' : 'READY';
+  }
+
+  if(button){
+    button.disabled =
+      calc.withdrawal <= 0 || weeklyAlreadyWithdrawnToday;
+  }
+
+  renderWeeklyHistory(history);
+
+}
+
+
+/* ------------------------------------------
+   WITHDRAW
+------------------------------------------ */
+
+async function weeklyWithdraw(){
+
+  if(weeklyAlreadyWithdrawnToday){
+    alert('Already withdrawn today.');
+    return;
+  }
+
+  const profit = await getWeeklyTodayProfit();
+  const calc = calculateWeeklyWithdrawal(profit);
+
+  if(calc.withdrawal <= 0){
+    alert('Nothing to withdraw today.');
+    return;
+  }
+
+  try {
+
+    const result = await postWeeklyWithdrawal(profit);
+
+    await renderWeeklyAccount();
+
+    let msg = `Withdrawal recorded: ${fmtRupee(result.history.amount)}`;
+
+    if(
+      result.history.vault_released !== null &&
+      result.history.vault_released !== undefined
+    ){
+      msg += `\n🏦 Surplus Vault released: ${fmtRupee(result.history.vault_released)}`;
+    }
+
+    alert(msg);
+
+  } catch (err) {
+    console.error(err);
+    showToast('Withdrawal failed', 'error');
+  }
+
+}
+
+
+/* ------------------------------------------
+   HISTORY
+------------------------------------------ */
+
+function renderWeeklyHistory(history){
+
+  const container = document.getElementById('weeklyWithdrawalHistory');
+  if(!container) return;
+
+  if(!history || history.length === 0){
+    container.innerHTML =
+      `<div class="empty-history">No withdrawals yet.</div>`;
+    return;
+  }
+
+  container.innerHTML = history.map(item => {
+
+    let meta = `Profit ${fmtRupee(Number(item.profit || 0))}`;
+
+    if(
+      item.vault_released !== null &&
+      item.vault_released !== undefined
+    ){
+      meta += ` • 🏦 Vault released ${fmtRupee(Number(item.vault_released))}`;
+    }
+
+    const dateLabel = new Date(item.withdrawal_date).toLocaleDateString('en-IN');
+
+    return `
+      <div class="withdraw-history-row">
+        <div>
+          <div class="withdraw-date">${dateLabel}</div>
+          <div class="withdraw-meta">Withdrawal #${item.withdrawal_number ?? '-'}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="withdraw-amount">${fmtRupee(Number(item.amount))}</div>
+          <div class="withdraw-meta">${meta}</div>
+        </div>
+      </div>
+    `;
+
+  }).join('');
+
+}
+
+
+/* ------------------------------------------
+   FLIP ACCOUNT
+------------------------------------------ */
+
+document
+  .getElementById('flipWeeklyBtn')
+  ?.addEventListener('click', () => {
+    document
+      .querySelector('.weekly-section')
+      ?.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+
+
+/* ------------------------------------------
+   WITHDRAW BUTTON
+------------------------------------------ */
+
+document
+  .getElementById('weeklyWithdrawBtn')
+  ?.addEventListener('click', weeklyWithdraw);
+
+
+/* ------------------------------------------
+   INITIAL LOAD
+------------------------------------------ */
+
+renderWeeklyAccount();
+
+setInterval(renderWeeklyAccount, 60000);
 
 
 /* ------------------------------------------
