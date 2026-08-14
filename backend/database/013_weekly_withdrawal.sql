@@ -51,4 +51,4 @@ CREATE TABLE IF NOT EXISTS weekly_withdrawal_history (
 );
 
 CREATE INDEX IF NOT EXISTS idx_weekly_withdrawal_history_date
-ON weekly_withdrawal_history(withdrawal_date);.
+ON weekly_withdrawal_history(withdrawal_date);
