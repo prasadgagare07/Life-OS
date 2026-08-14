@@ -21,6 +21,7 @@ const VALID_PAGES = [
   'trading',
   'settings',
   'reactor',
+  'weekly-withdrawal',
 ];
 
 // In-memory brute-force tracker, keyed by "purpose:page:ip".
@@ -226,7 +227,39 @@ async function revokeSession(req, res) {
 
   res.json({ success: true });
 }
+// Lightweight passcode check — used to confirm a sensitive action (like a
+// Weekly Withdrawal payout) without creating a full page session. Same
+// lockout protection as login, but nothing is issued or stored on success.
+async function verifyPasscode(req, res) {
+  const { page, passcode } = req.body;
 
+  if (!page || !VALID_PAGES.includes(page)) {
+    return res.status(400).json({ error: 'Unknown page' });
+  }
+
+  const key = `verify:${page}:${getClientIp(req)}`;
+
+  const lockoutMessage = checkLockout(key);
+  if (lockoutMessage) {
+    return res.status(429).json({ error: lockoutMessage });
+  }
+
+  if (!passcode) {
+    return res.status(400).json({ error: 'Passcode is required' });
+  }
+
+  const hash = await getPasscodeHash(page);
+  const valid = hash ? await bcrypt.compare(passcode, hash) : false;
+
+  if (!valid) {
+    recordFailure(key);
+    return res.status(401).json({ error: 'Incorrect passcode' });
+  }
+
+  clearAttempts(key);
+
+  res.json({ valid: true });
+}
 // Revokes every session on every page except the one making the request —
 // "log out all other devices" without logging yourself out of Settings.
 async function revokeOtherSessions(req, res) {
@@ -241,6 +274,7 @@ async function revokeOtherSessions(req, res) {
 
 module.exports = {
   login,
+  verifyPasscode,
   changePasscode,
   listSessions,
   revokeSession,
