@@ -15,6 +15,10 @@ async function start() {
   }
 
   try {
+    // ==========================================
+    // BASE DATABASE SCHEMA
+    // ==========================================
+
     const schema = fs.readFileSync(
       path.join(__dirname, 'database', 'schema.sql'),
       'utf8'
@@ -22,10 +26,19 @@ async function start() {
 
     await pool.query(schema);
 
+    // ==========================================
+    // FINANCE WEALTH ENGINE
+    // ==========================================
+
     await pool.query(`
-ALTER TABLE finance_snapshot
-ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
-`);
+      ALTER TABLE finance_snapshot
+      ADD COLUMN IF NOT EXISTS wealth_engine
+      NUMERIC(14,2) NOT NULL DEFAULT 0;
+    `);
+
+    // ==========================================
+    // DAILY ENTRIES
+    // ==========================================
 
     const dailyEntriesMigration = fs.readFileSync(
       path.join(__dirname, 'database', '001_daily_entries.sql'),
@@ -34,6 +47,10 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
 
     await pool.query(dailyEntriesMigration);
 
+    // ==========================================
+    // AUTH
+    // ==========================================
+
     const authMigration = fs.readFileSync(
       path.join(__dirname, 'database', '002_auth_settings.sql'),
       'utf8'
@@ -41,7 +58,10 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
 
     await pool.query(authMigration);
 
-    // Move auth_settings from one shared passcode to one row per page.
+    // ==========================================
+    // PAGE AUTH SETTINGS
+    // ==========================================
+
     const pageAuthMigration = fs.readFileSync(
       path.join(__dirname, 'database', '008_page_auth_settings.sql'),
       'utf8'
@@ -49,36 +69,57 @@ ADD COLUMN IF NOT EXISTS wealth_engine NUMERIC(14,2) NOT NULL DEFAULT 0;
 
     await pool.query(pageAuthMigration);
 
+    // ==========================================
+    // REACTOR
+    // ==========================================
+
     const reactorMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '009_reactor.sql'),
-  'utf8'
-);
-await pool.query(reactorMigration);
+      path.join(__dirname, 'database', '009_reactor.sql'),
+      'utf8'
+    );
 
-    // TEMPORARY — force-resets the reactor passcode to "ignite" on next deploy,
-// even if a stale row already exists. Remove this block after logging in once.
-const forceHash = await bcrypt.hash('ignite', 10);
-await pool.query(
-  `INSERT INTO auth_settings (page, passcode_hash) VALUES ('reactor', $1)
-   ON CONFLICT (page) DO UPDATE SET passcode_hash = $1, updated_at = now()`,
-  [forceHash]
-);
-console.log('🔧 Reactor passcode force-reset to "ignite"');
+    await pool.query(reactorMigration);
 
-    // TEMPORARY — force-resets the Financial Time Explorer passcode to
-    // 917283 on next deploy, since the previous passcode was lost.
-    // Remove this block after logging in once.
-const fteHash = await bcrypt.hash('917283', 10);
-await pool.query(
-  `INSERT INTO auth_settings (page, passcode_hash) VALUES ('financial-time-explorer', $1)
-   ON CONFLICT (page) DO UPDATE SET passcode_hash = $1, updated_at = now()`,
-  [fteHash]
-);
-console.log('🔧 Financial Time Explorer passcode force-reset to "917283"');
+    // TEMPORARY — force reactor passcode to "ignite"
+    const forceHash = await bcrypt.hash('ignite', 10);
 
-    // Every page gets its own passcode, seeded with a known default word so
-    // it can be logged into for the first time. Change each one from
-    // Settings — Settings' own default passcode is "control".
+    await pool.query(
+      `INSERT INTO auth_settings (page, passcode_hash)
+       VALUES ('reactor', $1)
+       ON CONFLICT (page)
+       DO UPDATE SET
+         passcode_hash = $1,
+         updated_at = now()`,
+      [forceHash]
+    );
+
+    console.log('🔧 Reactor passcode force-reset to "ignite"');
+
+    // ==========================================
+    // FINANCIAL TIME EXPLORER
+    // ==========================================
+
+    // TEMPORARY — force Financial Time Explorer passcode
+    const fteHash = await bcrypt.hash('917283', 10);
+
+    await pool.query(
+      `INSERT INTO auth_settings (page, passcode_hash)
+       VALUES ('financial-time-explorer', $1)
+       ON CONFLICT (page)
+       DO UPDATE SET
+         passcode_hash = $1,
+         updated_at = now()`,
+      [fteHash]
+    );
+
+    console.log(
+      '🔧 Financial Time Explorer passcode force-reset to "917283"'
+    );
+
+    // ==========================================
+    // DEFAULT PAGE PASSCODES
+    // ==========================================
+
     const DEFAULT_PAGE_PASSCODES = {
       dashboard: 'horizon',
       'daily-standards': 'discipline',
@@ -95,116 +136,180 @@ console.log('🔧 Financial Time Explorer passcode force-reset to "917283"');
     const { rows: existingPages } = await pool.query(
       `SELECT page FROM auth_settings`
     );
-    const existingPageSet = new Set(existingPages.map((row) => row.page));
+
+    const existingPageSet = new Set(
+      existingPages.map((row) => row.page)
+    );
+
     const seededPages = [];
 
-    for (const [page, defaultPasscode] of Object.entries(DEFAULT_PAGE_PASSCODES)) {
+    for (const [page, defaultPasscode] of Object.entries(
+      DEFAULT_PAGE_PASSCODES
+    )) {
       if (existingPageSet.has(page)) continue;
 
       const hash = await bcrypt.hash(defaultPasscode, 10);
+
       await pool.query(
-        `INSERT INTO auth_settings (page, passcode_hash) VALUES ($1, $2)`,
+        `INSERT INTO auth_settings (page, passcode_hash)
+         VALUES ($1, $2)`,
         [page, hash]
       );
+
       seededPages.push(`${page} → "${defaultPasscode}"`);
     }
 
     if (seededPages.length > 0) {
       console.warn(
-        '⚠️  Seeded default passcodes for these pages:\n' +
-        seededPages.map((line) => `   ${line}`).join('\n') +
-        '\n   Log into each one and change it from Settings → Change Passcode.'
+        '⚠️ Seeded default passcodes for these pages:\n' +
+          seededPages
+            .map((line) => `   ${line}`)
+            .join('\n') +
+          '\n   Log into each one and change it from Settings → Change Passcode.'
       );
     }
 
+    // ==========================================
+    // VISION
+    // ==========================================
+
     const visionSeed = fs.readFileSync(
-  path.join(__dirname, 'database', 'seed_vision.sql'),
-  'utf8'
-);
+      path.join(__dirname, 'database', 'seed_vision.sql'),
+      'utf8'
+    );
 
-await pool.query(visionSeed);
+    await pool.query(visionSeed);
 
-// Financial Time Explorer Migration
-const timeExplorerMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '003_time_explorer.sql'),
-  'utf8'
-);
+    // ==========================================
+    // FINANCIAL TIME EXPLORER MIGRATION
+    // ==========================================
 
-await pool.query(timeExplorerMigration);
+    const timeExplorerMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '003_time_explorer.sql'),
+      'utf8'
+    );
 
-// Trade Guardian Migration — creates trading_entries, without which every
-// /api/trading/* request fails because the table doesn't exist.
-const tradingMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '004_trading.sql'),
-  'utf8'
-);
+    await pool.query(timeExplorerMigration);
 
-await pool.query(tradingMigration);
+    // ==========================================
+    // TRADING
+    // ==========================================
 
-// Fitness Migration — adds steps/water/protein/sleep/rules/lock columns
-// plus a photos table, so nothing fitness.js tracks lives only in the browser.
-const fitnessMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '006_fitness_full.sql'),
-  'utf8'
-);
+    const tradingMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '004_trading.sql'),
+      'utf8'
+    );
 
-await pool.query(fitnessMigration);
+    await pool.query(tradingMigration);
 
-// Trade Guardian account details (UPI / bank) — was localStorage-only.
-const tradingAccountMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '007_trading_account.sql'),
-  'utf8'
-);
+    // ==========================================
+    // FITNESS
+    // ==========================================
 
-await pool.query(weeklyWithdrawalMigration);
-// Weekly Withdrawal account + daily profits + withdrawal history
-const weeklyWithdrawalMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '012_weekly_withdrawal.sql'),
-  'utf8'
-);
+    const fitnessMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '006_fitness_full.sql'),
+      'utf8'
+    );
 
-await pool.query(weeklyWithdrawalMigration);
+    await pool.query(fitnessMigration);
 
-// Sessions Migration — lets Settings show which devices are logged into
-// each page, and lets you force-log-out a specific device.
-const sessionsMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '010_sessions.sql'),
-  'utf8'
-);
+    // ==========================================
+    // TRADING ACCOUNT
+    // ==========================================
 
-await pool.query(sessionsMigration);
+    const tradingAccountMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '007_trading_account.sql'),
+      'utf8'
+    );
 
-// Reactor Race Migration — good-vs-bad race to 100 points.
-const reactorRaceMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '011_reactor_race.sql'),
-  'utf8'
-);
+    await pool.query(tradingAccountMigration);
 
-await pool.query(reactorRaceMigration);
+    // ==========================================
+    // WEEKLY WITHDRAWAL
+    // ==========================================
 
-// Reactor Custom Weight Migration — per-entry impact %, replacing the
-// old fixed +12/-8 per entry.
-const reactorWeightMigration = fs.readFileSync(
-  path.join(__dirname, 'database', '012_reactor_custom_weight.sql'),
-  'utf8'
-);
+    // Use the latest Weekly Withdrawal migration.
+    const weeklyWithdrawalMigration = fs.readFileSync(
+      path.join(
+        __dirname,
+        'database',
+        '013_weekly_withdrawal.sql'
+      ),
+      'utf8'
+    );
 
-await pool.query(reactorWeightMigration);
+    await pool.query(weeklyWithdrawalMigration);
 
-// TEMPORARY — wipes reactor test data back to zero on next deploy.
-// Remove this block after it runs once, or it'll wipe your real data
-// on every future deploy too.
-await pool.query(`DELETE FROM reactor_entries;`);
-await pool.query(`DELETE FROM reactor_races;`);
-await pool.query(`INSERT INTO reactor_races (race_number, started_at) VALUES (1, now());`);
-console.log('🔧 Reactor data reset to zero — remove this block from server.js now.');
+    console.log('✅ Weekly Withdrawal database initialized');
 
-console.log('✅ Database initialized');
+    // ==========================================
+    // SESSIONS
+    // ==========================================
 
-app.listen(config.port, () => {
-  console.log(`🚀 LifeOS server running on port ${config.port}`);
-});
-    
+    const sessionsMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '010_sessions.sql'),
+      'utf8'
+    );
+
+    await pool.query(sessionsMigration);
+
+    // ==========================================
+    // REACTOR RACE
+    // ==========================================
+
+    const reactorRaceMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '011_reactor_race.sql'),
+      'utf8'
+    );
+
+    await pool.query(reactorRaceMigration);
+
+    // ==========================================
+    // REACTOR CUSTOM WEIGHT
+    // ==========================================
+
+    const reactorWeightMigration = fs.readFileSync(
+      path.join(
+        __dirname,
+        'database',
+        '012_reactor_custom_weight.sql'
+      ),
+      'utf8'
+    );
+
+    await pool.query(reactorWeightMigration);
+
+    // ==========================================
+    // TEMPORARY REACTOR RESET
+    // ==========================================
+
+    await pool.query(`DELETE FROM reactor_entries;`);
+
+    await pool.query(`DELETE FROM reactor_races;`);
+
+    await pool.query(`
+      INSERT INTO reactor_races
+        (race_number, started_at)
+      VALUES
+        (1, now());
+    `);
+
+    console.log(
+      '🔧 Reactor data reset to zero — remove this block from server.js now.'
+    );
+
+    // ==========================================
+    // START SERVER
+    // ==========================================
+
+    console.log('✅ Database initialized');
+
+    app.listen(config.port, () => {
+      console.log(
+        `🚀 LifeOS server running on port ${config.port}`
+      );
+    });
+
   } catch (err) {
     console.error('❌ Startup error:', err);
     process.exit(1);
