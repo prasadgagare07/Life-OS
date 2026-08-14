@@ -21,6 +21,12 @@ router.put(
   controller.setFunds
 );
 
+// Weekly withdrawal destination
+router.put(
+  '/withdrawal-account',
+  controller.setWithdrawalAccount
+);
+
 
 // Daily profit
 router.post(
