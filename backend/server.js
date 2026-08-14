@@ -236,7 +236,14 @@ async function start() {
 
 await pool.query(weeklyWithdrawalMigration);
 
-    console.log('✅ Weekly Withdrawal database initialized');
+const weeklyWithdrawalV2Migration = fs.readFileSync(
+  path.join(__dirname, 'database', '014_weekly_withdrawal_v2.sql'),
+  'utf8'
+);
+
+await pool.query(weeklyWithdrawalV2Migration);
+
+console.log('✅ Weekly Withdrawal database initialized');
 
     // ==========================================
     // SESSIONS
