@@ -514,6 +514,12 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     <div class="tagline">Protecting my consistency. Guarding my capital.</div>
   </header>
 
+  <button id="flipAccountBtn" class="flip-account-btn" style="display:block; margin:0 auto 18px;">
+    🔄 FLIP TO WEEKLY WITHDRAWAL
+  </button>
+
+  <div id="guardianView">
+
   <div class="funds-row">
     <div class="funds-card">
       <div class="fc-lbl">💼 CURRENT FUNDS</div>
@@ -529,6 +535,7 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
      WEEKLY WITHDRAWAL ACCOUNT
 ========================================== -->
 
+<div id="weeklyView" style="display:none;">
 <div class="weekly-section">
 
   <div class="weekly-header">
@@ -537,10 +544,6 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
       <h2>WEEKLY WITHDRAWAL</h2>
       <p>Daily profits • Withdraw consistently</p>
     </div>
-
-    <button id="flipWeeklyBtn" class="flip-account-btn">
-      🔄 FLIP ACCOUNT
-    </button>
   </div>
 
   <div class="weekly-funds-row">
@@ -560,6 +563,24 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
     </div>
 
   </div>
+
+  <div class="weekly-funds-row">
+
+    <div class="weekly-card">
+      <div class="weekly-card-label">🔥 WEEKLY STREAK</div>
+      <div class="weekly-card-value" id="weeklyStreakVal">0</div>
+    </div>
+
+    <div class="weekly-card profit">
+      <div class="weekly-card-label">📊 TOTAL PROFIT</div>
+      <div class="weekly-card-value" id="weeklyTotalProfit">₹0</div>
+    </div>
+
+  </div>
+
+  <button id="weeklyLogBtn" style="width:100%; margin-top:12px; padding:12px; border:1px solid rgba(56,189,248,.35); border-radius:12px; background:rgba(56,189,248,.10); color:#38bdf8; font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:700; cursor:pointer;">
+    📝 Log Today's Weekly Profit
+  </button>
 
   <div class="weekly-withdraw-box">
 
@@ -611,6 +632,8 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   </div>
 
 </div>
+</div>
+<!-- /weeklyView -->
 
   <div class="stats-row">
     <div class="stat-card streak">
@@ -720,6 +743,9 @@ h1{font-family:'Anton',sans-serif; font-size:26px; letter-spacing:1px; margin-to
   <div class="quote-card">
     <p>"Greed steals in an instant what discipline builds in a month."</p>
   </div>
+
+  </div>
+  <!-- /guardianView -->
 
 </div>
 </main>
