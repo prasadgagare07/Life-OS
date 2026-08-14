@@ -156,21 +156,20 @@ async function withdrawProfit(profit) {
       isReleaseWithdrawal ? 0 : vaultBeforeReset;
 
     const updatedAccount =
-      await client.query(`
-        UPDATE weekly_withdrawal_account
-        SET
-          current_funds = current_funds + $1,
-          surplus_vault = $2,
-          withdrawal_count = $3,
-          updated_at = now()
-        WHERE id = $4
-        RETURNING *
-      `, [
-        withdrawalAmount,
-        finalVault,
-        newCount,
-        current.id
-      ]);
+  await client.query(`
+    UPDATE weekly_withdrawal_account
+    SET
+      current_funds = current_funds,
+      surplus_vault = $1,
+      withdrawal_count = $2,
+      updated_at = now()
+    WHERE id = $3
+    RETURNING *
+  `, [
+    finalVault,
+    newCount,
+    current.id
+  ]);
 
     const historyRow =
       await client.query(`
