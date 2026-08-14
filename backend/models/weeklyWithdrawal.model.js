@@ -13,6 +13,7 @@ async function getAccount() {
       account_name,
       current_funds,
       surplus_vault,
+      withdrawal_count,
       updated_at
     FROM weekly_withdrawal_account
     ORDER BY id
@@ -53,7 +54,8 @@ async function setFunds(amount) {
 
 
 // ==========================================
-// ADD DAILY PROFIT
+// ADD DAILY PROFIT (legacy — unused now that
+// withdrawProfit() below handles everything)
 // ==========================================
 
 async function addDailyProfit(entryDate, profit) {
@@ -151,7 +153,140 @@ async function addDailyProfit(entryDate, profit) {
 
 
 // ==========================================
-// WITHDRAWAL HISTORY
+// WITHDRAW TODAY'S PROFIT
+//
+// Rule:
+//   withdrawal = min(profit, 5000)   -> added to current_funds
+//   surplus    = max(profit - 5000, 0) -> added to surplus_vault
+//
+// Every 15th withdrawal, the accumulated surplus_vault
+// balance is released (logged in history) and reset to 0.
+// ==========================================
+
+async function withdrawProfit(profit) {
+
+  const numericProfit =
+    Math.max(Number(profit) || 0, 0);
+
+  const withdrawalAmount =
+    Math.min(numericProfit, 5000);
+
+  const surplusAmount =
+    Math.max(numericProfit - 5000, 0);
+
+
+  const client =
+    await pool.connect();
+
+  try {
+
+    await client.query('BEGIN');
+
+    const accountResult =
+      await client.query(`
+        SELECT *
+        FROM weekly_withdrawal_account
+        ORDER BY id
+        LIMIT 1
+        FOR UPDATE
+      `);
+
+    if (!accountResult.rows.length) {
+      throw new Error(
+        'Weekly Withdrawal account not found'
+      );
+    }
+
+    const current = accountResult.rows[0];
+
+    const newCount =
+      Number(current.withdrawal_count) + 1;
+
+    const vaultBeforeReset =
+      Number(current.surplus_vault) + surplusAmount;
+
+    const isReleaseWithdrawal =
+      newCount % 15 === 0;
+
+    const vaultReleased =
+      isReleaseWithdrawal ? vaultBeforeReset : null;
+
+    const finalVault =
+      isReleaseWithdrawal ? 0 : vaultBeforeReset;
+
+    const updatedAccount =
+      await client.query(`
+        UPDATE weekly_withdrawal_account
+        SET
+          current_funds = current_funds + $1,
+          surplus_vault = $2,
+          withdrawal_count = $3,
+          updated_at = now()
+        WHERE id = $4
+        RETURNING *
+      `, [
+        withdrawalAmount,
+        finalVault,
+        newCount,
+        current.id
+      ]);
+
+    const historyRow =
+      await client.query(`
+        INSERT INTO weekly_withdrawal_history
+          (
+            withdrawal_date,
+            amount,
+            source,
+            note,
+            profit,
+            surplus_amount,
+            withdrawal_number,
+            vault_released
+          )
+        VALUES
+          (
+            CURRENT_DATE,
+            $1,
+            'WEEKLY WITHDRAWAL',
+            NULL,
+            $2,
+            $3,
+            $4,
+            $5
+          )
+        RETURNING *
+      `, [
+        withdrawalAmount,
+        numericProfit,
+        surplusAmount,
+        newCount,
+        vaultReleased
+      ]);
+
+    await client.query('COMMIT');
+
+    return {
+      account: updatedAccount.rows[0],
+      history: historyRow.rows[0]
+    };
+
+  } catch (error) {
+
+    await client.query('ROLLBACK');
+    throw error;
+
+  } finally {
+
+    client.release();
+
+  }
+
+}
+
+
+// ==========================================
+// WITHDRAWAL HISTORY (manual — legacy)
 // ==========================================
 
 async function addWithdrawal(amount, note = null) {
@@ -278,6 +413,10 @@ async function getHistory() {
       amount,
       source,
       note,
+      profit,
+      surplus_amount,
+      withdrawal_number,
+      vault_released,
       created_at
     FROM weekly_withdrawal_history
     ORDER BY withdrawal_date DESC, id DESC
@@ -312,6 +451,7 @@ module.exports = {
   getAccount,
   setFunds,
   addDailyProfit,
+  withdrawProfit,
   addWithdrawal,
   getHistory,
   getEntries
