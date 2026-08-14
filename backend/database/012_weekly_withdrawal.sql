@@ -17,7 +17,7 @@ INSERT INTO weekly_withdrawal_account
     (account_name, current_funds, surplus_vault)
 SELECT
     'WEEKLY WITHDRAWAL',
-    0,
+    30000,
     0
 WHERE NOT EXISTS (
     SELECT 1
