@@ -3397,8 +3397,8 @@ function renderRuleBook(){
 const WEEKLY_TARGET =  
   5000;  
   
-const WEEKLY_BASE_FUNDS =  
-  30000;  
+const WEEKLY_FIXED_FUNDS =  
+  30000;
   
 const WEEKLY_BASE_PROFIT =  
   0;  
@@ -3714,12 +3714,9 @@ async function renderWeeklyAccount(){
   weeklyAlreadyLoggedToday =  
     !!todayEntry;  
   
-  const funds =  
-    WEEKLY_BASE_FUNDS +  
-    Number(  
-      account.current_funds || 0  
-    );  
   
+  const funds =  
+    WEEKLY_FIXED_FUNDS;
   const vault =  
     Number(  
       account.surplus_vault || 0  
