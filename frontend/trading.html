@@ -1315,7 +1315,30 @@ h1{
   display:block;
 }
 
-  
+.wd-account-box{
+  margin-top:14px;
+  padding:15px;
+  border-radius:16px;
+  background:rgba(56,189,248,.06);
+  border:1px solid rgba(56,189,248,.22);
+}
+
+.wd-account-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:9px;
+  color:#38bdf8;
+  font-weight:700;
+  letter-spacing:.7px;
+}
+
+.wd-account-summary{
+  margin-top:9px;
+  font-size:11.5px;
+  color:#dcded9;
+  line-height:1.5;
+}  
 /* ================================  
    TOAST  
 ================================ */  
@@ -1981,9 +2004,22 @@ aria-label="Open navigation"
           </div>
 
         </div>
+        </div>  
+
+      <div class="wd-account-box">
+
+        <div class="wd-account-head">
+          <span>🏦 WITHDRAWAL ACCOUNT</span>
+          <button id="wdAccountEditBtn" class="acct-edit-btn">✏️ Edit</button>
+        </div>
+
+        <div id="wdAccountSummary" class="wd-account-summary">
+          Not set — tap Edit to add one
+        </div>
+
       </div>
 
-      <div class="weekly-vault">  
+      <div class="weekly-vault">
 
         <div class="weekly-vault-head">  
 
@@ -3490,7 +3526,49 @@ async function verifyWeeklyPasscode(passcode){
 
 }
   
-  
+async function saveWeeklyWithdrawalAccount(methodDetails){
+
+  return await api.put(
+    '/weekly-withdrawal/withdrawal-account',
+    methodDetails
+  );
+
+}
+
+function wdSavedAccountLabel(account){
+
+  if(!account || !account.withdrawal_method){
+    return 'Not set — tap Edit to add one';
+  }
+
+  if(account.withdrawal_method === 'upi'){
+    return `UPI: ${account.upi_id || '-'}`;
+  }
+
+  if(account.withdrawal_method === 'bank'){
+    return `Bank: ${account.bank_name || '-'} • ••••${(account.bank_account_number || '').slice(-4)} • IFSC ${account.ifsc_code || '-'}`;
+  }
+
+  if(account.withdrawal_method === 'usdt'){
+    return `USDT (TRC20): ${account.wallet_address || '-'}`;
+  }
+
+  if(account.withdrawal_method === 'tron'){
+    return `TRON: ${account.wallet_address || '-'}`;
+  }
+
+  return 'Not set — tap Edit to add one';
+
+}
+
+function renderWdAccountSummary(account){
+
+  const el = document.getElementById('wdAccountSummary');
+  if(!el) return;
+
+  el.textContent = wdSavedAccountLabel(account);
+
+}  
 /* ==================================================  
    WEEKLY CALCULATIONS  
 ================================================== */  
@@ -3613,7 +3691,7 @@ async function renderWeeklyAccount(){
     fetchWeeklyHistory(),  
     fetchWeeklyEntries()  
   ]);  
-  
+  renderWdAccountSummary(account);
   const sorted =  
     weeklySortedEntries(  
       entries  
@@ -4051,6 +4129,10 @@ function openWithdrawModal(){
   setWdError(null);
   updateConfirmButtonState();
 
+  document.querySelector('.wd-modal h3').textContent = 'Confirm Withdrawal';
+  document.querySelector('.wd-modal .wd-sub').textContent = 'Choose where this payout goes';
+  document.getElementById('wdConfirmBtn').textContent = 'Confirm Withdrawal';
+
   document.getElementById('wdModalOverlay')?.classList.add('open');
 
 }
@@ -4080,7 +4162,61 @@ document.querySelectorAll('.wd-method-btn').forEach(btn => {
 document.getElementById('wdPasscode')?.addEventListener('input', updateConfirmButtonState);
 
 document.getElementById('wdCancelBtn')?.addEventListener('click', closeWithdrawModal);
+let wdModalMode = 'withdraw'; // 'withdraw' or 'edit-account'
 
+document.getElementById('wdAccountEditBtn')?.addEventListener('click', async () => {
+
+  wdModalMode = 'edit-account';
+
+  openWithdrawModal();
+
+  document.querySelector('.wd-modal h3').textContent = 'Withdrawal Account';
+  document.querySelector('.wd-modal .wd-sub').textContent = 'Set or update where payouts go';
+  document.getElementById('wdConfirmBtn').textContent = 'Save Account';
+
+  try{
+
+    const account = await fetchWeeklyAccount();
+
+    if(account.withdrawal_method){
+
+      wdSelectedMode = account.withdrawal_method;
+
+      document.querySelectorAll('.wd-method-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.mode === wdSelectedMode)
+      );
+
+      renderWdFields(wdSelectedMode);
+
+      if(wdSelectedMode === 'upi' && document.getElementById('wdUpi')){
+        document.getElementById('wdUpi').value = account.upi_id || '';
+      }
+
+      if(wdSelectedMode === 'bank'){
+        if(document.getElementById('wdAccNum')) document.getElementById('wdAccNum').value = account.bank_account_number || '';
+        if(document.getElementById('wdBankName')) document.getElementById('wdBankName').value = account.bank_name || '';
+        if(document.getElementById('wdIfsc')) document.getElementById('wdIfsc').value = account.ifsc_code || '';
+      }
+
+      if(wdSelectedMode === 'usdt' && document.getElementById('wdUsdtAddr')){
+        document.getElementById('wdUsdtAddr').value = account.wallet_address || '';
+      }
+
+      if(wdSelectedMode === 'tron' && document.getElementById('wdTronAddr')){
+        document.getElementById('wdTronAddr').value = account.wallet_address || '';
+      }
+
+      updateConfirmButtonState();
+
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+  }
+
+});
 document.getElementById('wdModalOverlay')?.addEventListener('click', (e) => {
   if(e.target.id === 'wdModalOverlay') closeWithdrawModal();
 });
@@ -4115,9 +4251,11 @@ async function weeklyWithdraw(){
     return;  
   }  
   
+  wdModalMode = 'withdraw';
+
   openWithdrawModal();  
   
-}  
+}
 
 
 /* ==================================================  
@@ -4152,6 +4290,36 @@ document.getElementById('wdConfirmBtn')?.addEventListener('click', async () => {
     console.error(err);
     setWdError(err.message || 'Incorrect passcode.');
     if(btn) btn.disabled = false;
+    return;
+
+  }
+
+  if(wdModalMode === 'edit-account'){
+
+    try{
+
+      const methodDetails = getWdMethodDetails();
+
+      await saveWeeklyWithdrawalAccount(methodDetails);
+
+      closeWithdrawModal();
+
+      await renderWeeklyAccount();
+
+      showLocalToast('Withdrawal account saved.', 'success');
+
+    }catch(err){
+
+      console.error(err);
+      setWdError(err.message || 'Could not save — try again.');
+
+    }finally{
+
+      if(btn) btn.disabled = false;
+      updateConfirmButtonState();
+
+    }
+
     return;
 
   }
