@@ -46,7 +46,7 @@ try {
   // show as an error message, not trigger a logout-redirect (there's no
   // session to log out of yet). Only auto-redirect on 401s from *other*
   // endpoints, which mean an existing token expired or was invalidated.
-  if (res.status === 401 && path !== '/auth/login') {
+  if (res.status === 401 && path !== '/auth/login' && path !== '/auth/verify') {
     localStorage.removeItem(getPageTokenKey(page));
     window.location.href = `/index.html?page=${encodeURIComponent(page)}`;
     return;
