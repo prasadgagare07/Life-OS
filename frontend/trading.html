@@ -3362,7 +3362,7 @@ const WEEKLY_TARGET =
   5000;  
   
 const WEEKLY_BASE_FUNDS =  
-  27000;  
+  30000;  
   
 const WEEKLY_BASE_PROFIT =  
   0;  
@@ -3464,17 +3464,31 @@ async function saveWeeklyProfit(
 }  
   
 async function postWeeklyWithdrawal(  
-  profit  
+  profit,
+  methodDetails
 ){  
   
   return await api.post(  
     '/weekly-withdrawal/withdraw-profit',  
     {  
-      profit  
+      profit,
+      ...methodDetails
     }  
   );  
   
 }  
+
+async function verifyWeeklyPasscode(passcode){
+
+  return await api.post(
+    '/auth/verify',
+    {
+      page: 'weekly-withdrawal',
+      passcode
+    }
+  );
+
+}
   
   
 /* ==================================================  
@@ -3898,109 +3912,314 @@ async function weeklyLogProfit(){
   
 }  
   
-  
 /* ==================================================  
-   WEEKLY WITHDRAW  
-================================================== */  
-  
+   WITHDRAW MODAL  
+================================================== */
+
+let wdSelectedMode = null;
+
+const WD_FIELD_CONFIGS = {
+
+  upi: [
+    { id:'wdUpi', label:'UPI ID', placeholder:'yourname@bank' }
+  ],
+
+  bank: [
+    { id:'wdAccNum', label:'ACCOUNT NUMBER', placeholder:'1234567890' },
+    { id:'wdBankName', label:'BANK NAME', placeholder:'State Bank of India' },
+    { id:'wdIfsc', label:'IFSC CODE', placeholder:'SBIN0001234' }
+  ],
+
+  usdt: [
+    { id:'wdUsdtAddr', label:'WALLET ADDRESS (TRC20 ONLY)', placeholder:'T...' }
+  ],
+
+  tron: [
+    { id:'wdTronAddr', label:'WALLET ADDRESS (TRON)', placeholder:'T...' }
+  ]
+
+};
+
+function renderWdFields(mode){
+
+  const container = document.getElementById('wdFields');
+  if(!container) return;
+
+  const config = WD_FIELD_CONFIGS[mode] || [];
+
+  container.innerHTML = config.map(f => `
+    <div class="wd-field">
+      <label>${f.label}</label>
+      <input type="text" id="${f.id}" placeholder="${f.placeholder}" autocomplete="off">
+    </div>
+  `).join('');
+
+  container.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', updateConfirmButtonState);
+  });
+
+  updateConfirmButtonState();
+
+}
+
+function getWdMethodDetails(){
+
+  if(wdSelectedMode === 'upi'){
+    return {
+      withdrawal_method: 'upi',
+      upi_id: document.getElementById('wdUpi')?.value.trim() || ''
+    };
+  }
+
+  if(wdSelectedMode === 'bank'){
+    return {
+      withdrawal_method: 'bank',
+      bank_account_number: document.getElementById('wdAccNum')?.value.trim() || '',
+      bank_name: document.getElementById('wdBankName')?.value.trim() || '',
+      ifsc_code: document.getElementById('wdIfsc')?.value.trim() || ''
+    };
+  }
+
+  if(wdSelectedMode === 'usdt'){
+    return {
+      withdrawal_method: 'usdt',
+      wallet_address: document.getElementById('wdUsdtAddr')?.value.trim() || ''
+    };
+  }
+
+  if(wdSelectedMode === 'tron'){
+    return {
+      withdrawal_method: 'tron',
+      wallet_address: document.getElementById('wdTronAddr')?.value.trim() || ''
+    };
+  }
+
+  return {};
+
+}
+
+function wdFieldsFilled(){
+
+  if(!wdSelectedMode) return false;
+
+  const details = getWdMethodDetails();
+
+  return Object.entries(details).every(([key, val]) =>
+    key === 'withdrawal_method' || !!val
+  );
+
+}
+
+function updateConfirmButtonState(){
+
+  const btn = document.getElementById('wdConfirmBtn');
+  const passcode = document.getElementById('wdPasscode')?.value || '';
+
+  if(btn){
+    btn.disabled = !(wdSelectedMode && wdFieldsFilled() && passcode.length > 0);
+  }
+
+}
+
+function setWdError(msg){
+
+  const el = document.getElementById('wdError');
+  if(!el) return;
+
+  if(msg){
+    el.textContent = msg;
+    el.classList.add('show');
+  }else{
+    el.textContent = '';
+    el.classList.remove('show');
+  }
+
+}
+
+function openWithdrawModal(){
+
+  wdSelectedMode = null;
+
+  document.querySelectorAll('.wd-method-btn').forEach(b => b.classList.remove('active'));
+
+  const fieldsEl = document.getElementById('wdFields');
+  if(fieldsEl) fieldsEl.innerHTML = '';
+
+  const passEl = document.getElementById('wdPasscode');
+  if(passEl) passEl.value = '';
+
+  setWdError(null);
+  updateConfirmButtonState();
+
+  document.getElementById('wdModalOverlay')?.classList.add('open');
+
+}
+
+function closeWithdrawModal(){
+
+  document.getElementById('wdModalOverlay')?.classList.remove('open');
+
+}
+
+document.querySelectorAll('.wd-method-btn').forEach(btn => {
+
+  btn.addEventListener('click', () => {
+
+    wdSelectedMode = btn.dataset.mode;
+
+    document.querySelectorAll('.wd-method-btn').forEach(b =>
+      b.classList.toggle('active', b === btn)
+    );
+
+    renderWdFields(wdSelectedMode);
+
+  });
+
+});
+
+document.getElementById('wdPasscode')?.addEventListener('input', updateConfirmButtonState);
+
+document.getElementById('wdCancelBtn')?.addEventListener('click', closeWithdrawModal);
+
+document.getElementById('wdModalOverlay')?.addEventListener('click', (e) => {
+  if(e.target.id === 'wdModalOverlay') closeWithdrawModal();
+});
+
+
+/* ==================================================  
+   OPEN MODAL FROM WITHDRAW BUTTON  
+================================================== */
+
 async function weeklyWithdraw(){  
   
   if(weeklyAlreadyWithdrawnToday){  
-  
-    alert(  
-      'Already withdrawn today.'  
-    );  
-  
+    alert('Already withdrawn today.');  
     return;  
-  
   }  
   
   if(!weeklyAlreadyLoggedToday){  
-  
-    alert(  
-      "Log today's Weekly profit first."  
-    );  
-  
+    alert("Log today's Weekly profit first.");  
     return;  
-  
   }  
   
-  const entries =  
-    await fetchWeeklyEntries();  
+  const entries = await fetchWeeklyEntries();  
   
-  const todayEntry =  
-    entries.find(  
-      e =>  
-        e.entry_date ===  
-        todayKey()  
-    );  
+  const todayEntry = entries.find(e => e.entry_date === todayKey());  
   
-  const profit =  
-    todayEntry  
-      ? Number(todayEntry.profit)  
-      : 0;  
+  const profit = todayEntry ? Number(todayEntry.profit) : 0;  
   
-  const calc =  
-    calculateWeeklyWithdrawal(  
-      profit  
-    );  
+  const calc = calculateWeeklyWithdrawal(profit);  
   
   if(calc.withdrawal <= 0){  
-  
-    alert(  
-      'Nothing to withdraw today.'  
-    );  
-  
+    alert('Nothing to withdraw today.');  
     return;  
-  
   }  
   
-  try{  
-  
-    const result =  
-      await postWeeklyWithdrawal(  
-        profit  
-      );  
-  
-    await renderWeeklyAccount();  
-  
-    let msg =  
-      `Withdrawal recorded: ${fmtRupee(  
-        result.history.amount  
-      )}`;  
-  
-    if(  
-      result.history.vault_released !== null &&  
-      result.history.vault_released !== undefined  
-    ){  
-  
-      msg +=  
-        `\n🏦 Surplus Vault released: ${fmtRupee(  
-          result.history.vault_released  
-        )}`;  
-  
-    }  
-  
-    alert(msg);  
-  
-  }catch(err){  
-  
-    console.error(err);  
-  
-    showLocalToast(  
-      'Withdrawal failed',  
-      'error'  
-    );  
-  
-  }  
+  openWithdrawModal();  
   
 }  
-  
-  
+
+
 /* ==================================================  
-   WEEKLY HISTORY  
-================================================== */  
-  
+   CONFIRM WITHDRAWAL (passcode + method + submit)  
+================================================== */
+
+document.getElementById('wdConfirmBtn')?.addEventListener('click', async () => {
+
+  const btn = document.getElementById('wdConfirmBtn');
+  const passcode = document.getElementById('wdPasscode')?.value || '';
+
+  setWdError(null);
+
+  if(!wdSelectedMode){
+    setWdError('Choose a withdrawal method.');
+    return;
+  }
+
+  if(!wdFieldsFilled()){
+    setWdError('Fill in all fields for the selected method.');
+    return;
+  }
+
+  if(btn) btn.disabled = true;
+
+  try{
+
+    await verifyWeeklyPasscode(passcode);
+
+  }catch(err){
+
+    console.error(err);
+    setWdError(err.message || 'Incorrect passcode.');
+    if(btn) btn.disabled = false;
+    return;
+
+  }
+
+  try{
+
+    const entries = await fetchWeeklyEntries();
+
+    const todayEntry = entries.find(e => e.entry_date === todayKey());
+
+    const profit = todayEntry ? Number(todayEntry.profit) : 0;
+
+    const methodDetails = getWdMethodDetails();
+
+    const result = await postWeeklyWithdrawal(profit, methodDetails);
+
+    closeWithdrawModal();
+
+    await renderWeeklyAccount();
+
+    let msg = `Withdrawal recorded: ${fmtRupee(result.history.amount)}`;
+
+    if(result.history.vault_released !== null && result.history.vault_released !== undefined){
+      msg += `\n🏦 Surplus Vault released: ${fmtRupee(result.history.vault_released)}`;
+    }
+
+    showLocalToast(msg, 'success');
+
+  }catch(err){
+
+    console.error(err);
+    setWdError(err.message || 'Withdrawal failed — try again.');
+
+  }finally{
+
+    if(btn) btn.disabled = false;
+    updateConfirmButtonState();
+
+  }
+
+});  
+
+/*===================================================
+  WEEKLY HISTORY
+  =====≈============================================*/
+
+function wdMethodLabel(item){
+
+  if(item.withdrawal_method === 'upi'){
+    return `UPI: ${item.upi_id || '-'}`;
+  }
+
+  if(item.withdrawal_method === 'bank'){
+    return `Bank: ${item.bank_name || '-'} ••••${(item.bank_account_number || '').slice(-4)}`;
+  }
+
+  if(item.withdrawal_method === 'usdt'){
+    return `USDT (TRC20): ${(item.wallet_address || '').slice(0,6)}...${(item.wallet_address || '').slice(-4)}`;
+  }
+
+  if(item.withdrawal_method === 'tron'){
+    return `TRON: ${(item.wallet_address || '').slice(0,6)}...${(item.wallet_address || '').slice(-4)}`;
+  }
+
+  return '';
+
+}
+
 function renderWeeklyHistory(  
   history  
 ){  
@@ -4036,6 +4255,12 @@ function renderWeeklyHistory(
             )  
           )}`;  
   
+        const methodLabel = wdMethodLabel(item);
+
+        if(methodLabel){
+          meta += ` • ${methodLabel}`;
+        }
+  
         if(  
           item.vault_released !== null &&  
           item.vault_released !== undefined  
@@ -4049,13 +4274,18 @@ function renderWeeklyHistory(
             )}`;  
   
         }  
-  
-        const dateLabel =  
-          new Date(  
-            item.withdrawal_date  
-          ).toLocaleDateString(  
-            'en-IN'  
-          );  
+
+        const timestamp = item.created_at ? new Date(item.created_at) : null;
+
+        const dateLabel = timestamp
+          ? timestamp.toLocaleDateString('en-IN')
+          : new Date(item.withdrawal_date).toLocaleDateString('en-IN');
+
+        const timeLabel = timestamp
+          ? timestamp.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' })
+          : '';
+
+        const statusLabel = (item.status || 'success').toUpperCase();
   
         return `  
           <div class="withdraw-history-row">  
@@ -4063,14 +4293,14 @@ function renderWeeklyHistory(
             <div>  
   
               <div class="withdraw-date">  
-                ${dateLabel}  
+                ${dateLabel}${timeLabel ? ' • ' + timeLabel : ''}  
               </div>  
   
               <div class="withdraw-meta">  
                 Withdrawal #${  
                   item.withdrawal_number ??  
                   '-'  
-                }  
+                } • <span style="color:var(--green-glow);">✅ ${statusLabel}</span>  
               </div>  
   
             </div>  
@@ -4095,8 +4325,7 @@ function renderWeeklyHistory(
       }  
     ).join('');  
   
-}  
-  
+}
   
 /* ==================================================  
    ACCOUNT VIEW TOGGLE  
