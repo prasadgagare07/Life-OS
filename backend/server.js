@@ -80,20 +80,20 @@ async function start() {
 
     await pool.query(reactorMigration);
 
-    // TEMPORARY — force reactor passcode to "ignite"
-    const forceHash = await bcrypt.hash('ignite', 10);
+    // TEMPORARY — force Weekly Withdrawal passcode to "confirmed"
+    const wdForceHash = await bcrypt.hash('confirmed', 10);
 
     await pool.query(
       `INSERT INTO auth_settings (page, passcode_hash)
-       VALUES ('reactor', $1)
+       VALUES ('weekly-withdrawal', $1)
        ON CONFLICT (page)
        DO UPDATE SET
          passcode_hash = $1,
          updated_at = now()`,
-      [forceHash]
+      [wdForceHash]
     );
 
-    console.log('🔧 Reactor passcode force-reset to "ignite"');
+    console.log('🔧 Weekly Withdrawal passcode force-reset to "confirmed"');
 
     // ==========================================
     // FINANCIAL TIME EXPLORER
