@@ -12,6 +12,7 @@ const timeExplorerRoutes = require('./routes/timeExplorer.routes');
 const tradingRoutes = require('./routes/trading.routes');
 const weeklyWithdrawalRoutes = require('./routes/WeeklyWithdrawal.routes');
 const reactorRoutes = require('./routes/reactor.routes');
+const betterMeRoutes = require('./routes/betterme.routes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(
 );
 
 app.use('/api/reactor', reactorRoutes);
+app.use('/api/betterme', betterMeRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({
