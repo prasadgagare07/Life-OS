@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
 <title>BetterMe — LifeOS</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link
+  rel="preconnect"
+  href="https://fonts.googleapis.com"
+>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+  rel="stylesheet"
+>
 
 <style>
 
-/* ==================================================
-   GLOBAL
-================================================== */
+/* =========================================================
+   RESET
+========================================================= */
 
 *{
   margin:0;
@@ -22,528 +35,290 @@
 
 html,
 body{
-  background:#090b16;
-  color:#eef0fb;
+  width:100%;
+  min-height:100%;
+  background:#080b15;
+  color:#eef1ff;
   font-family:'Inter',sans-serif;
   overflow-x:hidden;
-  width:100%;
-  max-width:100%;
 }
 
 body{
-  padding-bottom:60px;
+  padding-bottom:70px;
 }
 
 :root{
-  --bg:#090b16;
-  --card:#121629;
-  --card-2:#161b32;
-  --border:#242a48;
-  --muted:#8b91b3;
+
+  --bg:#080b15;
+
+  --card:#11162a;
+
+  --card2:#171d35;
+
+  --border:#252c4b;
+
+  --muted:#7f87aa;
+
   --blue:#3b82f6;
+
   --purple:#a855f7;
+
   --pink:#ec4899;
-  --orange:#f97316;
-  --gold:#fbbf24;
+
   --green:#22c55e;
-  --red:#f87171;
-  --cell:#f2f3fb;
+
+  --green2:#4ade80;
+
+  --red:#ef4444;
+
+  --red2:#fb7185;
+
+  --white:#f4f5fc;
+
+  --line:#303758;
+
 }
 
-::selection{
-  background:var(--purple);
-  color:#fff;
-}
 
-
-/* ==================================================
+/* =========================================================
    TOP BAR
-================================================== */
+========================================================= */
 
 .topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+
+  height:58px;
 
   width:100%;
-  max-width:100%;
 
-  padding:16px 24px;
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  padding:0 16px;
 
   border-bottom:1px solid var(--border);
-  background:rgba(9,11,22,.85);
-  backdrop-filter:blur(10px);
+
+  background:rgba(8,11,21,.92);
+
+  backdrop-filter:blur(14px);
 
   position:sticky;
+
   top:0;
-  z-index:50;
+
+  z-index:100;
+
 }
 
 .back-link{
-  display:flex;
-  align-items:center;
-  gap:8px;
 
-  color:var(--muted);
-  font-size:12.5px;
-  font-weight:600;
+  color:#aeb5d2;
+
   text-decoration:none;
+
+  font-size:12px;
+
+  font-weight:700;
+
 }
 
 .save-pill{
+
   display:flex;
+
   align-items:center;
+
   gap:7px;
 
-  font-size:10.5px;
-  font-weight:600;
+  padding:6px 11px;
 
-  color:#7ee8a8;
+  border-radius:999px;
+
+  background:rgba(34,197,94,.09);
+
+  border:1px solid rgba(34,197,94,.25);
+
+  color:#78e9a1;
 
   font-family:'JetBrains Mono',monospace;
 
-  background:rgba(34,197,94,.10);
-  border:1px solid rgba(34,197,94,.28);
+  font-size:9px;
 
-  padding:6px 12px;
-  border-radius:999px;
+  font-weight:700;
+
 }
 
 .save-pill.saving{
+
   color:#fbbf24;
+
   border-color:rgba(251,191,36,.3);
-  background:rgba(251,191,36,.1);
+
+  background:rgba(251,191,36,.08);
+
 }
 
 .save-pill.error{
+
   color:#fb7185;
+
   border-color:rgba(248,113,113,.3);
-  background:rgba(248,113,113,.1);
+
+  background:rgba(248,113,113,.08);
+
 }
 
 .save-pill .dot{
+
   width:6px;
+
   height:6px;
+
   border-radius:50%;
 
   background:#4ade80;
+
   box-shadow:0 0 8px #4ade80;
+
 }
 
 
-/* ==================================================
+/* =========================================================
    HERO
-================================================== */
+========================================================= */
 
 .hero{
-  width:100%;
-  max-width:1180px;
-
-  margin:0 auto;
-
-  padding:46px 24px 20px;
 
   text-align:center;
 
+  padding:30px 16px 10px;
+
   position:relative;
 
-  display:flex;
-  flex-direction:column;
-  align-items:center;
 }
 
 .hero::before{
+
   content:'';
 
   position:absolute;
 
-  top:-40px;
+  width:300px;
+
+  height:180px;
+
   left:50%;
+
+  top:-30px;
 
   transform:translateX(-50%);
 
-  width:520px;
-  height:280px;
-
   background:
     radial-gradient(
-      circle at 30% 20%,
-      rgba(59,130,246,.28),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 70% 30%,
-      rgba(236,72,153,.24),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 50% 70%,
-      rgba(251,191,36,.16),
-      transparent 60%
+      circle,
+      rgba(59,130,246,.22),
+      transparent 65%
     );
 
-  filter:blur(10px);
+  filter:blur(12px);
 
   pointer-events:none;
 
-  z-index:0;
 }
 
 .hero-logo{
-  width:88px;
-  height:88px;
+
+  width:64px;
+
+  height:64px;
 
   object-fit:contain;
 
-  filter:drop-shadow(
-    0 8px 30px rgba(168,85,247,.35)
-  );
-
   position:relative;
 
-  z-index:1;
+  z-index:2;
 
-  display:block;
+  filter:
+    drop-shadow(
+      0 8px 25px rgba(168,85,247,.35)
+    );
 
-  margin-left:auto;
-  margin-right:auto;
 }
 
 .hero h1{
-  position:relative;
-  z-index:1;
 
-  width:100%;
+  position:relative;
 
   font-family:'Fredoka',sans-serif;
-  font-weight:700;
 
-  font-size:40px;
+  font-size:31px;
 
-  letter-spacing:.3px;
-
-  margin-top:8px;
-
-  text-align:center;
+  margin-top:5px;
 
   background:
     linear-gradient(
       90deg,
       #60a5fa,
-      #a855f7 35%,
-      #ec4899 60%,
-      #fbbf24 100%
+      #a855f7,
+      #ec4899,
+      #fbbf24
     );
 
   -webkit-background-clip:text;
+
   background-clip:text;
 
   -webkit-text-fill-color:transparent;
+
 }
 
-.hero .tagline-pill{
-  position:relative;
+.tagline{
 
-  z-index:1;
+  display:inline-block;
 
-  display:inline-flex;
+  margin-top:7px;
 
-  align-items:center;
-  justify-content:center;
-
-  gap:8px;
-
-  margin-top:12px;
-
-  padding:8px 18px;
+  padding:6px 13px;
 
   border-radius:999px;
 
-  font-size:12px;
-  font-weight:600;
+  border:1px solid rgba(251,191,36,.25);
 
-  color:#fde68a;
+  background:rgba(251,191,36,.06);
 
-  border:1px solid rgba(251,191,36,.4);
+  color:#f6d779;
 
-  background:
-    linear-gradient(
-      90deg,
-      rgba(59,130,246,.12),
-      rgba(236,72,153,.12),
-      rgba(251,191,36,.12)
-    );
+  font-size:9px;
 
-  max-width:calc(100vw - 32px);
+  font-weight:700;
 
-  text-align:center;
 }
 
 
-/* ==================================================
+/* =========================================================
    TABS
-================================================== */
+========================================================= */
 
 .tabs{
-  width:100%;
-  max-width:1180px;
-
-  margin:30px auto 0;
-
-  padding:0 24px;
 
   display:grid;
 
-  grid-template-columns:repeat(4,1fr);
-
-  gap:12px;
-}
-
-.tab{
-  --tab-color:var(--blue);
-
-  cursor:pointer;
-
-  background:var(--card);
-
-  border:1px solid var(--border);
-
-  border-radius:18px;
-
-  padding:14px;
-
-  display:flex;
-  flex-direction:column;
-
-  gap:6px;
-
-  transition:.18s ease;
-
-  position:relative;
-
-  overflow:hidden;
-}
-
-.tab::after{
-  content:'';
-
-  position:absolute;
-
-  left:0;
-  right:0;
-  bottom:0;
-
-  height:3px;
-
-  background:var(--tab-color);
-
-  opacity:.25;
-
-  transition:.18s ease;
-}
-
-.tab.active{
-  border-color:var(--tab-color);
-
-  background:
-    linear-gradient(
-      160deg,
-      color-mix(
-        in srgb,
-        var(--tab-color) 14%,
-        var(--card)
-      ),
-      var(--card)
-    );
-
-  box-shadow:
-    0 10px 30px -14px
-    color-mix(
-      in srgb,
-      var(--tab-color) 60%,
-      transparent
-    );
-}
-
-.tab.active::after{
-  opacity:1;
-}
-
-.tab .t-icon{
-  font-size:18px;
-}
-
-.tab .t-name{
-  font-family:'Fredoka',sans-serif;
-  font-weight:600;
-  font-size:13px;
-  color:#fff;
-}
-
-.tab .t-sub{
-  font-size:9.5px;
-  color:var(--muted);
-  font-family:'JetBrains Mono',monospace;
-}
-
-.tab[data-tab="habits"]{
-  --tab-color:#3b82f6;
-}
-
-.tab[data-tab="learn"]{
-  --tab-color:#a855f7;
-}
-
-.tab[data-tab="master"]{
-  --tab-color:#f97316;
-}
-
-.tab[data-tab="character"]{
-  --tab-color:#ec4899;
-}
-
-
-/* ==================================================
-   PANELS
-================================================== */
-
-.panel{
-  width:100%;
-  max-width:1180px;
-
-  margin:26px auto 0;
-
-  padding:0 24px;
-
-  display:none;
-}
-
-.panel.active{
-  display:block;
-}
-
-.panel-head{
-  display:flex;
-
-  align-items:flex-start;
-
-  justify-content:space-between;
-
-  flex-wrap:wrap;
-
-  gap:14px;
-
-  margin-bottom:18px;
-}
-
-.panel-title{
-  font-family:'Fredoka',sans-serif;
-
-  font-weight:600;
-
-  font-size:20px;
-
-  display:flex;
-
-  align-items:center;
-
-  gap:10px;
-}
-
-.panel-title .swatch{
-  width:10px;
-  height:24px;
-
-  border-radius:5px;
-}
-
-
-/* ==================================================
-   MONTH NAVIGATION
-================================================== */
-
-.month-nav-wrap{
-  display:flex;
-
-  flex-direction:column;
-
-  gap:10px;
-
-  width:100%;
-
-  max-width:520px;
-
-  margin-left:auto;
-}
-
-.month-slider{
-  display:flex;
+  grid-template-columns:
+    repeat(4,1fr);
 
   gap:8px;
 
-  overflow-x:auto;
+  padding:18px 16px 0;
 
-  padding:4px 2px;
-
-  scrollbar-width:thin;
-
-  -webkit-overflow-scrolling:touch;
 }
 
-.month-chip{
-  flex-shrink:0;
+.tab{
 
-  display:flex;
+  min-width:0;
 
-  flex-direction:column;
-
-  align-items:center;
-
-  gap:2px;
-
-  padding:8px 13px;
-
-  border-radius:12px;
-
-  border:1px solid var(--border);
-
-  background:var(--card);
-
-  cursor:pointer;
-
-  font-family:'JetBrains Mono',monospace;
-}
-
-.month-chip .mc-name{
-  font-size:9.5px;
-
-  font-weight:700;
-
-  color:var(--muted);
-}
-
-.month-chip .mc-score{
-  font-size:11.5px;
-
-  font-weight:700;
-}
-
-.month-chip.active{
-  border-color:#3b82f6;
-
-  background:rgba(59,130,246,.12);
-}
-
-.month-chip.active .mc-name{
-  color:#93c5fd;
-}
-
-.month-nav{
-  display:flex;
-
-  align-items:center;
-
-  gap:10px;
+  padding:11px 8px;
 
   background:var(--card);
 
@@ -551,336 +326,208 @@ body{
 
   border-radius:14px;
 
-  padding:8px 10px;
-
-  align-self:flex-end;
-}
-
-.month-nav button{
-  width:30px;
-  height:30px;
-
-  border-radius:9px;
-
-  border:1px solid var(--border);
-
-  background:var(--card-2);
-
-  color:#fff;
-
-  font-size:14px;
-
   cursor:pointer;
+
 }
 
-.month-nav .m-label{
-  font-family:'JetBrains Mono',monospace;
+.tab.active{
 
-  font-size:12px;
+  border-color:#3b82f6;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(59,130,246,.15),
+      var(--card)
+    );
+
+}
+
+.t-icon{
+
+  font-size:17px;
+
+  margin-bottom:4px;
+
+}
+
+.t-name{
+
+  font-family:'Fredoka',sans-serif;
+
+  font-size:11px;
 
   font-weight:600;
 
-  min-width:112px;
-
-  text-align:center;
-}
-
-.month-nav .today-btn{
-  width:auto;
-
-  padding:0 12px;
-
-  font-family:'Inter',sans-serif;
-
-  font-size:10.5px;
-
-  font-weight:700;
-
-  color:#93c5fd;
-
-  border-color:rgba(59,130,246,.35);
-
-  background:rgba(59,130,246,.10);
-}
-
-
-/* ==================================================
-   HABIT GRID
-================================================== */
-
-.grid-shell{
-  background:var(--card);
-
-  border:1px solid var(--border);
-
-  border-radius:20px;
-
-  padding:4px;
+  white-space:nowrap;
 
   overflow:hidden;
 
-  width:100%;
+  text-overflow:ellipsis;
+
 }
 
-.grid-scroll{
-  width:100%;
+.t-sub{
 
-  overflow-x:auto;
-  overflow-y:hidden;
-
-  border-radius:16px;
-
-  -webkit-overflow-scrolling:touch;
-}
-
-table.habit-grid{
-  border-collapse:separate;
-  border-spacing:0;
-
-  width:max-content;
-
-  min-width:100%;
-
-  table-layout:fixed;
-}
-
-
-/* NUMBER COLUMN */
-
-.habit-grid th.col-num,
-.habit-grid td.col-num{
-  width:32px;
-  min-width:32px;
-  max-width:32px;
-}
-
-
-/* ==================================================
-   HABIT NAME COLUMN
-   CHANGED — WIDER + WRAPPING
-================================================== */
-
-.habit-grid th.col-name,
-.habit-grid td.col-name{
-
-  position:sticky;
-
-  left:32px;
-
-  z-index:4;
-
-  background:#181d38;
-
-  width:155px;
-  min-width:155px;
-  max-width:155px;
-
-  border-right:1px solid var(--border);
-
-  padding:0 8px;
-
-  overflow:hidden;
-}
-
-.habit-grid td.col-name{
-  background:var(--card-2);
-}
-
-
-/* ==================================================
-   DAY COLUMNS
-================================================== */
-
-.habit-grid th.col-day,
-.habit-grid td.cell{
-
-  width:32px;
-
-  min-width:32px;
-
-  max-width:32px;
-}
-
-
-/* ==================================================
-   TABLE HEADER
-================================================== */
-
-.habit-grid thead th{
-
-  position:sticky;
-
-  top:0;
-
-  background:#181d38;
-
-  z-index:3;
-
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:9.5px;
-
-  font-weight:600;
+  margin-top:3px;
 
   color:var(--muted);
 
-  padding:10px 4px;
+  font-family:'JetBrains Mono',monospace;
 
-  text-align:center;
+  font-size:7px;
 
-  border-bottom:1px solid var(--border);
-
-  white-space:nowrap;
-}
-
-.habit-grid th.col-num{
-  left:0 !important;
-
-  z-index:5 !important;
 }
 
 
-/* ==================================================
-   HABIT NAME
-   CHANGED — FULL NAME / WRAP
-================================================== */
+/* =========================================================
+   PANELS
+========================================================= */
 
-.habit-row-name{
+.panel{
+
+  display:none;
+
+  width:100%;
+
+  padding:22px 16px 0;
+
+}
+
+.panel.active{
+
+  display:block;
+
+}
+
+.panel-title{
 
   display:flex;
 
   align-items:center;
 
-  justify-content:space-between;
+  gap:9px;
 
-  gap:6px;
+  font-family:'Fredoka',sans-serif;
 
-  padding:8px 0;
+  font-size:20px;
 
-  min-height:44px;
 }
 
-.habit-row-name span.txt{
+.swatch{
 
-  font-size:10.5px;
+  width:9px;
 
-  font-weight:500;
+  height:25px;
 
-  color:#e7e9f7;
+  border-radius:8px;
 
-  line-height:1.3;
+  background:#3b82f6;
 
-  overflow:visible;
-
-  text-overflow:clip;
-
-  white-space:normal;
-
-  word-break:normal;
-
-  overflow-wrap:anywhere;
-
-  cursor:help;
-
-  display:block;
-
-  flex:1;
-
-  min-width:0;
 }
 
 
-/* ==================================================
-   ROW ACTIONS
-================================================== */
+/* =========================================================
+   WEEK SELECTOR
+========================================================= */
 
-.row-actions{
+.week-selector{
 
-  display:flex;
+  margin-top:18px;
 
-  gap:4px;
-
-  opacity:0;
-
-  transition:.15s;
-
-  flex-shrink:0;
-}
-
-tr:hover .row-actions{
-  opacity:1;
-}
-
-.row-actions button{
-
-  width:19px;
-  height:19px;
-
-  border-radius:6px;
+  background:var(--card);
 
   border:1px solid var(--border);
 
-  background:#10142a;
+  border-radius:18px;
+
+  padding:10px;
+
+}
+
+.week-slider{
+
+  display:flex;
+
+  gap:7px;
+
+  overflow-x:auto;
+
+  scrollbar-width:none;
+
+  padding-bottom:3px;
+
+}
+
+.week-slider::-webkit-scrollbar{
+
+  display:none;
+
+}
+
+.week-chip{
+
+  flex-shrink:0;
+
+  min-width:62px;
+
+  padding:8px 7px;
+
+  border-radius:11px;
+
+  border:1px solid var(--border);
+
+  background:#0e1325;
+
+  text-align:center;
+
+  cursor:pointer;
+
+}
+
+.week-chip .wk-name{
+
+  display:block;
 
   color:var(--muted);
 
-  font-size:9.5px;
+  font-family:'JetBrains Mono',monospace;
 
-  cursor:pointer;
-
-  line-height:1;
-}
-
-
-/* ==================================================
-   DAY CELLS
-================================================== */
-
-.habit-grid th.col-day{
   font-size:8px;
+
+  font-weight:700;
+
 }
 
-.habit-grid td.cell{
+.week-chip .wk-score{
 
-  width:32px;
+  display:block;
 
-  min-width:32px;
+  margin-top:3px;
 
-  max-width:32px;
+  font-family:'JetBrains Mono',monospace;
 
-  height:30px;
+  font-size:10px;
 
-  padding:4px;
+  font-weight:800;
 
-  border-right:1px solid #1c2140;
-
-  border-bottom:1px solid #1c2140;
-
-  text-align:center;
 }
 
+.week-chip.active{
 
-/* ==================================================
-   CELL BOX
-================================================== */
+  border-color:#3b82f6;
 
-.cell-box{
+  background:rgba(59,130,246,.12);
 
-  width:100%;
+}
 
-  height:100%;
+.week-chip.active .wk-name{
 
-  min-width:8px;
+  color:#93c5fd;
 
-  margin:auto;
+}
 
-  border-radius:4px;
-
-  background:var(--cell);
-
-  cursor:pointer;
-
-  transition:.12s ease;
+.week-controls{
 
   display:flex;
 
@@ -888,192 +535,631 @@ tr:hover .row-actions{
 
   justify-content:center;
 
-  font-size:9px;
+  gap:8px;
+
+  margin-top:10px;
+
 }
 
-.cell-box:hover{
-  transform:scale(1.12);
+.week-btn{
+
+  width:34px;
+
+  height:34px;
+
+  border-radius:10px;
+
+  border:1px solid var(--border);
+
+  background:var(--card2);
+
+  color:white;
+
+  font-size:17px;
+
+  cursor:pointer;
+
 }
 
-.cell-box.done{
+.week-label{
 
-  background:
-    linear-gradient(
-      160deg,
-      #4ade80,
-      #16a34a
-    );
-
-  box-shadow:
-    0 0 0 1px rgba(34,197,94,.4);
-}
-
-.cell-box.missed{
-
-  background:
-    linear-gradient(
-      160deg,
-      #fb7185,
-      #dc2626
-    );
-
-  box-shadow:
-    0 0 0 1px rgba(239,68,68,.4);
-}
-
-
-/* ==================================================
-   PERCENTAGE
-================================================== */
-
-.habit-grid th.col-pct,
-.habit-grid td.col-pct{
-
-  width:46px;
-
-  min-width:46px;
-
-  max-width:46px;
+  min-width:170px;
 
   text-align:center;
 
   font-family:'JetBrains Mono',monospace;
 
+  font-size:10px;
+
   font-weight:700;
 
-  font-size:10.5px;
+  color:#e8ebfa;
 
-  border-left:1px solid var(--border);
 }
 
-.pct-high{
-  color:#4ade80;
-}
+.today-btn{
 
-.pct-mid{
-  color:#fbbf24;
-}
+  width:auto;
 
-.pct-low{
-  color:#fb7185;
-}
+  padding:0 12px;
 
+  color:#93c5fd;
 
-/* ==================================================
-   PROGRESS ROW
-================================================== */
+  border-color:rgba(59,130,246,.35);
 
-tr.progress-row td{
+  background:rgba(59,130,246,.09);
 
-  background:#10142a;
-
-  font-family:'JetBrains Mono',monospace;
+  font-family:'Inter',sans-serif;
 
   font-size:9px;
 
-  font-weight:700;
+  font-weight:800;
 
-  color:var(--muted);
-
-  padding:8px 0;
-
-  text-align:center;
-
-  border-top:2px solid var(--border);
-}
-
-tr.progress-row td.col-name{
-
-  text-align:left;
-
-  padding-left:12px;
-
-  color:#e7e9f7;
-
-  font-family:'Fredoka',sans-serif;
-
-  font-size:10.5px;
 }
 
 
-/* ==================================================
-   BUTTONS / LEGEND
-================================================== */
+/* =========================================================
+   WEEK SCORE
+========================================================= */
 
-.add-row{
-
-  display:flex;
-
-  gap:10px;
+.week-summary{
 
   margin-top:14px;
-}
-
-.add-btn{
 
   display:flex;
 
   align-items:center;
 
-  gap:8px;
+  justify-content:space-between;
 
-  padding:11px 18px;
+  padding:12px 14px;
 
-  border-radius:12px;
+  border:1px solid var(--border);
 
-  border:1px dashed rgba(59,130,246,.4);
+  background:var(--card);
 
-  background:rgba(59,130,246,.08);
+  border-radius:14px;
 
-  color:#93c5fd;
-
-  font-size:12px;
-
-  font-weight:700;
-
-  cursor:pointer;
-
-  font-family:'Inter',sans-serif;
 }
 
-.legend{
-
-  display:flex;
-
-  gap:16px;
-
-  margin-top:14px;
-
-  font-size:10px;
+.summary-label{
 
   color:var(--muted);
 
+  font-size:9px;
+
   font-family:'JetBrains Mono',monospace;
+
+  font-weight:700;
+
 }
 
-.legend span{
+.summary-score{
+
+  font-family:'Fredoka',sans-serif;
+
+  font-size:20px;
+
+}
+
+.summary-message{
+
+  color:#9da5c7;
+
+  font-size:9px;
+
+}
+
+
+/* =========================================================
+   HABITS LEGEND
+========================================================= */
+
+.habits-header{
+
+  margin-top:20px;
+
+  background:var(--card);
+
+  border:1px solid var(--border);
+
+  border-radius:18px;
+
+  padding:13px;
+
+}
+
+.habits-header-title{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin-bottom:10px;
+
+}
+
+.habits-header-title span:first-child{
+
+  font-family:'Fredoka',sans-serif;
+
+  font-size:14px;
+
+}
+
+.habits-header-title span:last-child{
+
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:8px;
+
+  color:var(--muted);
+
+}
+
+.habit-list{
+
+  display:flex;
+
+  flex-wrap:wrap;
+
+  gap:6px;
+
+}
+
+.habit-chip{
 
   display:flex;
 
   align-items:center;
 
   gap:6px;
+
+  max-width:100%;
+
+  padding:6px 8px;
+
+  border-radius:9px;
+
+  background:#0d1223;
+
+  border:1px solid #222944;
+
 }
 
-.legend i{
+.habit-number{
 
-  width:12px;
-  height:12px;
+  width:18px;
 
-  border-radius:4px;
+  height:18px;
 
-  display:inline-block;
+  flex-shrink:0;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  border-radius:6px;
+
+  background:rgba(59,130,246,.16);
+
+  color:#8db9ff;
+
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:7px;
+
+  font-weight:800;
+
+}
+
+.habit-name{
+
+  color:#dfe3f5;
+
+  font-size:9px;
+
+  font-weight:600;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+  white-space:nowrap;
+
 }
 
 
-/* ==================================================
-   LISTS
-================================================== */
+/* =========================================================
+   WEEK BOARD
+========================================================= */
+
+.board{
+
+  margin-top:14px;
+
+  background:var(--card);
+
+  border:1px solid var(--border);
+
+  border-radius:20px;
+
+  padding:12px 8px 16px;
+
+  overflow:hidden;
+
+}
+
+.days-row{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(7,1fr);
+
+  gap:3px;
+
+}
+
+.day-column{
+
+  min-width:0;
+
+  text-align:center;
+
+  position:relative;
+
+}
+
+.day-head{
+
+  padding-bottom:9px;
+
+  border-bottom:1px solid var(--border);
+
+}
+
+.day-name{
+
+  font-family:'Fredoka',sans-serif;
+
+  font-size:9px;
+
+  color:#9ba3c4;
+
+  font-weight:600;
+
+}
+
+.day-date{
+
+  margin-top:3px;
+
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:8px;
+
+  color:#6f779b;
+
+}
+
+.day-column.today .day-name{
+
+  color:#60a5fa;
+
+}
+
+.day-column.today .day-date{
+
+  color:#93c5fd;
+
+}
+
+
+/* =========================================================
+   VERTICAL HABIT DOT LINE
+========================================================= */
+
+.dot-line{
+
+  position:relative;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  padding-top:12px;
+
+}
+
+
+/* connecting line */
+
+.dot-line::before{
+
+  content:'';
+
+  position:absolute;
+
+  top:20px;
+
+  bottom:20px;
+
+  width:2px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #2d3555,
+      #242b48
+    );
+
+  border-radius:3px;
+
+  z-index:0;
+
+}
+
+
+/* individual habit */
+
+.habit-dot-wrap{
+
+  width:100%;
+
+  height:34px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  position:relative;
+
+  z-index:1;
+
+}
+
+.habit-dot{
+
+  width:18px;
+
+  height:18px;
+
+  border-radius:50%;
+
+  background:#f0f2fb;
+
+  border:2px solid #bfc4d8;
+
+  box-shadow:
+    0 0 0 4px var(--card);
+
+  cursor:pointer;
+
+  transition:
+    transform .12s ease,
+    box-shadow .12s ease;
+
+}
+
+.habit-dot:active{
+
+  transform:scale(.82);
+
+}
+
+.habit-dot:hover{
+
+  transform:scale(1.12);
+
+}
+
+
+/* completed */
+
+.habit-dot.done{
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #86efac,
+      #22c55e 65%,
+      #15803d
+    );
+
+  border-color:#4ade80;
+
+  box-shadow:
+    0 0 0 4px var(--card),
+    0 0 13px rgba(34,197,94,.55);
+
+}
+
+
+/* missed */
+
+.habit-dot.missed{
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #fda4af,
+      #ef4444 65%,
+      #b91c1c
+    );
+
+  border-color:#fb7185;
+
+  box-shadow:
+    0 0 0 4px var(--card),
+    0 0 10px rgba(239,68,68,.35);
+
+}
+
+
+/* future */
+
+.day-column.future .habit-dot{
+
+  opacity:.55;
+
+}
+
+
+/* today column */
+
+.day-column.today{
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(59,130,246,.07),
+      transparent
+    );
+
+  border-radius:10px;
+
+}
+
+
+/* =========================================================
+   DAY SCORE
+========================================================= */
+
+.day-score{
+
+  margin-top:8px;
+
+  padding-top:8px;
+
+  border-top:1px solid #202742;
+
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:7px;
+
+  font-weight:800;
+
+}
+
+.score-good{
+
+  color:#4ade80;
+
+}
+
+.score-mid{
+
+  color:#fbbf24;
+
+}
+
+.score-low{
+
+  color:#fb7185;
+
+}
+
+.score-none{
+
+  color:#596180;
+
+}
+
+
+/* =========================================================
+   DOT LEGEND
+========================================================= */
+
+.dot-legend{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:15px;
+
+  margin-top:14px;
+
+  flex-wrap:wrap;
+
+}
+
+.dot-legend-item{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+
+  color:#777f9f;
+
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:7px;
+
+}
+
+.legend-dot{
+
+  width:9px;
+
+  height:9px;
+
+  border-radius:50%;
+
+  background:#f0f2fb;
+
+  border:1px solid #bfc4d8;
+
+}
+
+.legend-dot.green{
+
+  background:#22c55e;
+
+  border-color:#4ade80;
+
+}
+
+.legend-dot.red{
+
+  background:#ef4444;
+
+  border-color:#fb7185;
+
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty-note{
+
+  padding:35px 20px;
+
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+}
+
+
+/* =========================================================
+   LIST PANELS
+========================================================= */
 
 .list-grid{
 
@@ -1082,10 +1168,13 @@ tr.progress-row td.col-name{
   grid-template-columns:
     repeat(
       auto-fill,
-      minmax(300px,1fr)
+      minmax(280px,1fr)
     );
 
   gap:12px;
+
+  margin-top:16px;
+
 }
 
 .list-card{
@@ -1094,40 +1183,29 @@ tr.progress-row td.col-name{
 
   border:1px solid var(--border);
 
-  border-left:3px solid
-    var(--accent,var(--purple));
+  border-left:3px solid var(--accent,var(--purple));
 
   border-radius:14px;
 
-  padding:13px 15px;
+  padding:13px;
 
   display:flex;
 
-  align-items:flex-start;
+  gap:11px;
 
-  gap:12px;
-
-  transition:.15s;
-}
-
-.list-card:hover{
-  background:var(--card-2);
 }
 
 .list-check{
 
   width:22px;
+
   height:22px;
-
-  border-radius:7px;
-
-  border:1.5px solid var(--border);
 
   flex-shrink:0;
 
-  margin-top:1px;
+  border-radius:7px;
 
-  cursor:pointer;
+  border:1px solid var(--border);
 
   display:flex;
 
@@ -1135,61 +1213,54 @@ tr.progress-row td.col-name{
 
   justify-content:center;
 
-  font-size:12px;
+  cursor:pointer;
 
-  transition:.12s;
 }
 
 .list-check.done{
 
   background:var(--accent,var(--purple));
 
-  border-color:var(--accent,var(--purple));
+  color:#080b15;
 
-  color:#0a0c18;
-
-  font-weight:800;
 }
 
 .list-body{
 
+  min-width:0;
+
   flex:1;
 
-  min-width:0;
 }
 
 .list-num{
 
   font-family:'JetBrains Mono',monospace;
 
-  font-size:9.5px;
-
   color:var(--muted);
 
-  font-weight:700;
+  font-size:8px;
+
 }
 
 .list-text{
 
-  font-size:13px;
+  margin-top:3px;
 
-  font-weight:500;
+  color:#e7eaf8;
 
-  color:#e7e9f7;
-
-  margin-top:2px;
+  font-size:12px;
 
   line-height:1.4;
+
 }
 
 .list-card.done .list-text{
 
-  color:#8b91b3;
-
   text-decoration:line-through;
 
-  text-decoration-color:
-    rgba(139,145,179,.5);
+  color:#737b9d;
+
 }
 
 .list-actions{
@@ -1198,532 +1269,216 @@ tr.progress-row td.col-name{
 
   gap:4px;
 
-  opacity:0;
-
-  transition:.15s;
-}
-
-.list-card:hover .list-actions{
-  opacity:1;
 }
 
 .list-actions button{
 
   width:22px;
-  height:22px;
 
-  border-radius:6px;
+  height:22px;
 
   border:1px solid var(--border);
 
-  background:#10142a;
+  background:#0e1325;
 
   color:var(--muted);
+
+  border-radius:6px;
+
+}
+
+
+/* =========================================================
+   ADD BUTTON
+========================================================= */
+
+.add-row{
+
+  margin-top:14px;
+
+}
+
+.add-btn{
+
+  padding:10px 15px;
+
+  border-radius:11px;
+
+  border:1px dashed rgba(59,130,246,.4);
+
+  background:rgba(59,130,246,.07);
+
+  color:#93c5fd;
 
   font-size:10px;
 
+  font-weight:800;
+
   cursor:pointer;
-}
 
-.empty-note{
-
-  padding:30px;
-
-  text-align:center;
-
-  color:var(--muted);
-
-  font-size:12px;
 }
 
 
-/* ==================================================
+/* =========================================================
    DESKTOP
-================================================== */
+========================================================= */
 
-@media(min-width:820px){
-
-  .habit-grid th.col-num,
-  .habit-grid td.col-num{
-
-    width:32px;
-
-    min-width:32px;
-    max-width:32px;
-
-    font-size:11px;
-  }
-
-  .habit-grid th.col-name,
-  .habit-grid td.col-name{
-
-    left:32px;
-
-    width:210px;
-
-    min-width:210px;
-
-    max-width:210px;
-
-    padding:0 12px;
-  }
-
-  .habit-row-name span.txt{
-
-    font-size:12.5px;
-
-    white-space:normal;
-
-    overflow:visible;
-
-    text-overflow:clip;
-  }
-
-  .habit-grid td.cell{
-
-    height:30px;
-
-    padding:4px;
-  }
-
-  .cell-box{
-
-    border-radius:6px;
-  }
-
-}
-
-
-/* ==================================================
-   MOBILE / TABLET
-================================================== */
-
-@media(max-width:720px){
-
-  .topbar{
-
-    width:100vw !important;
-
-    padding:16px !important;
-  }
-
+@media(min-width:800px){
 
   .hero{
 
-    width:100vw !important;
+    padding-top:42px;
 
-    max-width:100vw !important;
-
-    margin-left:0 !important;
-    margin-right:0 !important;
-
-    padding:
-      46px 16px 20px !important;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    text-align:center;
   }
-
 
   .hero-logo{
 
-    width:88px !important;
+    width:80px;
 
-    height:88px !important;
+    height:80px;
 
-    display:block !important;
-
-    margin-left:auto !important;
-
-    margin-right:auto !important;
-
-    position:relative !important;
-
-    left:auto !important;
-
-    right:auto !important;
   }
-
 
   .hero h1{
 
-    width:100% !important;
+    font-size:40px;
 
-    font-size:30px !important;
-
-    text-align:center !important;
-
-    margin-left:0 !important;
-
-    margin-right:0 !important;
   }
-
-
-  .hero .tagline-pill{
-
-    max-width:
-      calc(100vw - 32px) !important;
-
-    margin-left:auto !important;
-
-    margin-right:auto !important;
-
-    justify-content:center !important;
-
-    text-align:center !important;
-  }
-
-
-  .tabs{
-
-    width:100vw !important;
-
-    max-width:100vw !important;
-
-    margin-left:0 !important;
-
-    margin-right:0 !important;
-
-    padding-left:16px !important;
-
-    padding-right:16px !important;
-
-    grid-template-columns:
-      repeat(2,minmax(0,1fr)) !important;
-
-    box-sizing:border-box !important;
-  }
-
 
   .panel{
 
-    width:100vw !important;
+    max-width:900px;
 
-    max-width:100vw !important;
+    margin-left:auto;
 
-    margin-left:0 !important;
+    margin-right:auto;
 
-    margin-right:0 !important;
-
-    padding-left:16px !important;
-
-    padding-right:16px !important;
-
-    box-sizing:border-box !important;
   }
 
+  .tabs{
 
-  .panel-head{
+    max-width:900px;
 
-    align-items:flex-start;
+    margin-left:auto;
 
-    flex-direction:column;
+    margin-right:auto;
+
   }
 
+  .habit-chip{
 
-  .month-nav-wrap{
+    max-width:220px;
 
-    max-width:100%;
-
-    margin-left:0;
   }
 
+  .habit-dot-wrap{
 
-  .month-slider{
+    height:39px;
 
-    width:100%;
-
-    padding-left:2px;
-
-    padding-right:2px;
   }
 
-
-  .month-chip{
-
-    padding:8px 12px;
-  }
-
-
-  .month-nav{
-
-    align-self:flex-start;
-
-    width:100%;
-
-    justify-content:center;
-  }
-
-
-  .grid-shell{
-
-    width:100% !important;
-
-    max-width:100% !important;
-
-    box-sizing:border-box !important;
-  }
-
-
-  .grid-scroll{
-
-    width:100%;
-
-    max-width:100%;
-
-    overflow-x:auto;
-
-    overflow-y:hidden;
-
-    -webkit-overflow-scrolling:touch;
-  }
-
-
-  /*
-    IMPORTANT MOBILE HABIT COLUMN
-
-    155px gives the habit name enough
-    room to display properly while the
-    day cells remain horizontally scrollable.
-  */
-
-  .habit-grid th.col-name,
-  .habit-grid td.col-name{
-
-    width:155px !important;
-
-    min-width:155px !important;
-
-    max-width:155px !important;
-
-    left:32px !important;
-
-    padding-left:10px !important;
-
-    padding-right:8px !important;
-  }
-
-
-  .habit-grid th.col-num,
-  .habit-grid td.col-num{
-
-    width:32px !important;
-
-    min-width:32px !important;
-
-    max-width:32px !important;
-  }
-
-
-  .habit-row-name{
-
-    min-height:46px;
-
-    padding:7px 0;
-  }
-
-
-  .habit-row-name span.txt{
-
-    font-size:11px;
-
-    line-height:1.3;
-
-    white-space:normal;
-
-    overflow:visible;
-
-    text-overflow:clip;
-
-    word-break:normal;
-
-    overflow-wrap:anywhere;
-  }
-
-
-  /*
-    Keep action buttons usable.
-    They appear when the row is touched/hovered.
-  */
-
-  .row-actions{
-
-    gap:3px;
-  }
-
-
-  .row-actions button{
+  .habit-dot{
 
     width:20px;
 
     height:20px;
 
-    font-size:9px;
-  }
-
-
-  .list-grid{
-
-    grid-template-columns:1fr;
-  }
-
-
-  .legend{
-
-    flex-wrap:wrap;
   }
 
 }
 
 
-/* ==================================================
-   EXTRA SMALL MOBILE
-================================================== */
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
 
-@media(max-width:480px){
-
-  html,
-  body{
-
-    width:100% !important;
-
-    max-width:100vw !important;
-
-    min-width:0 !important;
-
-    overflow-x:hidden !important;
-  }
-
-
-  .hero{
-
-    width:100vw !important;
-
-    max-width:100vw !important;
-
-    padding-left:16px !important;
-
-    padding-right:16px !important;
-  }
-
-
-  .hero-logo{
-
-    width:88px !important;
-
-    height:88px !important;
-
-    margin-left:auto !important;
-
-    margin-right:auto !important;
-  }
-
-
-  .hero h1{
-
-    font-size:30px !important;
-
-    text-align:center !important;
-  }
-
-
-  .hero .tagline-pill{
-
-    width:auto !important;
-
-    max-width:
-      calc(100vw - 32px) !important;
-  }
-
+@media(max-width:380px){
 
   .tabs{
 
-    width:100vw !important;
+    gap:5px;
 
-    padding-left:16px !important;
+    padding-left:10px;
 
-    padding-right:16px !important;
+    padding-right:10px;
+
   }
 
+  .tab{
+
+    padding:9px 6px;
+
+  }
+
+  .t-name{
+
+    font-size:9px;
+
+  }
 
   .panel{
 
-    width:100vw !important;
+    padding-left:10px;
 
-    padding-left:16px !important;
+    padding-right:10px;
 
-    padding-right:16px !important;
   }
 
+  .board{
 
-  /*
-    Keep 155px habit column on small screens.
-    This makes the names readable.
-  */
+    padding-left:4px;
 
-  .habit-grid th.col-name,
-  .habit-grid td.col-name{
+    padding-right:4px;
 
-    width:155px !important;
-
-    min-width:155px !important;
-
-    max-width:155px !important;
   }
 
-}
+  .habit-dot{
 
+    width:16px;
 
-/* ==================================================
-   VERY SMALL PHONES
-================================================== */
+    height:16px;
 
-@media(max-width:360px){
-
-  .habit-grid th.col-name,
-  .habit-grid td.col-name{
-
-    width:145px !important;
-
-    min-width:145px !important;
-
-    max-width:145px !important;
   }
 
-  .habit-row-name span.txt{
+  .habit-dot-wrap{
 
-    font-size:10.5px;
+    height:32px;
+
+  }
+
+  .day-name{
+
+    font-size:8px;
+
   }
 
 }
-
-
-/* ==================================================
-   END CSS
-================================================== */
 
 </style>
+
 </head>
+
 
 <body>
 
 
-<!-- ==================================================
+<!-- =====================================================
      TOP BAR
-================================================== -->
+===================================================== -->
 
 <div class="topbar">
 
-  <a class="back-link" href="dashboard.html">
+  <a
+    class="back-link"
+    href="dashboard.html"
+  >
     ← Life-OS
   </a>
 
-  <div class="save-pill" id="savePill">
+  <div
+    class="save-pill"
+    id="savePill"
+  >
 
     <span class="dot"></span>
 
@@ -1734,16 +1489,16 @@ tr.progress-row td.col-name{
 </div>
 
 
-<!-- ==================================================
+<!-- =====================================================
      HERO
-================================================== -->
+===================================================== -->
 
 <div class="hero">
 
   <img
     class="hero-logo"
     src="assets/betterme-logo.png"
-    alt="BetterMe logo"
+    alt="BetterMe"
     onerror="this.style.display='none'"
   >
 
@@ -1751,21 +1506,18 @@ tr.progress-row td.col-name{
     BetterMe
   </h1>
 
-  <div class="tagline-pill">
-
+  <div class="tagline">
     ✦ Build Yourself, One Day at a Time ✦
-
   </div>
 
 </div>
 
 
-<!-- ==================================================
+<!-- =====================================================
      TABS
-================================================== -->
+===================================================== -->
 
 <div class="tabs">
-
 
   <div
     class="tab active"
@@ -1846,14 +1598,14 @@ tr.progress-row td.col-name{
     </div>
 
     <div class="t-name">
-      Character &amp; Values
+      Character
     </div>
 
     <div
       class="t-sub"
       id="characterCount"
     >
-      — PRINCIPLES
+      — VALUES
     </div>
 
   </div>
@@ -1861,82 +1613,174 @@ tr.progress-row td.col-name{
 </div>
 
 
-<!-- ==================================================
-     HABITS PANEL
-================================================== -->
+<!-- =====================================================
+     HABITS
+===================================================== -->
 
 <div
   class="panel active"
   id="panel-habits"
 >
 
-  <div class="panel-head">
+
+  <div class="panel-title">
+
+    <span class="swatch"></span>
+
+    Daily Habits
+
+  </div>
 
 
-    <div class="panel-title">
+  <!-- WEEK SLIDER -->
 
-      <span
-        class="swatch"
-        style="background:#3b82f6;"
-      ></span>
+  <div class="week-selector">
 
-      Daily Habits
+    <div
+      class="week-slider"
+      id="weekSlider"
+    ></div>
+
+
+    <div class="week-controls">
+
+      <button
+        class="week-btn"
+        id="prevWeek"
+      >
+        ‹
+      </button>
+
+
+      <div
+        class="week-label"
+        id="weekLabel"
+      >
+        —
+      </div>
+
+
+      <button
+        class="week-btn"
+        id="nextWeek"
+      >
+        ›
+      </button>
+
+
+      <button
+        class="week-btn today-btn"
+        id="todayWeek"
+      >
+        Today
+      </button>
 
     </div>
 
+  </div>
 
-    <div class="month-nav-wrap">
+
+  <!-- WEEK SCORE -->
+
+  <div class="week-summary">
+
+    <div>
+
+      <div class="summary-label">
+        WEEKLY PROGRESS
+      </div>
 
       <div
-        class="month-slider"
-        id="monthSlider"
-      ></div>
-
-
-      <div class="month-nav">
-
-        <button id="prevMonth">
-          ‹
-        </button>
-
-        <div
-          class="m-label"
-          id="monthLabel"
-        >
-          —
-        </div>
-
-        <button id="nextMonth">
-          ›
-        </button>
-
-        <button
-          class="today-btn"
-          id="todayBtn"
-        >
-          Today
-        </button>
-
+        class="summary-message"
+        id="summaryMessage"
+      >
+        Keep going.
       </div>
 
     </div>
 
+
+    <div
+      class="summary-score"
+      id="weekScore"
+    >
+      0%
+    </div>
+
   </div>
 
 
-  <div class="grid-shell">
+  <!-- HABITS AT TOP -->
 
-    <div class="grid-scroll">
+  <div class="habits-header">
 
-      <table
-        class="habit-grid"
-        id="habitGrid"
-      ></table>
+    <div class="habits-header-title">
+
+      <span>
+        Your Habits
+      </span>
+
+      <span>
+        DOT ORDER
+      </span>
+
+    </div>
+
+
+    <div
+      class="habit-list"
+      id="habitList"
+    ></div>
+
+  </div>
+
+
+  <!-- 7-DAY BOARD -->
+
+  <div class="board">
+
+    <div
+      class="days-row"
+      id="daysRow"
+    ></div>
+
+  </div>
+
+
+  <!-- LEGEND -->
+
+  <div class="dot-legend">
+
+    <div class="dot-legend-item">
+
+      <span class="legend-dot"></span>
+
+      Not marked
+
+    </div>
+
+
+    <div class="dot-legend-item">
+
+      <span class="legend-dot green"></span>
+
+      Completed
+
+    </div>
+
+
+    <div class="dot-legend-item">
+
+      <span class="legend-dot red"></span>
+
+      Missed
 
     </div>
 
   </div>
 
+
+  <!-- ADD HABIT -->
 
   <div class="add-row">
 
@@ -1944,100 +1788,44 @@ tr.progress-row td.col-name{
       class="add-btn"
       id="addHabitBtn"
     >
-
       ＋ Add Habit
-
     </button>
-
-  </div>
-
-
-  <div class="legend">
-
-    <span>
-
-      <i
-        style="
-          background:var(--cell);
-          border:1px solid #333a5c;
-        "
-      ></i>
-
-      Not done
-
-    </span>
-
-
-    <span>
-
-      <i
-        style="
-          background:
-          linear-gradient(
-            160deg,
-            #4ade80,
-            #16a34a
-          );
-        "
-      ></i>
-
-      Completed
-
-    </span>
-
-
-    <span>
-
-      <i
-        style="
-          background:
-          linear-gradient(
-            160deg,
-            #fb7185,
-            #dc2626
-          );
-        "
-      ></i>
-
-      Missed
-
-    </span>
 
   </div>
 
 </div>
 
 
-<!-- ==================================================
-     LEARN PANEL
-================================================== -->
+<!-- =====================================================
+     LEARN
+===================================================== -->
 
 <div
   class="panel"
   id="panel-learn"
 >
 
-  <div class="panel-head">
+  <div class="panel-title">
 
-    <div class="panel-title">
+    <span
+      class="swatch"
+      style="background:#a855f7"
+    ></span>
 
-      <span
-        class="swatch"
-        style="background:#a855f7;"
-      ></span>
+    Things to Learn
 
-      Things to Learn
+  </div>
 
-    </div>
 
+  <div
+    style="margin-top:14px"
+  >
 
     <button
       class="add-btn"
       id="addLearnBtn"
     >
-
       ＋ Add Topic
-
     </button>
 
   </div>
@@ -2046,42 +1834,42 @@ tr.progress-row td.col-name{
   <div
     class="list-grid"
     id="learnGrid"
-    style="--accent:#a855f7;"
+    style="--accent:#a855f7"
   ></div>
 
 </div>
 
 
-<!-- ==================================================
-     MASTER PANEL
-================================================== -->
+<!-- =====================================================
+     MASTER
+===================================================== -->
 
 <div
   class="panel"
   id="panel-master"
 >
 
-  <div class="panel-head">
+  <div class="panel-title">
 
-    <div class="panel-title">
+    <span
+      class="swatch"
+      style="background:#f97316"
+    ></span>
 
-      <span
-        class="swatch"
-        style="background:#f97316;"
-      ></span>
+    Things to Master
 
-      Things to Master
+  </div>
 
-    </div>
 
+  <div
+    style="margin-top:14px"
+  >
 
     <button
       class="add-btn"
       id="addMasterBtn"
     >
-
       ＋ Add Skill
-
     </button>
 
   </div>
@@ -2090,42 +1878,42 @@ tr.progress-row td.col-name{
   <div
     class="list-grid"
     id="masterGrid"
-    style="--accent:#f97316;"
+    style="--accent:#f97316"
   ></div>
 
 </div>
 
 
-<!-- ==================================================
-     CHARACTER PANEL
-================================================== -->
+<!-- =====================================================
+     CHARACTER
+===================================================== -->
 
 <div
   class="panel"
   id="panel-character"
 >
 
-  <div class="panel-head">
+  <div class="panel-title">
 
-    <div class="panel-title">
+    <span
+      class="swatch"
+      style="background:#ec4899"
+    ></span>
 
-      <span
-        class="swatch"
-        style="background:#ec4899;"
-      ></span>
+    Character & Values
 
-      Character &amp; Values
+  </div>
 
-    </div>
 
+  <div
+    style="margin-top:14px"
+  >
 
     <button
       class="add-btn"
       id="addCharacterBtn"
     >
-
       ＋ Add Principle
-
     </button>
 
   </div>
@@ -2134,37 +1922,37 @@ tr.progress-row td.col-name{
   <div
     class="list-grid"
     id="characterGrid"
-    style="--accent:#ec4899;"
+    style="--accent:#ec4899"
   ></div>
 
 </div>
 
 
-<!-- ==================================================
-     SCRIPTS
-================================================== -->
+<!-- =====================================================
+     EXISTING APP FILES
+===================================================== -->
 
 <script src="js/api.js"></script>
+
 <script src="js/auth.js"></script>
+
 <script src="js/utils.js"></script>
+
 <script src="js/app.js"></script>
 
 
 <script>
 
-/* ==================================================
-   SAVE STATUS PILL
-================================================== */
+/* =========================================================
+   SAVE STATUS
+========================================================= */
 
 function setSaveStatus(state){
 
   const pill =
-    document.getElementById(
-      'savePill'
-    );
+    document.getElementById('savePill');
 
   if(!pill) return;
-
 
   pill.className =
     'save-pill' +
@@ -2176,105 +1964,253 @@ function setSaveStatus(state){
           : ''
     );
 
-
   pill.innerHTML =
     state === 'saving'
-
       ? '<span class="dot"></span> Saving…'
-
       : state === 'error'
-
         ? '<span class="dot"></span> Save failed'
-
         : '<span class="dot"></span> Saved';
 
 }
 
 
-/* ==================================================
-   DAILY HABITS — MONTH GRID
-================================================== */
+/* =========================================================
+   DATE HELPERS
+========================================================= */
 
 const TODAY =
   new Date();
 
+function startOfWeek(date){
 
-let currentDate =
-  new Date(
-    TODAY.getFullYear(),
-    TODAY.getMonth(),
-    1
+  const d =
+    new Date(date);
+
+  const day =
+    d.getDay();
+
+  const diff =
+    day === 0
+      ? -6
+      : 1 - day;
+
+  d.setDate(
+    d.getDate() + diff
   );
+
+  d.setHours(
+    0,0,0,0
+  );
+
+  return d;
+
+}
+
+
+let currentWeek =
+  startOfWeek(TODAY);
 
 
 let habitsList = [];
-
 
 let completionsMap = {};
 
 
 /*
-  "habitId-day" -> "done" | "missed"
+  key:
+
+  habitId-YYYY-MM-DD
+
+  value:
+
+  done
+  missed
 */
 
-const monthScoreCache = {};
+
+const weekScoreCache = {};
 
 
-function daysInMonth(d){
+/* =========================================================
+   DATE FORMAT
+========================================================= */
 
-  return new Date(
-    d.getFullYear(),
-    d.getMonth()+1,
-    0
-  ).getDate();
+function dateKey(date){
+
+  const y =
+    date.getFullYear();
+
+  const m =
+    String(
+      date.getMonth()+1
+    ).padStart(2,'0');
+
+  const d =
+    String(
+      date.getDate()
+    ).padStart(2,'0');
+
+  return `${y}-${m}-${d}`;
 
 }
 
 
-function pctClass(p){
+function prettyDate(date){
 
-  if(p >= 70)
-    return 'pct-high';
-
-  if(p >= 40)
-    return 'pct-mid';
-
-  return 'pct-low';
+  return date.toLocaleDateString(
+    'en-US',
+    {
+      month:'short',
+      day:'numeric'
+    }
+  );
 
 }
 
 
-function renderMonthLabel(){
+/* =========================================================
+   FETCH WEEK DATA
+========================================================= */
 
-  document.getElementById(
-    'monthLabel'
-  ).textContent =
+async function fetchWeek(){
 
-    currentDate.toLocaleDateString(
-      'en-US',
-      {
-        month:'long',
-        year:'numeric'
-      }
+  const year =
+    currentWeek.getFullYear();
+
+  /*
+    Existing backend endpoint works
+    month-by-month.
+
+    We load both months when the
+    7-day week crosses a month.
+  */
+
+  const dates = [];
+
+  for(let i=0;i<7;i++){
+
+    const d =
+      new Date(currentWeek);
+
+    d.setDate(
+      currentWeek.getDate()+i
     );
 
+    dates.push(d);
+
+  }
+
+
+  const monthKeys =
+    [
+      ...new Set(
+        dates.map(
+          d =>
+            `${d.getFullYear()}-${d.getMonth()+1}`
+        )
+      )
+    ];
+
+
+  const results =
+    await Promise.all(
+      monthKeys.map(
+        key=>{
+
+          const parts =
+            key.split('-');
+
+          return api.get(
+            `/betterme/month?year=${parts[0]}&month=${parts[1]}`
+          );
+
+        }
+      )
+    );
+
+
+  const habits =
+    results[0]?.habits || [];
+
+
+  const completions = [];
+
+
+  results.forEach(data=>{
+
+    (data.completions || [])
+      .forEach(c=>{
+
+        const date =
+          c.entry_date;
+
+        const inWeek =
+          dates.some(
+            d =>
+              dateKey(d) === date
+          );
+
+        if(inWeek){
+
+          completions.push(c);
+
+        }
+
+      });
+
+  });
+
+
+  return {
+    habits,
+    completions
+  };
+
 }
 
 
-/* ==================================================
-   FETCH MONTH
-================================================== */
+/* =========================================================
+   LOAD WEEK
+========================================================= */
 
-async function fetchMonth(
-  year,
-  month
-){
+async function loadWeek(){
 
   try{
 
-    return await api.get(
-      `/betterme/month?year=${year}&month=${month}`
-    );
+    const data =
+      await fetchWeek();
+
+
+    habitsList =
+      data.habits || [];
+
+
+    completionsMap = {};
+
+
+    (data.completions || [])
+      .forEach(c=>{
+
+        completionsMap[
+          `${c.habit_id}-${c.entry_date}`
+        ] =
+          c.status;
+
+      });
+
+
+    document.getElementById(
+      'habitsCount'
+    ).textContent =
+      habitsList.length +
+      ' HABITS';
+
+
+    renderHabitList();
+
+    renderBoard();
+
+    updateWeekScore();
 
   }catch(err){
 
@@ -2292,509 +2228,269 @@ async function fetchMonth(
 
     }
 
-    return {
-
-      habits:[],
-
-      completions:[]
-
-    };
-
   }
 
 }
 
 
-/* ==================================================
-   SCORE
-================================================== */
+/* =========================================================
+   HABIT LIST
+========================================================= */
 
-function computeScore(
-  completions
-){
+function renderHabitList(){
 
-  let done = 0;
-
-  let tracked = 0;
-
-
-  completions.forEach(c=>{
-
-    tracked++;
-
-
-    if(
-      c.status ===
-      'done'
-    )
-      done++;
-
-  });
-
-
-  return tracked
-
-    ? Math.round(
-        done /
-        tracked *
-        100
-      )
-
-    : null;
-
-}
-
-
-/* ==================================================
-   LOAD MONTH
-================================================== */
-
-async function loadMonth(){
-
-  const year =
-    currentDate.getFullYear();
-
-
-  const month =
-    currentDate.getMonth()+1;
-
-
-  const data =
-    await fetchMonth(
-      year,
-      month
-    );
-
-
-  habitsList =
-    data.habits || [];
-
-
-  completionsMap = {};
-
-
-  (
-    data.completions || []
-  ).forEach(c=>{
-
-    const day =
-      Number(
-        c.entry_date
-          .split('-')[2]
-      );
-
-
-    completionsMap[
-      c.habit_id +
-      '-' +
-      day
-    ] =
-      c.status;
-
-  });
-
-
-  monthScoreCache[
-    year +
-    '-' +
-    month
-  ] =
-    computeScore(
-      data.completions || []
-    );
-
-
-  document.getElementById(
-    'habitsCount'
-  ).textContent =
-
-    habitsList.length +
-    ' HABITS';
-
-
-  renderGrid();
-
-}
-
-
-/* ==================================================
-   RENDER HABIT GRID
-================================================== */
-
-function renderGrid(){
-
-  const days =
-    daysInMonth(
-      currentDate
-    );
-
-
-  const table =
+  const el =
     document.getElementById(
-      'habitGrid'
+      'habitList'
     );
 
 
   if(!habitsList.length){
 
-    table.outerHTML =
-
-      '<div class="empty-note" id="habitGrid">' +
-
-      'No habits yet — tap "＋ Add Habit" to start.' +
-
-      '</div>';
+    el.innerHTML =
+      `<div class="empty-note">
+        No habits yet.
+        Add your first habit below.
+      </div>`;
 
     return;
 
   }
 
 
-  let html =
+  el.innerHTML =
+    habitsList
+      .map(
+        (habit,index)=>`
 
-    '<thead><tr>' +
+          <div
+            class="habit-chip"
+            title="${escapeHTML(habit.name)}"
+          >
 
-    '<th class="col-num">#</th>' +
+            <span class="habit-number">
+              ${index+1}
+            </span>
 
-    '<th class="col-name">HABIT</th>';
+            <span class="habit-name">
+              ${escapeHTML(habit.name)}
+            </span>
+
+          </div>
+
+        `
+      )
+      .join('');
+
+}
 
 
-  for(
-    let d=1;
-    d<=days;
-    d++
-  ){
+/* =========================================================
+   SAFE TEXT
+========================================================= */
 
-    html +=
+function escapeHTML(value){
 
-      `<th class="col-day">${d}</th>`;
+  return String(value)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================================================
+   RENDER 7 DAYS
+========================================================= */
+
+function renderBoard(){
+
+  const row =
+    document.getElementById(
+      'daysRow'
+    );
+
+
+  if(!habitsList.length){
+
+    row.innerHTML =
+      `<div
+        class="empty-note"
+        style="grid-column:1/-1"
+      >
+        Add habits to start tracking.
+      </div>`;
+
+    return;
 
   }
 
 
-  html +=
-
-    '<th class="col-pct">%</th>' +
-
-    '</tr></thead><tbody>';
+  let html = '';
 
 
-  habitsList.forEach(
-    (habit,idx)=>{
+  for(let dayIndex=0;dayIndex<7;dayIndex++){
+
+    const date =
+      new Date(currentWeek);
+
+    date.setDate(
+      currentWeek.getDate()+dayIndex
+    );
 
 
-      let doneCount = 0;
-
-      let trackedCount = 0;
-
-      let rowCells = '';
+    const key =
+      dateKey(date);
 
 
-      for(
-        let d=1;
-        d<=days;
-        d++
-      ){
-
-        const key =
-          habit.id +
-          '-' +
-          d;
+    const isToday =
+      key === dateKey(TODAY);
 
 
-        const st =
-          completionsMap[key];
+    const isFuture =
+      date >
+      TODAY;
 
 
-        if(st){
-
-          trackedCount++;
+    let doneCount = 0;
 
 
-          if(
-            st ===
-            'done'
-          )
-            doneCount++;
-
-        }
-
-
-        rowCells +=
-
-          `<td class="cell">
-
-            <div
-              class="cell-box ${st||''}"
-              data-habit="${habit.id}"
-              data-day="${d}"
-            ></div>
-
-          </td>`;
-
-      }
-
-
-      const pct =
-
-        trackedCount
-
-          ? Math.round(
-              doneCount /
-              trackedCount *
-              100
-            )
-
-          : 0;
-
-
-      html +=
-
-        `<tr>
-
-          <td class="col-num">
-            ${idx+1}
-          </td>
-
-          <td class="col-name">
-
-            <div class="habit-row-name">
-
-              <span
-                class="txt"
-                title="${habit.name}"
-              >
-                ${habit.name}
-              </span>
-
-              <div class="row-actions">
-
-                <button
-                  data-action="move"
-                  data-id="${habit.id}"
-                  title="Move to position"
-                >
-                  ↕
-                </button>
-
-                <button
-                  data-action="edit"
-                  data-id="${habit.id}"
-                  title="Rename"
-                >
-                  ✎
-                </button>
-
-                <button
-                  data-action="delete"
-                  data-id="${habit.id}"
-                  title="Delete"
-                >
-                  ✕
-                </button>
-
-              </div>
-
-            </div>
-
-          </td>
-
-          ${rowCells}
-
-          <td
-            class="col-pct ${pctClass(pct)}"
-          >
-            ${pct}%
-          </td>
-
-        </tr>`;
-
-    }
-  );
-
-
-  /* ==================================================
-     DAILY PROGRESS
-  ================================================== */
-
-  let progressCells = '';
-
-
-  for(
-    let d=1;
-    d<=days;
-    d++
-  ){
-
-    let done = 0;
-
-    let tracked = 0;
+    let dotHTML = '';
 
 
     habitsList.forEach(
       habit=>{
 
-        const st =
+        const status =
           completionsMap[
-            habit.id +
-            '-' +
-            d
+            `${habit.id}-${key}`
           ];
 
 
-        if(st){
+        if(status === 'done')
+          doneCount++;
 
-          tracked++;
 
+        dotHTML +=
+          `
 
-          if(
-            st ===
-            'done'
-          )
-            done++;
+          <div class="habit-dot-wrap">
 
-        }
+            <div
+              class="habit-dot ${
+                status || ''
+              }"
+
+              data-habit="${habit.id}"
+
+              data-date="${key}"
+
+              title="${escapeHTML(
+                habit.name
+              )} — ${prettyDate(date)}"
+            ></div>
+
+          </div>
+
+          `;
 
       }
     );
 
 
-    const pct =
-
-      tracked
-
+    const percentage =
+      habitsList.length
         ? Math.round(
-            done /
-            tracked *
+            doneCount /
+            habitsList.length *
             100
           )
-
         : 0;
 
 
-    progressCells +=
+    let scoreClass =
+      'score-none';
 
-      `<td>
 
-        ${
-          tracked
-            ? pct+'%'
-            : '—'
-        }
+    if(percentage >= 70)
+      scoreClass =
+        'score-good';
 
-      </td>`;
+    else if(percentage >= 40)
+      scoreClass =
+        'score-mid';
+
+    else if(percentage > 0)
+      scoreClass =
+        'score-low';
+
+
+    html +=
+      `
+
+      <div
+        class="
+          day-column
+          ${isToday ? 'today' : ''}
+          ${isFuture ? 'future' : ''}
+        "
+      >
+
+        <div class="day-head">
+
+          <div class="day-name">
+            ${
+              date.toLocaleDateString(
+                'en-US',
+                {
+                  weekday:'short'
+                }
+              )
+            }
+          </div>
+
+          <div class="day-date">
+            ${date.getDate()}
+          </div>
+
+        </div>
+
+
+        <div class="dot-line">
+
+          ${dotHTML}
+
+        </div>
+
+
+        <div
+          class="day-score ${scoreClass}"
+        >
+
+          ${percentage}%
+
+        </div>
+
+      </div>
+
+      `;
 
   }
 
 
-  html +=
-
-    `<tr class="progress-row">
-
-      <td class="col-num">
-        —
-      </td>
-
-      <td class="col-name">
-        Daily Progress
-      </td>
-
-      ${progressCells}
-
-      <td>
-        —
-      </td>
-
-    </tr>`;
-
-
-  html +=
-    '</tbody>';
-
-
-  table.innerHTML =
+  row.innerHTML =
     html;
 
 
-  /* ==================================================
-     CELL CLICK
-  ================================================== */
+  row
+    .querySelectorAll('.habit-dot')
+    .forEach(dot=>{
 
-  table
-    .querySelectorAll(
-      '.cell-box'
-    )
-    .forEach(box=>{
-
-      box.addEventListener(
+      dot.addEventListener(
         'click',
-        ()=>toggleCell(box)
-      );
-
-    });
-
-
-  /* ==================================================
-     EDIT
-  ================================================== */
-
-  table
-    .querySelectorAll(
-      '[data-action="edit"]'
-    )
-    .forEach(btn=>{
-
-      btn.addEventListener(
-        'click',
-        ()=>editHabit(
-          Number(
-            btn.dataset.id
-          )
-        )
-      );
-
-    });
-
-
-  /* ==================================================
-     DELETE
-  ================================================== */
-
-  table
-    .querySelectorAll(
-      '[data-action="delete"]'
-    )
-    .forEach(btn=>{
-
-      btn.addEventListener(
-        'click',
-        ()=>deleteHabitRow(
-          Number(
-            btn.dataset.id
-          )
-        )
-      );
-
-    });
-
-
-  /* ==================================================
-     MOVE
-  ================================================== */
-
-  table
-    .querySelectorAll(
-      '[data-action="move"]'
-    )
-    .forEach(btn=>{
-
-      btn.addEventListener(
-        'click',
-        ()=>moveHabit(
-          Number(
-            btn.dataset.id
-          )
-        )
+        ()=>toggleDot(dot)
       );
 
     });
@@ -2802,77 +2498,51 @@ function renderGrid(){
 }
 
 
-/* ==================================================
-   TOGGLE HABIT
-================================================== */
+/* =========================================================
+   TOGGLE DOT
+========================================================= */
 
-async function toggleCell(
-  box
-){
+async function toggleDot(dot){
 
   const habitId =
     Number(
-      box.dataset.habit
+      dot.dataset.habit
     );
-
-
-  const day =
-    Number(
-      box.dataset.day
-    );
-
-
-  const key =
-    habitId +
-    '-' +
-    day;
-
-
-  const cur =
-    completionsMap[key];
-
-
-  const next =
-
-    cur === undefined
-
-      ? 'done'
-
-      : cur === 'done'
-
-        ? 'missed'
-
-        : null;
-
-
-  const year =
-    currentDate.getFullYear();
-
-
-  const month =
-    String(
-      currentDate.getMonth()+1
-    ).padStart(
-      2,
-      '0'
-    );
-
-
-  const dayStr =
-    String(day)
-      .padStart(
-        2,
-        '0'
-      );
 
 
   const entryDate =
-    `${year}-${month}-${dayStr}`;
+    dot.dataset.date;
 
 
-  if(
-    next === null
-  ){
+  const key =
+    `${habitId}-${entryDate}`;
+
+
+  const current =
+    completionsMap[key];
+
+
+  /*
+    Cycle:
+
+    empty
+       ↓
+    green / done
+       ↓
+    red / missed
+       ↓
+    empty
+  */
+
+  const next =
+    current === undefined
+      ? 'done'
+      : current === 'done'
+        ? 'missed'
+        : null;
+
+
+  if(next === null){
 
     delete completionsMap[key];
 
@@ -2884,12 +2554,11 @@ async function toggleCell(
   }
 
 
-  renderGrid();
+  renderBoard();
 
+  updateWeekScore();
 
-  setSaveStatus(
-    'saving'
-  );
+  setSaveStatus('saving');
 
 
   try{
@@ -2904,261 +2573,499 @@ async function toggleCell(
     );
 
 
-    setSaveStatus(
-      'saved'
-    );
+    setSaveStatus('saved');
+
+
+    /*
+      Refresh the week selector
+      because its percentage changed.
+    */
+
+    renderWeekSlider();
 
   }catch(err){
 
     console.error(err);
 
+    /*
+      Restore previous state
+    */
 
-    setSaveStatus(
-      'error'
-    );
+    if(current === undefined){
 
+      delete completionsMap[key];
 
-    if(
-      typeof showToast ===
-      'function'
-    ){
+    }else{
 
-      showToast(
-        'Could not save — try again',
-        'error'
-      );
+      completionsMap[key] =
+        current;
 
     }
 
+
+    renderBoard();
+
+    updateWeekScore();
+
+    setSaveStatus('error');
+
   }
 
 }
 
 
-/* ==================================================
-   EDIT HABIT
-================================================== */
+/* =========================================================
+   WEEK SCORE
+========================================================= */
 
-async function editHabit(
-  id
-){
+function calculateWeekScore(){
 
-  const habit =
-    habitsList.find(
-      h =>
-        h.id === id
+  let done = 0;
+
+  let tracked = 0;
+
+
+  for(let i=0;i<7;i++){
+
+    const date =
+      new Date(currentWeek);
+
+    date.setDate(
+      currentWeek.getDate()+i
     );
 
 
-  if(!habit)
-    return;
+    const key =
+      dateKey(date);
 
 
-  const name =
-    prompt(
-      'Rename habit:',
-      habit.name
-    );
+    habitsList.forEach(
+      habit=>{
+
+        const status =
+          completionsMap[
+            `${habit.id}-${key}`
+          ];
 
 
-  if(
-    !name ||
-    !name.trim() ||
-    name.trim() ===
-      habit.name
-  )
-    return;
+        if(status){
+
+          tracked++;
 
 
-  setSaveStatus(
-    'saving'
-  );
+          if(status === 'done')
+            done++;
 
+        }
 
-  try{
-
-    await api.put(
-      `/betterme/habits/${id}`,
-      {
-        name:name.trim()
       }
     );
 
-
-    setSaveStatus(
-      'saved'
-    );
-
-
-    await loadMonth();
-
-    await renderMonthSlider();
-
-  }catch(err){
-
-    console.error(err);
-
-    setSaveStatus(
-      'error'
-    );
-
   }
 
-}
 
-
-/* ==================================================
-   DELETE HABIT
-================================================== */
-
-async function deleteHabitRow(
-  id
-){
-
-  const habit =
-    habitsList.find(
-      h =>
-        h.id === id
-    );
-
-
-  if(!habit)
-    return;
-
-
-  if(
-    !confirm(
-      `Delete "${habit.name}"? This removes its tracking history too.`
-    )
-  )
-    return;
-
-
-  setSaveStatus(
-    'saving'
-  );
-
-
-  try{
-
-    await api.del(
-      `/betterme/habits/${id}`
-    );
-
-
-    setSaveStatus(
-      'saved'
-    );
-
-
-    await loadMonth();
-
-    await renderMonthSlider();
-
-  }catch(err){
-
-    console.error(err);
-
-    setSaveStatus(
-      'error'
-    );
-
-  }
-
-}
-
-
-/* ==================================================
-   MOVE HABIT
-================================================== */
-
-async function moveHabit(
-  id
-){
-
-  const habit =
-    habitsList.find(
-      h =>
-        h.id === id
-    );
-
-
-  if(!habit)
-    return;
-
-
-  const raw =
-    prompt(
-      `Move "${habit.name}" to position (1-${habitsList.length}):`,
-      String(
-        habitsList.findIndex(
-          h =>
-            h.id === id
-        ) + 1
+  return tracked
+    ? Math.round(
+        done /
+        tracked *
+        100
       )
-    );
+    : 0;
+
+}
 
 
-  if(
-    raw === null
-  )
-    return;
+function updateWeekScore(){
+
+  const score =
+    calculateWeekScore();
 
 
-  const pos =
-    Number(raw);
+  document.getElementById(
+    'weekScore'
+  ).textContent =
+    score + '%';
 
 
-  if(
-    !Number.isFinite(pos) ||
-    pos < 1
-  )
-    return;
+  let message =
+    'Start strong.';
 
 
-  setSaveStatus(
-    'saving'
+  if(score >= 90)
+    message =
+      'Outstanding. Keep the streak alive. 🔥';
+
+  else if(score >= 70)
+    message =
+      'Excellent week. Keep pushing. 💪';
+
+  else if(score >= 50)
+    message =
+      'Good progress. Finish strong.';
+
+  else if(score >= 25)
+    message =
+      'You are moving. Keep going.';
+
+  else if(score > 0)
+    message =
+      'Every green dot counts.';
+
+
+  document.getElementById(
+    'summaryMessage'
+  ).textContent =
+    message;
+
+}
+
+
+/* =========================================================
+   WEEK LABEL
+========================================================= */
+
+function renderWeekLabel(){
+
+  const start =
+    new Date(currentWeek);
+
+
+  const end =
+    new Date(currentWeek);
+
+
+  end.setDate(
+    end.getDate()+6
   );
 
 
-  try{
+  const sameMonth =
+    start.getMonth() ===
+    end.getMonth();
 
-    await api.put(
-      `/betterme/habits/${id}/position`,
-      {
-        position:pos
+
+  let text;
+
+
+  if(sameMonth){
+
+    text =
+      `${start.toLocaleDateString(
+        'en-US',
+        {month:'short'}
+      )} ${start.getDate()} – ${end.getDate()}, ${end.getFullYear()}`;
+
+  }else{
+
+    text =
+      `${start.toLocaleDateString(
+        'en-US',
+        {
+          month:'short',
+          day:'numeric'
+        }
+      )} – ${end.toLocaleDateString(
+        'en-US',
+        {
+          month:'short',
+          day:'numeric'
+        }
+      )}`;
+
+  }
+
+
+  document.getElementById(
+    'weekLabel'
+  ).textContent =
+    text;
+
+}
+
+
+/* =========================================================
+   WEEK SLIDER
+========================================================= */
+
+async function renderWeekSlider(){
+
+  const slider =
+    document.getElementById(
+      'weekSlider'
+    );
+
+
+  const weeks = [];
+
+
+  /*
+    Show 7 weeks:
+
+    3 past
+    current
+    3 future
+  */
+
+  for(let offset=-3;offset<=3;offset++){
+
+    const d =
+      new Date(TODAY);
+
+    d.setDate(
+      d.getDate() +
+      offset * 7
+    );
+
+
+    weeks.push(
+      startOfWeek(d)
+    );
+
+  }
+
+
+  const unique =
+    [];
+
+
+  weeks.forEach(
+    w=>{
+
+      const key =
+        dateKey(w);
+
+      if(
+        !unique.some(
+          x =>
+            dateKey(x) === key
+        )
+      ){
+
+        unique.push(w);
+
       }
+
+    }
+  );
+
+
+  slider.innerHTML =
+    unique
+      .map(
+        week=>{
+
+          const active =
+            dateKey(week) ===
+            dateKey(currentWeek);
+
+
+          const isCurrent =
+            dateKey(week) ===
+            dateKey(
+              startOfWeek(TODAY)
+            );
+
+
+          let score = '—';
+
+
+          if(isCurrent){
+
+            score =
+              calculateWeekScore() +
+              '%';
+
+          }
+
+
+          return `
+
+            <div
+              class="
+                week-chip
+                ${active ? 'active' : ''}
+              "
+
+              data-week="${dateKey(week)}"
+            >
+
+              <span class="wk-name">
+
+                ${
+                  isCurrent
+                    ? 'THIS WEEK'
+                    : week.toLocaleDateString(
+                        'en-US',
+                        {
+                          month:'short',
+                          day:'numeric'
+                        }
+                      )
+                }
+
+              </span>
+
+              <span
+                class="wk-score"
+                style="
+                  color:${
+                    isCurrent
+                      ? '#4ade80'
+                      : '#69708f'
+                  }
+                "
+              >
+                ${score}
+              </span>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join('');
+
+
+  slider
+    .querySelectorAll('.week-chip')
+    .forEach(chip=>{
+
+      chip.addEventListener(
+        'click',
+        async ()=>{
+
+          const parts =
+            chip.dataset.week
+              .split('-')
+              .map(Number);
+
+
+          currentWeek =
+            new Date(
+              parts[0],
+              parts[1]-1,
+              parts[2]
+            );
+
+
+          renderWeekLabel();
+
+          await loadWeek();
+
+          await renderWeekSlider();
+
+        }
+      );
+
+    });
+
+
+  const active =
+    slider.querySelector(
+      '.week-chip.active'
     );
 
 
-    setSaveStatus(
-      'saved'
-    );
+  if(active){
 
-
-    await loadMonth();
-
-  }catch(err){
-
-    console.error(err);
-
-    setSaveStatus(
-      'error'
-    );
+    active.scrollIntoView({
+      behavior:'smooth',
+      inline:'center',
+      block:'nearest'
+    });
 
   }
 
 }
 
 
-/* ==================================================
-   ADD HABIT
-================================================== */
+/* =========================================================
+   PREVIOUS WEEK
+========================================================= */
 
 document
-  .getElementById(
-    'addHabitBtn'
-  )
+  .getElementById('prevWeek')
+  .addEventListener(
+    'click',
+    async ()=>{
+
+      currentWeek =
+        new Date(currentWeek);
+
+      currentWeek.setDate(
+        currentWeek.getDate()-7
+      );
+
+
+      renderWeekLabel();
+
+      await loadWeek();
+
+      await renderWeekSlider();
+
+    }
+  );
+
+
+/* =========================================================
+   NEXT WEEK
+========================================================= */
+
+document
+  .getElementById('nextWeek')
+  .addEventListener(
+    'click',
+    async ()=>{
+
+      currentWeek =
+        new Date(currentWeek);
+
+      currentWeek.setDate(
+        currentWeek.getDate()+7
+      );
+
+
+      renderWeekLabel();
+
+      await loadWeek();
+
+      await renderWeekSlider();
+
+    }
+  );
+
+
+/* =========================================================
+   TODAY
+========================================================= */
+
+document
+  .getElementById('todayWeek')
+  .addEventListener(
+    'click',
+    async ()=>{
+
+      currentWeek =
+        startOfWeek(TODAY);
+
+
+      renderWeekLabel();
+
+      await loadWeek();
+
+      await renderWeekSlider();
+
+    }
+  );
+
+
+/* =========================================================
+   ADD HABIT
+========================================================= */
+
+document
+  .getElementById('addHabitBtn')
   .addEventListener(
     'click',
     async ()=>{
@@ -3176,26 +3083,7 @@ document
         return;
 
 
-      const posRaw =
-        prompt(
-          'Position (leave blank to add at the end):',
-          ''
-        );
-
-
-      const position =
-
-        posRaw &&
-        posRaw.trim()
-
-          ? Number(posRaw)
-
-          : undefined;
-
-
-      setSaveStatus(
-        'saving'
-      );
+      setSaveStatus('saving');
 
 
       try{
@@ -3203,28 +3091,24 @@ document
         await api.post(
           '/betterme/habits',
           {
-            name:name.trim(),
-            position
+            name:name.trim()
           }
         );
 
 
-        setSaveStatus(
-          'saved'
-        );
+        setSaveStatus('saved');
 
 
-        await loadMonth();
+        await loadWeek();
 
-        await renderMonthSlider();
+        await renderWeekSlider();
+
 
       }catch(err){
 
         console.error(err);
 
-        setSaveStatus(
-          'error'
-        );
+        setSaveStatus('error');
 
       }
 
@@ -3232,406 +3116,44 @@ document
   );
 
 
-/* ==================================================
-   MONTH NAVIGATION
-================================================== */
-
-document
-  .getElementById(
-    'prevMonth'
-  )
-  .addEventListener(
-    'click',
-    async ()=>{
-
-      currentDate =
-        new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth()-1,
-          1
-        );
-
-
-      renderMonthLabel();
-
-      await loadMonth();
-
-      await renderMonthSlider();
-
-    }
-  );
-
-
-document
-  .getElementById(
-    'nextMonth'
-  )
-  .addEventListener(
-    'click',
-    async ()=>{
-
-      currentDate =
-        new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth()+1,
-          1
-        );
-
-
-      renderMonthLabel();
-
-      await loadMonth();
-
-      await renderMonthSlider();
-
-    }
-  );
-
-
-document
-  .getElementById(
-    'todayBtn'
-  )
-  .addEventListener(
-    'click',
-    async ()=>{
-
-      currentDate =
-        new Date(
-          TODAY.getFullYear(),
-          TODAY.getMonth(),
-          1
-        );
-
-
-      renderMonthLabel();
-
-      await loadMonth();
-
-      await renderMonthSlider();
-
-    }
-  );
-
-
-/* ==================================================
-   MONTH SLIDER
-   CHANGED — 7 MONTH BOXES
-================================================== */
-
-async function renderMonthSlider(){
-
-  const wrap =
-    document.getElementById(
-      'monthSlider'
-    );
-
-
-  /*
-    7 months total:
-
-    6 months before current
-    +
-    current month
-
-    Example for August:
-
-    Feb 26
-    Mar 26
-    Apr 26
-    May 26
-    Jun 26
-    Jul 26
-    Aug 26
-  */
-
-  const offsets =
-    [
-      -6,
-      -5,
-      -4,
-      -3,
-      -2,
-      -1,
-      0
-    ];
-
-
-  const months =
-    offsets.map(
-      o =>
-        new Date(
-          TODAY.getFullYear(),
-          TODAY.getMonth()+o,
-          1
-        )
-    );
-
-
-  await Promise.all(
-
-    months.map(
-      async d=>{
-
-        const key =
-          d.getFullYear() +
-          '-' +
-          (d.getMonth()+1);
-
-
-        if(
-          monthScoreCache[key] !==
-          undefined
-        )
-          return;
-
-
-        const data =
-          await fetchMonth(
-            d.getFullYear(),
-            d.getMonth()+1
-          );
-
-
-        monthScoreCache[key] =
-          computeScore(
-            data.completions || []
-          );
-
-      }
-    )
-
-  );
-
-
-  wrap.innerHTML =
-
-    months.map(
-      d=>{
-
-        const key =
-          d.getFullYear() +
-          '-' +
-          (d.getMonth()+1);
-
-
-        const score =
-          monthScoreCache[key];
-
-
-        const active =
-
-          key ===
-
-          (
-            currentDate.getFullYear() +
-            '-' +
-            (
-              currentDate.getMonth()+1
-            )
-          );
-
-
-        const color =
-
-          score === null ||
-          score === undefined
-
-            ? '#5a6088'
-
-            : score >= 70
-
-              ? '#4ade80'
-
-              : score >= 40
-
-                ? '#fbbf24'
-
-                : '#fb7185';
-
-
-        return `
-
-          <div
-
-            class="month-chip ${
-
-              active
-                ? 'active'
-                : ''
-
-            }"
-
-            data-y="${
-              d.getFullYear()
-            }"
-
-            data-m="${
-              d.getMonth()
-            }"
-
-          >
-
-            <span class="mc-name">
-
-              ${
-                d.toLocaleDateString(
-                  'en-US',
-                  {
-                    month:'short',
-                    year:'2-digit'
-                  }
-                )
-              }
-
-            </span>
-
-
-            <span
-
-              class="mc-score"
-
-              style="color:${color}"
-
-            >
-
-              ${
-                score === null ||
-                score === undefined
-
-                  ? '—'
-
-                  : score+'%'
-
-              }
-
-            </span>
-
-          </div>
-
-        `;
-
-      }
-    ).join('');
-
-
-  wrap
-    .querySelectorAll(
-      '.month-chip'
-    )
-    .forEach(
-      chip=>{
-
-        chip.addEventListener(
-          'click',
-          async ()=>{
-
-            currentDate =
-              new Date(
-                Number(
-                  chip.dataset.y
-                ),
-                Number(
-                  chip.dataset.m
-                ),
-                1
-              );
-
-
-            renderMonthLabel();
-
-            await loadMonth();
-
-            await renderMonthSlider();
-
-          }
-        );
-
-      }
-    );
-
-
-  const activeChip =
-    wrap.querySelector(
-      '.month-chip.active'
-    );
-
-
-  if(activeChip){
-
-    activeChip.scrollIntoView({
-
-      inline:'center',
-
-      block:'nearest'
-
-    });
-
-  }
-
-}
-
-
-/* ==================================================
+/* =========================================================
    LIST PANELS
-================================================== */
+========================================================= */
 
 const LIST_META = {
 
   learn:{
-
     grid:'learnGrid',
-
     count:'learnCount',
-
     addBtn:'addLearnBtn',
-
     label:'TOPICS',
-
     prompt:'New topic to learn:'
-
   },
-
 
   master:{
-
     grid:'masterGrid',
-
     count:'masterCount',
-
     addBtn:'addMasterBtn',
-
     label:'SKILLS',
-
     prompt:'New skill to master:'
-
   },
 
-
   character:{
-
     grid:'characterGrid',
-
     count:'characterCount',
-
     addBtn:'addCharacterBtn',
-
-    label:'PRINCIPLES',
-
+    label:'VALUES',
     prompt:'New character principle:'
-
   }
 
 };
 
 
-/* ==================================================
+/* =========================================================
    LOAD LIST
-================================================== */
+========================================================= */
 
-async function loadList(
-  category
-){
+async function loadList(category){
 
   const meta =
     LIST_META[category];
@@ -3648,7 +3170,6 @@ async function loadList(
     document.getElementById(
       meta.count
     ).textContent =
-
       items.length +
       ' ' +
       meta.label;
@@ -3659,32 +3180,19 @@ async function loadList(
       items
     );
 
+
   }catch(err){
 
     console.error(err);
-
-
-    if(
-      typeof showToast ===
-      'function'
-    ){
-
-      showToast(
-        'Could not load ' +
-        category,
-        'error'
-      );
-
-    }
 
   }
 
 }
 
 
-/* ==================================================
+/* =========================================================
    RENDER LIST
-================================================== */
+========================================================= */
 
 function renderList(
   category,
@@ -3704,11 +3212,8 @@ function renderList(
   if(!items.length){
 
     el.innerHTML =
-
       `<div class="empty-note">
-
-        Nothing here yet — tap "＋ Add" to start.
-
+        Nothing here yet.
       </div>`;
 
     return;
@@ -3717,349 +3222,273 @@ function renderList(
 
 
   el.innerHTML =
-
-    items.map(
-      (item,i)=>`
-
-        <div
-
-          class="list-card ${
-            item.completed
-              ? 'done'
-              : ''
-          }"
-
-          data-id="${item.id}"
-
-        >
+    items
+      .map(
+        (item,i)=>`
 
           <div
-
-            class="list-check ${
-              item.completed
-                ? 'done'
-                : ''
-            }"
-
-            data-id="${item.id}"
-
+            class="
+              list-card
+              ${item.completed?'done':''}
+            "
           >
 
-            ${
-              item.completed
-                ? '✓'
-                : ''
-            }
+            <div
+              class="
+                list-check
+                ${item.completed?'done':''}
+              "
+              data-id="${item.id}"
+            >
+              ${
+                item.completed
+                  ? '✓'
+                  : ''
+              }
+            </div>
 
-          </div>
 
+            <div class="list-body">
 
-          <div class="list-body">
+              <div class="list-num">
+                #${i+1}
+              </div>
 
-            <div class="list-num">
-
-              #${i+1}
+              <div class="list-text">
+                ${escapeHTML(item.text)}
+              </div>
 
             </div>
 
 
-            <div class="list-text">
+            <div class="list-actions">
 
-              ${item.text}
+              <button
+                data-action="edit"
+                data-id="${item.id}"
+              >
+                ✎
+              </button>
+
+              <button
+                data-action="delete"
+                data-id="${item.id}"
+              >
+                ✕
+              </button>
 
             </div>
 
           </div>
 
+        `
+      )
+      .join('');
 
-          <div class="list-actions">
-
-            <button
-
-              data-action="edit"
-
-              data-id="${item.id}"
-
-              title="Edit"
-
-            >
-
-              ✎
-
-            </button>
-
-
-            <button
-
-              data-action="delete"
-
-              data-id="${item.id}"
-
-              title="Delete"
-
-            >
-
-              ✕
-
-            </button>
-
-          </div>
-
-        </div>
-
-      `
-    ).join('');
-
-
-  /* ==================================================
-     CHECK / TOGGLE
-  ================================================== */
 
   el
-    .querySelectorAll(
-      '.list-check'
-    )
-    .forEach(
-      chk=>{
+    .querySelectorAll('.list-check')
+    .forEach(check=>{
 
-        chk.addEventListener(
-          'click',
-          async ()=>{
+      check.addEventListener(
+        'click',
+        async ()=>{
 
-            const id =
-              Number(
-                chk.dataset.id
-              );
-
-
-            const nowDone =
-              !chk.classList.contains(
-                'done'
-              );
-
-
-            setSaveStatus(
-              'saving'
+          const id =
+            Number(
+              check.dataset.id
             );
 
 
-            try{
-
-              await api.put(
-
-                `/betterme/list-item/${id}/toggle`,
-
-                {
-                  completed:
-                    nowDone
-                }
-
-              );
+          const done =
+            !check.classList.contains(
+              'done'
+            );
 
 
-              setSaveStatus(
-                'saved'
-              );
+          setSaveStatus('saving');
 
 
-              await loadList(
-                category
-              );
+          try{
 
-            }catch(err){
+            await api.put(
+              `/betterme/list-item/${id}/toggle`,
+              {
+                completed:done
+              }
+            );
 
-              console.error(err);
 
-              setSaveStatus(
-                'error'
-              );
+            setSaveStatus('saved');
 
-            }
+
+            await loadList(
+              category
+            );
+
+
+          }catch(err){
+
+            console.error(err);
+
+            setSaveStatus('error');
 
           }
-        );
 
-      }
-    );
+        }
+      );
 
+    });
 
-  /* ==================================================
-     EDIT LIST ITEM
-  ================================================== */
 
   el
     .querySelectorAll(
       '[data-action="edit"]'
     )
-    .forEach(
-      btn=>{
+    .forEach(button=>{
 
-        btn.addEventListener(
-          'click',
-          async ()=>{
+      button.addEventListener(
+        'click',
+        async ()=>{
 
-            const id =
-              Number(
-                btn.dataset.id
-              );
-
-
-            const item =
-              items.find(
-                i =>
-                  i.id === id
-              );
-
-
-            if(!item)
-              return;
-
-
-            const text =
-              prompt(
-                'Edit text:',
-                item.text
-              );
-
-
-            if(
-              !text ||
-              !text.trim() ||
-              text.trim() ===
-                item.text
-            )
-              return;
-
-
-            setSaveStatus(
-              'saving'
+          const id =
+            Number(
+              button.dataset.id
             );
 
 
-            try{
-
-              await api.put(
-
-                `/betterme/list-item/${id}`,
-
-                {
-                  text:text.trim()
-                }
-
-              );
+          const item =
+            items.find(
+              x =>
+                x.id === id
+            );
 
 
-              setSaveStatus(
-                'saved'
-              );
+          if(!item)
+            return;
 
 
-              await loadList(
-                category
-              );
+          const text =
+            prompt(
+              'Edit text:',
+              item.text
+            );
 
-            }catch(err){
 
-              console.error(err);
+          if(
+            !text ||
+            !text.trim()
+          )
+            return;
 
-              setSaveStatus(
-                'error'
-              );
 
-            }
+          setSaveStatus('saving');
+
+
+          try{
+
+            await api.put(
+              `/betterme/list-item/${id}`,
+              {
+                text:text.trim()
+              }
+            );
+
+
+            setSaveStatus('saved');
+
+
+            await loadList(
+              category
+            );
+
+
+          }catch(err){
+
+            console.error(err);
+
+            setSaveStatus('error');
 
           }
-        );
 
-      }
-    );
+        }
+      );
 
+    });
 
-  /* ==================================================
-     DELETE LIST ITEM
-  ================================================== */
 
   el
     .querySelectorAll(
       '[data-action="delete"]'
     )
-    .forEach(
-      btn=>{
+    .forEach(button=>{
 
-        btn.addEventListener(
-          'click',
-          async ()=>{
+      button.addEventListener(
+        'click',
+        async ()=>{
 
-            const id =
-              Number(
-                btn.dataset.id
-              );
-
-
-            const item =
-              items.find(
-                i =>
-                  i.id === id
-              );
-
-
-            if(!item)
-              return;
-
-
-            if(
-              !confirm(
-                `Delete "${item.text}"?`
-              )
-            )
-              return;
-
-
-            setSaveStatus(
-              'saving'
+          const id =
+            Number(
+              button.dataset.id
             );
 
 
-            try{
-
-              await api.del(
-
-                `/betterme/list-item/${id}`
-
-              );
+          const item =
+            items.find(
+              x =>
+                x.id === id
+            );
 
 
-              setSaveStatus(
-                'saved'
-              );
+          if(!item)
+            return;
 
 
-              await loadList(
-                category
-              );
+          if(
+            !confirm(
+              `Delete "${item.text}"?`
+            )
+          )
+            return;
 
-            }catch(err){
 
-              console.error(err);
+          setSaveStatus('saving');
 
-              setSaveStatus(
-                'error'
-              );
 
-            }
+          try{
+
+            await api.del(
+              `/betterme/list-item/${id}`
+            );
+
+
+            setSaveStatus('saved');
+
+
+            await loadList(
+              category
+            );
+
+
+          }catch(err){
+
+            console.error(err);
+
+            setSaveStatus('error');
 
           }
-        );
 
-      }
-    );
+        }
+      );
+
+    });
 
 }
 
 
-/* ==================================================
+/* =========================================================
    ADD LIST ITEMS
-================================================== */
+========================================================= */
 
 Object
   .keys(LIST_META)
@@ -4071,9 +3500,7 @@ Object
 
 
       document
-        .getElementById(
-          meta.addBtn
-        )
+        .getElementById(meta.addBtn)
         .addEventListener(
           'click',
           async ()=>{
@@ -4091,41 +3518,32 @@ Object
               return;
 
 
-            setSaveStatus(
-              'saving'
-            );
+            setSaveStatus('saving');
 
 
             try{
 
               await api.post(
-
                 `/betterme/list/${category}`,
-
                 {
-                  text:
-                    text.trim()
+                  text:text.trim()
                 }
-
               );
 
 
-              setSaveStatus(
-                'saved'
-              );
+              setSaveStatus('saved');
 
 
               await loadList(
                 category
               );
 
+
             }catch(err){
 
               console.error(err);
 
-              setSaveStatus(
-                'error'
-              );
+              setSaveStatus('error');
 
             }
 
@@ -4136,94 +3554,75 @@ Object
   );
 
 
-/* ==================================================
+/* =========================================================
    TAB SWITCHING
-================================================== */
+========================================================= */
 
 document
-  .querySelectorAll(
-    '.tab'
-  )
-  .forEach(
-    tab=>{
+  .querySelectorAll('.tab')
+  .forEach(tab=>{
 
-      tab.addEventListener(
-        'click',
-        ()=>{
+    tab.addEventListener(
+      'click',
+      ()=>{
 
-          document
-            .querySelectorAll(
-              '.tab'
-            )
-            .forEach(
-              t =>
-                t.classList.remove(
-                  'active'
-                )
-            );
-
-
-          document
-            .querySelectorAll(
-              '.panel'
-            )
-            .forEach(
-              p =>
-                p.classList.remove(
-                  'active'
-                )
-            );
-
-
-          tab.classList.add(
-            'active'
+        document
+          .querySelectorAll('.tab')
+          .forEach(
+            t =>
+              t.classList.remove(
+                'active'
+              )
           );
 
 
-          document
-            .getElementById(
-              'panel-' +
-              tab.dataset.tab
-            )
-            .classList.add(
-              'active'
-            );
-
-        }
-      );
-
-    }
-  );
+        document
+          .querySelectorAll('.panel')
+          .forEach(
+            p =>
+              p.classList.remove(
+                'active'
+              )
+          );
 
 
-/* ==================================================
+        tab.classList.add(
+          'active'
+        );
+
+
+        document
+          .getElementById(
+            'panel-' +
+            tab.dataset.tab
+          )
+          .classList.add(
+            'active'
+          );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
    INITIAL LOAD
-================================================== */
+========================================================= */
 
 (async function init(){
 
-  renderMonthLabel();
+  renderWeekLabel();
 
+  await loadWeek();
 
-  await loadMonth();
+  await renderWeekSlider();
 
+  await loadList('learn');
 
-  await renderMonthSlider();
+  await loadList('master');
 
-
-  await loadList(
-    'learn'
-  );
-
-
-  await loadList(
-    'master'
-  );
-
-
-  await loadList(
-    'character'
-  );
+  await loadList('character');
 
 })();
 
