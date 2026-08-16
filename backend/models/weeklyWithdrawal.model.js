@@ -179,6 +179,23 @@ async function withdrawProfit(profit, withdrawalAccount = {}) {
 
     const current = accountResult.rows[0];
 
+    const todayResult = await client.query(`
+  SELECT (now() AT TIME ZONE 'Asia/Kolkata')::date AS today
+`);
+
+const today = todayResult.rows[0].today;
+
+const existingWithdrawal = await client.query(`
+  SELECT id
+  FROM weekly_withdrawal_history
+  WHERE withdrawal_date = $1
+  LIMIT 1
+`, [today]);
+
+if (existingWithdrawal.rows.length) {
+  throw new Error('Already withdrawn today');
+}
+
     const newCount =
       Number(current.withdrawal_count) + 1;
 
@@ -212,58 +229,59 @@ async function withdrawProfit(profit, withdrawalAccount = {}) {
       ]);
 
     const historyRow =
-      await client.query(`
-        INSERT INTO weekly_withdrawal_history
-          (
-            withdrawal_date,
-            amount,
-            source,
-            note,
-            profit,
-            surplus_amount,
-            withdrawal_number,
-            vault_released,
-            withdrawal_method,
-            upi_id,
-            bank_account_number,
-            bank_name,
-            ifsc_code,
-            wallet_address,
-            status
-          )
-        VALUES
-          (
-            CURRENT_DATE,
-            $1,
-            'WEEKLY WITHDRAWAL',
-            NULL,
-            $2,
-            $3,
-            $4,
-            $5,
-            $6,
-            $7,
-            $8,
-            $9,
-            $10,
-            $11,
-            'SUCCESS'
-          )
-        RETURNING *
-      `, [
-        withdrawalAmount,
-        numericProfit,
-        surplusAmount,
-        newCount,
-        vaultReleased,
-        withdrawalAccount.method || null,
-        withdrawalAccount.upi_id || null,
-        withdrawalAccount.account_number || null,
-        withdrawalAccount.bank_name || null,
-        withdrawalAccount.ifsc_code || null,
-        withdrawalAccount.wallet_address || null
-      ]);
-
+  await client.query(`
+    INSERT INTO weekly_withdrawal_history
+      (
+        withdrawal_date,
+        amount,
+        source,
+        note,
+        profit,
+        surplus_amount,
+        withdrawal_number,
+        vault_released,
+        withdrawal_method,
+        upi_id,
+        bank_account_number,
+        bank_name,
+        ifsc_code,
+        wallet_address,
+        status
+      )
+    VALUES
+      (
+        $1,
+        $2,
+        'WEEKLY WITHDRAWAL',
+        NULL,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10,
+        $11,
+        $12,
+        'SUCCESS'
+      )
+    RETURNING *
+  `, [
+    today,
+    withdrawalAmount,
+    numericProfit,
+    surplusAmount,
+    newCount,
+    vaultReleased,
+    withdrawalAccount.method || null,
+    withdrawalAccount.upi_id || null,
+    withdrawalAccount.account_number || null,
+    withdrawalAccount.bank_name || null,
+    withdrawalAccount.ifsc_code || null,
+    withdrawalAccount.wallet_address || null
+  ]);
+    
     await client.query('COMMIT');
 
     return {
