@@ -22,6 +22,7 @@ const VALID_PAGES = [
   'settings',
   'reactor',
   'weekly-withdrawal',
+  'betterme',
 ];
 
 // In-memory brute-force tracker, keyed by "purpose:page:ip".
