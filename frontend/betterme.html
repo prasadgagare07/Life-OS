@@ -10,6 +10,10 @@
 
 <style>
 
+/* ==================================================
+   GLOBAL
+================================================== */
+
 *{
   margin:0;
   padding:0;
@@ -455,8 +459,7 @@ body{
 
 
 /* ==================================================
-   MONTH SELECTOR
-   7 BOXES
+   MONTH NAVIGATION
 ================================================== */
 
 .month-nav-wrap{
@@ -473,39 +476,22 @@ body{
   margin-left:auto;
 }
 
-
-/*
-   IMPORTANT:
-   Exactly 7 month boxes.
-   No horizontal scrolling on mobile.
-*/
-
 .month-slider{
-  display:grid;
+  display:flex;
 
-  grid-template-columns:
-    repeat(7,minmax(0,1fr));
+  gap:8px;
 
-  gap:6px;
+  overflow-x:auto;
 
-  width:100%;
+  padding:4px 2px;
 
-  overflow:hidden;
+  scrollbar-width:thin;
 
-  padding:2px 0;
-
-  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
 }
-
-.month-slider::-webkit-scrollbar{
-  display:none;
-}
-
 
 .month-chip{
-  min-width:0;
-
-  width:100%;
+  flex-shrink:0;
 
   display:flex;
 
@@ -513,13 +499,11 @@ body{
 
   align-items:center;
 
-  justify-content:center;
-
   gap:2px;
 
-  padding:8px 3px;
+  padding:8px 13px;
 
-  border-radius:11px;
+  border-radius:12px;
 
   border:1px solid var(--border);
 
@@ -528,51 +512,26 @@ body{
   cursor:pointer;
 
   font-family:'JetBrains Mono',monospace;
-
-  overflow:hidden;
-
-  transition:
-    border-color .18s ease,
-    background .18s ease,
-    transform .18s ease;
-}
-
-.month-chip:hover{
-  transform:translateY(-1px);
-
-  border-color:#343b62;
 }
 
 .month-chip .mc-name{
-  font-size:8.5px;
-
-  line-height:1.1;
+  font-size:9.5px;
 
   font-weight:700;
 
   color:var(--muted);
-
-  white-space:nowrap;
 }
 
 .month-chip .mc-score{
-  font-size:10px;
-
-  line-height:1.1;
+  font-size:11.5px;
 
   font-weight:700;
-
-  white-space:nowrap;
 }
 
 .month-chip.active{
   border-color:#3b82f6;
 
   background:rgba(59,130,246,.12);
-
-  box-shadow:
-    0 6px 18px -10px
-    rgba(59,130,246,.8);
 }
 
 .month-chip.active .mc-name{
@@ -667,7 +626,6 @@ body{
   width:100%;
 
   overflow-x:auto;
-
   overflow-y:hidden;
 
   border-radius:16px;
@@ -677,7 +635,6 @@ body{
 
 table.habit-grid{
   border-collapse:separate;
-
   border-spacing:0;
 
   width:max-content;
@@ -688,31 +645,55 @@ table.habit-grid{
 }
 
 
-/* Fixed widths for every column */
+/* NUMBER COLUMN */
 
 .habit-grid th.col-num,
 .habit-grid td.col-num{
   width:32px;
-
   min-width:32px;
-
   max-width:32px;
 }
 
+
+/* ==================================================
+   HABIT NAME COLUMN
+   CHANGED — WIDER + WRAPPING
+================================================== */
+
 .habit-grid th.col-name,
 .habit-grid td.col-name{
-  width:118px;
 
-  min-width:118px;
+  position:sticky;
 
-  max-width:118px;
+  left:32px;
+
+  z-index:4;
+
+  background:#181d38;
+
+  width:155px;
+  min-width:155px;
+  max-width:155px;
+
+  border-right:1px solid var(--border);
+
+  padding:0 8px;
+
+  overflow:hidden;
+}
+
+.habit-grid td.col-name{
+  background:var(--card-2);
 }
 
 
-/* Every day gets its own proper space */
+/* ==================================================
+   DAY COLUMNS
+================================================== */
 
 .habit-grid th.col-day,
 .habit-grid td.cell{
+
   width:32px;
 
   min-width:32px;
@@ -720,16 +701,13 @@ table.habit-grid{
   max-width:32px;
 }
 
-.habit-grid th.col-pct,
-.habit-grid td.col-pct{
-  width:46px;
 
-  min-width:46px;
-
-  max-width:46px;
-}
+/* ==================================================
+   TABLE HEADER
+================================================== */
 
 .habit-grid thead th{
+
   position:sticky;
 
   top:0;
@@ -755,79 +733,20 @@ table.habit-grid{
   white-space:nowrap;
 }
 
-.habit-grid th.col-num,
-.habit-grid td.col-num{
-  position:sticky;
+.habit-grid th.col-num{
+  left:0 !important;
 
-  left:0;
-
-  z-index:4;
-
-  background:#181d38;
-
-  width:22px;
-
-  text-align:center;
-
-  border-right:1px solid var(--border);
-
-  font-size:9px;
+  z-index:5 !important;
 }
 
-.habit-grid td.col-num{
-  background:var(--card-2);
 
-  font-family:'Fredoka',sans-serif;
-
-  font-weight:600;
-
-  color:var(--muted);
-}
-
-.habit-grid th.col-name,
-.habit-grid td.col-name{
-  position:sticky;
-
-  left:22px;
-
-  z-index:4;
-
-  background:#181d38;
-
-  width:118px;
-
-  border-right:1px solid var(--border);
-
-  padding:0 8px;
-
-  overflow:hidden;
-}
-
-.habit-grid td.col-name{
-  background:var(--card-2);
-}
-
-@media(min-width:820px){
-
-  .habit-grid th.col-num,
-  .habit-grid td.col-num{
-    width:32px;
-
-    font-size:11px;
-  }
-
-  .habit-grid th.col-name,
-  .habit-grid td.col-name{
-    left:32px;
-
-    width:210px;
-
-    padding:0 12px;
-  }
-
-}
+/* ==================================================
+   HABIT NAME
+   CHANGED — FULL NAME / WRAP
+================================================== */
 
 .habit-row-name{
+
   display:flex;
 
   align-items:center;
@@ -836,38 +755,47 @@ table.habit-grid{
 
   gap:6px;
 
-  padding:9px 0;
+  padding:8px 0;
+
+  min-height:44px;
 }
 
 .habit-row-name span.txt{
+
   font-size:10.5px;
 
   font-weight:500;
 
   color:#e7e9f7;
 
-  line-height:1.25;
+  line-height:1.3;
 
-  overflow:hidden;
+  overflow:visible;
 
-  text-overflow:ellipsis;
+  text-overflow:clip;
 
-  white-space:nowrap;
+  white-space:normal;
+
+  word-break:normal;
+
+  overflow-wrap:anywhere;
 
   cursor:help;
+
+  display:block;
+
+  flex:1;
+
+  min-width:0;
 }
 
-@media(min-width:820px){
 
-  .habit-row-name span.txt{
-    font-size:12.5px;
-
-    white-space:normal;
-  }
-
-}
+/* ==================================================
+   ROW ACTIONS
+================================================== */
 
 .row-actions{
+
   display:flex;
 
   gap:4px;
@@ -884,6 +812,7 @@ tr:hover .row-actions{
 }
 
 .row-actions button{
+
   width:19px;
   height:19px;
 
@@ -902,11 +831,17 @@ tr:hover .row-actions{
   line-height:1;
 }
 
+
+/* ==================================================
+   DAY CELLS
+================================================== */
+
 .habit-grid th.col-day{
   font-size:8px;
 }
 
 .habit-grid td.cell{
+
   width:32px;
 
   min-width:32px;
@@ -924,7 +859,13 @@ tr:hover .row-actions{
   text-align:center;
 }
 
+
+/* ==================================================
+   CELL BOX
+================================================== */
+
 .cell-box{
+
   width:100%;
 
   height:100%;
@@ -955,6 +896,7 @@ tr:hover .row-actions{
 }
 
 .cell-box.done{
+
   background:
     linear-gradient(
       160deg,
@@ -967,6 +909,7 @@ tr:hover .row-actions{
 }
 
 .cell-box.missed{
+
   background:
     linear-gradient(
       160deg,
@@ -978,25 +921,19 @@ tr:hover .row-actions{
     0 0 0 1px rgba(239,68,68,.4);
 }
 
-@media(min-width:820px){
 
-  .habit-grid td.cell{
-    height:30px;
-
-    padding:4px;
-  }
-
-  .cell-box{
-    border-radius:6px;
-  }
-
-}
+/* ==================================================
+   PERCENTAGE
+================================================== */
 
 .habit-grid th.col-pct,
 .habit-grid td.col-pct{
+
   width:46px;
 
   min-width:46px;
+
+  max-width:46px;
 
   text-align:center;
 
@@ -1021,7 +958,13 @@ tr:hover .row-actions{
   color:#fb7185;
 }
 
+
+/* ==================================================
+   PROGRESS ROW
+================================================== */
+
 tr.progress-row td{
+
   background:#10142a;
 
   font-family:'JetBrains Mono',monospace;
@@ -1040,6 +983,7 @@ tr.progress-row td{
 }
 
 tr.progress-row td.col-name{
+
   text-align:left;
 
   padding-left:12px;
@@ -1057,6 +1001,7 @@ tr.progress-row td.col-name{
 ================================================== */
 
 .add-row{
+
   display:flex;
 
   gap:10px;
@@ -1065,6 +1010,7 @@ tr.progress-row td.col-name{
 }
 
 .add-btn{
+
   display:flex;
 
   align-items:center;
@@ -1091,6 +1037,7 @@ tr.progress-row td.col-name{
 }
 
 .legend{
+
   display:flex;
 
   gap:16px;
@@ -1105,6 +1052,7 @@ tr.progress-row td.col-name{
 }
 
 .legend span{
+
   display:flex;
 
   align-items:center;
@@ -1113,6 +1061,7 @@ tr.progress-row td.col-name{
 }
 
 .legend i{
+
   width:12px;
   height:12px;
 
@@ -1127,6 +1076,7 @@ tr.progress-row td.col-name{
 ================================================== */
 
 .list-grid{
+
   display:grid;
 
   grid-template-columns:
@@ -1139,6 +1089,7 @@ tr.progress-row td.col-name{
 }
 
 .list-card{
+
   background:var(--card);
 
   border:1px solid var(--border);
@@ -1164,6 +1115,7 @@ tr.progress-row td.col-name{
 }
 
 .list-check{
+
   width:22px;
   height:22px;
 
@@ -1189,6 +1141,7 @@ tr.progress-row td.col-name{
 }
 
 .list-check.done{
+
   background:var(--accent,var(--purple));
 
   border-color:var(--accent,var(--purple));
@@ -1199,12 +1152,14 @@ tr.progress-row td.col-name{
 }
 
 .list-body{
+
   flex:1;
 
   min-width:0;
 }
 
 .list-num{
+
   font-family:'JetBrains Mono',monospace;
 
   font-size:9.5px;
@@ -1215,6 +1170,7 @@ tr.progress-row td.col-name{
 }
 
 .list-text{
+
   font-size:13px;
 
   font-weight:500;
@@ -1227,6 +1183,7 @@ tr.progress-row td.col-name{
 }
 
 .list-card.done .list-text{
+
   color:#8b91b3;
 
   text-decoration:line-through;
@@ -1236,6 +1193,7 @@ tr.progress-row td.col-name{
 }
 
 .list-actions{
+
   display:flex;
 
   gap:4px;
@@ -1250,6 +1208,7 @@ tr.progress-row td.col-name{
 }
 
 .list-actions button{
+
   width:22px;
   height:22px;
 
@@ -1267,6 +1226,7 @@ tr.progress-row td.col-name{
 }
 
 .empty-note{
+
   padding:30px;
 
   text-align:center;
@@ -1278,24 +1238,83 @@ tr.progress-row td.col-name{
 
 
 /* ==================================================
-   DESKTOP / TABLET
+   DESKTOP
+================================================== */
+
+@media(min-width:820px){
+
+  .habit-grid th.col-num,
+  .habit-grid td.col-num{
+
+    width:32px;
+
+    min-width:32px;
+    max-width:32px;
+
+    font-size:11px;
+  }
+
+  .habit-grid th.col-name,
+  .habit-grid td.col-name{
+
+    left:32px;
+
+    width:210px;
+
+    min-width:210px;
+
+    max-width:210px;
+
+    padding:0 12px;
+  }
+
+  .habit-row-name span.txt{
+
+    font-size:12.5px;
+
+    white-space:normal;
+
+    overflow:visible;
+
+    text-overflow:clip;
+  }
+
+  .habit-grid td.cell{
+
+    height:30px;
+
+    padding:4px;
+  }
+
+  .cell-box{
+
+    border-radius:6px;
+  }
+
+}
+
+
+/* ==================================================
+   MOBILE / TABLET
 ================================================== */
 
 @media(max-width:720px){
 
   .topbar{
+
     width:100vw !important;
 
     padding:16px !important;
   }
 
+
   .hero{
+
     width:100vw !important;
 
     max-width:100vw !important;
 
     margin-left:0 !important;
-
     margin-right:0 !important;
 
     padding:
@@ -1310,7 +1329,9 @@ tr.progress-row td.col-name{
     text-align:center;
   }
 
+
   .hero-logo{
+
     width:88px !important;
 
     height:88px !important;
@@ -1328,7 +1349,9 @@ tr.progress-row td.col-name{
     right:auto !important;
   }
 
+
   .hero h1{
+
     width:100% !important;
 
     font-size:30px !important;
@@ -1340,7 +1363,9 @@ tr.progress-row td.col-name{
     margin-right:0 !important;
   }
 
+
   .hero .tagline-pill{
+
     max-width:
       calc(100vw - 32px) !important;
 
@@ -1353,7 +1378,9 @@ tr.progress-row td.col-name{
     text-align:center !important;
   }
 
+
   .tabs{
+
     width:100vw !important;
 
     max-width:100vw !important;
@@ -1372,7 +1399,9 @@ tr.progress-row td.col-name{
     box-sizing:border-box !important;
   }
 
+
   .panel{
+
     width:100vw !important;
 
     max-width:100vw !important;
@@ -1388,49 +1417,41 @@ tr.progress-row td.col-name{
     box-sizing:border-box !important;
   }
 
+
   .panel-head{
+
     align-items:flex-start;
 
     flex-direction:column;
   }
 
+
   .month-nav-wrap{
+
     max-width:100%;
 
     margin-left:0;
   }
 
-  /*
-     Keep all 7 month boxes visible on mobile.
-  */
 
   .month-slider{
+
     width:100%;
 
-    grid-template-columns:
-      repeat(7,minmax(0,1fr));
+    padding-left:2px;
 
-    gap:5px;
-
-    overflow:hidden;
+    padding-right:2px;
   }
+
 
   .month-chip{
-    padding:
-      8px 2px;
 
-    border-radius:10px;
+    padding:8px 12px;
   }
 
-  .month-chip .mc-name{
-    font-size:8px;
-  }
-
-  .month-chip .mc-score{
-    font-size:9.5px;
-  }
 
   .month-nav{
+
     align-self:flex-start;
 
     width:100%;
@@ -1438,7 +1459,9 @@ tr.progress-row td.col-name{
     justify-content:center;
   }
 
+
   .grid-shell{
+
     width:100% !important;
 
     max-width:100% !important;
@@ -1446,7 +1469,9 @@ tr.progress-row td.col-name{
     box-sizing:border-box !important;
   }
 
+
   .grid-scroll{
+
     width:100%;
 
     max-width:100%;
@@ -1458,25 +1483,113 @@ tr.progress-row td.col-name{
     -webkit-overflow-scrolling:touch;
   }
 
-  .list-grid{
-    grid-template-columns:
-      1fr;
+
+  /*
+    IMPORTANT MOBILE HABIT COLUMN
+
+    155px gives the habit name enough
+    room to display properly while the
+    day cells remain horizontally scrollable.
+  */
+
+  .habit-grid th.col-name,
+  .habit-grid td.col-name{
+
+    width:155px !important;
+
+    min-width:155px !important;
+
+    max-width:155px !important;
+
+    left:32px !important;
+
+    padding-left:10px !important;
+
+    padding-right:8px !important;
   }
 
+
+  .habit-grid th.col-num,
+  .habit-grid td.col-num{
+
+    width:32px !important;
+
+    min-width:32px !important;
+
+    max-width:32px !important;
+  }
+
+
+  .habit-row-name{
+
+    min-height:46px;
+
+    padding:7px 0;
+  }
+
+
+  .habit-row-name span.txt{
+
+    font-size:11px;
+
+    line-height:1.3;
+
+    white-space:normal;
+
+    overflow:visible;
+
+    text-overflow:clip;
+
+    word-break:normal;
+
+    overflow-wrap:anywhere;
+  }
+
+
+  /*
+    Keep action buttons usable.
+    They appear when the row is touched/hovered.
+  */
+
+  .row-actions{
+
+    gap:3px;
+  }
+
+
+  .row-actions button{
+
+    width:20px;
+
+    height:20px;
+
+    font-size:9px;
+  }
+
+
+  .list-grid{
+
+    grid-template-columns:1fr;
+  }
+
+
   .legend{
+
     flex-wrap:wrap;
   }
+
 }
 
 
 /* ==================================================
-   EXTRA MOBILE SAFETY
+   EXTRA SMALL MOBILE
 ================================================== */
 
 @media(max-width:480px){
 
   html,
   body{
+
     width:100% !important;
 
     max-width:100vw !important;
@@ -1486,7 +1599,9 @@ tr.progress-row td.col-name{
     overflow-x:hidden !important;
   }
 
+
   .hero{
+
     width:100vw !important;
 
     max-width:100vw !important;
@@ -1496,7 +1611,9 @@ tr.progress-row td.col-name{
     padding-right:16px !important;
   }
 
+
   .hero-logo{
+
     width:88px !important;
 
     height:88px !important;
@@ -1506,28 +1623,36 @@ tr.progress-row td.col-name{
     margin-right:auto !important;
   }
 
+
   .hero h1{
+
     font-size:30px !important;
 
     text-align:center !important;
   }
 
+
   .hero .tagline-pill{
+
     width:auto !important;
 
     max-width:
       calc(100vw - 32px) !important;
   }
 
+
   .tabs{
+
     width:100vw !important;
 
     padding-left:16px !important;
 
     padding-right:16px !important;
   }
+
 
   .panel{
+
     width:100vw !important;
 
     padding-left:16px !important;
@@ -1535,33 +1660,52 @@ tr.progress-row td.col-name{
     padding-right:16px !important;
   }
 
+
   /*
-     Final mobile tuning:
-     7 month boxes fit cleanly.
+    Keep 155px habit column on small screens.
+    This makes the names readable.
   */
 
-  .month-slider{
-    gap:4px;
+  .habit-grid th.col-name,
+  .habit-grid td.col-name{
 
-    grid-template-columns:
-      repeat(7,minmax(0,1fr));
+    width:155px !important;
+
+    min-width:155px !important;
+
+    max-width:155px !important;
   }
 
-  .month-chip{
-    padding:
-      8px 1px;
-
-    border-radius:9px;
-  }
-
-  .month-chip .mc-name{
-    font-size:7.5px;
-  }
-
-  .month-chip .mc-score{
-    font-size:9px;
-  }
 }
+
+
+/* ==================================================
+   VERY SMALL PHONES
+================================================== */
+
+@media(max-width:360px){
+
+  .habit-grid th.col-name,
+  .habit-grid td.col-name{
+
+    width:145px !important;
+
+    min-width:145px !important;
+
+    max-width:145px !important;
+  }
+
+  .habit-row-name span.txt{
+
+    font-size:10.5px;
+  }
+
+}
+
+
+/* ==================================================
+   END CSS
+================================================== */
 
 </style>
 </head>
@@ -1580,8 +1724,11 @@ tr.progress-row td.col-name{
   </a>
 
   <div class="save-pill" id="savePill">
+
     <span class="dot"></span>
+
     Saved
+
   </div>
 
 </div>
@@ -1600,10 +1747,14 @@ tr.progress-row td.col-name{
     onerror="this.style.display='none'"
   >
 
-  <h1>BetterMe</h1>
+  <h1>
+    BetterMe
+  </h1>
 
   <div class="tagline-pill">
+
     ✦ Build Yourself, One Day at a Time ✦
+
   </div>
 
 </div>
@@ -1615,7 +1766,11 @@ tr.progress-row td.col-name{
 
 <div class="tabs">
 
-  <div class="tab active" data-tab="habits">
+
+  <div
+    class="tab active"
+    data-tab="habits"
+  >
 
     <div class="t-icon">
       🗓️
@@ -1625,14 +1780,20 @@ tr.progress-row td.col-name{
       Daily Habits
     </div>
 
-    <div class="t-sub" id="habitsCount">
+    <div
+      class="t-sub"
+      id="habitsCount"
+    >
       — HABITS
     </div>
 
   </div>
 
 
-  <div class="tab" data-tab="learn">
+  <div
+    class="tab"
+    data-tab="learn"
+  >
 
     <div class="t-icon">
       🎧
@@ -1642,14 +1803,20 @@ tr.progress-row td.col-name{
       Things to Learn
     </div>
 
-    <div class="t-sub" id="learnCount">
+    <div
+      class="t-sub"
+      id="learnCount"
+    >
       — TOPICS
     </div>
 
   </div>
 
 
-  <div class="tab" data-tab="master">
+  <div
+    class="tab"
+    data-tab="master"
+  >
 
     <div class="t-icon">
       🛠️
@@ -1659,14 +1826,20 @@ tr.progress-row td.col-name{
       Things to Master
     </div>
 
-    <div class="t-sub" id="masterCount">
+    <div
+      class="t-sub"
+      id="masterCount"
+    >
       — SKILLS
     </div>
 
   </div>
 
 
-  <div class="tab" data-tab="character">
+  <div
+    class="tab"
+    data-tab="character"
+  >
 
     <div class="t-icon">
       🧭
@@ -1676,7 +1849,10 @@ tr.progress-row td.col-name{
       Character &amp; Values
     </div>
 
-    <div class="t-sub" id="characterCount">
+    <div
+      class="t-sub"
+      id="characterCount"
+    >
       — PRINCIPLES
     </div>
 
@@ -1689,9 +1865,13 @@ tr.progress-row td.col-name{
      HABITS PANEL
 ================================================== -->
 
-<div class="panel active" id="panel-habits">
+<div
+  class="panel active"
+  id="panel-habits"
+>
 
   <div class="panel-head">
+
 
     <div class="panel-title">
 
@@ -1764,7 +1944,9 @@ tr.progress-row td.col-name{
       class="add-btn"
       id="addHabitBtn"
     >
+
       ＋ Add Habit
+
     </button>
 
   </div>
@@ -1773,16 +1955,21 @@ tr.progress-row td.col-name{
   <div class="legend">
 
     <span>
+
       <i
         style="
           background:var(--cell);
           border:1px solid #333a5c;
         "
       ></i>
+
       Not done
+
     </span>
 
+
     <span>
+
       <i
         style="
           background:
@@ -1793,10 +1980,14 @@ tr.progress-row td.col-name{
           );
         "
       ></i>
+
       Completed
+
     </span>
 
+
     <span>
+
       <i
         style="
           background:
@@ -1807,7 +1998,9 @@ tr.progress-row td.col-name{
           );
         "
       ></i>
+
       Missed
+
     </span>
 
   </div>
@@ -1819,7 +2012,10 @@ tr.progress-row td.col-name{
      LEARN PANEL
 ================================================== -->
 
-<div class="panel" id="panel-learn">
+<div
+  class="panel"
+  id="panel-learn"
+>
 
   <div class="panel-head">
 
@@ -1834,11 +2030,14 @@ tr.progress-row td.col-name{
 
     </div>
 
+
     <button
       class="add-btn"
       id="addLearnBtn"
     >
+
       ＋ Add Topic
+
     </button>
 
   </div>
@@ -1857,7 +2056,10 @@ tr.progress-row td.col-name{
      MASTER PANEL
 ================================================== -->
 
-<div class="panel" id="panel-master">
+<div
+  class="panel"
+  id="panel-master"
+>
 
   <div class="panel-head">
 
@@ -1872,11 +2074,14 @@ tr.progress-row td.col-name{
 
     </div>
 
+
     <button
       class="add-btn"
       id="addMasterBtn"
     >
+
       ＋ Add Skill
+
     </button>
 
   </div>
@@ -1895,7 +2100,10 @@ tr.progress-row td.col-name{
      CHARACTER PANEL
 ================================================== -->
 
-<div class="panel" id="panel-character">
+<div
+  class="panel"
+  id="panel-character"
+>
 
   <div class="panel-head">
 
@@ -1910,11 +2118,14 @@ tr.progress-row td.col-name{
 
     </div>
 
+
     <button
       class="add-btn"
       id="addCharacterBtn"
     >
+
       ＋ Add Principle
+
     </button>
 
   </div>
@@ -1938,8 +2149,8 @@ tr.progress-row td.col-name{
 <script src="js/utils.js"></script>
 <script src="js/app.js"></script>
 
-<script>
 
+<script>
 
 /* ==================================================
    SAVE STATUS PILL
@@ -1948,9 +2159,12 @@ tr.progress-row td.col-name{
 function setSaveStatus(state){
 
   const pill =
-    document.getElementById('savePill');
+    document.getElementById(
+      'savePill'
+    );
 
   if(!pill) return;
+
 
   pill.className =
     'save-pill' +
@@ -1962,12 +2176,18 @@ function setSaveStatus(state){
           : ''
     );
 
+
   pill.innerHTML =
     state === 'saving'
+
       ? '<span class="dot"></span> Saving…'
+
       : state === 'error'
+
         ? '<span class="dot"></span> Save failed'
+
         : '<span class="dot"></span> Saved';
+
 }
 
 
@@ -1975,7 +2195,9 @@ function setSaveStatus(state){
    DAILY HABITS — MONTH GRID
 ================================================== */
 
-const TODAY = new Date();
+const TODAY =
+  new Date();
+
 
 let currentDate =
   new Date(
@@ -1984,7 +2206,9 @@ let currentDate =
     1
   );
 
+
 let habitsList = [];
+
 
 let completionsMap = {};
 
@@ -2025,6 +2249,7 @@ function renderMonthLabel(){
   document.getElementById(
     'monthLabel'
   ).textContent =
+
     currentDate.toLocaleDateString(
       'en-US',
       {
@@ -2036,7 +2261,14 @@ function renderMonthLabel(){
 }
 
 
-async function fetchMonth(year,month){
+/* ==================================================
+   FETCH MONTH
+================================================== */
+
+async function fetchMonth(
+  year,
+  month
+){
 
   try{
 
@@ -2048,7 +2280,10 @@ async function fetchMonth(year,month){
 
     console.error(err);
 
-    if(typeof showToast === 'function'){
+    if(
+      typeof showToast ===
+      'function'
+    ){
 
       showToast(
         'Could not load BetterMe data',
@@ -2058,8 +2293,11 @@ async function fetchMonth(year,month){
     }
 
     return {
+
       habits:[],
+
       completions:[]
+
     };
 
   }
@@ -2067,35 +2305,59 @@ async function fetchMonth(year,month){
 }
 
 
-function computeScore(completions){
+/* ==================================================
+   SCORE
+================================================== */
+
+function computeScore(
+  completions
+){
 
   let done = 0;
 
   let tracked = 0;
 
+
   completions.forEach(c=>{
 
     tracked++;
 
-    if(c.status === 'done')
+
+    if(
+      c.status ===
+      'done'
+    )
       done++;
 
   });
 
+
   return tracked
-    ? Math.round(done/tracked*100)
+
+    ? Math.round(
+        done /
+        tracked *
+        100
+      )
+
     : null;
 
 }
 
+
+/* ==================================================
+   LOAD MONTH
+================================================== */
 
 async function loadMonth(){
 
   const year =
     currentDate.getFullYear();
 
+
   const month =
     currentDate.getMonth()+1;
+
 
   const data =
     await fetchMonth(
@@ -2103,29 +2365,39 @@ async function loadMonth(){
       month
     );
 
+
   habitsList =
     data.habits || [];
 
+
   completionsMap = {};
 
-  (data.completions || [])
-    .forEach(c=>{
 
-      const day =
-        Number(
-          c.entry_date
-            .split('-')[2]
-        );
+  (
+    data.completions || []
+  ).forEach(c=>{
 
-      completionsMap[
-        c.habit_id + '-' + day
-      ] = c.status;
+    const day =
+      Number(
+        c.entry_date
+          .split('-')[2]
+      );
 
-    });
+
+    completionsMap[
+      c.habit_id +
+      '-' +
+      day
+    ] =
+      c.status;
+
+  });
 
 
   monthScoreCache[
-    year + '-' + month
+    year +
+    '-' +
+    month
   ] =
     computeScore(
       data.completions || []
@@ -2135,6 +2407,7 @@ async function loadMonth(){
   document.getElementById(
     'habitsCount'
   ).textContent =
+
     habitsList.length +
     ' HABITS';
 
@@ -2144,10 +2417,17 @@ async function loadMonth(){
 }
 
 
+/* ==================================================
+   RENDER HABIT GRID
+================================================== */
+
 function renderGrid(){
 
   const days =
-    daysInMonth(currentDate);
+    daysInMonth(
+      currentDate
+    );
+
 
   const table =
     document.getElementById(
@@ -2158,8 +2438,11 @@ function renderGrid(){
   if(!habitsList.length){
 
     table.outerHTML =
+
       '<div class="empty-note" id="habitGrid">' +
+
       'No habits yet — tap "＋ Add Habit" to start.' +
+
       '</div>';
 
     return;
@@ -2168,8 +2451,11 @@ function renderGrid(){
 
 
   let html =
+
     '<thead><tr>' +
+
     '<th class="col-num">#</th>' +
+
     '<th class="col-name">HABIT</th>';
 
 
@@ -2180,18 +2466,22 @@ function renderGrid(){
   ){
 
     html +=
+
       `<th class="col-day">${d}</th>`;
 
   }
 
 
   html +=
+
     '<th class="col-pct">%</th>' +
+
     '</tr></thead><tbody>';
 
 
   habitsList.forEach(
     (habit,idx)=>{
+
 
       let doneCount = 0;
 
@@ -2207,44 +2497,59 @@ function renderGrid(){
       ){
 
         const key =
-          habit.id + '-' + d;
+          habit.id +
+          '-' +
+          d;
+
 
         const st =
           completionsMap[key];
+
 
         if(st){
 
           trackedCount++;
 
-          if(st === 'done')
+
+          if(
+            st ===
+            'done'
+          )
             doneCount++;
 
         }
 
 
         rowCells +=
+
           `<td class="cell">
+
             <div
               class="cell-box ${st||''}"
               data-habit="${habit.id}"
               data-day="${d}"
             ></div>
+
           </td>`;
 
       }
 
 
       const pct =
+
         trackedCount
+
           ? Math.round(
               doneCount /
               trackedCount *
               100
             )
+
           : 0;
 
 
       html +=
+
         `<tr>
 
           <td class="col-num">
@@ -2308,6 +2613,10 @@ function renderGrid(){
   );
 
 
+  /* ==================================================
+     DAILY PROGRESS
+  ================================================== */
+
   let progressCells = '';
 
 
@@ -2322,44 +2631,64 @@ function renderGrid(){
     let tracked = 0;
 
 
-    habitsList.forEach(habit=>{
+    habitsList.forEach(
+      habit=>{
 
-      const st =
-        completionsMap[
-          habit.id + '-' + d
-        ];
+        const st =
+          completionsMap[
+            habit.id +
+            '-' +
+            d
+          ];
 
-      if(st){
 
-        tracked++;
+        if(st){
 
-        if(st === 'done')
-          done++;
+          tracked++;
+
+
+          if(
+            st ===
+            'done'
+          )
+            done++;
+
+        }
 
       }
-
-    });
+    );
 
 
     const pct =
+
       tracked
+
         ? Math.round(
             done /
             tracked *
             100
           )
+
         : 0;
 
 
     progressCells +=
+
       `<td>
-        ${tracked ? pct+'%' : '—'}
+
+        ${
+          tracked
+            ? pct+'%'
+            : '—'
+        }
+
       </td>`;
 
   }
 
 
   html +=
+
     `<tr class="progress-row">
 
       <td class="col-num">
@@ -2383,11 +2712,18 @@ function renderGrid(){
     '</tbody>';
 
 
-  table.innerHTML = html;
+  table.innerHTML =
+    html;
 
+
+  /* ==================================================
+     CELL CLICK
+  ================================================== */
 
   table
-    .querySelectorAll('.cell-box')
+    .querySelectorAll(
+      '.cell-box'
+    )
     .forEach(box=>{
 
       box.addEventListener(
@@ -2398,6 +2734,10 @@ function renderGrid(){
     });
 
 
+  /* ==================================================
+     EDIT
+  ================================================== */
+
   table
     .querySelectorAll(
       '[data-action="edit"]'
@@ -2407,12 +2747,18 @@ function renderGrid(){
       btn.addEventListener(
         'click',
         ()=>editHabit(
-          Number(btn.dataset.id)
+          Number(
+            btn.dataset.id
+          )
         )
       );
 
     });
 
+
+  /* ==================================================
+     DELETE
+  ================================================== */
 
   table
     .querySelectorAll(
@@ -2423,12 +2769,18 @@ function renderGrid(){
       btn.addEventListener(
         'click',
         ()=>deleteHabitRow(
-          Number(btn.dataset.id)
+          Number(
+            btn.dataset.id
+          )
         )
       );
 
     });
 
+
+  /* ==================================================
+     MOVE
+  ================================================== */
 
   table
     .querySelectorAll(
@@ -2439,7 +2791,9 @@ function renderGrid(){
       btn.addEventListener(
         'click',
         ()=>moveHabit(
-          Number(btn.dataset.id)
+          Number(
+            btn.dataset.id
+          )
         )
       );
 
@@ -2452,54 +2806,90 @@ function renderGrid(){
    TOGGLE HABIT
 ================================================== */
 
-async function toggleCell(box){
+async function toggleCell(
+  box
+){
 
   const habitId =
-    Number(box.dataset.habit);
+    Number(
+      box.dataset.habit
+    );
+
 
   const day =
-    Number(box.dataset.day);
+    Number(
+      box.dataset.day
+    );
+
 
   const key =
-    habitId + '-' + day;
+    habitId +
+    '-' +
+    day;
+
 
   const cur =
     completionsMap[key];
 
+
   const next =
+
     cur === undefined
+
       ? 'done'
+
       : cur === 'done'
+
         ? 'missed'
+
         : null;
 
 
   const year =
     currentDate.getFullYear();
 
+
   const month =
     String(
       currentDate.getMonth()+1
-    ).padStart(2,'0');
+    ).padStart(
+      2,
+      '0'
+    );
+
 
   const dayStr =
-    String(day).padStart(2,'0');
+    String(day)
+      .padStart(
+        2,
+        '0'
+      );
 
 
   const entryDate =
     `${year}-${month}-${dayStr}`;
 
 
-  if(next === null)
+  if(
+    next === null
+  ){
+
     delete completionsMap[key];
 
-  else
-    completionsMap[key] = next;
+  }else{
+
+    completionsMap[key] =
+      next;
+
+  }
 
 
   renderGrid();
 
-  setSaveStatus('saving');
+
+  setSaveStatus(
+    'saving'
+  );
 
 
   try{
@@ -2513,15 +2903,25 @@ async function toggleCell(box){
       }
     );
 
-    setSaveStatus('saved');
+
+    setSaveStatus(
+      'saved'
+    );
 
   }catch(err){
 
     console.error(err);
 
-    setSaveStatus('error');
 
-    if(typeof showToast === 'function'){
+    setSaveStatus(
+      'error'
+    );
+
+
+    if(
+      typeof showToast ===
+      'function'
+    ){
 
       showToast(
         'Could not save — try again',
@@ -2539,14 +2939,19 @@ async function toggleCell(box){
    EDIT HABIT
 ================================================== */
 
-async function editHabit(id){
+async function editHabit(
+  id
+){
 
   const habit =
     habitsList.find(
-      h=>h.id===id
+      h =>
+        h.id === id
     );
 
-  if(!habit) return;
+
+  if(!habit)
+    return;
 
 
   const name =
@@ -2559,12 +2964,15 @@ async function editHabit(id){
   if(
     !name ||
     !name.trim() ||
-    name.trim() === habit.name
+    name.trim() ===
+      habit.name
   )
     return;
 
 
-  setSaveStatus('saving');
+  setSaveStatus(
+    'saving'
+  );
 
 
   try{
@@ -2576,7 +2984,11 @@ async function editHabit(id){
       }
     );
 
-    setSaveStatus('saved');
+
+    setSaveStatus(
+      'saved'
+    );
+
 
     await loadMonth();
 
@@ -2586,7 +2998,9 @@ async function editHabit(id){
 
     console.error(err);
 
-    setSaveStatus('error');
+    setSaveStatus(
+      'error'
+    );
 
   }
 
@@ -2597,14 +3011,19 @@ async function editHabit(id){
    DELETE HABIT
 ================================================== */
 
-async function deleteHabitRow(id){
+async function deleteHabitRow(
+  id
+){
 
   const habit =
     habitsList.find(
-      h=>h.id===id
+      h =>
+        h.id === id
     );
 
-  if(!habit) return;
+
+  if(!habit)
+    return;
 
 
   if(
@@ -2615,7 +3034,9 @@ async function deleteHabitRow(id){
     return;
 
 
-  setSaveStatus('saving');
+  setSaveStatus(
+    'saving'
+  );
 
 
   try{
@@ -2624,7 +3045,11 @@ async function deleteHabitRow(id){
       `/betterme/habits/${id}`
     );
 
-    setSaveStatus('saved');
+
+    setSaveStatus(
+      'saved'
+    );
+
 
     await loadMonth();
 
@@ -2634,7 +3059,9 @@ async function deleteHabitRow(id){
 
     console.error(err);
 
-    setSaveStatus('error');
+    setSaveStatus(
+      'error'
+    );
 
   }
 
@@ -2645,14 +3072,19 @@ async function deleteHabitRow(id){
    MOVE HABIT
 ================================================== */
 
-async function moveHabit(id){
+async function moveHabit(
+  id
+){
 
   const habit =
     habitsList.find(
-      h=>h.id===id
+      h =>
+        h.id === id
     );
 
-  if(!habit) return;
+
+  if(!habit)
+    return;
 
 
   const raw =
@@ -2660,13 +3092,16 @@ async function moveHabit(id){
       `Move "${habit.name}" to position (1-${habitsList.length}):`,
       String(
         habitsList.findIndex(
-          h=>h.id===id
-        )+1
+          h =>
+            h.id === id
+        ) + 1
       )
     );
 
 
-  if(raw === null)
+  if(
+    raw === null
+  )
     return;
 
 
@@ -2681,7 +3116,9 @@ async function moveHabit(id){
     return;
 
 
-  setSaveStatus('saving');
+  setSaveStatus(
+    'saving'
+  );
 
 
   try{
@@ -2693,7 +3130,11 @@ async function moveHabit(id){
       }
     );
 
-    setSaveStatus('saved');
+
+    setSaveStatus(
+      'saved'
+    );
+
 
     await loadMonth();
 
@@ -2701,7 +3142,9 @@ async function moveHabit(id){
 
     console.error(err);
 
-    setSaveStatus('error');
+    setSaveStatus(
+      'error'
+    );
 
   }
 
@@ -2713,7 +3156,9 @@ async function moveHabit(id){
 ================================================== */
 
 document
-  .getElementById('addHabitBtn')
+  .getElementById(
+    'addHabitBtn'
+  )
   .addEventListener(
     'click',
     async ()=>{
@@ -2739,13 +3184,18 @@ document
 
 
       const position =
+
         posRaw &&
         posRaw.trim()
+
           ? Number(posRaw)
+
           : undefined;
 
 
-      setSaveStatus('saving');
+      setSaveStatus(
+        'saving'
+      );
 
 
       try{
@@ -2758,7 +3208,11 @@ document
           }
         );
 
-        setSaveStatus('saved');
+
+        setSaveStatus(
+          'saved'
+        );
+
 
         await loadMonth();
 
@@ -2768,7 +3222,9 @@ document
 
         console.error(err);
 
-        setSaveStatus('error');
+        setSaveStatus(
+          'error'
+        );
 
       }
 
@@ -2781,7 +3237,9 @@ document
 ================================================== */
 
 document
-  .getElementById('prevMonth')
+  .getElementById(
+    'prevMonth'
+  )
   .addEventListener(
     'click',
     async ()=>{
@@ -2793,6 +3251,7 @@ document
           1
         );
 
+
       renderMonthLabel();
 
       await loadMonth();
@@ -2804,7 +3263,9 @@ document
 
 
 document
-  .getElementById('nextMonth')
+  .getElementById(
+    'nextMonth'
+  )
   .addEventListener(
     'click',
     async ()=>{
@@ -2816,6 +3277,7 @@ document
           1
         );
 
+
       renderMonthLabel();
 
       await loadMonth();
@@ -2827,7 +3289,9 @@ document
 
 
 document
-  .getElementById('todayBtn')
+  .getElementById(
+    'todayBtn'
+  )
   .addEventListener(
     'click',
     async ()=>{
@@ -2838,6 +3302,7 @@ document
           TODAY.getMonth(),
           1
         );
+
 
       renderMonthLabel();
 
@@ -2851,7 +3316,7 @@ document
 
 /* ==================================================
    MONTH SLIDER
-   SHOW EXACTLY 7 MONTHS
+   CHANGED — 7 MONTH BOXES
 ================================================== */
 
 async function renderMonthSlider(){
@@ -2863,18 +3328,33 @@ async function renderMonthSlider(){
 
 
   /*
-     7 boxes:
-     -6 = six months ago
-     -5
-     -4
-     -3
-     -2
-     -1
-      0 = current month
+    7 months total:
+
+    6 months before current
+    +
+    current month
+
+    Example for August:
+
+    Feb 26
+    Mar 26
+    Apr 26
+    May 26
+    Jun 26
+    Jul 26
+    Aug 26
   */
 
   const offsets =
-    [-6,-5,-4,-3,-2,-1,0];
+    [
+      -6,
+      -5,
+      -4,
+      -3,
+      -2,
+      -1,
+      0
+    ];
 
 
   const months =
@@ -2900,7 +3380,8 @@ async function renderMonthSlider(){
 
 
         if(
-          monthScoreCache[key] !== undefined
+          monthScoreCache[key] !==
+          undefined
         )
           return;
 
@@ -2924,100 +3405,169 @@ async function renderMonthSlider(){
 
 
   wrap.innerHTML =
-    months.map(d=>{
 
-      const key =
-        d.getFullYear() +
-        '-' +
-        (d.getMonth()+1);
+    months.map(
+      d=>{
 
-
-      const score =
-        monthScoreCache[key];
-
-
-      const active =
-        key ===
-        (
-          currentDate.getFullYear() +
+        const key =
+          d.getFullYear() +
           '-' +
-          (currentDate.getMonth()+1)
-        );
+          (d.getMonth()+1);
 
 
-      const color =
-        score===null ||
-        score===undefined
-          ? '#5a6088'
-          : score>=70
-            ? '#4ade80'
-            : score>=40
-              ? '#fbbf24'
-              : '#fb7185';
+        const score =
+          monthScoreCache[key];
 
 
-      return `
-        <div
-          class="month-chip ${active?'active':''}"
-          data-y="${d.getFullYear()}"
-          data-m="${d.getMonth()}"
-        >
+        const active =
 
-          <span class="mc-name">
-            ${
-              d.toLocaleDateString(
-                'en-US',
-                {
-                  month:'short',
-                  year:'2-digit'
-                }
-              )
-            }
-          </span>
+          key ===
 
-          <span
-            class="mc-score"
-            style="color:${color}"
+          (
+            currentDate.getFullYear() +
+            '-' +
+            (
+              currentDate.getMonth()+1
+            )
+          );
+
+
+        const color =
+
+          score === null ||
+          score === undefined
+
+            ? '#5a6088'
+
+            : score >= 70
+
+              ? '#4ade80'
+
+              : score >= 40
+
+                ? '#fbbf24'
+
+                : '#fb7185';
+
+
+        return `
+
+          <div
+
+            class="month-chip ${
+
+              active
+                ? 'active'
+                : ''
+
+            }"
+
+            data-y="${
+              d.getFullYear()
+            }"
+
+            data-m="${
+              d.getMonth()
+            }"
+
           >
-            ${
-              score===null ||
-              score===undefined
-                ? '—'
-                : score+'%'
-            }
-          </span>
 
-        </div>
-      `;
+            <span class="mc-name">
 
-    }).join('');
+              ${
+                d.toLocaleDateString(
+                  'en-US',
+                  {
+                    month:'short',
+                    year:'2-digit'
+                  }
+                )
+              }
+
+            </span>
+
+
+            <span
+
+              class="mc-score"
+
+              style="color:${color}"
+
+            >
+
+              ${
+                score === null ||
+                score === undefined
+
+                  ? '—'
+
+                  : score+'%'
+
+              }
+
+            </span>
+
+          </div>
+
+        `;
+
+      }
+    ).join('');
 
 
   wrap
-    .querySelectorAll('.month-chip')
-    .forEach(chip=>{
+    .querySelectorAll(
+      '.month-chip'
+    )
+    .forEach(
+      chip=>{
 
-      chip.addEventListener(
-        'click',
-        async ()=>{
+        chip.addEventListener(
+          'click',
+          async ()=>{
 
-          currentDate =
-            new Date(
-              Number(chip.dataset.y),
-              Number(chip.dataset.m),
-              1
-            );
+            currentDate =
+              new Date(
+                Number(
+                  chip.dataset.y
+                ),
+                Number(
+                  chip.dataset.m
+                ),
+                1
+              );
 
-          renderMonthLabel();
 
-          await loadMonth();
+            renderMonthLabel();
 
-          await renderMonthSlider();
+            await loadMonth();
 
-        }
-      );
+            await renderMonthSlider();
+
+          }
+        );
+
+      }
+    );
+
+
+  const activeChip =
+    wrap.querySelector(
+      '.month-chip.active'
+    );
+
+
+  if(activeChip){
+
+    activeChip.scrollIntoView({
+
+      inline:'center',
+
+      block:'nearest'
 
     });
+
+  }
 
 }
 
@@ -3029,33 +3579,59 @@ async function renderMonthSlider(){
 const LIST_META = {
 
   learn:{
+
     grid:'learnGrid',
+
     count:'learnCount',
+
     addBtn:'addLearnBtn',
+
     label:'TOPICS',
+
     prompt:'New topic to learn:'
+
   },
+
 
   master:{
+
     grid:'masterGrid',
+
     count:'masterCount',
+
     addBtn:'addMasterBtn',
+
     label:'SKILLS',
+
     prompt:'New skill to master:'
+
   },
 
+
   character:{
+
     grid:'characterGrid',
+
     count:'characterCount',
+
     addBtn:'addCharacterBtn',
+
     label:'PRINCIPLES',
+
     prompt:'New character principle:'
+
   }
 
 };
 
 
-async function loadList(category){
+/* ==================================================
+   LOAD LIST
+================================================== */
+
+async function loadList(
+  category
+){
 
   const meta =
     LIST_META[category];
@@ -3072,6 +3648,7 @@ async function loadList(category){
     document.getElementById(
       meta.count
     ).textContent =
+
       items.length +
       ' ' +
       meta.label;
@@ -3086,10 +3663,15 @@ async function loadList(category){
 
     console.error(err);
 
-    if(typeof showToast === 'function'){
+
+    if(
+      typeof showToast ===
+      'function'
+    ){
 
       showToast(
-        'Could not load ' + category,
+        'Could not load ' +
+        category,
         'error'
       );
 
@@ -3100,10 +3682,18 @@ async function loadList(category){
 }
 
 
-function renderList(category,items){
+/* ==================================================
+   RENDER LIST
+================================================== */
+
+function renderList(
+  category,
+  items
+){
 
   const meta =
     LIST_META[category];
+
 
   const el =
     document.getElementById(
@@ -3114,8 +3704,11 @@ function renderList(category,items){
   if(!items.length){
 
     el.innerHTML =
+
       `<div class="empty-note">
+
         Nothing here yet — tap "＋ Add" to start.
+
       </div>`;
 
     return;
@@ -3124,49 +3717,90 @@ function renderList(category,items){
 
 
   el.innerHTML =
+
     items.map(
       (item,i)=>`
 
         <div
-          class="list-card ${item.completed?'done':''}"
+
+          class="list-card ${
+            item.completed
+              ? 'done'
+              : ''
+          }"
+
           data-id="${item.id}"
+
         >
 
           <div
-            class="list-check ${item.completed?'done':''}"
+
+            class="list-check ${
+              item.completed
+                ? 'done'
+                : ''
+            }"
+
             data-id="${item.id}"
+
           >
-            ${item.completed?'✓':''}
+
+            ${
+              item.completed
+                ? '✓'
+                : ''
+            }
+
           </div>
+
 
           <div class="list-body">
 
             <div class="list-num">
+
               #${i+1}
+
             </div>
 
+
             <div class="list-text">
+
               ${item.text}
+
             </div>
 
           </div>
 
+
           <div class="list-actions">
 
             <button
+
               data-action="edit"
+
               data-id="${item.id}"
+
               title="Edit"
+
             >
+
               ✎
+
             </button>
 
+
             <button
+
               data-action="delete"
+
               data-id="${item.id}"
+
               title="Delete"
+
             >
+
               ✕
+
             </button>
 
           </div>
@@ -3177,183 +3811,248 @@ function renderList(category,items){
     ).join('');
 
 
+  /* ==================================================
+     CHECK / TOGGLE
+  ================================================== */
+
   el
-    .querySelectorAll('.list-check')
-    .forEach(chk=>{
+    .querySelectorAll(
+      '.list-check'
+    )
+    .forEach(
+      chk=>{
 
-      chk.addEventListener(
-        'click',
-        async ()=>{
+        chk.addEventListener(
+          'click',
+          async ()=>{
 
-          const id =
-            Number(
-              chk.dataset.id
+            const id =
+              Number(
+                chk.dataset.id
+              );
+
+
+            const nowDone =
+              !chk.classList.contains(
+                'done'
+              );
+
+
+            setSaveStatus(
+              'saving'
             );
 
-          const nowDone =
-            !chk.classList.contains(
-              'done'
-            );
+
+            try{
+
+              await api.put(
+
+                `/betterme/list-item/${id}/toggle`,
+
+                {
+                  completed:
+                    nowDone
+                }
+
+              );
 
 
-          setSaveStatus('saving');
+              setSaveStatus(
+                'saved'
+              );
 
 
-          try{
+              await loadList(
+                category
+              );
 
-            await api.put(
-              `/betterme/list-item/${id}/toggle`,
-              {
-                completed:nowDone
-              }
-            );
+            }catch(err){
 
-            setSaveStatus('saved');
+              console.error(err);
 
-            await loadList(
-              category
-            );
+              setSaveStatus(
+                'error'
+              );
 
-          }catch(err){
-
-            console.error(err);
-
-            setSaveStatus('error');
+            }
 
           }
+        );
 
-        }
-      );
+      }
+    );
 
-    });
 
+  /* ==================================================
+     EDIT LIST ITEM
+  ================================================== */
 
   el
     .querySelectorAll(
       '[data-action="edit"]'
     )
-    .forEach(btn=>{
+    .forEach(
+      btn=>{
 
-      btn.addEventListener(
-        'click',
-        async ()=>{
+        btn.addEventListener(
+          'click',
+          async ()=>{
 
-          const id =
-            Number(
-              btn.dataset.id
+            const id =
+              Number(
+                btn.dataset.id
+              );
+
+
+            const item =
+              items.find(
+                i =>
+                  i.id === id
+              );
+
+
+            if(!item)
+              return;
+
+
+            const text =
+              prompt(
+                'Edit text:',
+                item.text
+              );
+
+
+            if(
+              !text ||
+              !text.trim() ||
+              text.trim() ===
+                item.text
+            )
+              return;
+
+
+            setSaveStatus(
+              'saving'
             );
 
 
-          const item =
-            items.find(
-              i=>i.id===id
-            );
+            try{
+
+              await api.put(
+
+                `/betterme/list-item/${id}`,
+
+                {
+                  text:text.trim()
+                }
+
+              );
 
 
-          const text =
-            prompt(
-              'Edit text:',
-              item.text
-            );
+              setSaveStatus(
+                'saved'
+              );
 
 
-          if(
-            !text ||
-            !text.trim() ||
-            text.trim()===item.text
-          )
-            return;
+              await loadList(
+                category
+              );
 
+            }catch(err){
 
-          setSaveStatus('saving');
+              console.error(err);
 
+              setSaveStatus(
+                'error'
+              );
 
-          try{
-
-            await api.put(
-              `/betterme/list-item/${id}`,
-              {
-                text:text.trim()
-              }
-            );
-
-            setSaveStatus('saved');
-
-            await loadList(
-              category
-            );
-
-          }catch(err){
-
-            console.error(err);
-
-            setSaveStatus('error');
+            }
 
           }
+        );
 
-        }
-      );
+      }
+    );
 
-    });
 
+  /* ==================================================
+     DELETE LIST ITEM
+  ================================================== */
 
   el
     .querySelectorAll(
       '[data-action="delete"]'
     )
-    .forEach(btn=>{
+    .forEach(
+      btn=>{
 
-      btn.addEventListener(
-        'click',
-        async ()=>{
+        btn.addEventListener(
+          'click',
+          async ()=>{
 
-          const id =
-            Number(
-              btn.dataset.id
-            );
-
-
-          const item =
-            items.find(
-              i=>i.id===id
-            );
+            const id =
+              Number(
+                btn.dataset.id
+              );
 
 
-          if(
-            !confirm(
-              `Delete "${item.text}"?`
+            const item =
+              items.find(
+                i =>
+                  i.id === id
+              );
+
+
+            if(!item)
+              return;
+
+
+            if(
+              !confirm(
+                `Delete "${item.text}"?`
+              )
             )
-          )
-            return;
+              return;
 
 
-          setSaveStatus('saving');
-
-
-          try{
-
-            await api.del(
-              `/betterme/list-item/${id}`
+            setSaveStatus(
+              'saving'
             );
 
-            setSaveStatus('saved');
 
-            await loadList(
-              category
-            );
+            try{
 
-          }catch(err){
+              await api.del(
 
-            console.error(err);
+                `/betterme/list-item/${id}`
 
-            setSaveStatus('error');
+              );
+
+
+              setSaveStatus(
+                'saved'
+              );
+
+
+              await loadList(
+                category
+              );
+
+            }catch(err){
+
+              console.error(err);
+
+              setSaveStatus(
+                'error'
+              );
+
+            }
 
           }
+        );
 
-        }
-      );
-
-    });
+      }
+    );
 
 }
 
@@ -3364,61 +4063,77 @@ function renderList(category,items){
 
 Object
   .keys(LIST_META)
-  .forEach(category=>{
+  .forEach(
+    category=>{
 
-    const meta =
-      LIST_META[category];
+      const meta =
+        LIST_META[category];
 
 
-    document
-      .getElementById(meta.addBtn)
-      .addEventListener(
-        'click',
-        async ()=>{
+      document
+        .getElementById(
+          meta.addBtn
+        )
+        .addEventListener(
+          'click',
+          async ()=>{
 
-          const text =
-            prompt(
-              meta.prompt
+            const text =
+              prompt(
+                meta.prompt
+              );
+
+
+            if(
+              !text ||
+              !text.trim()
+            )
+              return;
+
+
+            setSaveStatus(
+              'saving'
             );
 
 
-          if(
-            !text ||
-            !text.trim()
-          )
-            return;
+            try{
+
+              await api.post(
+
+                `/betterme/list/${category}`,
+
+                {
+                  text:
+                    text.trim()
+                }
+
+              );
 
 
-          setSaveStatus('saving');
+              setSaveStatus(
+                'saved'
+              );
 
 
-          try{
+              await loadList(
+                category
+              );
 
-            await api.post(
-              `/betterme/list/${category}`,
-              {
-                text:text.trim()
-              }
-            );
+            }catch(err){
 
-            setSaveStatus('saved');
+              console.error(err);
 
-            await loadList(
-              category
-            );
+              setSaveStatus(
+                'error'
+              );
 
-          }catch(err){
-
-            console.error(err);
-
-            setSaveStatus('error');
+            }
 
           }
+        );
 
-        }
-      );
-
-  });
+    }
+  );
 
 
 /* ==================================================
@@ -3426,45 +4141,59 @@ Object
 ================================================== */
 
 document
-  .querySelectorAll('.tab')
-  .forEach(tab=>{
+  .querySelectorAll(
+    '.tab'
+  )
+  .forEach(
+    tab=>{
 
-    tab.addEventListener(
-      'click',
-      ()=>{
+      tab.addEventListener(
+        'click',
+        ()=>{
 
-        document
-          .querySelectorAll('.tab')
-          .forEach(t =>
-            t.classList.remove(
-              'active'
+          document
+            .querySelectorAll(
+              '.tab'
             )
+            .forEach(
+              t =>
+                t.classList.remove(
+                  'active'
+                )
+            );
+
+
+          document
+            .querySelectorAll(
+              '.panel'
+            )
+            .forEach(
+              p =>
+                p.classList.remove(
+                  'active'
+                )
+            );
+
+
+          tab.classList.add(
+            'active'
           );
 
 
-        document
-          .querySelectorAll('.panel')
-          .forEach(p =>
-            p.classList.remove(
-              'active'
+          document
+            .getElementById(
+              'panel-' +
+              tab.dataset.tab
             )
-          );
+            .classList.add(
+              'active'
+            );
 
+        }
+      );
 
-        tab.classList.add('active');
-
-
-        document
-          .getElementById(
-            'panel-' +
-            tab.dataset.tab
-          )
-          .classList.add('active');
-
-      }
-    );
-
-  });
+    }
+  );
 
 
 /* ==================================================
@@ -3475,15 +4204,26 @@ document
 
   renderMonthLabel();
 
+
   await loadMonth();
+
 
   await renderMonthSlider();
 
-  await loadList('learn');
 
-  await loadList('master');
+  await loadList(
+    'learn'
+  );
 
-  await loadList('character');
+
+  await loadList(
+    'master'
+  );
+
+
+  await loadList(
+    'character'
+  );
 
 })();
 
