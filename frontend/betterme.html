@@ -6,7 +6,7 @@
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  content="width=device-width, initial-scale=1.0"
 >
 
 <title>BetterMe — LifeOS</title>
@@ -36,28 +36,35 @@
 html,
 body{
   width:100%;
-  min-height:100%;
-  background:#080b15;
-  color:#eef1ff;
+  min-width:0;
+
+  background:#090b16;
+  color:#eef0fb;
+
   font-family:'Inter',sans-serif;
+
   overflow-x:hidden;
 }
 
 body{
-  padding-bottom:70px;
+  padding-bottom:60px;
 }
 
 :root{
 
-  --bg:#080b15;
+  --bg:#090b16;
 
-  --card:#11162a;
+  --card:#111629;
 
-  --card2:#171d35;
+  --card2:#161c33;
 
-  --border:#252c4b;
+  --card3:#1a203a;
 
-  --muted:#7f87aa;
+  --border:#252c4d;
+
+  --muted:#858cad;
+
+  --text:#eef0fb;
 
   --blue:#3b82f6;
 
@@ -73,9 +80,9 @@ body{
 
   --red2:#fb7185;
 
-  --white:#f4f5fc;
+  --yellow:#fbbf24;
 
-  --line:#303758;
+  --dot:#222943;
 
 }
 
@@ -86,7 +93,7 @@ body{
 
 .topbar{
 
-  height:58px;
+  height:64px;
 
   width:100%;
 
@@ -96,11 +103,12 @@ body{
 
   justify-content:space-between;
 
-  padding:0 16px;
+  padding:0 20px;
 
   border-bottom:1px solid var(--border);
 
-  background:rgba(8,11,21,.92);
+  background:
+    rgba(9,11,22,.92);
 
   backdrop-filter:blur(14px);
 
@@ -109,19 +117,21 @@ body{
   top:0;
 
   z-index:100;
-
 }
 
 .back-link{
 
-  color:#aeb5d2;
+  color:var(--muted);
 
   text-decoration:none;
 
   font-size:12px;
 
   font-weight:700;
+}
 
+.back-link:hover{
+  color:#fff;
 }
 
 .save-pill{
@@ -136,52 +146,52 @@ body{
 
   border-radius:999px;
 
-  background:rgba(34,197,94,.09);
+  background:rgba(34,197,94,.08);
 
   border:1px solid rgba(34,197,94,.25);
 
-  color:#78e9a1;
+  color:#86efac;
 
   font-family:'JetBrains Mono',monospace;
 
-  font-size:9px;
+  font-size:10px;
 
   font-weight:700;
-
 }
 
 .save-pill.saving{
 
   color:#fbbf24;
 
-  border-color:rgba(251,191,36,.3);
+  border-color:
+    rgba(251,191,36,.3);
 
-  background:rgba(251,191,36,.08);
-
+  background:
+    rgba(251,191,36,.08);
 }
 
 .save-pill.error{
 
   color:#fb7185;
 
-  border-color:rgba(248,113,113,.3);
+  border-color:
+    rgba(248,113,113,.3);
 
-  background:rgba(248,113,113,.08);
-
+  background:
+    rgba(248,113,113,.08);
 }
 
 .save-pill .dot{
 
   width:6px;
-
   height:6px;
 
   border-radius:50%;
 
   background:#4ade80;
 
-  box-shadow:0 0 8px #4ade80;
-
+  box-shadow:
+    0 0 8px #4ade80;
 }
 
 
@@ -191,12 +201,17 @@ body{
 
 .hero{
 
+  width:100%;
+
+  max-width:1100px;
+
+  margin:auto;
+
+  padding:38px 20px 20px;
+
   text-align:center;
 
-  padding:30px 16px 10px;
-
   position:relative;
-
 }
 
 .hero::before{
@@ -205,57 +220,54 @@ body{
 
   position:absolute;
 
-  width:300px;
-
-  height:180px;
+  top:-80px;
 
   left:50%;
 
-  top:-30px;
-
   transform:translateX(-50%);
+
+  width:450px;
+
+  height:250px;
 
   background:
     radial-gradient(
       circle,
-      rgba(59,130,246,.22),
+      rgba(59,130,246,.20),
       transparent 65%
     );
 
-  filter:blur(12px);
+  filter:blur(25px);
 
   pointer-events:none;
-
 }
 
 .hero-logo{
 
-  width:64px;
+  width:70px;
 
-  height:64px;
+  height:70px;
 
   object-fit:contain;
 
   position:relative;
 
-  z-index:2;
-
   filter:
     drop-shadow(
-      0 8px 25px rgba(168,85,247,.35)
+      0 8px 25px
+      rgba(168,85,247,.35)
     );
-
 }
 
 .hero h1{
 
-  position:relative;
+  margin-top:6px;
 
   font-family:'Fredoka',sans-serif;
 
-  font-size:31px;
+  font-size:36px;
 
-  margin-top:5px;
+  font-weight:700;
 
   background:
     linear-gradient(
@@ -271,87 +283,149 @@ body{
   background-clip:text;
 
   -webkit-text-fill-color:transparent;
-
 }
 
 .tagline{
 
-  display:inline-block;
+  display:inline-flex;
 
-  margin-top:7px;
+  margin-top:9px;
 
-  padding:6px 13px;
+  padding:7px 15px;
 
   border-radius:999px;
 
-  border:1px solid rgba(251,191,36,.25);
+  border:1px solid
+    rgba(251,191,36,.3);
 
-  background:rgba(251,191,36,.06);
+  background:
+    rgba(251,191,36,.07);
 
-  color:#f6d779;
+  color:#fde68a;
 
-  font-size:9px;
+  font-size:10px;
 
   font-weight:700;
-
 }
 
 
 /* =========================================================
-   TABS
+   SECTION
 ========================================================= */
 
-.tabs{
+.main{
 
-  display:grid;
+  width:100%;
 
-  grid-template-columns:
-    repeat(4,1fr);
+  max-width:1100px;
+
+  margin:auto;
+
+  padding:0 20px;
+}
+
+.section-title{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  margin-top:20px;
+
+  font-family:'Fredoka',sans-serif;
+
+  font-size:22px;
+
+  font-weight:600;
+}
+
+.title-line{
+
+  width:9px;
+
+  height:28px;
+
+  border-radius:8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #3b82f6,
+      #8b5cf6
+    );
+}
+
+
+/* =========================================================
+   WEEK SLIDER
+========================================================= */
+
+.week-slider-wrap{
+
+  margin-top:20px;
+
+  position:relative;
+}
+
+.week-slider{
+
+  display:flex;
 
   gap:8px;
 
-  padding:18px 16px 0;
+  overflow-x:auto;
 
+  padding:3px 2px 10px;
+
+  scrollbar-width:none;
+
+  -webkit-overflow-scrolling:touch;
 }
 
-.tab{
+.week-slider::-webkit-scrollbar{
+  display:none;
+}
 
-  min-width:0;
+.week-chip{
 
-  padding:11px 8px;
+  flex:0 0 auto;
 
-  background:var(--card);
+  min-width:82px;
+
+  padding:10px 9px;
+
+  border-radius:15px;
 
   border:1px solid var(--border);
 
-  border-radius:14px;
+  background:var(--card);
+
+  text-align:center;
 
   cursor:pointer;
 
+  transition:.18s ease;
 }
 
-.tab.active{
+.week-chip:hover{
+  border-color:#3b82f6;
+}
+
+.week-chip.active{
 
   border-color:#3b82f6;
 
   background:
-    linear-gradient(
-      145deg,
-      rgba(59,130,246,.15),
-      var(--card)
-    );
+    rgba(59,130,246,.13);
 
+  box-shadow:
+    0 8px 22px
+    rgba(59,130,246,.12);
 }
 
-.t-icon{
-
-  font-size:17px;
-
-  margin-bottom:4px;
-
-}
-
-.t-name{
+.week-chip .wc-title{
 
   font-family:'Fredoka',sans-serif;
 
@@ -359,175 +433,39 @@ body{
 
   font-weight:600;
 
-  white-space:nowrap;
-
-  overflow:hidden;
-
-  text-overflow:ellipsis;
-
+  color:#dce3ff;
 }
 
-.t-sub{
+.week-chip .wc-date{
 
   margin-top:3px;
-
-  color:var(--muted);
-
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:7px;
-
-}
-
-
-/* =========================================================
-   PANELS
-========================================================= */
-
-.panel{
-
-  display:none;
-
-  width:100%;
-
-  padding:22px 16px 0;
-
-}
-
-.panel.active{
-
-  display:block;
-
-}
-
-.panel-title{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:9px;
-
-  font-family:'Fredoka',sans-serif;
-
-  font-size:20px;
-
-}
-
-.swatch{
-
-  width:9px;
-
-  height:25px;
-
-  border-radius:8px;
-
-  background:#3b82f6;
-
-}
-
-
-/* =========================================================
-   WEEK SELECTOR
-========================================================= */
-
-.week-selector{
-
-  margin-top:18px;
-
-  background:var(--card);
-
-  border:1px solid var(--border);
-
-  border-radius:18px;
-
-  padding:10px;
-
-}
-
-.week-slider{
-
-  display:flex;
-
-  gap:7px;
-
-  overflow-x:auto;
-
-  scrollbar-width:none;
-
-  padding-bottom:3px;
-
-}
-
-.week-slider::-webkit-scrollbar{
-
-  display:none;
-
-}
-
-.week-chip{
-
-  flex-shrink:0;
-
-  min-width:62px;
-
-  padding:8px 7px;
-
-  border-radius:11px;
-
-  border:1px solid var(--border);
-
-  background:#0e1325;
-
-  text-align:center;
-
-  cursor:pointer;
-
-}
-
-.week-chip .wk-name{
-
-  display:block;
-
-  color:var(--muted);
 
   font-family:'JetBrains Mono',monospace;
 
   font-size:8px;
 
-  font-weight:700;
-
+  color:var(--muted);
 }
 
-.week-chip .wk-score{
+.week-chip .wc-score{
 
-  display:block;
-
-  margin-top:3px;
+  margin-top:5px;
 
   font-family:'JetBrains Mono',monospace;
 
-  font-size:10px;
+  font-size:9px;
 
   font-weight:800;
-
 }
 
-.week-chip.active{
 
-  border-color:#3b82f6;
+/* =========================================================
+   WEEK NAVIGATION
+========================================================= */
 
-  background:rgba(59,130,246,.12);
+.week-nav{
 
-}
-
-.week-chip.active .wk-name{
-
-  color:#93c5fd;
-
-}
-
-.week-controls{
+  margin-top:4px;
 
   display:flex;
 
@@ -535,16 +473,20 @@ body{
 
   justify-content:center;
 
-  gap:8px;
+  gap:10px;
 
-  margin-top:10px;
+  padding:10px;
 
+  border-radius:17px;
+
+  border:1px solid var(--border);
+
+  background:var(--card);
 }
 
-.week-btn{
+.nav-btn{
 
   width:34px;
-
   height:34px;
 
   border-radius:10px;
@@ -553,123 +495,87 @@ body{
 
   background:var(--card2);
 
-  color:white;
+  color:#fff;
 
   font-size:17px;
 
   cursor:pointer;
+}
 
+.nav-btn:hover{
+
+  border-color:#3b82f6;
+
+  background:
+    rgba(59,130,246,.12);
 }
 
 .week-label{
 
-  min-width:170px;
+  min-width:190px;
 
   text-align:center;
 
   font-family:'JetBrains Mono',monospace;
 
-  font-size:10px;
+  font-size:11px;
 
   font-weight:700;
 
-  color:#e8ebfa;
-
+  color:#e5e7ff;
 }
 
 .today-btn{
 
-  width:auto;
+  height:34px;
 
-  padding:0 12px;
+  padding:0 13px;
+
+  border-radius:10px;
+
+  border:1px solid
+    rgba(59,130,246,.35);
+
+  background:
+    rgba(59,130,246,.1);
 
   color:#93c5fd;
 
-  border-color:rgba(59,130,246,.35);
-
-  background:rgba(59,130,246,.09);
-
-  font-family:'Inter',sans-serif;
-
-  font-size:9px;
+  font-size:10px;
 
   font-weight:800;
 
+  cursor:pointer;
 }
 
 
 /* =========================================================
-   WEEK SCORE
+   HABIT LIST — TOP
 ========================================================= */
 
-.week-summary{
-
-  margin-top:14px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  padding:12px 14px;
-
-  border:1px solid var(--border);
-
-  background:var(--card);
-
-  border-radius:14px;
-
-}
-
-.summary-label{
-
-  color:var(--muted);
-
-  font-size:9px;
-
-  font-family:'JetBrains Mono',monospace;
-
-  font-weight:700;
-
-}
-
-.summary-score{
-
-  font-family:'Fredoka',sans-serif;
-
-  font-size:20px;
-
-}
-
-.summary-message{
-
-  color:#9da5c7;
-
-  font-size:9px;
-
-}
-
-
-/* =========================================================
-   HABITS LEGEND
-========================================================= */
-
-.habits-header{
+.habits-card{
 
   margin-top:20px;
 
-  background:var(--card);
+  padding:16px;
+
+  border-radius:20px;
 
   border:1px solid var(--border);
 
-  border-radius:18px;
+  background:
+    linear-gradient(
+      145deg,
+      #13182d,
+      #101426
+    );
 
-  padding:13px;
-
+  box-shadow:
+    0 18px 50px
+    rgba(0,0,0,.18);
 }
 
-.habits-header-title{
+.habits-heading{
 
   display:flex;
 
@@ -677,26 +583,25 @@ body{
 
   align-items:center;
 
-  margin-bottom:10px;
-
+  margin-bottom:13px;
 }
 
-.habits-header-title span:first-child{
+.habits-heading-title{
 
   font-family:'Fredoka',sans-serif;
 
-  font-size:14px;
+  font-size:15px;
 
+  font-weight:600;
 }
 
-.habits-header-title span:last-child{
+.habits-count{
 
   font-family:'JetBrains Mono',monospace;
 
-  font-size:8px;
-
   color:var(--muted);
 
+  font-size:9px;
 }
 
 .habit-list{
@@ -705,8 +610,7 @@ body{
 
   flex-wrap:wrap;
 
-  gap:6px;
-
+  gap:7px;
 }
 
 .habit-chip{
@@ -715,25 +619,22 @@ body{
 
   align-items:center;
 
-  gap:6px;
+  gap:5px;
 
-  max-width:100%;
+  min-width:0;
 
   padding:6px 8px;
 
   border-radius:9px;
 
-  background:#0d1223;
+  border:1px solid #252c4d;
 
-  border:1px solid #222944;
+  background:#10152a;
 
+  max-width:100%;
 }
 
 .habit-number{
-
-  width:18px;
-
-  height:18px;
 
   flex-shrink:0;
 
@@ -743,177 +644,221 @@ body{
 
   justify-content:center;
 
+  width:19px;
+  height:19px;
+
   border-radius:6px;
 
-  background:rgba(59,130,246,.16);
+  background:
+    rgba(59,130,246,.14);
 
-  color:#8db9ff;
+  border:1px solid
+    rgba(59,130,246,.25);
+
+  color:#93c5fd;
 
   font-family:'JetBrains Mono',monospace;
 
-  font-size:7px;
+  font-size:8px;
 
   font-weight:800;
-
 }
 
 .habit-name{
 
-  color:#dfe3f5;
+  font-size:10px;
 
-  font-size:9px;
+  color:#e7e9f7;
 
-  font-weight:600;
+  white-space:nowrap;
 
   overflow:hidden;
 
   text-overflow:ellipsis;
-
-  white-space:nowrap;
-
 }
 
 
 /* =========================================================
-   WEEK BOARD
+   TRACKER
 ========================================================= */
 
-.board{
+.tracker-shell{
 
-  margin-top:14px;
+  margin-top:18px;
 
-  background:var(--card);
+  width:100%;
 
-  border:1px solid var(--border);
+  overflow-x:auto;
 
-  border-radius:20px;
+  padding-bottom:8px;
 
-  padding:12px 8px 16px;
+  -webkit-overflow-scrolling:touch;
 
-  overflow:hidden;
-
+  scrollbar-width:thin;
 }
 
-.days-row{
+.tracker{
+
+  min-width:680px;
 
   display:grid;
 
   grid-template-columns:
-    repeat(7,1fr);
+    repeat(7,minmax(84px,1fr));
 
-  gap:3px;
-
+  gap:8px;
 }
+
+
+/* =========================================================
+   DAY COLUMN
+========================================================= */
 
 .day-column{
 
-  min-width:0;
+  position:relative;
+
+  border-radius:18px;
+
+  border:1px solid var(--border);
+
+  background:
+    linear-gradient(
+      180deg,
+      #141a30,
+      #101528
+    );
+
+  padding:10px 8px 11px;
+
+  overflow:hidden;
+}
+
+.day-column.today{
+
+  border-color:
+    rgba(59,130,246,.55);
+
+  box-shadow:
+    0 0 0 1px
+    rgba(59,130,246,.08),
+    0 12px 30px
+    rgba(59,130,246,.08);
+}
+
+.day-column.locked{
+
+  border-color:
+    rgba(34,197,94,.35);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(34,197,94,.08),
+      #101528
+    );
+}
+
+
+/* =========================================================
+   DAY HEADER
+========================================================= */
+
+.day-header{
 
   text-align:center;
 
-  position:relative;
-
-}
-
-.day-head{
-
   padding-bottom:9px;
 
-  border-bottom:1px solid var(--border);
-
+  border-bottom:1px solid
+    rgba(255,255,255,.06);
 }
 
 .day-name{
 
   font-family:'Fredoka',sans-serif;
 
-  font-size:9px;
-
-  color:#9ba3c4;
+  font-size:12px;
 
   font-weight:600;
 
+  color:#f0f2ff;
 }
 
 .day-date{
 
-  margin-top:3px;
+  margin-top:2px;
 
   font-family:'JetBrains Mono',monospace;
 
   font-size:8px;
 
-  color:#6f779b;
-
+  color:var(--muted);
 }
 
-.day-column.today .day-name{
+.day-percent{
 
-  color:#60a5fa;
+  margin-top:5px;
 
-}
+  font-family:'JetBrains Mono',monospace;
 
-.day-column.today .day-date{
+  font-size:10px;
 
-  color:#93c5fd;
-
+  font-weight:800;
 }
 
 
 /* =========================================================
-   VERTICAL HABIT DOT LINE
+   DOT TRACK
 ========================================================= */
 
-.dot-line{
+.dot-track{
 
   position:relative;
 
-  display:flex;
+  margin-top:12px;
 
-  flex-direction:column;
-
-  align-items:center;
-
-  padding-top:12px;
-
+  padding:2px 0;
 }
 
+/* CONNECTING LINE */
 
-/* connecting line */
-
-.dot-line::before{
+.dot-track::before{
 
   content:'';
 
   position:absolute;
 
-  top:20px;
+  top:8px;
 
-  bottom:20px;
+  bottom:8px;
+
+  left:50%;
+
+  transform:translateX(-50%);
 
   width:2px;
 
   background:
     linear-gradient(
-      to bottom,
-      #2d3555,
-      #242b48
+      180deg,
+      rgba(59,130,246,.28),
+      rgba(168,85,247,.18)
     );
 
   border-radius:3px;
-
-  z-index:0;
-
 }
 
 
-/* individual habit */
+/* =========================================================
+   HABIT DOT ROW
+========================================================= */
 
-.habit-dot-wrap{
+.dot-row{
 
-  width:100%;
+  position:relative;
 
-  height:34px;
+  height:27px;
 
   display:flex;
 
@@ -921,126 +866,28 @@ body{
 
   justify-content:center;
 
-  position:relative;
-
-  z-index:1;
-
+  z-index:2;
 }
 
 .habit-dot{
 
-  width:18px;
+  position:relative;
 
-  height:18px;
+  width:21px;
+
+  height:21px;
 
   border-radius:50%;
 
-  background:#f0f2fb;
+  border:2px solid #343b5e;
 
-  border:2px solid #bfc4d8;
+  background:#20263e;
 
-  box-shadow:
-    0 0 0 4px var(--card);
+  display:flex;
 
-  cursor:pointer;
+  align-items:center;
 
-  transition:
-    transform .12s ease,
-    box-shadow .12s ease;
-
-}
-
-.habit-dot:active{
-
-  transform:scale(.82);
-
-}
-
-.habit-dot:hover{
-
-  transform:scale(1.12);
-
-}
-
-
-/* completed */
-
-.habit-dot.done{
-
-  background:
-    radial-gradient(
-      circle at 35% 30%,
-      #86efac,
-      #22c55e 65%,
-      #15803d
-    );
-
-  border-color:#4ade80;
-
-  box-shadow:
-    0 0 0 4px var(--card),
-    0 0 13px rgba(34,197,94,.55);
-
-}
-
-
-/* missed */
-
-.habit-dot.missed{
-
-  background:
-    radial-gradient(
-      circle at 35% 30%,
-      #fda4af,
-      #ef4444 65%,
-      #b91c1c
-    );
-
-  border-color:#fb7185;
-
-  box-shadow:
-    0 0 0 4px var(--card),
-    0 0 10px rgba(239,68,68,.35);
-
-}
-
-
-/* future */
-
-.day-column.future .habit-dot{
-
-  opacity:.55;
-
-}
-
-
-/* today column */
-
-.day-column.today{
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(59,130,246,.07),
-      transparent
-    );
-
-  border-radius:10px;
-
-}
-
-
-/* =========================================================
-   DAY SCORE
-========================================================= */
-
-.day-score{
-
-  margin-top:8px;
-
-  padding-top:8px;
-
-  border-top:1px solid #202742;
+  justify-content:center;
 
   font-family:'JetBrains Mono',monospace;
 
@@ -1048,265 +895,163 @@ body{
 
   font-weight:800;
 
-}
-
-.score-good{
-
-  color:#4ade80;
-
-}
-
-.score-mid{
-
-  color:#fbbf24;
-
-}
-
-.score-low{
-
-  color:#fb7185;
-
-}
-
-.score-none{
-
-  color:#596180;
-
-}
-
-
-/* =========================================================
-   DOT LEGEND
-========================================================= */
-
-.dot-legend{
-
-  display:flex;
-
-  justify-content:center;
-
-  gap:15px;
-
-  margin-top:14px;
-
-  flex-wrap:wrap;
-
-}
-
-.dot-legend-item{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:5px;
-
-  color:#777f9f;
-
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:7px;
-
-}
-
-.legend-dot{
-
-  width:9px;
-
-  height:9px;
-
-  border-radius:50%;
-
-  background:#f0f2fb;
-
-  border:1px solid #bfc4d8;
-
-}
-
-.legend-dot.green{
-
-  background:#22c55e;
-
-  border-color:#4ade80;
-
-}
-
-.legend-dot.red{
-
-  background:#ef4444;
-
-  border-color:#fb7185;
-
-}
-
-
-/* =========================================================
-   EMPTY
-========================================================= */
-
-.empty-note{
-
-  padding:35px 20px;
-
-  text-align:center;
-
-  color:var(--muted);
-
-  font-size:11px;
-
-}
-
-
-/* =========================================================
-   LIST PANELS
-========================================================= */
-
-.list-grid{
-
-  display:grid;
-
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(280px,1fr)
-    );
-
-  gap:12px;
-
-  margin-top:16px;
-
-}
-
-.list-card{
-
-  background:var(--card);
-
-  border:1px solid var(--border);
-
-  border-left:3px solid var(--accent,var(--purple));
-
-  border-radius:14px;
-
-  padding:13px;
-
-  display:flex;
-
-  gap:11px;
-
-}
-
-.list-check{
-
-  width:22px;
-
-  height:22px;
-
-  flex-shrink:0;
-
-  border-radius:7px;
-
-  border:1px solid var(--border);
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
+  color:#737b9f;
 
   cursor:pointer;
 
+  transition:
+    transform .12s ease,
+    background .12s ease,
+    border-color .12s ease,
+    box-shadow .12s ease;
 }
 
-.list-check.done{
+.habit-dot:hover{
 
-  background:var(--accent,var(--purple));
+  transform:scale(1.16);
 
-  color:#080b15;
+  border-color:#60a5fa;
 
+  z-index:5;
 }
 
-.list-body{
 
-  min-width:0;
+/* DONE */
 
-  flex:1;
+.habit-dot.done{
 
+  background:
+    linear-gradient(
+      145deg,
+      #4ade80,
+      #16a34a
+    );
+
+  border-color:#4ade80;
+
+  color:#06140b;
+
+  box-shadow:
+    0 0 12px
+    rgba(34,197,94,.28);
 }
 
-.list-num{
 
-  font-family:'JetBrains Mono',monospace;
+/* MISSED */
 
-  color:var(--muted);
+.habit-dot.missed{
 
-  font-size:8px;
+  background:
+    linear-gradient(
+      145deg,
+      #fb7185,
+      #dc2626
+    );
 
+  border-color:#fb7185;
+
+  color:#210508;
+
+  box-shadow:
+    0 0 10px
+    rgba(239,68,68,.2);
 }
 
-.list-text{
 
-  margin-top:3px;
+/* LOCKED */
 
-  color:#e7eaf8;
+.day-column.locked
+.habit-dot{
 
-  font-size:12px;
-
-  line-height:1.4;
-
+  cursor:not-allowed;
 }
 
-.list-card.done .list-text{
+.day-column.locked
+.habit-dot:hover{
 
-  text-decoration:line-through;
-
-  color:#737b9d;
-
-}
-
-.list-actions{
-
-  display:flex;
-
-  gap:4px;
-
-}
-
-.list-actions button{
-
-  width:22px;
-
-  height:22px;
-
-  border:1px solid var(--border);
-
-  background:#0e1325;
-
-  color:var(--muted);
-
-  border-radius:6px;
-
+  transform:none;
 }
 
 
 /* =========================================================
-   ADD BUTTON
+   SAVE DAY
 ========================================================= */
 
-.add-row{
+.save-day-btn{
 
-  margin-top:14px;
+  width:100%;
 
+  margin-top:11px;
+
+  height:34px;
+
+  border-radius:10px;
+
+  border:1px solid
+    rgba(59,130,246,.35);
+
+  background:
+    rgba(59,130,246,.10);
+
+  color:#93c5fd;
+
+  font-family:'Inter',sans-serif;
+
+  font-size:9px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  transition:.15s ease;
 }
 
-.add-btn{
+.save-day-btn:hover{
+
+  background:
+    rgba(59,130,246,.18);
+
+  border-color:#3b82f6;
+}
+
+.save-day-btn.locked{
+
+  color:#86efac;
+
+  border-color:
+    rgba(34,197,94,.28);
+
+  background:
+    rgba(34,197,94,.08);
+
+  cursor:default;
+}
+
+
+/* =========================================================
+   ADD HABIT
+========================================================= */
+
+.actions{
+
+  display:flex;
+
+  gap:9px;
+
+  margin-top:15px;
+}
+
+.action-btn{
 
   padding:10px 15px;
 
   border-radius:11px;
 
-  border:1px dashed rgba(59,130,246,.4);
+  border:1px dashed
+    rgba(59,130,246,.4);
 
-  background:rgba(59,130,246,.07);
+  background:
+    rgba(59,130,246,.07);
 
   color:#93c5fd;
 
@@ -1315,7 +1060,146 @@ body{
   font-weight:800;
 
   cursor:pointer;
+}
 
+.action-btn:hover{
+
+  background:
+    rgba(59,130,246,.14);
+}
+
+
+/* =========================================================
+   LEGEND
+========================================================= */
+
+.legend{
+
+  display:flex;
+
+  align-items:center;
+
+  flex-wrap:wrap;
+
+  gap:13px;
+
+  margin-top:14px;
+
+  color:var(--muted);
+
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:8.5px;
+}
+
+.legend-item{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+}
+
+.legend-dot{
+
+  width:10px;
+
+  height:10px;
+
+  border-radius:50%;
+
+  background:#20263e;
+
+  border:1px solid #343b5e;
+}
+
+.legend-dot.done{
+
+  background:#22c55e;
+
+  border-color:#4ade80;
+}
+
+.legend-dot.missed{
+
+  background:#ef4444;
+
+  border-color:#fb7185;
+}
+
+.legend-lock{
+
+  font-size:11px;
+}
+
+
+/* =========================================================
+   WEEK MOTIVATION
+========================================================= */
+
+.motivation{
+
+  margin-top:18px;
+
+  padding:16px;
+
+  border-radius:17px;
+
+  border:1px solid
+    rgba(168,85,247,.18);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(59,130,246,.08),
+      rgba(168,85,247,.07),
+      rgba(236,72,153,.05)
+    );
+
+  text-align:center;
+}
+
+.motivation-main{
+
+  font-family:'Fredoka',sans-serif;
+
+  font-size:16px;
+
+  font-weight:600;
+
+  color:#f2f3ff;
+}
+
+.motivation-sub{
+
+  margin-top:4px;
+
+  font-size:9px;
+
+  color:var(--muted);
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty{
+
+  margin-top:20px;
+
+  padding:30px;
+
+  text-align:center;
+
+  border:1px dashed var(--border);
+
+  border-radius:18px;
+
+  color:var(--muted);
+
+  font-size:11px;
 }
 
 
@@ -1323,133 +1207,151 @@ body{
    DESKTOP
 ========================================================= */
 
-@media(min-width:800px){
-
-  .hero{
-
-    padding-top:42px;
-
-  }
-
-  .hero-logo{
-
-    width:80px;
-
-    height:80px;
-
-  }
-
-  .hero h1{
-
-    font-size:40px;
-
-  }
-
-  .panel{
-
-    max-width:900px;
-
-    margin-left:auto;
-
-    margin-right:auto;
-
-  }
-
-  .tabs{
-
-    max-width:900px;
-
-    margin-left:auto;
-
-    margin-right:auto;
-
-  }
+@media(min-width:850px){
 
   .habit-chip{
 
-    max-width:220px;
-
+    max-width:250px;
   }
 
-  .habit-dot-wrap{
+  .habit-name{
 
-    height:39px;
-
-  }
-
-  .habit-dot{
-
-    width:20px;
-
-    height:20px;
-
+    font-size:10.5px;
   }
 
 }
 
 
 /* =========================================================
-   SMALL MOBILE
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+  .topbar{
+
+    padding:0 15px;
+  }
+
+  .hero{
+
+    padding:
+      30px 15px 14px;
+  }
+
+  .hero-logo{
+
+    width:62px;
+    height:62px;
+  }
+
+  .hero h1{
+
+    font-size:31px;
+  }
+
+  .main{
+
+    padding:0 12px;
+  }
+
+  .section-title{
+
+    font-size:20px;
+  }
+
+  .week-chip{
+
+    min-width:74px;
+
+    padding:9px 7px;
+  }
+
+  .week-nav{
+
+    gap:6px;
+  }
+
+  .week-label{
+
+    min-width:145px;
+
+    font-size:9px;
+  }
+
+  .habits-card{
+
+    padding:12px;
+  }
+
+  .habit-list{
+
+    gap:5px;
+  }
+
+  .habit-chip{
+
+    padding:5px 6px;
+
+    max-width:
+      calc(50% - 3px);
+  }
+
+  .habit-name{
+
+    max-width:100px;
+
+    font-size:8.5px;
+  }
+
+  .habit-number{
+
+    width:18px;
+    height:18px;
+
+    font-size:7px;
+  }
+
+  .tracker-shell{
+
+    margin-left:-2px;
+
+    margin-right:-2px;
+
+    width:
+      calc(100% + 4px);
+  }
+
+  .tracker{
+
+    min-width:650px;
+  }
+
+  .day-column{
+
+    padding:
+      9px 6px 10px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL
 ========================================================= */
 
 @media(max-width:380px){
 
-  .tabs{
+  .week-label{
 
-    gap:5px;
-
-    padding-left:10px;
-
-    padding-right:10px;
-
-  }
-
-  .tab{
-
-    padding:9px 6px;
-
-  }
-
-  .t-name{
-
-    font-size:9px;
-
-  }
-
-  .panel{
-
-    padding-left:10px;
-
-    padding-right:10px;
-
-  }
-
-  .board{
-
-    padding-left:4px;
-
-    padding-right:4px;
-
-  }
-
-  .habit-dot{
-
-    width:16px;
-
-    height:16px;
-
-  }
-
-  .habit-dot-wrap{
-
-    height:32px;
-
-  }
-
-  .day-name{
+    min-width:125px;
 
     font-size:8px;
+  }
 
+  .habit-chip{
+
+    max-width:100%;
   }
 
 }
@@ -1469,8 +1371,8 @@ body{
 <div class="topbar">
 
   <a
-    class="back-link"
     href="dashboard.html"
+    class="back-link"
   >
     ← Life-OS
   </a>
@@ -1514,218 +1416,92 @@ body{
 
 
 <!-- =====================================================
-     TABS
+     MAIN
 ===================================================== -->
 
-<div class="tabs">
-
-  <div
-    class="tab active"
-    data-tab="habits"
-  >
-
-    <div class="t-icon">
-      🗓️
-    </div>
-
-    <div class="t-name">
-      Daily Habits
-    </div>
-
-    <div
-      class="t-sub"
-      id="habitsCount"
-    >
-      — HABITS
-    </div>
-
-  </div>
+<main class="main">
 
 
-  <div
-    class="tab"
-    data-tab="learn"
-  >
+  <div class="section-title">
 
-    <div class="t-icon">
-      🎧
-    </div>
-
-    <div class="t-name">
-      Things to Learn
-    </div>
-
-    <div
-      class="t-sub"
-      id="learnCount"
-    >
-      — TOPICS
-    </div>
-
-  </div>
-
-
-  <div
-    class="tab"
-    data-tab="master"
-  >
-
-    <div class="t-icon">
-      🛠️
-    </div>
-
-    <div class="t-name">
-      Things to Master
-    </div>
-
-    <div
-      class="t-sub"
-      id="masterCount"
-    >
-      — SKILLS
-    </div>
-
-  </div>
-
-
-  <div
-    class="tab"
-    data-tab="character"
-  >
-
-    <div class="t-icon">
-      🧭
-    </div>
-
-    <div class="t-name">
-      Character
-    </div>
-
-    <div
-      class="t-sub"
-      id="characterCount"
-    >
-      — VALUES
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- =====================================================
-     HABITS
-===================================================== -->
-
-<div
-  class="panel active"
-  id="panel-habits"
->
-
-
-  <div class="panel-title">
-
-    <span class="swatch"></span>
+    <span class="title-line"></span>
 
     Daily Habits
 
   </div>
 
 
-  <!-- WEEK SLIDER -->
+  <!-- ===================================================
+       WEEK SLIDER
+  =================================================== -->
 
-  <div class="week-selector">
+  <div class="week-slider-wrap">
 
     <div
       class="week-slider"
       id="weekSlider"
     ></div>
 
-
-    <div class="week-controls">
-
-      <button
-        class="week-btn"
-        id="prevWeek"
-      >
-        ‹
-      </button>
-
-
-      <div
-        class="week-label"
-        id="weekLabel"
-      >
-        —
-      </div>
-
-
-      <button
-        class="week-btn"
-        id="nextWeek"
-      >
-        ›
-      </button>
-
-
-      <button
-        class="week-btn today-btn"
-        id="todayWeek"
-      >
-        Today
-      </button>
-
-    </div>
-
   </div>
 
 
-  <!-- WEEK SCORE -->
+  <!-- ===================================================
+       WEEK NAV
+  =================================================== -->
 
-  <div class="week-summary">
+  <div class="week-nav">
 
-    <div>
-
-      <div class="summary-label">
-        WEEKLY PROGRESS
-      </div>
-
-      <div
-        class="summary-message"
-        id="summaryMessage"
-      >
-        Keep going.
-      </div>
-
-    </div>
-
+    <button
+      class="nav-btn"
+      id="prevWeek"
+    >
+      ‹
+    </button>
 
     <div
-      class="summary-score"
-      id="weekScore"
+      class="week-label"
+      id="weekLabel"
     >
-      0%
+      —
     </div>
+
+    <button
+      class="nav-btn"
+      id="nextWeek"
+    >
+      ›
+    </button>
+
+    <button
+      class="today-btn"
+      id="todayBtn"
+    >
+      Today
+    </button>
 
   </div>
 
 
-  <!-- HABITS AT TOP -->
+  <!-- ===================================================
+       HABITS TOP
+  =================================================== -->
 
-  <div class="habits-header">
+  <div class="habits-card">
 
-    <div class="habits-header-title">
+    <div class="habits-heading">
 
-      <span>
+      <div class="habits-heading-title">
         Your Habits
-      </span>
+      </div>
 
-      <span>
-        DOT ORDER
-      </span>
+      <div
+        class="habits-count"
+        id="habitsCount"
+      >
+        0 HABITS
+      </div>
 
     </div>
-
 
     <div
       class="habit-list"
@@ -1735,57 +1511,31 @@ body{
   </div>
 
 
-  <!-- 7-DAY BOARD -->
+  <!-- ===================================================
+       TRACKER
+  =================================================== -->
 
-  <div class="board">
+  <div
+    class="tracker-shell"
+    id="trackerShell"
+  >
 
     <div
-      class="days-row"
-      id="daysRow"
+      class="tracker"
+      id="tracker"
     ></div>
 
   </div>
 
 
-  <!-- LEGEND -->
+  <!-- ===================================================
+       ACTIONS
+  =================================================== -->
 
-  <div class="dot-legend">
-
-    <div class="dot-legend-item">
-
-      <span class="legend-dot"></span>
-
-      Not marked
-
-    </div>
-
-
-    <div class="dot-legend-item">
-
-      <span class="legend-dot green"></span>
-
-      Completed
-
-    </div>
-
-
-    <div class="dot-legend-item">
-
-      <span class="legend-dot red"></span>
-
-      Missed
-
-    </div>
-
-  </div>
-
-
-  <!-- ADD HABIT -->
-
-  <div class="add-row">
+  <div class="actions">
 
     <button
-      class="add-btn"
+      class="action-btn"
       id="addHabitBtn"
     >
       ＋ Add Habit
@@ -1793,151 +1543,87 @@ body{
 
   </div>
 
-</div>
 
+  <!-- ===================================================
+       LEGEND
+  =================================================== -->
 
-<!-- =====================================================
-     LEARN
-===================================================== -->
+  <div class="legend">
 
-<div
-  class="panel"
-  id="panel-learn"
->
+    <div class="legend-item">
 
-  <div class="panel-title">
+      <span class="legend-dot"></span>
 
-    <span
-      class="swatch"
-      style="background:#a855f7"
-    ></span>
+      Not marked
 
-    Things to Learn
+    </div>
+
+    <div class="legend-item">
+
+      <span
+        class="legend-dot done"
+      ></span>
+
+      Completed
+
+    </div>
+
+    <div class="legend-item">
+
+      <span
+        class="legend-dot missed"
+      ></span>
+
+      Missed
+
+    </div>
+
+    <div class="legend-item">
+
+      <span class="legend-lock">
+        🔒
+      </span>
+
+      Day saved
+
+    </div>
 
   </div>
 
 
-  <div
-    style="margin-top:14px"
-  >
+  <!-- ===================================================
+       MOTIVATION
+  =================================================== -->
 
-    <button
-      class="add-btn"
-      id="addLearnBtn"
+  <div class="motivation">
+
+    <div
+      class="motivation-main"
+      id="motivationMain"
     >
-      ＋ Add Topic
-    </button>
+      Start building your green line.
+    </div>
 
-  </div>
-
-
-  <div
-    class="list-grid"
-    id="learnGrid"
-    style="--accent:#a855f7"
-  ></div>
-
-</div>
-
-
-<!-- =====================================================
-     MASTER
-===================================================== -->
-
-<div
-  class="panel"
-  id="panel-master"
->
-
-  <div class="panel-title">
-
-    <span
-      class="swatch"
-      style="background:#f97316"
-    ></span>
-
-    Things to Master
-
-  </div>
-
-
-  <div
-    style="margin-top:14px"
-  >
-
-    <button
-      class="add-btn"
-      id="addMasterBtn"
+    <div
+      class="motivation-sub"
+      id="motivationSub"
     >
-      ＋ Add Skill
-    </button>
+      Every completed habit makes the week greener.
+    </div>
 
   </div>
 
 
-  <div
-    class="list-grid"
-    id="masterGrid"
-    style="--accent:#f97316"
-  ></div>
-
-</div>
+</main>
 
 
 <!-- =====================================================
-     CHARACTER
-===================================================== -->
-
-<div
-  class="panel"
-  id="panel-character"
->
-
-  <div class="panel-title">
-
-    <span
-      class="swatch"
-      style="background:#ec4899"
-    ></span>
-
-    Character & Values
-
-  </div>
-
-
-  <div
-    style="margin-top:14px"
-  >
-
-    <button
-      class="add-btn"
-      id="addCharacterBtn"
-    >
-      ＋ Add Principle
-    </button>
-
-  </div>
-
-
-  <div
-    class="list-grid"
-    id="characterGrid"
-    style="--accent:#ec4899"
-  ></div>
-
-</div>
-
-
-<!-- =====================================================
-     EXISTING APP FILES
+     EXISTING APP SCRIPTS
 ===================================================== -->
 
 <script src="js/api.js"></script>
-
 <script src="js/auth.js"></script>
-
 <script src="js/utils.js"></script>
-
 <script src="js/app.js"></script>
 
 
@@ -1950,7 +1636,9 @@ body{
 function setSaveStatus(state){
 
   const pill =
-    document.getElementById('savePill');
+    document.getElementById(
+      'savePill'
+    );
 
   if(!pill) return;
 
@@ -1966,9 +1654,13 @@ function setSaveStatus(state){
 
   pill.innerHTML =
     state === 'saving'
+
       ? '<span class="dot"></span> Saving…'
+
       : state === 'error'
+
         ? '<span class="dot"></span> Save failed'
+
         : '<span class="dot"></span> Saved';
 
 }
@@ -1981,10 +1673,24 @@ function setSaveStatus(state){
 const TODAY =
   new Date();
 
+TODAY.setHours(
+  0,0,0,0
+);
+
+
+/*
+   Current selected week.
+   Always starts Monday.
+*/
+
 function startOfWeek(date){
 
   const d =
     new Date(date);
+
+  d.setHours(
+    0,0,0,0
+  );
 
   const day =
     d.getDay();
@@ -1998,18 +1704,90 @@ function startOfWeek(date){
     d.getDate() + diff
   );
 
-  d.setHours(
-    0,0,0,0
-  );
-
   return d;
 
 }
 
 
-let currentWeek =
+let currentWeekStart =
   startOfWeek(TODAY);
 
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+/*
+  These are the days that the user explicitly saved.
+
+  Example:
+
+  {
+    "2026-08-17": true,
+    "2026-08-18": true
+  }
+
+  Saved locally so the UI remains locked after refresh.
+*/
+
+const LOCK_KEY =
+  'betterme_saved_days_v2';
+
+
+function getSavedDays(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        LOCK_KEY
+      )
+    ) || {};
+
+  }catch(err){
+
+    return {};
+
+  }
+
+}
+
+
+function saveSavedDays(days){
+
+  localStorage.setItem(
+    LOCK_KEY,
+    JSON.stringify(days)
+  );
+
+}
+
+
+function isDaySaved(dateKey){
+
+  const days =
+    getSavedDays();
+
+  return !!days[dateKey];
+
+}
+
+
+function lockDay(dateKey){
+
+  const days =
+    getSavedDays();
+
+  days[dateKey] = true;
+
+  saveSavedDays(days);
+
+}
+
+
+/* =========================================================
+   DATA
+========================================================= */
 
 let habitsList = [];
 
@@ -2028,11 +1806,8 @@ let completionsMap = {};
 */
 
 
-const weekScoreCache = {};
-
-
 /* =========================================================
-   DATE FORMAT
+   DATE KEY
 ========================================================= */
 
 function dateKey(date){
@@ -2055,7 +1830,11 @@ function dateKey(date){
 }
 
 
-function prettyDate(date){
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatShortDate(date){
 
   return date.toLocaleDateString(
     'en-US',
@@ -2069,102 +1848,51 @@ function prettyDate(date){
 
 
 /* =========================================================
-   FETCH WEEK DATA
+   ADD DAYS
 ========================================================= */
 
-async function fetchWeek(){
+function addDays(date,n){
 
-  const year =
-    currentWeek.getFullYear();
+  const d =
+    new Date(date);
 
-  /*
-    Existing backend endpoint works
-    month-by-month.
+  d.setDate(
+    d.getDate()+n
+  );
 
-    We load both months when the
-    7-day week crosses a month.
-  */
+  return d;
 
-  const dates = [];
+}
 
-  for(let i=0;i<7;i++){
 
-    const d =
-      new Date(currentWeek);
+/* =========================================================
+   FETCH MONTH
+========================================================= */
 
-    d.setDate(
-      currentWeek.getDate()+i
+async function fetchMonth(
+  year,
+  month
+){
+
+  try{
+
+    return await api.get(
+      `/betterme/month?year=${year}&month=${month}`
     );
 
-    dates.push(d);
+  }catch(err){
+
+    console.error(
+      'BetterMe month error:',
+      err
+    );
+
+    return {
+      habits:[],
+      completions:[]
+    };
 
   }
-
-
-  const monthKeys =
-    [
-      ...new Set(
-        dates.map(
-          d =>
-            `${d.getFullYear()}-${d.getMonth()+1}`
-        )
-      )
-    ];
-
-
-  const results =
-    await Promise.all(
-      monthKeys.map(
-        key=>{
-
-          const parts =
-            key.split('-');
-
-          return api.get(
-            `/betterme/month?year=${parts[0]}&month=${parts[1]}`
-          );
-
-        }
-      )
-    );
-
-
-  const habits =
-    results[0]?.habits || [];
-
-
-  const completions = [];
-
-
-  results.forEach(data=>{
-
-    (data.completions || [])
-      .forEach(c=>{
-
-        const date =
-          c.entry_date;
-
-        const inWeek =
-          dates.some(
-            d =>
-              dateKey(d) === date
-          );
-
-        if(inWeek){
-
-          completions.push(c);
-
-        }
-
-      });
-
-  });
-
-
-  return {
-    habits,
-    completions
-  };
 
 }
 
@@ -2175,58 +1903,112 @@ async function fetchWeek(){
 
 async function loadWeek(){
 
+  setSaveStatus(
+    'saving'
+  );
+
   try{
 
-    const data =
-      await fetchWeek();
+    /*
+      A week can cross two months.
+      Fetch both.
+    */
+
+    const firstMonth =
+      await fetchMonth(
+        currentWeekStart.getFullYear(),
+        currentWeekStart.getMonth()+1
+      );
+
+    const lastDay =
+      addDays(
+        currentWeekStart,
+        6
+      );
+
+    let secondMonth = null;
+
+    if(
+      firstMonth &&
+      (
+        lastDay.getFullYear()
+          !==
+        currentWeekStart.getFullYear()
+        ||
+        lastDay.getMonth()
+          !==
+        currentWeekStart.getMonth()
+      )
+    ){
+
+      secondMonth =
+        await fetchMonth(
+          lastDay.getFullYear(),
+          lastDay.getMonth()+1
+        );
+
+    }
 
 
     habitsList =
-      data.habits || [];
+      firstMonth.habits ||
+      (
+        secondMonth
+          ? secondMonth.habits
+          : []
+      ) ||
+      [];
 
 
     completionsMap = {};
 
 
-    (data.completions || [])
-      .forEach(c=>{
+    function addCompletions(data){
 
-        completionsMap[
-          `${c.habit_id}-${c.entry_date}`
-        ] =
-          c.status;
-
-      });
+      if(
+        !data ||
+        !data.completions
+      )
+        return;
 
 
-    document.getElementById(
-      'habitsCount'
-    ).textContent =
-      habitsList.length +
-      ' HABITS';
+      data.completions.forEach(
+        c=>{
+
+          const key =
+            `${c.habit_id}-${c.entry_date}`;
+
+          completionsMap[key] =
+            c.status;
+
+        }
+      );
+
+    }
 
 
-    renderHabitList();
+    addCompletions(
+      firstMonth
+    );
 
-    renderBoard();
+    addCompletions(
+      secondMonth
+    );
 
-    updateWeekScore();
+
+    renderEverything();
+
+    setSaveStatus(
+      'saved'
+    );
 
   }catch(err){
 
     console.error(err);
 
-    if(
-      typeof showToast ===
-      'function'
-    ){
-
-      showToast(
-        'Could not load BetterMe data',
-        'error'
-      );
-
-    }
+    setSaveStatus(
+      'error'
+    );
 
   }
 
@@ -2234,94 +2016,156 @@ async function loadWeek(){
 
 
 /* =========================================================
-   HABIT LIST
+   RENDER EVERYTHING
 ========================================================= */
 
-function renderHabitList(){
+function renderEverything(){
 
-  const el =
+  renderWeekLabel();
+
+  renderHabits();
+
+  renderTracker();
+
+  renderWeekSlider();
+
+  updateMotivation();
+
+}
+
+
+/* =========================================================
+   WEEK LABEL
+========================================================= */
+
+function renderWeekLabel(){
+
+  const end =
+    addDays(
+      currentWeekStart,
+      6
+    );
+
+  document.getElementById(
+    'weekLabel'
+  ).textContent =
+    `${formatShortDate(currentWeekStart)} — ${formatShortDate(end)}`;
+
+}
+
+
+/* =========================================================
+   RENDER HABITS
+========================================================= */
+
+function renderHabits(){
+
+  const list =
     document.getElementById(
       'habitList'
     );
 
+  document.getElementById(
+    'habitsCount'
+  ).textContent =
+    `${habitsList.length} HABITS`;
+
 
   if(!habitsList.length){
 
-    el.innerHTML =
-      `<div class="empty-note">
-        No habits yet.
-        Add your first habit below.
-      </div>`;
+    list.innerHTML =
+      `
+        <div
+          style="
+            color:#858cad;
+            font-size:10px;
+          "
+        >
+          No habits yet.
+        </div>
+      `;
 
     return;
 
   }
 
 
-  el.innerHTML =
-    habitsList
-      .map(
-        (habit,index)=>`
+  list.innerHTML =
+    habitsList.map(
+      (habit,index)=>`
 
-          <div
-            class="habit-chip"
-            title="${escapeHTML(habit.name)}"
-          >
+        <div
+          class="habit-chip"
+          title="${escapeHTML(habit.name)}"
+        >
 
-            <span class="habit-number">
-              ${index+1}
-            </span>
+          <span class="habit-number">
+            ${index+1}
+          </span>
 
-            <span class="habit-name">
-              ${escapeHTML(habit.name)}
-            </span>
+          <span class="habit-name">
+            ${escapeHTML(habit.name)}
+          </span>
 
-          </div>
+        </div>
 
-        `
-      )
-      .join('');
+      `
+    ).join('');
 
 }
 
 
 /* =========================================================
-   SAFE TEXT
+   ESCAPE HTML
 ========================================================= */
 
 function escapeHTML(value){
 
   return String(value)
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
+    .replace(
+      /&/g,
+      '&amp;'
+    )
+    .replace(
+      /</g,
+      '&lt;'
+    )
+    .replace(
+      />/g,
+      '&gt;'
+    )
+    .replace(
+      /"/g,
+      '&quot;'
+    )
+    .replace(
+      /'/g,
+      '&#039;'
+    );
 
 }
 
 
 /* =========================================================
-   RENDER 7 DAYS
+   RENDER TRACKER
 ========================================================= */
 
-function renderBoard(){
+function renderTracker(){
 
-  const row =
+  const tracker =
     document.getElementById(
-      'daysRow'
+      'tracker'
     );
 
 
   if(!habitsList.length){
 
-    row.innerHTML =
-      `<div
-        class="empty-note"
-        style="grid-column:1/-1"
-      >
-        Add habits to start tracking.
-      </div>`;
+    tracker.innerHTML =
+      `
+        <div class="empty">
+          Add your first habit to start tracking.
+        </div>
+      `;
 
     return;
 
@@ -2331,166 +2175,205 @@ function renderBoard(){
   let html = '';
 
 
-  for(let dayIndex=0;dayIndex<7;dayIndex++){
+  for(
+    let dayIndex=0;
+    dayIndex<7;
+    dayIndex++
+  ){
 
     const date =
-      new Date(currentWeek);
-
-    date.setDate(
-      currentWeek.getDate()+dayIndex
-    );
-
-
-    const key =
-      dateKey(date);
-
-
-    const isToday =
-      key === dateKey(TODAY);
-
-
-    const isFuture =
-      date >
-      TODAY;
-
-
-    let doneCount = 0;
-
-
-    let dotHTML = '';
-
-
-    habitsList.forEach(
-      habit=>{
-
-        const status =
-          completionsMap[
-            `${habit.id}-${key}`
-          ];
-
-
-        if(status === 'done')
-          doneCount++;
-
-
-        dotHTML +=
-          `
-
-          <div class="habit-dot-wrap">
-
-            <div
-              class="habit-dot ${
-                status || ''
-              }"
-
-              data-habit="${habit.id}"
-
-              data-date="${key}"
-
-              title="${escapeHTML(
-                habit.name
-              )} — ${prettyDate(date)}"
-            ></div>
-
-          </div>
-
-          `;
-
-      }
-    );
-
-
-    const percentage =
-      habitsList.length
-        ? Math.round(
-            doneCount /
-            habitsList.length *
-            100
-          )
-        : 0;
-
-
-    let scoreClass =
-      'score-none';
-
-
-    if(percentage >= 70)
-      scoreClass =
-        'score-good';
-
-    else if(percentage >= 40)
-      scoreClass =
-        'score-mid';
-
-    else if(percentage > 0)
-      scoreClass =
-        'score-low';
-
+      addDays(
+        currentWeekStart,
+        dayIndex
+      );
 
     html +=
-      `
-
-      <div
-        class="
-          day-column
-          ${isToday ? 'today' : ''}
-          ${isFuture ? 'future' : ''}
-        "
-      >
-
-        <div class="day-head">
-
-          <div class="day-name">
-            ${
-              date.toLocaleDateString(
-                'en-US',
-                {
-                  weekday:'short'
-                }
-              )
-            }
-          </div>
-
-          <div class="day-date">
-            ${date.getDate()}
-          </div>
-
-        </div>
-
-
-        <div class="dot-line">
-
-          ${dotHTML}
-
-        </div>
-
-
-        <div
-          class="day-score ${scoreClass}"
-        >
-
-          ${percentage}%
-
-        </div>
-
-      </div>
-
-      `;
+      renderDayColumn(
+        date
+      );
 
   }
 
 
-  row.innerHTML =
+  tracker.innerHTML =
     html;
 
 
-  row
-    .querySelectorAll('.habit-dot')
+  attachDotEvents();
+
+  attachSaveEvents();
+
+}
+
+
+/* =========================================================
+   RENDER ONE DAY
+========================================================= */
+
+function renderDayColumn(date){
+
+  const key =
+    dateKey(date);
+
+  const saved =
+    isDaySaved(key);
+
+  const today =
+    key ===
+    dateKey(TODAY);
+
+
+  let doneCount = 0;
+
+  let missedCount = 0;
+
+
+  let dots = '';
+
+
+  habitsList.forEach(
+    (habit,index)=>{
+
+      const status =
+        completionsMap[
+          `${habit.id}-${key}`
+        ];
+
+
+      if(status === 'done')
+        doneCount++;
+
+
+      if(status === 'missed')
+        missedCount++;
+
+
+      dots +=
+        `
+          <div class="dot-row">
+
+            <div
+              class="habit-dot ${status || ''}"
+              data-habit="${habit.id}"
+              data-date="${key}"
+              title="${index+1}. ${escapeHTML(habit.name)}"
+            >
+              ${index+1}
+            </div>
+
+          </div>
+        `;
+
+    }
+  );
+
+
+  const total =
+    habitsList.length;
+
+
+  const percentage =
+    total
+      ? Math.round(
+          doneCount /
+          total *
+          100
+        )
+      : 0;
+
+
+  const percentColor =
+    percentage >= 70
+      ? '#4ade80'
+      : percentage >= 40
+        ? '#fbbf24'
+        : '#fb7185';
+
+
+  return `
+
+    <div
+      class="
+        day-column
+        ${today ? 'today' : ''}
+        ${saved ? 'locked' : ''}
+      "
+      data-day-column="${key}"
+    >
+
+      <div class="day-header">
+
+        <div class="day-name">
+          ${
+            date.toLocaleDateString(
+              'en-US',
+              {
+                weekday:'short'
+              }
+            )
+          }
+        </div>
+
+        <div class="day-date">
+          ${formatShortDate(date)}
+        </div>
+
+        <div
+          class="day-percent"
+          style="color:${percentColor}"
+        >
+          ${percentage}%
+        </div>
+
+      </div>
+
+
+      <div class="dot-track">
+
+        ${dots}
+
+      </div>
+
+
+      <button
+        class="
+          save-day-btn
+          ${saved ? 'locked' : ''}
+        "
+        data-save-day="${key}"
+        ${saved ? 'disabled' : ''}
+      >
+
+        ${
+          saved
+            ? '🔒 Day Saved'
+            : '✓ Save Day'
+        }
+
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   ATTACH DOT EVENTS
+========================================================= */
+
+function attachDotEvents(){
+
+  document
+    .querySelectorAll(
+      '.habit-dot'
+    )
     .forEach(dot=>{
 
       dot.addEventListener(
         'click',
-        ()=>toggleDot(dot)
+        ()=>toggleHabitDot(dot)
       );
 
     });
@@ -2502,37 +2385,40 @@ function renderBoard(){
    TOGGLE DOT
 ========================================================= */
 
-async function toggleDot(dot){
+async function toggleHabitDot(dot){
 
   const habitId =
     Number(
       dot.dataset.habit
     );
 
-
-  const entryDate =
+  const date =
     dot.dataset.date;
 
 
+  /*
+    IMPORTANT:
+
+    If day is already saved,
+    do absolutely nothing.
+  */
+
+  if(
+    isDaySaved(date)
+  ){
+
+    return;
+
+  }
+
+
   const key =
-    `${habitId}-${entryDate}`;
+    `${habitId}-${date}`;
 
 
   const current =
     completionsMap[key];
 
-
-  /*
-    Cycle:
-
-    empty
-       ↓
-    green / done
-       ↓
-    red / missed
-       ↓
-    empty
-  */
 
   const next =
     current === undefined
@@ -2541,6 +2427,10 @@ async function toggleDot(dot){
         ? 'missed'
         : null;
 
+
+  /*
+    Optimistic UI.
+  */
 
   if(next === null){
 
@@ -2554,11 +2444,13 @@ async function toggleDot(dot){
   }
 
 
-  renderBoard();
+  renderTracker();
 
-  updateWeekScore();
+  updateMotivation();
 
-  setSaveStatus('saving');
+  setSaveStatus(
+    'saving'
+  );
 
 
   try{
@@ -2567,218 +2459,157 @@ async function toggleDot(dot){
       '/betterme/completion',
       {
         habit_id:habitId,
-        entry_date:entryDate,
+
+        entry_date:date,
+
         status:next
       }
     );
 
-
-    setSaveStatus('saved');
-
-
-    /*
-      Refresh the week selector
-      because its percentage changed.
-    */
-
-    renderWeekSlider();
+    setSaveStatus(
+      'saved'
+    );
 
   }catch(err){
 
     console.error(err);
 
     /*
-      Restore previous state
+      Reload from server if save failed.
     */
 
-    if(current === undefined){
+    setSaveStatus(
+      'error'
+    );
 
-      delete completionsMap[key];
+    await loadWeek();
 
-    }else{
+  }
 
-      completionsMap[key] =
-        current;
+}
+
+
+/* =========================================================
+   SAVE DAY
+========================================================= */
+
+async function saveDay(dateKeyValue){
+
+  /*
+    Already saved?
+    Do nothing.
+  */
+
+  if(
+    isDaySaved(
+      dateKeyValue
+    )
+  ){
+
+    return;
+
+  }
+
+
+  /*
+    Count how many habits
+    have been marked.
+
+    We don't allow accidentally
+    locking a completely empty day.
+  */
+
+  let marked = 0;
+
+
+  habitsList.forEach(
+    habit=>{
+
+      const status =
+        completionsMap[
+          `${habit.id}-${dateKeyValue}`
+        ];
+
+      if(status)
+        marked++;
 
     }
-
-
-    renderBoard();
-
-    updateWeekScore();
-
-    setSaveStatus('error');
-
-  }
-
-}
-
-
-/* =========================================================
-   WEEK SCORE
-========================================================= */
-
-function calculateWeekScore(){
-
-  let done = 0;
-
-  let tracked = 0;
-
-
-  for(let i=0;i<7;i++){
-
-    const date =
-      new Date(currentWeek);
-
-    date.setDate(
-      currentWeek.getDate()+i
-    );
-
-
-    const key =
-      dateKey(date);
-
-
-    habitsList.forEach(
-      habit=>{
-
-        const status =
-          completionsMap[
-            `${habit.id}-${key}`
-          ];
-
-
-        if(status){
-
-          tracked++;
-
-
-          if(status === 'done')
-            done++;
-
-        }
-
-      }
-    );
-
-  }
-
-
-  return tracked
-    ? Math.round(
-        done /
-        tracked *
-        100
-      )
-    : 0;
-
-}
-
-
-function updateWeekScore(){
-
-  const score =
-    calculateWeekScore();
-
-
-  document.getElementById(
-    'weekScore'
-  ).textContent =
-    score + '%';
-
-
-  let message =
-    'Start strong.';
-
-
-  if(score >= 90)
-    message =
-      'Outstanding. Keep the streak alive. 🔥';
-
-  else if(score >= 70)
-    message =
-      'Excellent week. Keep pushing. 💪';
-
-  else if(score >= 50)
-    message =
-      'Good progress. Finish strong.';
-
-  else if(score >= 25)
-    message =
-      'You are moving. Keep going.';
-
-  else if(score > 0)
-    message =
-      'Every green dot counts.';
-
-
-  document.getElementById(
-    'summaryMessage'
-  ).textContent =
-    message;
-
-}
-
-
-/* =========================================================
-   WEEK LABEL
-========================================================= */
-
-function renderWeekLabel(){
-
-  const start =
-    new Date(currentWeek);
-
-
-  const end =
-    new Date(currentWeek);
-
-
-  end.setDate(
-    end.getDate()+6
   );
 
 
-  const sameMonth =
-    start.getMonth() ===
-    end.getMonth();
+  if(marked === 0){
 
+    const proceed =
+      confirm(
+        'No habits are marked for this day. Save it anyway?'
+      );
 
-  let text;
-
-
-  if(sameMonth){
-
-    text =
-      `${start.toLocaleDateString(
-        'en-US',
-        {month:'short'}
-      )} ${start.getDate()} – ${end.getDate()}, ${end.getFullYear()}`;
-
-  }else{
-
-    text =
-      `${start.toLocaleDateString(
-        'en-US',
-        {
-          month:'short',
-          day:'numeric'
-        }
-      )} – ${end.toLocaleDateString(
-        'en-US',
-        {
-          month:'short',
-          day:'numeric'
-        }
-      )}`;
+    if(!proceed)
+      return;
 
   }
 
 
-  document.getElementById(
-    'weekLabel'
-  ).textContent =
-    text;
+  /*
+    IMPORTANT:
+
+    Once this happens,
+    the day is permanently locked
+    in localStorage.
+  */
+
+  lockDay(
+    dateKeyValue
+  );
+
+
+  setSaveStatus(
+    'saving'
+  );
+
+
+  /*
+    The actual habit results were
+    already saved individually.
+
+    Here we only lock the day.
+  */
+
+  renderTracker();
+
+  updateMotivation();
+
+  setSaveStatus(
+    'saved'
+  );
+
+}
+
+
+/* =========================================================
+   ATTACH SAVE BUTTON EVENTS
+========================================================= */
+
+function attachSaveEvents(){
+
+  document
+    .querySelectorAll(
+      '[data-save-day]'
+    )
+    .forEach(button=>{
+
+      button.addEventListener(
+        'click',
+        ()=>{
+
+          saveDay(
+            button.dataset.saveDay
+          );
+
+        }
+      );
+
+    });
 
 }
 
@@ -2787,7 +2618,7 @@ function renderWeekLabel(){
    WEEK SLIDER
 ========================================================= */
 
-async function renderWeekSlider(){
+function renderWeekSlider(){
 
   const slider =
     document.getElementById(
@@ -2795,165 +2626,136 @@ async function renderWeekSlider(){
     );
 
 
-  const weeks = [];
-
-
   /*
-    Show 7 weeks:
+    Show several weeks around
+    the selected week.
 
-    3 past
-    current
-    3 future
+    User can move infinitely
+    through previous/future weeks
+    using navigation.
   */
 
-  for(let offset=-3;offset<=3;offset++){
-
-    const d =
-      new Date(TODAY);
-
-    d.setDate(
-      d.getDate() +
-      offset * 7
-    );
+  let html = '';
 
 
-    weeks.push(
-      startOfWeek(d)
-    );
+  for(
+    let offset=-3;
+    offset<=3;
+    offset++
+  ){
+
+    const week =
+      addDays(
+        currentWeekStart,
+        offset*7
+      );
+
+
+    const end =
+      addDays(
+        week,
+        6
+      );
+
+
+    const active =
+      dateKey(week) ===
+      dateKey(currentWeekStart);
+
+
+    const score =
+      calculateWeekScore(
+        week
+      );
+
+
+    const scoreColor =
+      score >= 70
+        ? '#4ade80'
+        : score >= 40
+          ? '#fbbf24'
+          : '#fb7185';
+
+
+    html +=
+      `
+        <div
+          class="
+            week-chip
+            ${active ? 'active' : ''}
+          "
+          data-week="${dateKey(week)}"
+        >
+
+          <div class="wc-title">
+
+            ${
+              week.toLocaleDateString(
+                'en-US',
+                {
+                  month:'short',
+                  day:'numeric'
+                }
+              )
+            }
+
+          </div>
+
+          <div class="wc-date">
+
+            ${
+              end.toLocaleDateString(
+                'en-US',
+                {
+                  month:'short',
+                  day:'numeric'
+                }
+              )
+            }
+
+          </div>
+
+          <div
+            class="wc-score"
+            style="color:${scoreColor}"
+          >
+
+            ${score}%
+
+          </div>
+
+        </div>
+      `;
 
   }
 
 
-  const unique =
-    [];
-
-
-  weeks.forEach(
-    w=>{
-
-      const key =
-        dateKey(w);
-
-      if(
-        !unique.some(
-          x =>
-            dateKey(x) === key
-        )
-      ){
-
-        unique.push(w);
-
-      }
-
-    }
-  );
-
-
   slider.innerHTML =
-    unique
-      .map(
-        week=>{
-
-          const active =
-            dateKey(week) ===
-            dateKey(currentWeek);
-
-
-          const isCurrent =
-            dateKey(week) ===
-            dateKey(
-              startOfWeek(TODAY)
-            );
-
-
-          let score = '—';
-
-
-          if(isCurrent){
-
-            score =
-              calculateWeekScore() +
-              '%';
-
-          }
-
-
-          return `
-
-            <div
-              class="
-                week-chip
-                ${active ? 'active' : ''}
-              "
-
-              data-week="${dateKey(week)}"
-            >
-
-              <span class="wk-name">
-
-                ${
-                  isCurrent
-                    ? 'THIS WEEK'
-                    : week.toLocaleDateString(
-                        'en-US',
-                        {
-                          month:'short',
-                          day:'numeric'
-                        }
-                      )
-                }
-
-              </span>
-
-              <span
-                class="wk-score"
-                style="
-                  color:${
-                    isCurrent
-                      ? '#4ade80'
-                      : '#69708f'
-                  }
-                "
-              >
-                ${score}
-              </span>
-
-            </div>
-
-          `;
-
-        }
-      )
-      .join('');
+    html;
 
 
   slider
-    .querySelectorAll('.week-chip')
+    .querySelectorAll(
+      '.week-chip'
+    )
     .forEach(chip=>{
 
       chip.addEventListener(
         'click',
         async ()=>{
 
-          const parts =
-            chip.dataset.week
-              .split('-')
-              .map(Number);
-
-
-          currentWeek =
+          const date =
             new Date(
-              parts[0],
-              parts[1]-1,
-              parts[2]
+              chip.dataset.week +
+              'T00:00:00'
             );
 
-
-          renderWeekLabel();
+          currentWeekStart =
+            startOfWeek(
+              date
+            );
 
           await loadWeek();
-
-          await renderWeekSlider();
 
         }
       );
@@ -2981,28 +2783,230 @@ async function renderWeekSlider(){
 
 
 /* =========================================================
+   WEEK SCORE
+========================================================= */
+
+function calculateWeekScore(
+  weekStart
+){
+
+  if(!habitsList.length)
+    return 0;
+
+
+  let done = 0;
+
+  let possible = 0;
+
+
+  for(
+    let i=0;
+    i<7;
+    i++
+  ){
+
+    const date =
+      addDays(
+        weekStart,
+        i
+      );
+
+    const key =
+      dateKey(date);
+
+
+    habitsList.forEach(
+      habit=>{
+
+        const status =
+          completionsMap[
+            `${habit.id}-${key}`
+          ];
+
+
+        if(status){
+
+          possible++;
+
+          if(status === 'done')
+            done++;
+
+        }
+
+      }
+    );
+
+  }
+
+
+  if(!possible)
+    return 0;
+
+
+  return Math.round(
+    done /
+    possible *
+    100
+  );
+
+}
+
+
+/* =========================================================
+   MOTIVATION
+========================================================= */
+
+function updateMotivation(){
+
+  let totalDone = 0;
+
+  let totalMarked = 0;
+
+  let lockedDays = 0;
+
+
+  for(
+    let i=0;
+    i<7;
+    i++
+  ){
+
+    const date =
+      addDays(
+        currentWeekStart,
+        i
+      );
+
+    const key =
+      dateKey(date);
+
+
+    if(
+      isDaySaved(key)
+    ){
+
+      lockedDays++;
+
+    }
+
+
+    habitsList.forEach(
+      habit=>{
+
+        const status =
+          completionsMap[
+            `${habit.id}-${key}`
+          ];
+
+
+        if(status){
+
+          totalMarked++;
+
+          if(status === 'done')
+            totalDone++;
+
+        }
+
+      }
+    );
+
+  }
+
+
+  const score =
+    totalMarked
+      ? Math.round(
+          totalDone /
+          totalMarked *
+          100
+        )
+      : 0;
+
+
+  const main =
+    document.getElementById(
+      'motivationMain'
+    );
+
+  const sub =
+    document.getElementById(
+      'motivationSub'
+    );
+
+
+  if(score >= 90){
+
+    main.textContent =
+      '🔥 This week is on fire.';
+
+    sub.textContent =
+      `${score}% completion. Keep the green line alive.`;
+
+  }
+
+  else if(score >= 70){
+
+    main.textContent =
+      '🟢 You are building momentum.';
+
+    sub.textContent =
+      `${score}% complete. Push the remaining habits.`;
+
+  }
+
+  else if(score >= 40){
+
+    main.textContent =
+      '⚡ Keep going. More green is waiting.';
+
+    sub.textContent =
+      `${score}% complete. One habit at a time.`;
+
+  }
+
+  else if(lockedDays > 0){
+
+    main.textContent =
+      '🔒 You showed up. Keep building.';
+
+    sub.textContent =
+      `${lockedDays} day${lockedDays > 1 ? 's' : ''} permanently saved.`;
+
+  }
+
+  else{
+
+    main.textContent =
+      '🌱 Start building your green line.';
+
+    sub.textContent =
+      'Complete your habits and save the day when you are done.';
+
+  }
+
+}
+
+
+/* =========================================================
    PREVIOUS WEEK
 ========================================================= */
 
 document
-  .getElementById('prevWeek')
+  .getElementById(
+    'prevWeek'
+  )
   .addEventListener(
     'click',
     async ()=>{
 
-      currentWeek =
-        new Date(currentWeek);
-
-      currentWeek.setDate(
-        currentWeek.getDate()-7
-      );
-
-
-      renderWeekLabel();
+      currentWeekStart =
+        addDays(
+          currentWeekStart,
+          -7
+        );
 
       await loadWeek();
-
-      await renderWeekSlider();
 
     }
   );
@@ -3013,24 +3017,20 @@ document
 ========================================================= */
 
 document
-  .getElementById('nextWeek')
+  .getElementById(
+    'nextWeek'
+  )
   .addEventListener(
     'click',
     async ()=>{
 
-      currentWeek =
-        new Date(currentWeek);
-
-      currentWeek.setDate(
-        currentWeek.getDate()+7
-      );
-
-
-      renderWeekLabel();
+      currentWeekStart =
+        addDays(
+          currentWeekStart,
+          7
+        );
 
       await loadWeek();
-
-      await renderWeekSlider();
 
     }
   );
@@ -3041,20 +3041,19 @@ document
 ========================================================= */
 
 document
-  .getElementById('todayWeek')
+  .getElementById(
+    'todayBtn'
+  )
   .addEventListener(
     'click',
     async ()=>{
 
-      currentWeek =
-        startOfWeek(TODAY);
-
-
-      renderWeekLabel();
+      currentWeekStart =
+        startOfWeek(
+          TODAY
+        );
 
       await loadWeek();
-
-      await renderWeekSlider();
 
     }
   );
@@ -3065,7 +3064,9 @@ document
 ========================================================= */
 
 document
-  .getElementById('addHabitBtn')
+  .getElementById(
+    'addHabitBtn'
+  )
   .addEventListener(
     'click',
     async ()=>{
@@ -3083,7 +3084,9 @@ document
         return;
 
 
-      setSaveStatus('saving');
+      setSaveStatus(
+        'saving'
+      );
 
 
       try{
@@ -3096,514 +3099,25 @@ document
         );
 
 
-        setSaveStatus('saved');
+        setSaveStatus(
+          'saved'
+        );
 
 
         await loadWeek();
-
-        await renderWeekSlider();
-
 
       }catch(err){
 
         console.error(err);
 
-        setSaveStatus('error');
+        setSaveStatus(
+          'error'
+        );
 
       }
 
     }
   );
-
-
-/* =========================================================
-   LIST PANELS
-========================================================= */
-
-const LIST_META = {
-
-  learn:{
-    grid:'learnGrid',
-    count:'learnCount',
-    addBtn:'addLearnBtn',
-    label:'TOPICS',
-    prompt:'New topic to learn:'
-  },
-
-  master:{
-    grid:'masterGrid',
-    count:'masterCount',
-    addBtn:'addMasterBtn',
-    label:'SKILLS',
-    prompt:'New skill to master:'
-  },
-
-  character:{
-    grid:'characterGrid',
-    count:'characterCount',
-    addBtn:'addCharacterBtn',
-    label:'VALUES',
-    prompt:'New character principle:'
-  }
-
-};
-
-
-/* =========================================================
-   LOAD LIST
-========================================================= */
-
-async function loadList(category){
-
-  const meta =
-    LIST_META[category];
-
-
-  try{
-
-    const items =
-      await api.get(
-        `/betterme/list/${category}`
-      );
-
-
-    document.getElementById(
-      meta.count
-    ).textContent =
-      items.length +
-      ' ' +
-      meta.label;
-
-
-    renderList(
-      category,
-      items
-    );
-
-
-  }catch(err){
-
-    console.error(err);
-
-  }
-
-}
-
-
-/* =========================================================
-   RENDER LIST
-========================================================= */
-
-function renderList(
-  category,
-  items
-){
-
-  const meta =
-    LIST_META[category];
-
-
-  const el =
-    document.getElementById(
-      meta.grid
-    );
-
-
-  if(!items.length){
-
-    el.innerHTML =
-      `<div class="empty-note">
-        Nothing here yet.
-      </div>`;
-
-    return;
-
-  }
-
-
-  el.innerHTML =
-    items
-      .map(
-        (item,i)=>`
-
-          <div
-            class="
-              list-card
-              ${item.completed?'done':''}
-            "
-          >
-
-            <div
-              class="
-                list-check
-                ${item.completed?'done':''}
-              "
-              data-id="${item.id}"
-            >
-              ${
-                item.completed
-                  ? '✓'
-                  : ''
-              }
-            </div>
-
-
-            <div class="list-body">
-
-              <div class="list-num">
-                #${i+1}
-              </div>
-
-              <div class="list-text">
-                ${escapeHTML(item.text)}
-              </div>
-
-            </div>
-
-
-            <div class="list-actions">
-
-              <button
-                data-action="edit"
-                data-id="${item.id}"
-              >
-                ✎
-              </button>
-
-              <button
-                data-action="delete"
-                data-id="${item.id}"
-              >
-                ✕
-              </button>
-
-            </div>
-
-          </div>
-
-        `
-      )
-      .join('');
-
-
-  el
-    .querySelectorAll('.list-check')
-    .forEach(check=>{
-
-      check.addEventListener(
-        'click',
-        async ()=>{
-
-          const id =
-            Number(
-              check.dataset.id
-            );
-
-
-          const done =
-            !check.classList.contains(
-              'done'
-            );
-
-
-          setSaveStatus('saving');
-
-
-          try{
-
-            await api.put(
-              `/betterme/list-item/${id}/toggle`,
-              {
-                completed:done
-              }
-            );
-
-
-            setSaveStatus('saved');
-
-
-            await loadList(
-              category
-            );
-
-
-          }catch(err){
-
-            console.error(err);
-
-            setSaveStatus('error');
-
-          }
-
-        }
-      );
-
-    });
-
-
-  el
-    .querySelectorAll(
-      '[data-action="edit"]'
-    )
-    .forEach(button=>{
-
-      button.addEventListener(
-        'click',
-        async ()=>{
-
-          const id =
-            Number(
-              button.dataset.id
-            );
-
-
-          const item =
-            items.find(
-              x =>
-                x.id === id
-            );
-
-
-          if(!item)
-            return;
-
-
-          const text =
-            prompt(
-              'Edit text:',
-              item.text
-            );
-
-
-          if(
-            !text ||
-            !text.trim()
-          )
-            return;
-
-
-          setSaveStatus('saving');
-
-
-          try{
-
-            await api.put(
-              `/betterme/list-item/${id}`,
-              {
-                text:text.trim()
-              }
-            );
-
-
-            setSaveStatus('saved');
-
-
-            await loadList(
-              category
-            );
-
-
-          }catch(err){
-
-            console.error(err);
-
-            setSaveStatus('error');
-
-          }
-
-        }
-      );
-
-    });
-
-
-  el
-    .querySelectorAll(
-      '[data-action="delete"]'
-    )
-    .forEach(button=>{
-
-      button.addEventListener(
-        'click',
-        async ()=>{
-
-          const id =
-            Number(
-              button.dataset.id
-            );
-
-
-          const item =
-            items.find(
-              x =>
-                x.id === id
-            );
-
-
-          if(!item)
-            return;
-
-
-          if(
-            !confirm(
-              `Delete "${item.text}"?`
-            )
-          )
-            return;
-
-
-          setSaveStatus('saving');
-
-
-          try{
-
-            await api.del(
-              `/betterme/list-item/${id}`
-            );
-
-
-            setSaveStatus('saved');
-
-
-            await loadList(
-              category
-            );
-
-
-          }catch(err){
-
-            console.error(err);
-
-            setSaveStatus('error');
-
-          }
-
-        }
-      );
-
-    });
-
-}
-
-
-/* =========================================================
-   ADD LIST ITEMS
-========================================================= */
-
-Object
-  .keys(LIST_META)
-  .forEach(
-    category=>{
-
-      const meta =
-        LIST_META[category];
-
-
-      document
-        .getElementById(meta.addBtn)
-        .addEventListener(
-          'click',
-          async ()=>{
-
-            const text =
-              prompt(
-                meta.prompt
-              );
-
-
-            if(
-              !text ||
-              !text.trim()
-            )
-              return;
-
-
-            setSaveStatus('saving');
-
-
-            try{
-
-              await api.post(
-                `/betterme/list/${category}`,
-                {
-                  text:text.trim()
-                }
-              );
-
-
-              setSaveStatus('saved');
-
-
-              await loadList(
-                category
-              );
-
-
-            }catch(err){
-
-              console.error(err);
-
-              setSaveStatus('error');
-
-            }
-
-          }
-        );
-
-    }
-  );
-
-
-/* =========================================================
-   TAB SWITCHING
-========================================================= */
-
-document
-  .querySelectorAll('.tab')
-  .forEach(tab=>{
-
-    tab.addEventListener(
-      'click',
-      ()=>{
-
-        document
-          .querySelectorAll('.tab')
-          .forEach(
-            t =>
-              t.classList.remove(
-                'active'
-              )
-          );
-
-
-        document
-          .querySelectorAll('.panel')
-          .forEach(
-            p =>
-              p.classList.remove(
-                'active'
-              )
-          );
-
-
-        tab.classList.add(
-          'active'
-        );
-
-
-        document
-          .getElementById(
-            'panel-' +
-            tab.dataset.tab
-          )
-          .classList.add(
-            'active'
-          );
-
-      }
-    );
-
-  });
 
 
 /* =========================================================
@@ -3612,21 +3126,12 @@ document
 
 (async function init(){
 
-  renderWeekLabel();
-
   await loadWeek();
-
-  await renderWeekSlider();
-
-  await loadList('learn');
-
-  await loadList('master');
-
-  await loadList('character');
 
 })();
 
 </script>
+
 
 </body>
 </html>
