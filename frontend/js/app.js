@@ -12,7 +12,9 @@ const NAV_ITEMS = [
   { href: 'trading.html', icon: '🛡️', label: 'Trade Guardian' },
   { href: 'settings.html', icon: '⚙️', label: 'Settings' },
   { href: 'reactor.html', icon: '⚡', label: 'Dream Reactor' },
+  { href: 'betterme.html', icon: '✨', label: 'BetterMe' },
 ];
+
 
 function renderSidebar() {
   const el = document.getElementById('sidebar');
