@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetterMe — LifeOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:#090b16;color:#eef0fb;font-family:'Inter',sans-serif;overflow-x:hidden;}
+body{padding-bottom:60px;}
+
+:root{
+  --bg:#090b16;
+  --card:#121629;
+  --card-2:#161b32;
+  --border:#242a48;
+  --muted:#8b91b3;
+  --blue:#3b82f6;
+  --purple:#a855f7;
+  --pink:#ec4899;
+  --orange:#f97316;
+  --gold:#fbbf24;
+  --green:#22c55e;
+  --red:#f87171;
+  --cell:#f2f3fb;
+}
+
+::selection{ background:var(--purple); color:#fff; }
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 24px;
+  border-bottom:1px solid var(--border);
+  background:rgba(9,11,22,.85);
+  backdrop-filter:blur(10px);
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.back-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--muted);
+  font-size:12.5px;
+  font-weight:600;
+  text-decoration:none;
+}
+
+.save-pill{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:10.5px;
+  font-weight:600;
+  color:#7ee8a8;
+  font-family:'JetBrains Mono',monospace;
+  background:rgba(34,197,94,.10);
+  border:1px solid rgba(34,197,94,.28);
+  padding:6px 12px;
+  border-radius:999px;
+}
+
+.save-pill.saving{ color:#fbbf24; border-color:rgba(251,191,36,.3); background:rgba(251,191,36,.1); }
+.save-pill.error{ color:#fb7185; border-color:rgba(248,113,113,.3); background:rgba(248,113,113,.1); }
+
+.save-pill .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#4ade80;
+  box-shadow:0 0 8px #4ade80;
+}
+
+.hero{
+  max-width:1180px;
+  margin:0 auto;
+  padding:46px 24px 20px;
+  text-align:center;
+  position:relative;
+}
+
+.hero::before{
+  content:'';
+  position:absolute;
+  top:-40px; left:50%;
+  transform:translateX(-50%);
+  width:520px; height:280px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(59,130,246,.28), transparent 60%),
+    radial-gradient(circle at 70% 30%, rgba(236,72,153,.24), transparent 60%),
+    radial-gradient(circle at 50% 70%, rgba(251,191,36,.16), transparent 60%);
+  filter:blur(10px);
+  pointer-events:none;
+  z-index:0;
+}
+
+.hero-logo{
+  width:88px;
+  height:88px;
+  object-fit:contain;
+  filter:drop-shadow(0 8px 30px rgba(168,85,247,.35));
+  position:relative;
+  z-index:1;
+}
+
+.hero h1{
+  position:relative;
+  z-index:1;
+  font-family:'Fredoka',sans-serif;
+  font-weight:700;
+  font-size:40px;
+  letter-spacing:.3px;
+  margin-top:8px;
+  background:linear-gradient(90deg,#60a5fa,#a855f7 35%,#ec4899 60%,#fbbf24 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hero .tagline-pill{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+  padding:8px 18px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+  color:#fde68a;
+  border:1px solid rgba(251,191,36,.4);
+  background:linear-gradient(90deg, rgba(59,130,246,.12), rgba(236,72,153,.12), rgba(251,191,36,.12));
+}
+
+.tabs{
+  max-width:1180px;
+  margin:30px auto 0;
+  padding:0 24px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.tab{
+  --tab-color:var(--blue);
+  cursor:pointer;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  transition:.18s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.tab::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:3px;
+  background:var(--tab-color);
+  opacity:.25;
+  transition:.18s ease;
+}
+
+.tab.active{
+  border-color:var(--tab-color);
+  background:linear-gradient(160deg, color-mix(in srgb, var(--tab-color) 14%, var(--card)), var(--card));
+  box-shadow:0 10px 30px -14px color-mix(in srgb, var(--tab-color) 60%, transparent);
+}
+
+.tab.active::after{ opacity:1; }
+.tab .t-icon{ font-size:18px; }
+.tab .t-name{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; color:#fff; }
+.tab .t-sub{ font-size:9.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+
+.tab[data-tab="habits"]{ --tab-color:#3b82f6; }
+.tab[data-tab="learn"]{ --tab-color:#a855f7; }
+.tab[data-tab="master"]{ --tab-color:#f97316; }
+.tab[data-tab="character"]{ --tab-color:#ec4899; }
+
+.panel{ max-width:1180px; margin:26px auto 0; padding:0 24px; display:none; }
+.panel.active{ display:block; }
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.panel-title{
+  font-family:'Fredoka',sans-serif;
+  font-weight:600;
+  font-size:20px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.panel-title .swatch{ width:10px;height:24px;border-radius:5px; }
+
+.month-nav-wrap{ display:flex; flex-direction:column; gap:10px; width:100%; max-width:520px; margin-left:auto; }
+
+.month-slider{ display:flex; gap:8px; overflow-x:auto; padding:4px 2px; scrollbar-width:thin; }
+
+.month-chip{
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  padding:8px 13px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--card);
+  cursor:pointer;
+  font-family:'JetBrains Mono',monospace;
+}
+
+.month-chip .mc-name{ font-size:9.5px; font-weight:700; color:var(--muted); }
+.month-chip .mc-score{ font-size:11.5px; font-weight:700; }
+.month-chip.active{ border-color:#3b82f6; background:rgba(59,130,246,.12); }
+.month-chip.active .mc-name{ color:#93c5fd; }
+
+.month-nav{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:8px 10px;
+  align-self:flex-end;
+}
+
+.month-nav button{
+  width:30px;height:30px;
+  border-radius:9px;
+  border:1px solid var(--border);
+  background:var(--card-2);
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.month-nav .m-label{ font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; min-width:112px; text-align:center; }
+
+.month-nav .today-btn{
+  width:auto; padding:0 12px;
+  font-family:'Inter',sans-serif;
+  font-size:10.5px; font-weight:700;
+  color:#93c5fd;
+  border-color:rgba(59,130,246,.35);
+  background:rgba(59,130,246,.10);
+}
+
+.grid-shell{ background:var(--card); border:1px solid var(--border); border-radius:20px; padding:4px; overflow:hidden; }
+.grid-scroll{ overflow-x:auto; border-radius:16px; }
+
+table.habit-grid{ border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed; }
+
+.habit-grid thead th{
+  position:sticky; top:0; background:#181d38; z-index:3;
+  font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+  color:var(--muted); padding:10px 4px; text-align:center;
+  border-bottom:1px solid var(--border); white-space:nowrap;
+}
+
+.habit-grid th.col-num, .habit-grid td.col-num{
+  position:sticky; left:0; z-index:4; background:#181d38;
+  width:22px; text-align:center; border-right:1px solid var(--border); font-size:9px;
+}
+
+.habit-grid td.col-num{ background:var(--card-2); font-family:'Fredoka',sans-serif; font-weight:600; color:var(--muted); }
+
+.habit-grid th.col-name, .habit-grid td.col-name{
+  position:sticky; left:22px; z-index:4; background:#181d38;
+  width:118px; border-right:1px solid var(--border); padding:0 8px; overflow:hidden;
+}
+
+.habit-grid td.col-name{ background:var(--card-2); }
+
+@media(min-width:820px){
+  .habit-grid th.col-num, .habit-grid td.col-num{ width:32px; font-size:11px; }
+  .habit-grid th.col-name, .habit-grid td.col-name{ left:32px; width:210px; padding:0 12px; }
+}
+
+.habit-row-name{ display:flex; align-items:center; justify-content:space-between; gap:6px; padding:9px 0; }
+
+.habit-row-name span.txt{
+  font-size:10.5px; font-weight:500; color:#e7e9f7; line-height:1.25;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:help;
+}
+
+@media(min-width:820px){ .habit-row-name span.txt{ font-size:12.5px; white-space:normal; } }
+
+.row-actions{ display:flex; gap:4px; opacity:0; transition:.15s; flex-shrink:0; }
+tr:hover .row-actions{ opacity:1; }
+
+.row-actions button{
+  width:19px;height:19px; border-radius:6px; border:1px solid var(--border);
+  background:#10142a; color:var(--muted); font-size:9.5px; cursor:pointer; line-height:1;
+}
+
+.habit-grid th.col-day{ font-size:8px; }
+
+.habit-grid td.cell{ height:22px; padding:2px; border-right:1px solid #1c2140; border-bottom:1px solid #1c2140; text-align:center; }
+
+.cell-box{
+  width:100%; height:100%; min-width:8px; margin:auto; border-radius:4px;
+  background:var(--cell); cursor:pointer; transition:.12s ease;
+  display:flex; align-items:center; justify-content:center; font-size:9px;
+}
+
+.cell-box:hover{ transform:scale(1.12); }
+.cell-box.done{ background:linear-gradient(160deg,#4ade80,#16a34a); box-shadow:0 0 0 1px rgba(34,197,94,.4); }
+.cell-box.missed{ background:linear-gradient(160deg,#fb7185,#dc2626); box-shadow:0 0 0 1px rgba(239,68,68,.4); }
+
+@media(min-width:820px){ .habit-grid td.cell{ height:30px; padding:4px; } .cell-box{ border-radius:6px; } }
+
+.habit-grid th.col-pct, .habit-grid td.col-pct{
+  width:46px; min-width:46px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:10.5px; border-left:1px solid var(--border);
+}
+
+.pct-high{ color:#4ade80; }
+.pct-mid{ color:#fbbf24; }
+.pct-low{ color:#fb7185; }
+
+tr.progress-row td{
+  background:#10142a; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700;
+  color:var(--muted); padding:8px 0; text-align:center; border-top:2px solid var(--border);
+}
+
+tr.progress-row td.col-name{
+  text-align:left; padding-left:12px; color:#e7e9f7; font-family:'Fredoka',sans-serif; font-size:10.5px;
+}
+
+.add-row{ display:flex; gap:10px; margin-top:14px; }
+
+.add-btn{
+  display:flex; align-items:center; gap:8px; padding:11px 18px; border-radius:12px;
+  border:1px dashed rgba(59,130,246,.4); background:rgba(59,130,246,.08);
+  color:#93c5fd; font-size:12px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;
+}
+
+.legend{ display:flex; gap:16px; margin-top:14px; font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+.legend span{ display:flex; align-items:center; gap:6px; }
+.legend i{ width:12px; height:12px; border-radius:4px; display:inline-block; }
+
+.list-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:12px; }
+
+.list-card{
+  background:var(--card); border:1px solid var(--border); border-left:3px solid var(--accent, var(--purple));
+  border-radius:14px; padding:13px 15px; display:flex; align-items:flex-start; gap:12px; transition:.15s;
+}
+
+.list-card:hover{ background:var(--card-2); }
+
+.list-check{
+  width:22px; height:22px; border-radius:7px; border:1.5px solid var(--border); flex-shrink:0; margin-top:1px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; transition:.12s;
+}
+
+.list-check.done{ background:var(--accent, var(--purple)); border-color:var(--accent, var(--purple)); color:#0a0c18; font-weight:800; }
+
+.list-body{ flex:1; min-width:0; }
+.list-num{ font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--muted); font-weight:700; }
+.list-text{ font-size:13px; font-weight:500; color:#e7e9f7; margin-top:2px; line-height:1.4; }
+
+.list-card.done .list-text{ color:#8b91b3; text-decoration:line-through; text-decoration-color:rgba(139,145,179,.5); }
+
+.list-actions{ display:flex; gap:4px; opacity:0; transition:.15s; }
+.list-card:hover .list-actions{ opacity:1; }
+
+.list-actions button{
+  width:22px;height:22px; border-radius:6px; border:1px solid var(--border);
+  background:#10142a; color:var(--muted); font-size:10px; cursor:pointer;
+}
+
+.empty-note{ padding:30px; text-align:center; color:var(--muted); font-size:12px; }
+
+@media(max-width:720px){
+  .tabs{ grid-template-columns:repeat(2,1fr); }
+  .hero h1{ font-size:30px; }
+  .panel-head{ align-items:flex-start; flex-direction:column; }
+  .month-nav-wrap{ max-width:100%; margin-left:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-link" href="dashboard.html">← Life-OS</a>
+  <div class="save-pill" id="savePill"><span class="dot"></span> Saved</div>
+</div>
+
+<div class="hero">
+  <img class="hero-logo" src="assets/betterme-logo.png" alt="BetterMe logo" onerror="this.style.display='none'">
+  <h1>BetterMe</h1>
+  <div class="tagline-pill">✦ Build Yourself, One Day at a Time ✦</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="habits">
+    <div class="t-icon">🗓️</div>
+    <div class="t-name">Daily Habits</div>
+    <div class="t-sub" id="habitsCount">— HABITS</div>
+  </div>
+  <div class="tab" data-tab="learn">
+    <div class="t-icon">🎧</div>
+    <div class="t-name">Things to Learn</div>
+    <div class="t-sub" id="learnCount">— TOPICS</div>
+  </div>
+  <div class="tab" data-tab="master">
+    <div class="t-icon">🛠️</div>
+    <div class="t-name">Things to Master</div>
+    <div class="t-sub" id="masterCount">— SKILLS</div>
+  </div>
+  <div class="tab" data-tab="character">
+    <div class="t-icon">🧭</div>
+    <div class="t-name">Character &amp; Values</div>
+    <div class="t-sub" id="characterCount">— PRINCIPLES</div>
+  </div>
+</div>
+
+<div class="panel active" id="panel-habits">
+
+  <div class="panel-head">
+    <div class="panel-title"><span class="swatch" style="background:#3b82f6;"></span>Daily Habits</div>
+
+    <div class="month-nav-wrap">
+      <div class="month-slider" id="monthSlider"></div>
+      <div class="month-nav">
+        <button id="prevMonth">‹</button>
+        <div class="m-label" id="monthLabel">—</div>
+        <button id="nextMonth">›</button>
+        <button class="today-btn" id="todayBtn">Today</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-shell">
+    <div class="grid-scroll">
+      <table class="habit-grid" id="habitGrid"></table>
+    </div>
+  </div>
+
+  <div class="add-row">
+    <button class="add-btn" id="addHabitBtn">＋ Add Habit</button>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--cell); border:1px solid #333a5c;"></i> Not done</span>
+    <span><i style="background:linear-gradient(160deg,#4ade80,#16a34a);"></i> Completed</span>
+    <span><i style="background:linear-gradient(160deg,#fb7185,#dc2626);"></i> Missed</span>
+  </div>
+
+</div>
+
+<div class="panel" id="panel-learn">
+  <div class="panel-head">
+    <div class="panel-title"><span class="swatch" style="background:#a855f7;"></span>Things to Learn</div>
+    <button class="add-btn" id="addLearnBtn">＋ Add Topic</button>
+  </div>
+  <div class="list-grid" id="learnGrid" style="--accent:#a855f7;"></div>
+</div>
+
+<div class="panel" id="panel-master">
+  <div class="panel-head">
+    <div class="panel-title"><span class="swatch" style="background:#f97316;"></span>Things to Master</div>
+    <button class="add-btn" id="addMasterBtn">＋ Add Skill</button>
+  </div>
+  <div class="list-grid" id="masterGrid" style="--accent:#f97316;"></div>
+</div>
+
+<div class="panel" id="panel-character">
+  <div class="panel-head">
+    <div class="panel-title"><span class="swatch" style="background:#ec4899;"></span>Character &amp; Values</div>
+    <button class="add-btn" id="addCharacterBtn">＋ Add Principle</button>
+  </div>
+  <div class="list-grid" id="characterGrid" style="--accent:#ec4899;"></div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script>
+
+/* ==================================================
+   SAVE STATUS PILL
+================================================== */
+
+function setSaveStatus(state){
+  const pill = document.getElementById('savePill');
+  if(!pill) return;
+  pill.className = 'save-pill' + (state==='saving' ? ' saving' : state==='error' ? ' error' : '');
+  pill.innerHTML = state==='saving'
+    ? '<span class="dot"></span> Saving…'
+    : state==='error'
+      ? '<span class="dot"></span> Save failed'
+      : '<span class="dot"></span> Saved';
+}
+
+/* ==================================================
+   DAILY HABITS — MONTH GRID
+================================================== */
+
+const TODAY = new Date();
+let currentDate = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+
+let habitsList = [];
+let completionsMap = {}; // "habitId-day" -> 'done' | 'missed'
+const monthScoreCache = {}; // "YYYY-M" -> score or null
+
+function daysInMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); }
+
+function pctClass(p){
+  if(p>=70) return 'pct-high';
+  if(p>=40) return 'pct-mid';
+  return 'pct-low';
+}
+
+function renderMonthLabel(){
+  document.getElementById('monthLabel').textContent =
+    currentDate.toLocaleDateString('en-US',{month:'long', year:'numeric'});
+}
+
+async function fetchMonth(year, month){
+  try{
+    return await api.get(`/betterme/month?year=${year}&month=${month}`);
+  }catch(err){
+    console.error(err);
+    showToast && showToast('Could not load BetterMe data', 'error');
+    return { habits: [], completions: [] };
+  }
+}
+
+function computeScore(completions){
+  let done=0, tracked=0;
+  completions.forEach(c=>{ tracked++; if(c.status==='done') done++; });
+  return tracked ? Math.round(done/tracked*100) : null;
+}
+
+async function loadMonth(){
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth()+1;
+
+  const data = await fetchMonth(year, month);
+
+  habitsList = data.habits || [];
+  completionsMap = {};
+
+  (data.completions || []).forEach(c=>{
+    const day = Number(c.entry_date.split('-')[2]);
+    completionsMap[c.habit_id+'-'+day] = c.status;
+  });
+
+  monthScoreCache[year+'-'+month] = computeScore(data.completions || []);
+
+  document.getElementById('habitsCount').textContent = habitsList.length + ' HABITS';
+
+  renderGrid();
+}
+
+function renderGrid(){
+  const days = daysInMonth(currentDate);
+  const table = document.getElementById('habitGrid');
+
+  if(!habitsList.length){
+    table.outerHTML = '<div class="empty-note" id="habitGrid">No habits yet — tap "＋ Add Habit" to start.</div>';
+    return;
+  }
+
+  let html = '<thead><tr><th class="col-num">#</th><th class="col-name">HABIT</th>';
+  for(let d=1; d<=days; d++){ html += `<th class="col-day">${d}</th>`; }
+  html += '<th class="col-pct">%</th></tr></thead><tbody>';
+
+  habitsList.forEach((habit,idx)=>{
+    let doneCount=0, trackedCount=0;
+    let rowCells = '';
+    for(let d=1; d<=days; d++){
+      const key = habit.id+'-'+d;
+      const st = completionsMap[key];
+      if(st){ trackedCount++; if(st==='done') doneCount++; }
+      rowCells += `<td class="cell"><div class="cell-box ${st||''}" data-habit="${habit.id}" data-day="${d}"></div></td>`;
+    }
+    const pct = trackedCount ? Math.round(doneCount/trackedCount*100) : 0;
+    html += `<tr>
+      <td class="col-num">${idx+1}</td>
+      <td class="col-name">
+        <div class="habit-row-name">
+          <span class="txt" title="${habit.name}">${habit.name}</span>
+          <div class="row-actions">
+            <button data-action="move" data-id="${habit.id}" title="Move to position">↕</button>
+            <button data-action="edit" data-id="${habit.id}" title="Rename">✎</button>
+            <button data-action="delete" data-id="${habit.id}" title="Delete">✕</button>
+          </div>
+        </div>
+      </td>
+      ${rowCells}
+      <td class="col-pct ${pctClass(pct)}">${pct}%</td>
+    </tr>`;
+  });
+
+  let progressCells = '';
+  for(let d=1; d<=days; d++){
+    let done=0, tracked=0;
+    habitsList.forEach(habit=>{
+      const st = completionsMap[habit.id+'-'+d];
+      if(st){ tracked++; if(st==='done') done++; }
+    });
+    const pct = tracked ? Math.round(done/tracked*100) : 0;
+    progressCells += `<td>${tracked? pct+'%':'—'}</td>`;
+  }
+  html += `<tr class="progress-row"><td class="col-num">—</td><td class="col-name">Daily Progress</td>${progressCells}<td>—</td></tr>`;
+
+  html += '</tbody>';
+  table.innerHTML = html;
+
+  table.querySelectorAll('.cell-box').forEach(box=>{
+    box.addEventListener('click', ()=> toggleCell(box));
+  });
+
+  table.querySelectorAll('[data-action="edit"]').forEach(btn=>{
+    btn.addEventListener('click', ()=> editHabit(Number(btn.dataset.id)));
+  });
+  table.querySelectorAll('[data-action="delete"]').forEach(btn=>{
+    btn.addEventListener('click', ()=> deleteHabitRow(Number(btn.dataset.id)));
+  });
+  table.querySelectorAll('[data-action="move"]').forEach(btn=>{
+    btn.addEventListener('click', ()=> moveHabit(Number(btn.dataset.id)));
+  });
+}
+
+async function toggleCell(box){
+  const habitId = Number(box.dataset.habit);
+  const day = Number(box.dataset.day);
+  const key = habitId+'-'+day;
+  const cur = completionsMap[key];
+  const next = cur === undefined ? 'done' : cur === 'done' ? 'missed' : null;
+
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth()+1).padStart(2,'0');
+  const dayStr = String(day).padStart(2,'0');
+  const entryDate = `${year}-${month}-${dayStr}`;
+
+  if(next===null) delete completionsMap[key]; else completionsMap[key]=next;
+  renderGrid();
+
+  setSaveStatus('saving');
+  try{
+    await api.post('/betterme/completion', { habit_id: habitId, entry_date: entryDate, status: next });
+    setSaveStatus('saved');
+  }catch(err){
+    console.error(err);
+    setSaveStatus('error');
+    showToast && showToast('Could not save — try again', 'error');
+  }
+}
+
+async function editHabit(id){
+  const habit = habitsList.find(h=>h.id===id);
+  if(!habit) return;
+  const name = prompt('Rename habit:', habit.name);
+  if(!name || !name.trim() || name.trim()===habit.name) return;
+
+  setSaveStatus('saving');
+  try{
+    await api.put(`/betterme/habits/${id}`, { name: name.trim() });
+    setSaveStatus('saved');
+    await loadMonth();
+    await renderMonthSlider();
+  }catch(err){
+    console.error(err);
+    setSaveStatus('error');
+  }
+}
+
+async function deleteHabitRow(id){
+  const habit = habitsList.find(h=>h.id===id);
+  if(!habit) return;
+  if(!confirm(`Delete "${habit.name}"? This removes its tracking history too.`)) return;
+
+  setSaveStatus('saving');
+  try{
+    await api.del(`/betterme/habits/${id}`);
+    setSaveStatus('saved');
+    await loadMonth();
+    await renderMonthSlider();
+  }catch(err){
+    console.error(err);
+    setSaveStatus('error');
+  }
+}
+
+async function moveHabit(id){
+  const habit = habitsList.find(h=>h.id===id);
+  if(!habit) return;
+  const raw = prompt(`Move "${habit.name}" to position (1-${habitsList.length}):`, String(habitsList.findIndex(h=>h.id===id)+1));
+  if(raw===null) return;
+  const pos = Number(raw);
+  if(!Number.isFinite(pos) || pos<1) return;
+
+  setSaveStatus('saving');
+  try{
+    await api.put(`/betterme/habits/${id}/position`, { position: pos });
+    setSaveStatus('saved');
+    await loadMonth();
+  }catch(err){
+    console.error(err);
+    setSaveStatus('error');
+  }
+}
+
+document.getElementById('addHabitBtn').addEventListener('click', async ()=>{
+  const name = prompt('New habit name:');
+  if(!name || !name.trim()) return;
+  const posRaw = prompt('Position (leave blank to add at the end):', '');
+  const position = posRaw && posRaw.trim() ? Number(posRaw) : undefined;
+
+  setSaveStatus('saving');
+  try{
+    await api.post('/betterme/habits', { name: name.trim(), position });
+    setSaveStatus('saved');
+    await loadMonth();
+    await renderMonthSlider();
+  }catch(err){
+    console.error(err);
+    setSaveStatus('error');
+  }
+});
+
+/* ==================================================
+   MONTH NAV + SLIDER
+================================================== */
+
+document.getElementById('prevMonth').addEventListener('click', async ()=>{
+  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth()-1, 1);
+  renderMonthLabel(); await loadMonth(); await renderMonthSlider();
+});
+document.getElementById('nextMonth').addEventListener('click', async ()=>{
+  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 1);
+  renderMonthLabel(); await loadMonth(); await renderMonthSlider();
+});
+document.getElementById('todayBtn').addEventListener('click', async ()=>{
+  currentDate = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+  renderMonthLabel(); await loadMonth(); await renderMonthSlider();
+});
+
+async function renderMonthSlider(){
+  const wrap = document.getElementById('monthSlider');
+  const offsets = [-5,-4,-3,-2,-1,0];
+  const months = offsets.map(o => new Date(TODAY.getFullYear(), TODAY.getMonth()+o, 1));
+
+  await Promise.all(months.map(async d=>{
+    const key = d.getFullYear()+'-'+(d.getMonth()+1);
+    if(monthScoreCache[key] !== undefined) return;
+    const data = await fetchMonth(d.getFullYear(), d.getMonth()+1);
+    monthScoreCache[key] = computeScore(data.completions || []);
+  }));
+
+  wrap.innerHTML = months.map(d=>{
+    const key = d.getFullYear()+'-'+(d.getMonth()+1);
+    const score = monthScoreCache[key];
+    const active = key === (currentDate.getFullYear()+'-'+(currentDate.getMonth()+1));
+    const color = score===null||score===undefined ? '#5a6088' : score>=70 ? '#4ade80' : score>=40 ? '#fbbf24' : '#fb7185';
+    return `<div class="month-chip ${active?'active':''}" data-y="${d.getFullYear()}" data-m="${d.getMonth()}">
+      <span class="mc-name">${d.toLocaleDateString('en-US',{month:'short',year:'2-digit'})}</span>
+      <span class="mc-score" style="color:${color}">${score===null||score===undefined?'—':score+'%'}</span>
+    </div>`;
+  }).join('');
+
+  wrap.querySelectorAll('.month-chip').forEach(chip=>{
+    chip.addEventListener('click', async ()=>{
+      currentDate = new Date(Number(chip.dataset.y), Number(chip.dataset.m), 1);
+      renderMonthLabel(); await loadMonth(); await renderMonthSlider();
+    });
+  });
+
+  const activeChip = wrap.querySelector('.month-chip.active');
+  if(activeChip) activeChip.scrollIntoView({inline:'center', block:'nearest'});
+}
+
+/* ==================================================
+   LIST PANELS (Learn / Master / Character)
+================================================== */
+
+const LIST_META = {
+  learn: { grid:'learnGrid', count:'learnCount', addBtn:'addLearnBtn', label:'TOPICS', prompt:'New topic to learn:' },
+  master: { grid:'masterGrid', count:'masterCount', addBtn:'addMasterBtn', label:'SKILLS', prompt:'New skill to master:' },
+  character: { grid:'characterGrid', count:'characterCount', addBtn:'addCharacterBtn', label:'PRINCIPLES', prompt:'New character principle:' }
+};
+
+async function loadList(category){
+  const meta = LIST_META[category];
+  try{
+    const items = await api.get(`/betterme/list/${category}`);
+    document.getElementById(meta.count).textContent = items.length + ' ' + meta.label;
+    renderList(category, items);
+  }catch(err){
+    console.error(err);
+    showToast && showToast('Could not load ' + category, 'error');
+  }
+}
+
+function renderList(category, items){
+  const meta = LIST_META[category];
+  const el = document.getElementById(meta.grid);
+
+  if(!items.length){
+    el.innerHTML = `<div class="empty-note">Nothing here yet — tap "＋ Add" to start.</div>`;
+    return;
+  }
+
+  el.innerHTML = items.map((item,i)=>`
+    <div class="list-card ${item.completed?'done':''}" data-id="${item.id}">
+      <div class="list-check ${item.completed?'done':''}" data-id="${item.id}">${item.completed?'✓':''}</div>
+      <div class="list-body">
+        <div class="list-num">#${i+1}</div>
+        <div class="list-text">${item.text}</div>
+      </div>
+      <div class="list-actions">
+        <button data-action="edit" data-id="${item.id}" title="Edit">✎</button>
+        <button data-action="delete" data-id="${item.id}" title="Delete">✕</button>
+      </div>
+    </div>
+  `).join('');
+
+  el.querySelectorAll('.list-check').forEach(chk=>{
+    chk.addEventListener('click', async ()=>{
+      const id = Number(chk.dataset.id);
+      const nowDone = !chk.classList.contains('done');
+      setSaveStatus('saving');
+      try{
+        await api.put(`/betterme/list-item/${id}/toggle`, { completed: nowDone });
+        setSaveStatus('saved');
+        await loadList(category);
+      }catch(err){
+        console.error(err);
+        setSaveStatus('error');
+      }
+    });
+  });
+
+  el.querySelectorAll('[data-action="edit"]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = Number(btn.dataset.id);
+      const item = items.find(i=>i.id===id);
+      const text = prompt('Edit text:', item.text);
+      if(!text || !text.trim() || text.trim()===item.text) return;
+      setSaveStatus('saving');
+      try{
+        await api.put(`/betterme/list-item/${id}`, { text: text.trim() });
+        setSaveStatus('saved');
+        await loadList(category);
+      }catch(err){
+        console.error(err);
+        setSaveStatus('error');
+      }
+    });
+  });
+
+  el.querySelectorAll('[data-action="delete"]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = Number(btn.dataset.id);
+      const item = items.find(i=>i.id===id);
+      if(!confirm(`Delete "${item.text}"?`)) return;
+      setSaveStatus('saving');
+      try{
+        await api.del(`/betterme/list-item/${id}`);
+        setSaveStatus('saved');
+        await loadList(category);
+      }catch(err){
+        console.error(err);
+        setSaveStatus('error');
+      }
+    });
+  });
+}
+
+Object.keys(LIST_META).forEach(category=>{
+  const meta = LIST_META[category];
+  document.getElementById(meta.addBtn).addEventListener('click', async ()=>{
+    const text = prompt(meta.prompt);
+    if(!text || !text.trim()) return;
+    setSaveStatus('saving');
+    try{
+      await api.post(`/betterme/list/${category}`, { text: text.trim() });
+      setSaveStatus('saved');
+      await loadList(category);
+    }catch(err){
+      console.error(err);
+      setSaveStatus('error');
+    }
+  });
+});
+
+/* ==================================================
+   TAB SWITCHING
+================================================== */
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ==================================================
+   INITIAL LOAD
+================================================== */
+
+(async function init(){
+  renderMonthLabel();
+  await loadMonth();
+  await renderMonthSlider();
+  await loadList('learn');
+  await loadList('master');
+  await loadList('character');
+})();
+
+</script>
+</body>
+</html>
+
