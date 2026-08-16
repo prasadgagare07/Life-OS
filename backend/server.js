@@ -278,6 +278,19 @@ console.log('✅ Weekly Withdrawal database initialized');
     // ==========================================
     // REACTOR CUSTOM WEIGHT
     // ==========================================
+// ==========================================
+    // BETTERME
+    // ==========================================
+
+    const betterMeMigration = fs.readFileSync(
+      path.join(__dirname, 'database', '016_betterme.sql'),
+      'utf8'
+    );
+
+    await pool.query(betterMeMigration);
+
+    console.log('✅ BetterMe database initialized');
+    
 
     const reactorWeightMigration = fs.readFileSync(
       path.join(
