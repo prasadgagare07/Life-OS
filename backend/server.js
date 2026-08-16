@@ -121,18 +121,19 @@ async function start() {
     // ==========================================
 
     const DEFAULT_PAGE_PASSCODES = {
-  dashboard: 'horizon',
-  'daily-standards': 'discipline',
-  standards: 'consistency',
-  finance: 'abundance',
-  'financial-time-explorer': 'foresight',
-  'time-explorer': 'patience',
-  fitness: 'strength',
-  vision: 'purpose',
-  trading: 'courage',
-  settings: 'control',
-  'weekly-withdrawal': 'confirmed',
-};
+      dashboard: 'horizon',
+      'daily-standards': 'discipline',
+      standards: 'consistency',
+      finance: 'abundance',
+      'financial-time-explorer': 'foresight',
+      'time-explorer': 'patience',
+      fitness: 'strength',
+      vision: 'purpose',
+      trading: 'courage',
+      settings: 'control',
+      'weekly-withdrawal': 'confirmed',
+      betterme: 'growth',
+    };
 
     const { rows: existingPages } = await pool.query(
       `SELECT page FROM auth_settings`
