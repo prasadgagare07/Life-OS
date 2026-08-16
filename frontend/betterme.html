@@ -51,6 +51,7 @@ body{
   color:#fff;
 }
 
+
 /* ==================================================
    TOP BAR
 ================================================== */
@@ -124,6 +125,7 @@ body{
   background:#4ade80;
   box-shadow:0 0 8px #4ade80;
 }
+
 
 /* ==================================================
    HERO
@@ -273,6 +275,7 @@ body{
   text-align:center;
 }
 
+
 /* ==================================================
    TABS
 ================================================== */
@@ -395,6 +398,7 @@ body{
   --tab-color:#ec4899;
 }
 
+
 /* ==================================================
    PANELS
 ================================================== */
@@ -449,6 +453,12 @@ body{
   border-radius:5px;
 }
 
+
+/* ==================================================
+   MONTH SELECTOR
+   7 BOXES
+================================================== */
+
 .month-nav-wrap{
   display:flex;
 
@@ -463,20 +473,39 @@ body{
   margin-left:auto;
 }
 
+
+/*
+   IMPORTANT:
+   Exactly 7 month boxes.
+   No horizontal scrolling on mobile.
+*/
+
 .month-slider{
-  display:flex;
+  display:grid;
 
-  gap:8px;
+  grid-template-columns:
+    repeat(7,minmax(0,1fr));
 
-  overflow-x:auto;
+  gap:6px;
 
-  padding:4px 2px;
+  width:100%;
 
-  scrollbar-width:thin;
+  overflow:hidden;
+
+  padding:2px 0;
+
+  scrollbar-width:none;
 }
 
+.month-slider::-webkit-scrollbar{
+  display:none;
+}
+
+
 .month-chip{
-  flex-shrink:0;
+  min-width:0;
+
+  width:100%;
 
   display:flex;
 
@@ -484,11 +513,13 @@ body{
 
   align-items:center;
 
+  justify-content:center;
+
   gap:2px;
 
-  padding:8px 13px;
+  padding:8px 3px;
 
-  border-radius:12px;
+  border-radius:11px;
 
   border:1px solid var(--border);
 
@@ -497,26 +528,51 @@ body{
   cursor:pointer;
 
   font-family:'JetBrains Mono',monospace;
+
+  overflow:hidden;
+
+  transition:
+    border-color .18s ease,
+    background .18s ease,
+    transform .18s ease;
+}
+
+.month-chip:hover{
+  transform:translateY(-1px);
+
+  border-color:#343b62;
 }
 
 .month-chip .mc-name{
-  font-size:9.5px;
+  font-size:8.5px;
+
+  line-height:1.1;
 
   font-weight:700;
 
   color:var(--muted);
+
+  white-space:nowrap;
 }
 
 .month-chip .mc-score{
-  font-size:11.5px;
+  font-size:10px;
+
+  line-height:1.1;
 
   font-weight:700;
+
+  white-space:nowrap;
 }
 
 .month-chip.active{
   border-color:#3b82f6;
 
   background:rgba(59,130,246,.12);
+
+  box-shadow:
+    0 6px 18px -10px
+    rgba(59,130,246,.8);
 }
 
 .month-chip.active .mc-name{
@@ -588,6 +644,7 @@ body{
   background:rgba(59,130,246,.10);
 }
 
+
 /* ==================================================
    HABIT GRID
 ================================================== */
@@ -607,11 +664,15 @@ body{
 }
 
 .grid-scroll{
+  width:100%;
+
   overflow-x:auto;
+
+  overflow-y:hidden;
 
   border-radius:16px;
 
-  width:100%;
+  -webkit-overflow-scrolling:touch;
 }
 
 table.habit-grid{
@@ -619,9 +680,53 @@ table.habit-grid{
 
   border-spacing:0;
 
-  width:100%;
+  width:max-content;
+
+  min-width:100%;
 
   table-layout:fixed;
+}
+
+
+/* Fixed widths for every column */
+
+.habit-grid th.col-num,
+.habit-grid td.col-num{
+  width:32px;
+
+  min-width:32px;
+
+  max-width:32px;
+}
+
+.habit-grid th.col-name,
+.habit-grid td.col-name{
+  width:118px;
+
+  min-width:118px;
+
+  max-width:118px;
+}
+
+
+/* Every day gets its own proper space */
+
+.habit-grid th.col-day,
+.habit-grid td.cell{
+  width:32px;
+
+  min-width:32px;
+
+  max-width:32px;
+}
+
+.habit-grid th.col-pct,
+.habit-grid td.col-pct{
+  width:46px;
+
+  min-width:46px;
+
+  max-width:46px;
 }
 
 .habit-grid thead th{
@@ -802,9 +907,15 @@ tr:hover .row-actions{
 }
 
 .habit-grid td.cell{
-  height:22px;
+  width:32px;
 
-  padding:2px;
+  min-width:32px;
+
+  max-width:32px;
+
+  height:30px;
+
+  padding:4px;
 
   border-right:1px solid #1c2140;
 
@@ -940,6 +1051,7 @@ tr.progress-row td.col-name{
   font-size:10.5px;
 }
 
+
 /* ==================================================
    BUTTONS / LEGEND
 ================================================== */
@@ -1008,6 +1120,7 @@ tr.progress-row td.col-name{
 
   display:inline-block;
 }
+
 
 /* ==================================================
    LISTS
@@ -1163,6 +1276,7 @@ tr.progress-row td.col-name{
   font-size:12px;
 }
 
+
 /* ==================================================
    DESKTOP / TABLET
 ================================================== */
@@ -1181,6 +1295,7 @@ tr.progress-row td.col-name{
     max-width:100vw !important;
 
     margin-left:0 !important;
+
     margin-right:0 !important;
 
     padding:
@@ -1285,6 +1400,36 @@ tr.progress-row td.col-name{
     margin-left:0;
   }
 
+  /*
+     Keep all 7 month boxes visible on mobile.
+  */
+
+  .month-slider{
+    width:100%;
+
+    grid-template-columns:
+      repeat(7,minmax(0,1fr));
+
+    gap:5px;
+
+    overflow:hidden;
+  }
+
+  .month-chip{
+    padding:
+      8px 2px;
+
+    border-radius:10px;
+  }
+
+  .month-chip .mc-name{
+    font-size:8px;
+  }
+
+  .month-chip .mc-score{
+    font-size:9.5px;
+  }
+
   .month-nav{
     align-self:flex-start;
 
@@ -1302,11 +1447,15 @@ tr.progress-row td.col-name{
   }
 
   .grid-scroll{
-    width:100% !important;
+    width:100%;
 
-    max-width:100% !important;
+    max-width:100%;
 
-    overflow-x:auto !important;
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    -webkit-overflow-scrolling:touch;
   }
 
   .list-grid{
@@ -1318,6 +1467,7 @@ tr.progress-row td.col-name{
     flex-wrap:wrap;
   }
 }
+
 
 /* ==================================================
    EXTRA MOBILE SAFETY
@@ -1384,12 +1534,40 @@ tr.progress-row td.col-name{
 
     padding-right:16px !important;
   }
+
+  /*
+     Final mobile tuning:
+     7 month boxes fit cleanly.
+  */
+
+  .month-slider{
+    gap:4px;
+
+    grid-template-columns:
+      repeat(7,minmax(0,1fr));
+  }
+
+  .month-chip{
+    padding:
+      8px 1px;
+
+    border-radius:9px;
+  }
+
+  .month-chip .mc-name{
+    font-size:7.5px;
+  }
+
+  .month-chip .mc-score{
+    font-size:9px;
+  }
 }
 
 </style>
 </head>
 
 <body>
+
 
 <!-- ==================================================
      TOP BAR
@@ -1762,6 +1940,7 @@ tr.progress-row td.col-name{
 
 <script>
 
+
 /* ==================================================
    SAVE STATUS PILL
 ================================================== */
@@ -1808,6 +1987,7 @@ let currentDate =
 let habitsList = [];
 
 let completionsMap = {};
+
 
 /*
   "habitId-day" -> "done" | "missed"
@@ -1869,10 +2049,12 @@ async function fetchMonth(year,month){
     console.error(err);
 
     if(typeof showToast === 'function'){
+
       showToast(
         'Could not load BetterMe data',
         'error'
       );
+
     }
 
     return {
@@ -1888,6 +2070,7 @@ async function fetchMonth(year,month){
 function computeScore(completions){
 
   let done = 0;
+
   let tracked = 0;
 
   completions.forEach(c=>{
@@ -2135,6 +2318,7 @@ function renderGrid(){
   ){
 
     let done = 0;
+
     let tracked = 0;
 
 
@@ -2338,10 +2522,12 @@ async function toggleCell(box){
     setSaveStatus('error');
 
     if(typeof showToast === 'function'){
+
       showToast(
         'Could not save — try again',
         'error'
       );
+
     }
 
   }
@@ -2665,6 +2851,7 @@ document
 
 /* ==================================================
    MONTH SLIDER
+   SHOW EXACTLY 7 MONTHS
 ================================================== */
 
 async function renderMonthSlider(){
@@ -2675,8 +2862,19 @@ async function renderMonthSlider(){
     );
 
 
+  /*
+     7 boxes:
+     -6 = six months ago
+     -5
+     -4
+     -3
+     -2
+     -1
+      0 = current month
+  */
+
   const offsets =
-    [-5,-4,-3,-2,-1,0];
+    [-6,-5,-4,-3,-2,-1,0];
 
 
   const months =
@@ -2821,22 +3019,6 @@ async function renderMonthSlider(){
 
     });
 
-
-  const activeChip =
-    wrap.querySelector(
-      '.month-chip.active'
-    );
-
-
-  if(activeChip){
-
-    activeChip.scrollIntoView({
-      inline:'center',
-      block:'nearest'
-    });
-
-  }
-
 }
 
 
@@ -2905,10 +3087,12 @@ async function loadList(category){
     console.error(err);
 
     if(typeof showToast === 'function'){
+
       showToast(
         'Could not load ' + category,
         'error'
       );
+
     }
 
   }
