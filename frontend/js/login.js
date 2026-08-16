@@ -13,6 +13,7 @@ const PAGE_LABELS = {
   trading: 'Trade Guardian',
   settings: 'Settings',
   reactor: 'Dream Reactor',   // ← make sure this exact line is present
+  betterme: 'BetterMe',
 };
 
 function getRequestedPage() {
