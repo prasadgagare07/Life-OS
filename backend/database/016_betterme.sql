@@ -155,3 +155,104 @@ SELECT * FROM (VALUES
   ('character', 'Before sleeping, ask: "Did I become better today?"', 24)
 ) AS seed(category, text, position)
 WHERE NOT EXISTS (SELECT 1 FROM betterme_list_items WHERE category = 'character');
+
+-- ==========================================
+-- DEFAULT BETTERME GOALS
+-- ==========================================
+
+INSERT INTO betterme_goals
+    (title, goal_type, deadline, reward)
+SELECT
+    '50k bank balance',
+    'monthly',
+    NULL,
+    'Celebrate with a nice dinner'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM betterme_goals
+    WHERE title = '50k bank balance'
+);
+
+
+INSERT INTO betterme_goals
+    (title, goal_type, deadline, reward)
+SELECT
+    'Daily clean eating',
+    'monthly',
+    NULL,
+    'Favourite healthy meal'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM betterme_goals
+    WHERE title = 'Daily clean eating'
+);
+
+
+INSERT INTO betterme_goals
+    (title, goal_type, deadline, reward)
+SELECT
+    'Job preparation',
+    'monthly',
+    NULL,
+    'Movie night / relaxing evening'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM betterme_goals
+    WHERE title = 'Job preparation'
+);
+
+
+INSERT INTO betterme_goals
+    (title, goal_type, deadline, reward)
+SELECT
+    '20 lakh bank balance',
+    'yearly',
+    NULL,
+    'Big personal celebration'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM betterme_goals
+    WHERE title = '20 lakh bank balance'
+);
+
+
+INSERT INTO betterme_goals
+    (title, goal_type, deadline, reward)
+SELECT
+    'Body in shape',
+    'yearly',
+    NULL,
+    'Buy something you really wanted'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM betterme_goals
+    WHERE title = 'Body in shape'
+);
+
+
+INSERT INTO betterme_goals
+    (title, goal_type, deadline, reward)
+SELECT
+    'Confidence on Next Level',
+    'yearly',
+    NULL,
+    'Special day / experience'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM betterme_goals
+    WHERE title = 'Confidence on Next Level'
+);
+
+
+INSERT INTO betterme_goals
+    (title, goal_type, deadline, reward)
+SELECT
+    'Join gym & be financially better',
+    'other',
+    NULL,
+    'New gym clothes or equipment'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM betterme_goals
+    WHERE title = 'Join gym & be financially better'
+);
