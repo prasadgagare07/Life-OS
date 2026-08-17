@@ -33,13 +33,30 @@ async function getCompletionsForMonth(year, month) {
 
   return rows;
 }
+
+async function getMonth(year, month) {
+
+  const habits = await getHabits();
+
+  const completions =
+    await getCompletionsForMonth(year, month);
+
+  const savedDays =
+    await getSavedDaysForMonth(year, month);
+
+  return {
+    habits,
+    completions,
+    savedDays
+  };
+}
 // ==========================================
 // SAVED DAYS
 // ==========================================
 
 async function getSavedDaysForMonth(year, month) {
 
-  const result = await db.query(
+  const result = await pool.query(
     `
       SELECT
         entry_date,
@@ -58,7 +75,7 @@ async function getSavedDaysForMonth(year, month) {
 
 async function isDaySaved(entryDate) {
 
-  const result = await db.query(
+  const result = await pool.query(
     `
       SELECT 1
       FROM betterme_saved_days
@@ -74,7 +91,7 @@ async function isDaySaved(entryDate) {
 
 async function saveDay(entryDate) {
 
-  const result = await db.query(
+  const result = await pool.query(
     `
       INSERT INTO betterme_saved_days (entry_date)
       VALUES ($1)
@@ -620,67 +637,12 @@ async function deleteGoal(id) {
 
   return rowCount > 0;
 }
-
-// ==========================================
-// SAVED DAYS
-// ==========================================
-
-async function getSavedDaysForMonth(year, month) {
-
-  const result = await db.query(
-    `
-      SELECT
-        entry_date,
-        saved_at
-      FROM betterme_saved_days
-      WHERE EXTRACT(YEAR FROM entry_date) = $1
-        AND EXTRACT(MONTH FROM entry_date) = $2
-      ORDER BY entry_date
-    `,
-    [year, month]
-  );
-
-  return result.rows;
-}
-
-
-async function isDaySaved(entryDate) {
-
-  const result = await db.query(
-    `
-      SELECT 1
-      FROM betterme_saved_days
-      WHERE entry_date = $1
-      LIMIT 1
-    `,
-    [entryDate]
-  );
-
-  return result.rowCount > 0;
-}
-
-
-async function saveDay(entryDate) {
-
-  const result = await db.query(
-    `
-      INSERT INTO betterme_saved_days (entry_date)
-      VALUES ($1)
-      ON CONFLICT (entry_date)
-      DO NOTHING
-      RETURNING *
-    `,
-    [entryDate]
-  );
-
-  return result.rows[0] || null;
-}
-
 module.exports = {
 
   // Habits
   getHabits,
-getCompletionsForMonth,
+  getCompletionsForMonth,
+  getMonth,
   addHabit,
   renameHabit,
   reorderHabit,
