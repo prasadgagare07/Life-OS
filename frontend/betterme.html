@@ -2302,21 +2302,19 @@ function renderDayColumn(date){
 
 
       <button
-        class="
-          save-day-btn
-          ${saved ? 'locked' : ''}
-        "
-        data-save-day="${key}"
-        ${saved ? 'disabled' : ''}
-      >
-
-        ${
-          saved
-            ? '🔒 Day Saved'
-            : '✓ Save Day'
-        }
-
-      </button>
+  class="
+    save-day-btn
+    ${saved ? 'locked' : ''}
+  "
+  data-save-day="${key}"
+  ${saved ? 'disabled' : ''}
+>
+  ${
+    saved
+      ? '🔒 Saved Day'
+      : '✓ Save Day'
+  }
+</button>
 
     </div>
 
