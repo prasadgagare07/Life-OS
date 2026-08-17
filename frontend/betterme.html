@@ -1355,7 +1355,125 @@ body{
   }
 
 }
+/* =========================================================
+   GOALS
+========================================================= */
 
+.goals-section{
+  margin-top:30px;
+}
+
+.goals-tabs{
+  display:flex;
+  gap:8px;
+  margin-top:16px;
+}
+
+.goal-tab{
+  flex:1;
+  padding:11px 8px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.goal-tab.active{
+  color:#fff;
+  border-color:#3b82f6;
+  background:rgba(59,130,246,.13);
+}
+
+.goals-list{
+  margin-top:12px;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.goal-card{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:13px;
+  border-radius:15px;
+  border:1px solid var(--border);
+  background:var(--card);
+}
+
+.goal-check{
+  width:27px;
+  height:27px;
+  flex-shrink:0;
+  border-radius:9px;
+  border:1px solid #343b5e;
+  background:#20263e;
+  color:#fff;
+  cursor:pointer;
+}
+
+.goal-card.completed{
+  opacity:.65;
+}
+
+.goal-card.completed .goal-check{
+  background:#22c55e;
+  border-color:#4ade80;
+  color:#06140b;
+}
+
+.goal-info{
+  flex:1;
+  min-width:0;
+}
+
+.goal-title{
+  font-size:11px;
+  font-weight:700;
+  color:#eef0fb;
+}
+
+.goal-deadline{
+  margin-top:4px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;
+  color:var(--muted);
+}
+
+.goal-actions{
+  display:flex;
+  gap:5px;
+}
+
+.goal-action{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--card2);
+  color:#cbd5e1;
+  cursor:pointer;
+}
+
+.add-goal-btn{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  border:1px dashed rgba(59,130,246,.4);
+  background:rgba(59,130,246,.07);
+  color:#93c5fd;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.add-goal-btn:hover{
+  background:rgba(59,130,246,.14);
+}
 </style>
 
 </head>
@@ -1613,7 +1731,46 @@ body{
 
   </div>
 
+<!-- =====================================================
+     GOALS
+===================================================== -->
 
+<section class="goals-section">
+
+  <div class="section-title">
+    <span class="title-line"></span>
+    My Goals
+  </div>
+
+  <div class="goals-tabs">
+
+    <button class="goal-tab active" data-type="monthly">
+      Monthly
+    </button>
+
+    <button class="goal-tab" data-type="yearly">
+      Yearly
+    </button>
+
+    <button class="goal-tab" data-type="other">
+      Others
+    </button>
+
+  </div>
+
+  <div
+    class="goals-list"
+    id="goalsList"
+  ></div>
+
+  <button
+    class="add-goal-btn"
+    id="addGoalBtn"
+  >
+    ＋ Add Goal
+  </button>
+
+</section>
 </main>
 
 
@@ -3106,7 +3263,496 @@ document
   await loadWeek();
 
 })();
+/* =========================================================
+   GOALS
+========================================================= */
 
+let goalsList = [];
+let activeGoalType = 'monthly';
+
+
+/* =========================================================
+   LOAD GOALS
+========================================================= */
+
+async function loadGoals(){
+
+  try{
+
+    goalsList = await api.get('/betterme/goals');
+
+    renderGoals();
+
+  }catch(err){
+
+    console.error(
+      'Goals load error:',
+      err
+    );
+
+    document.getElementById(
+      'goalsList'
+    ).innerHTML = `
+      <div class="empty">
+        Unable to load goals.
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   RENDER GOALS
+========================================================= */
+
+function renderGoals(){
+
+  const list =
+    document.getElementById(
+      'goalsList'
+    );
+
+  const filtered =
+    goalsList.filter(
+      goal =>
+        goal.goal_type === activeGoalType
+    );
+
+
+  if(!filtered.length){
+
+    list.innerHTML = `
+      <div class="empty">
+        No ${activeGoalType} goals yet.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    filtered.map(
+      goal => {
+
+        const deadline =
+          goal.deadline
+            ? `Deadline: ${goal.deadline}`
+            : 'No deadline';
+
+
+        return `
+          <div
+            class="
+              goal-card
+              ${goal.completed ? 'completed' : ''}
+            "
+          >
+
+            <button
+              class="goal-check"
+              data-complete-goal="${goal.id}"
+              ${goal.completed ? 'disabled' : ''}
+            >
+              ${goal.completed ? '✓' : ''}
+            </button>
+
+
+            <div class="goal-info">
+
+              <div class="goal-title">
+                ${escapeHTML(goal.title)}
+              </div>
+
+              <div class="goal-deadline">
+                ${deadline}
+              </div>
+
+            </div>
+
+
+            ${
+              !goal.completed
+                ? `
+                  <div class="goal-actions">
+
+                    <button
+                      class="goal-action"
+                      data-edit-goal="${goal.id}"
+                    >
+                      ✎
+                    </button>
+
+                    <button
+                      class="goal-action"
+                      data-delete-goal="${goal.id}"
+                    >
+                      ×
+                    </button>
+
+                  </div>
+                `
+                : ''
+            }
+
+          </div>
+        `;
+
+      }
+    ).join('');
+
+
+  attachGoalEvents();
+
+}
+
+
+/* =========================================================
+   GOAL EVENTS
+========================================================= */
+
+function attachGoalEvents(){
+
+  document
+    .querySelectorAll(
+      '[data-complete-goal]'
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        'click',
+        () => completeGoal(
+          Number(
+            button.dataset.completeGoal
+          )
+        )
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(
+      '[data-edit-goal]'
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        'click',
+        () => editGoal(
+          Number(
+            button.dataset.editGoal
+          )
+        )
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(
+      '[data-delete-goal]'
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        'click',
+        () => deleteGoal(
+          Number(
+            button.dataset.deleteGoal
+          )
+        )
+      );
+
+    });
+
+}
+
+
+/* =========================================================
+   COMPLETE GOAL
+========================================================= */
+
+async function completeGoal(id){
+
+  try{
+
+    await api.post(
+      `/betterme/goals/${id}/complete`
+    );
+
+    await loadGoals();
+
+  }catch(err){
+
+    console.error(
+      'Complete goal error:',
+      err
+    );
+
+    alert(
+      'Could not complete the goal.'
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ADD GOAL
+========================================================= */
+
+async function addNewGoal(){
+
+  const title =
+    prompt(
+      'Goal name:'
+    );
+
+  if(
+    !title ||
+    !title.trim()
+  )
+    return;
+
+
+  let deadline =
+    prompt(
+      'Deadline (YYYY-MM-DD) — optional:'
+    );
+
+
+  if(
+    deadline &&
+    !/^\d{4}-\d{2}-\d{2}$/.test(
+      deadline
+    )
+  ){
+
+    alert(
+      'Use YYYY-MM-DD format.'
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    await api.post(
+      '/betterme/goals',
+      {
+        title:title.trim(),
+        goal_type:activeGoalType,
+        deadline:deadline || null,
+        reward:null
+      }
+    );
+
+    await loadGoals();
+
+  }catch(err){
+
+    console.error(
+      'Add goal error:',
+      err
+    );
+
+    alert(
+      'Could not add goal.'
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   EDIT GOAL
+========================================================= */
+
+async function editGoal(id){
+
+  const goal =
+    goalsList.find(
+      item =>
+        Number(item.id) === Number(id)
+    );
+
+  if(!goal)
+    return;
+
+
+  const title =
+    prompt(
+      'Edit goal:',
+      goal.title
+    );
+
+
+  if(
+    !title ||
+    !title.trim()
+  )
+    return;
+
+
+  const deadline =
+    prompt(
+      'Deadline (YYYY-MM-DD) — optional:',
+      goal.deadline || ''
+    );
+
+
+  if(
+    deadline &&
+    !/^\d{4}-\d{2}-\d{2}$/.test(
+      deadline
+    )
+  ){
+
+    alert(
+      'Use YYYY-MM-DD format.'
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    await api.put(
+      `/betterme/goals/${id}`,
+      {
+        title:title.trim(),
+        goal_type:goal.goal_type,
+        deadline:deadline || null,
+        reward:goal.reward || null
+      }
+    );
+
+    await loadGoals();
+
+  }catch(err){
+
+    console.error(
+      'Edit goal error:',
+      err
+    );
+
+    alert(
+      'Could not update the goal.'
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DELETE GOAL
+========================================================= */
+
+async function deleteGoal(id){
+
+  const confirmed =
+    confirm(
+      'Delete this goal?'
+    );
+
+  if(!confirmed)
+    return;
+
+
+  try{
+
+    await api.delete(
+      `/betterme/goals/${id}`
+    );
+
+    await loadGoals();
+
+  }catch(err){
+
+    console.error(
+      'Delete goal error:',
+      err
+    );
+
+    alert(
+      'Could not delete the goal.'
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   GOAL TABS
+========================================================= */
+
+document
+  .querySelectorAll(
+    '.goal-tab'
+  )
+  .forEach(tab => {
+
+    tab.addEventListener(
+      'click',
+      () => {
+
+        document
+          .querySelectorAll(
+            '.goal-tab'
+          )
+          .forEach(
+            item =>
+              item.classList.remove(
+                'active'
+              )
+          );
+
+        tab.classList.add(
+          'active'
+        );
+
+        activeGoalType =
+          tab.dataset.type;
+
+        renderGoals();
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   ADD GOAL BUTTON
+========================================================= */
+
+document
+  .getElementById(
+    'addGoalBtn'
+  )
+  .addEventListener(
+    'click',
+    addNewGoal
+  );
+
+
+/* =========================================================
+   LOAD GOALS
+========================================================= */
+
+loadGoals();
 </script>
 
 
