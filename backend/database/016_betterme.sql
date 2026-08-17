@@ -21,6 +21,19 @@ CREATE TABLE IF NOT EXISTS betterme_habit_completion (
     updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE(habit_id, entry_date)
 );
+-- ==========================================
+-- BETTERME — PERMANENT SAVED DAYS
+-- Once a day is saved, it can never be edited.
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS betterme_saved_days (
+    id          SERIAL PRIMARY KEY,
+    entry_date  DATE NOT NULL UNIQUE,
+    saved_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_betterme_saved_days_date
+ON betterme_saved_days(entry_date);
 
 CREATE INDEX IF NOT EXISTS idx_betterme_completion_date
 ON betterme_habit_completion(entry_date);
