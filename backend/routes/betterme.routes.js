@@ -12,7 +12,7 @@ router.put('/habits/:id/position', controller.reorderHabit);
 router.delete('/habits/:id', controller.deleteHabit);
 
 router.post('/completion', controller.setCompletion);
-
+router.post('/save-day', controller.saveDay);
 
 // List items (Learn / Master / Character)
 router.get('/list/:category', controller.getListItems);
