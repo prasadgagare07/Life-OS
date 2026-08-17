@@ -23,3 +23,18 @@ router.delete('/list-item/:id', controller.deleteListItem);
 
 
 module.exports = router;
+
+
+// ==========================================
+// GOALS
+// ==========================================
+
+router.get('/goals', controller.getGoals);
+
+router.post('/goals', controller.addGoal);
+
+router.put('/goals/:id', controller.updateGoal);
+
+router.put('/goals/:id/complete', controller.completeGoal);
+
+router.delete('/goals/:id', controller.deleteGoal);
