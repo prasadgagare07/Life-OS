@@ -33,7 +33,60 @@ async function getCompletionsForMonth(year, month) {
 
   return rows;
 }
+// ==========================================
+// SAVED DAYS
+// ==========================================
 
+async function getSavedDaysForMonth(year, month) {
+
+  const result = await db.query(
+    `
+      SELECT
+        entry_date,
+        saved_at
+      FROM betterme_saved_days
+      WHERE EXTRACT(YEAR FROM entry_date) = $1
+        AND EXTRACT(MONTH FROM entry_date) = $2
+      ORDER BY entry_date
+    `,
+    [year, month]
+  );
+
+  return result.rows;
+}
+
+
+async function isDaySaved(entryDate) {
+
+  const result = await db.query(
+    `
+      SELECT 1
+      FROM betterme_saved_days
+      WHERE entry_date = $1
+      LIMIT 1
+    `,
+    [entryDate]
+  );
+
+  return result.rowCount > 0;
+}
+
+
+async function saveDay(entryDate) {
+
+  const result = await db.query(
+    `
+      INSERT INTO betterme_saved_days (entry_date)
+      VALUES ($1)
+      ON CONFLICT (entry_date)
+      DO NOTHING
+      RETURNING *
+    `,
+    [entryDate]
+  );
+
+  return result.rows[0] || null;
+}
 
 // ==========================================
 // ADD HABIT — inserts at a given position,
@@ -582,6 +635,10 @@ module.exports = {
   renameListItem,
   toggleListItem,
   deleteListItem,
+
+         getSavedDaysForMonth,
+  isDaySaved,
+  saveDay
 
   // Goals
   getGoals,
