@@ -293,18 +293,292 @@ async function deleteListItem(req, res) {
   }
 
 }
+// ==========================================
+// GOALS
+// ==========================================
 
+const VALID_GOAL_TYPES = [
+  'monthly',
+  'yearly',
+  'other'
+];
+
+
+function checkGoalType(goalType, res) {
+
+  if (!VALID_GOAL_TYPES.includes(goalType)) {
+
+    res.status(400).json({
+      error: 'Goal type must be monthly, yearly, or other'
+    });
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+
+async function getGoals(req, res) {
+
+  try {
+
+    const goals = await BetterMe.getGoals();
+
+    res.json(goals);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to load goals'
+    });
+
+  }
+
+}
+
+
+async function addGoal(req, res) {
+
+  try {
+
+    const {
+      title,
+      goal_type,
+      deadline,
+      reward
+    } = req.body;
+
+
+    if (!title || !title.trim()) {
+
+      return res.status(400).json({
+        error: 'Goal title is required'
+      });
+
+    }
+
+
+    if (!checkGoalType(goal_type, res)) {
+      return;
+    }
+
+
+    if (
+      deadline &&
+      !/^\d{4}-\d{2}-\d{2}$/.test(deadline)
+    ) {
+
+      return res.status(400).json({
+        error: 'Deadline must use YYYY-MM-DD format'
+      });
+
+    }
+
+
+    const goal =
+      await BetterMe.addGoal(
+        title.trim(),
+        goal_type,
+        deadline || null,
+        reward && reward.trim()
+          ? reward.trim()
+          : null
+      );
+
+
+    res.status(201).json(goal);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to add goal'
+    });
+
+  }
+
+}
+
+
+async function updateGoal(req, res) {
+
+  try {
+
+    const id =
+      Number(req.params.id);
+
+
+    const {
+      title,
+      goal_type,
+      deadline,
+      reward
+    } = req.body;
+
+
+    if (!title || !title.trim()) {
+
+      return res.status(400).json({
+        error: 'Goal title is required'
+      });
+
+    }
+
+
+    if (!checkGoalType(goal_type, res)) {
+      return;
+    }
+
+
+    if (
+      deadline &&
+      !/^\d{4}-\d{2}-\d{2}$/.test(deadline)
+    ) {
+
+      return res.status(400).json({
+        error: 'Deadline must use YYYY-MM-DD format'
+      });
+
+    }
+
+
+    const goal =
+      await BetterMe.updateGoal(
+        id,
+        title.trim(),
+        goal_type,
+        deadline || null,
+        reward && reward.trim()
+          ? reward.trim()
+          : null
+      );
+
+
+    if (!goal) {
+
+      return res.status(404).json({
+        error: 'Goal not found or already completed'
+      });
+
+    }
+
+
+    res.json(goal);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to update goal'
+    });
+
+  }
+
+}
+
+
+async function completeGoal(req, res) {
+
+  try {
+
+    const id =
+      Number(req.params.id);
+
+
+    const goal =
+      await BetterMe.completeGoal(id);
+
+
+    if (!goal) {
+
+      return res.status(404).json({
+        error: 'Goal not found or already completed'
+      });
+
+    }
+
+
+    res.json(goal);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to complete goal'
+    });
+
+  }
+
+}
+
+
+async function deleteGoal(req, res) {
+
+  try {
+
+    const id =
+      Number(req.params.id);
+
+
+    const success =
+      await BetterMe.deleteGoal(id);
+
+
+    if (!success) {
+
+      return res.status(404).json({
+        error: 'Goal not found'
+      });
+
+    }
+
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to delete goal'
+    });
+
+  }
+
+}
 
 module.exports = {
+
+  // Habits
   getMonth,
   addHabit,
   renameHabit,
   reorderHabit,
   deleteHabit,
   setCompletion,
+
+  // List items
   getListItems,
   addListItem,
   renameListItem,
   toggleListItem,
-  deleteListItem
+  deleteListItem,
+
+  // Goals
+  getGoals,
+  addGoal,
+  updateGoal,
+  completeGoal,
+  deleteGoal
+
 };
