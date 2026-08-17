@@ -157,6 +157,28 @@ SELECT * FROM (VALUES
 WHERE NOT EXISTS (SELECT 1 FROM betterme_list_items WHERE category = 'character');
 
 -- ==========================================
+-- GOALS
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS betterme_goals (
+    id            SERIAL PRIMARY KEY,
+    title         TEXT NOT NULL,
+    goal_type     TEXT NOT NULL
+                  CHECK (goal_type IN ('monthly', 'yearly', 'other')),
+    deadline      DATE NULL,
+    reward        TEXT NULL,
+    completed     BOOLEAN NOT NULL DEFAULT FALSE,
+    completed_at  TIMESTAMPTZ NULL,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_betterme_goals_type
+ON betterme_goals(goal_type);
+
+CREATE INDEX IF NOT EXISTS idx_betterme_goals_completed
+ON betterme_goals(completed);
+
+-- ==========================================
 -- DEFAULT BETTERME GOALS
 -- ==========================================
 
