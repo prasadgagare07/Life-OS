@@ -12,26 +12,58 @@ async function getMonth(req, res) {
     const year = Number(req.query.year);
     const month = Number(req.query.month);
 
-    if (!Number.isFinite(year) || !Number.isFinite(month) || month < 1 || month > 12) {
-      return res.status(400).json({ error: 'Valid year and month (1-12) are required' });
+    if (
+      !Number.isFinite(year) ||
+      !Number.isFinite(month) ||
+      month < 1 ||
+      month > 12
+    ) {
+      return res.status(400).json({
+        error: 'Valid year and month (1-12) are required'
+      });
     }
 
-    const [habits, completions] = await Promise.all([
+    const [
+      habits,
+      completions,
+      savedDays
+    ] = await Promise.all([
+
       BetterMe.getHabits(),
-      BetterMe.getCompletionsForMonth(year, month)
+
+      BetterMe.getCompletionsForMonth(
+        year,
+        month
+      ),
+
+      BetterMe.getSavedDaysForMonth(
+        year,
+        month
+      )
+
     ]);
 
-    res.json({ habits, completions });
+    res.json({
+
+      habits,
+
+      completions,
+
+      savedDays
+
+    });
 
   } catch (err) {
 
     console.error(err);
-    res.status(500).json({ error: 'Failed to load BetterMe habits' });
+
+    res.status(500).json({
+      error: 'Failed to load BetterMe habits'
+    });
 
   }
 
 }
-
 
 async function addHabit(req, res) {
 
@@ -125,30 +157,144 @@ async function deleteHabit(req, res) {
   }
 
 }
+async function saveDay(req, res) {
 
+  try {
+
+    const {
+      entry_date
+    } = req.body;
+
+
+    if (!entry_date) {
+
+      return res.status(400).json({
+        error: 'entry_date is required'
+      });
+
+    }
+
+
+    // ==========================================
+    // CHECK IF ALREADY SAVED
+    // ==========================================
+
+    const alreadySaved =
+      await BetterMe.isDaySaved(
+        entry_date
+      );
+
+
+    if (alreadySaved) {
+
+      return res.status(409).json({
+        error: 'This day is already saved',
+        code: 'DAY_ALREADY_SAVED'
+      });
+
+    }
+
+
+    // ==========================================
+    // SAVE PERMANENTLY
+    // ==========================================
+
+    const saved =
+      await BetterMe.saveDay(
+        entry_date
+      );
+
+
+    res.status(201).json({
+
+      success: true,
+
+      savedDay: saved
+
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to save day'
+    });
+
+  }
+
+}
 
 async function setCompletion(req, res) {
 
   try {
 
-    const { habit_id, entry_date, status } = req.body;
+    const {
+      habit_id,
+      entry_date,
+      status
+    } = req.body;
+
 
     if (!habit_id || !entry_date) {
-      return res.status(400).json({ error: 'habit_id and entry_date are required' });
+
+      return res.status(400).json({
+        error: 'habit_id and entry_date are required'
+      });
+
     }
 
-    if (status !== null && status !== 'done' && status !== 'missed') {
-      return res.status(400).json({ error: "status must be 'done', 'missed', or null" });
+
+    if (
+      status !== null &&
+      status !== 'done' &&
+      status !== 'missed'
+    ) {
+
+      return res.status(400).json({
+        error: "status must be 'done', 'missed', or null"
+      });
+
     }
 
-    const result = await BetterMe.setCompletion(Number(habit_id), entry_date, status);
+
+    // ==========================================
+    // PERMANENT LOCK CHECK
+    // ==========================================
+
+    const alreadySaved =
+      await BetterMe.isDaySaved(
+        entry_date
+      );
+
+
+    if (alreadySaved) {
+
+      return res.status(409).json({
+        error: 'This day has already been saved and can no longer be edited',
+        code: 'DAY_LOCKED'
+      });
+
+    }
+
+
+    const result =
+      await BetterMe.setCompletion(
+        Number(habit_id),
+        entry_date,
+        status
+      );
+
 
     res.json(result);
 
   } catch (err) {
 
     console.error(err);
-    res.status(500).json({ error: 'Failed to save completion' });
+
+    res.status(500).json({
+      error: 'Failed to save completion'
+    });
 
   }
 
@@ -566,6 +712,7 @@ module.exports = {
   reorderHabit,
   deleteHabit,
   setCompletion,
+  saveDay,
 
   // List items
   getListItems,
