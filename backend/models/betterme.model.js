@@ -426,7 +426,147 @@ async function deleteListItem(id) {
   }
 
 }
+// ==========================================
+// GOALS
+// ==========================================
 
+async function getGoals() {
+
+  const { rows } = await pool.query(`
+    SELECT
+      id,
+      title,
+      goal_type,
+      deadline::text AS deadline,
+      reward,
+      completed,
+      completed_at,
+      created_at
+    FROM betterme_goals
+    ORDER BY
+      completed ASC,
+      CASE goal_type
+        WHEN 'monthly' THEN 1
+        WHEN 'yearly' THEN 2
+        WHEN 'other' THEN 3
+        ELSE 4
+      END,
+      id ASC
+  `);
+
+  return rows;
+}
+
+
+async function addGoal(
+  title,
+  goalType,
+  deadline,
+  reward
+) {
+
+  const { rows } = await pool.query(`
+    INSERT INTO betterme_goals
+      (
+        title,
+        goal_type,
+        deadline,
+        reward,
+        completed
+      )
+    VALUES
+      ($1, $2, $3, $4, FALSE)
+    RETURNING
+      id,
+      title,
+      goal_type,
+      deadline::text AS deadline,
+      reward,
+      completed,
+      completed_at,
+      created_at
+  `, [
+    title,
+    goalType,
+    deadline || null,
+    reward || null
+  ]);
+
+  return rows[0];
+}
+
+
+async function updateGoal(
+  id,
+  title,
+  goalType,
+  deadline,
+  reward
+) {
+
+  const { rows } = await pool.query(`
+    UPDATE betterme_goals
+    SET
+      title = $1,
+      goal_type = $2,
+      deadline = $3,
+      reward = $4
+    WHERE id = $5
+      AND completed = FALSE
+    RETURNING
+      id,
+      title,
+      goal_type,
+      deadline::text AS deadline,
+      reward,
+      completed,
+      completed_at,
+      created_at
+  `, [
+    title,
+    goalType,
+    deadline || null,
+    reward || null,
+    id
+  ]);
+
+  return rows[0] || null;
+}
+
+
+async function completeGoal(id) {
+
+  const { rows } = await pool.query(`
+    UPDATE betterme_goals
+    SET
+      completed = TRUE,
+      completed_at = NOW()
+    WHERE id = $1
+      AND completed = FALSE
+    RETURNING
+      id,
+      title,
+      goal_type,
+      deadline::text AS deadline,
+      reward,
+      completed,
+      completed_at,
+      created_at
+  `, [id]);
+
+  return rows[0] || null;
+}
+
+
+async function deleteGoal(id) {
+
+  const { rowCount } = await pool.query(`
+    DELETE FROM betterme_goals
+    WHERE id = $1
+  `, [id]);
+
+  return rowCount > 0;
+}
 
 module.exports = {
   getHabits,
@@ -436,9 +576,17 @@ module.exports = {
   reorderHabit,
   deleteHabit,
   setCompletion,
+
   getListItems,
   addListItem,
   renameListItem,
   toggleListItem,
-  deleteListItem
+  deleteListItem,
+
+  // Goals
+  getGoals,
+  addGoal,
+  updateGoal,
+  completeGoal,
+  deleteGoal
 };
