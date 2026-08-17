@@ -2361,99 +2361,32 @@ async function toggleHabitDot(dot){
   const date =
     dot.dataset.date;
 
+  /* =========================================================
+   ATTACH SAVE BUTTON EVENTS
+========================================================= */
 
-  /*
-    IMPORTANT:
+function attachSaveEvents(){
 
-    If day is already saved,
-    do absolutely nothing.
-  */
+  document
+    .querySelectorAll(
+      '[data-save-day]'
+    )
+    .forEach(button=>{
 
-  if(
-    isDaySaved(date)
-  ){
+      button.addEventListener(
+        'click',
+        ()=>{
 
-    return;
+          saveDay(
+            button.dataset.saveDay
+          );
 
-  }
+        }
+      );
 
-
-  const key =
-    `${habitId}-${date}`;
-
-
-  const current =
-    completionsMap[key];
-
-
-  const next =
-    current === undefined
-      ? 'done'
-      : current === 'done'
-        ? 'missed'
-        : null;
-
-
-  /*
-    Optimistic UI.
-  */
-
-  if(next === null){
-
-    delete completionsMap[key];
-
-  }else{
-
-    completionsMap[key] =
-      next;
-
-  }
-
-
-  renderTracker();
-
-  updateMotivation();
-
-  setSaveStatus(
-    'saving'
-  );
-
-
-  try{
-
-    await api.post(
-      '/betterme/completion',
-      {
-        habit_id:habitId,
-
-        entry_date:date,
-
-        status:next
-      }
-    );
-
-    setSaveStatus(
-      'saved'
-    );
-
-  }catch(err){
-
-    console.error(err);
-
-    /*
-      Reload from server if save failed.
-    */
-
-    setSaveStatus(
-      'error'
-    );
-
-    await loadWeek();
-
-  }
+    });
 
 }
-
 
 /* =========================================================
    SAVE DAY
