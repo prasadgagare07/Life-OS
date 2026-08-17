@@ -679,7 +679,8 @@ async function saveDay(entryDate) {
 module.exports = {
 
   // Habits
-  getMonth,
+  getHabits,
+getCompletionsForMonth,
   addHabit,
   renameHabit,
   reorderHabit,
