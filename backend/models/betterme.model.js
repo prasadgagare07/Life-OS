@@ -677,23 +677,26 @@ async function saveDay(entryDate) {
 }
 
 module.exports = {
-  getHabits,
-  getCompletionsForMonth,
+
+  // Habits
+  getMonth,
   addHabit,
   renameHabit,
   reorderHabit,
   deleteHabit,
   setCompletion,
 
+  // Saved Days
+  getSavedDaysForMonth,
+  isDaySaved,
+  saveDay,
+
+  // List items
   getListItems,
   addListItem,
   renameListItem,
   toggleListItem,
   deleteListItem,
-
-         getSavedDaysForMonth,
-  isDaySaved,
-  saveDay
 
   // Goals
   getGoals,
@@ -701,4 +704,5 @@ module.exports = {
   updateGoal,
   completeGoal,
   deleteGoal
+
 };
