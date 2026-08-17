@@ -1712,79 +1712,6 @@ function startOfWeek(date){
 let currentWeekStart =
   startOfWeek(TODAY);
 
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-/*
-  These are the days that the user explicitly saved.
-
-  Example:
-
-  {
-    "2026-08-17": true,
-    "2026-08-18": true
-  }
-
-  Saved locally so the UI remains locked after refresh.
-*/
-
-const LOCK_KEY =
-  'betterme_saved_days_v2';
-
-
-function getSavedDays(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(
-        LOCK_KEY
-      )
-    ) || {};
-
-  }catch(err){
-
-    return {};
-
-  }
-
-}
-
-
-function saveSavedDays(days){
-
-  localStorage.setItem(
-    LOCK_KEY,
-    JSON.stringify(days)
-  );
-
-}
-
-
-function isDaySaved(dateKey){
-
-  const days =
-    getSavedDays();
-
-  return !!days[dateKey];
-
-}
-
-
-function lockDay(dateKey){
-
-  const days =
-    getSavedDays();
-
-  days[dateKey] = true;
-
-  saveSavedDays(days);
-
-}
-
-
 /* =========================================================
    DATA
 ========================================================= */
@@ -1792,6 +1719,8 @@ function lockDay(dateKey){
 let habitsList = [];
 
 let completionsMap = {};
+
+let savedDaysMap = {};
 
 
 /*
@@ -1828,7 +1757,11 @@ function dateKey(date){
   return `${y}-${m}-${d}`;
 
 }
+function isDaySaved(dateKeyValue){
 
+  return !!savedDaysMap[dateKeyValue];
+
+}
 
 /* =========================================================
    FORMAT DATE
@@ -1962,6 +1895,8 @@ async function loadWeek(){
 
     completionsMap = {};
 
+savedDaysMap = {};
+
 
     function addCompletions(data){
 
@@ -1986,14 +1921,45 @@ async function loadWeek(){
 
     }
 
+    function addSavedDays(data){
+
+  if(
+    !data ||
+    !data.savedDays
+  )
+    return;
+
+
+  data.savedDays.forEach(
+    day => {
+
+      const key =
+        String(day.entry_date)
+          .slice(0, 10);
+
+      savedDaysMap[key] = true;
+
+    }
+  );
+
+    }
+
 
     addCompletions(
-      firstMonth
-    );
+  firstMonth
+);
 
-    addCompletions(
-      secondMonth
-    );
+addCompletions(
+  secondMonth
+);
+
+addSavedDays(
+  firstMonth
+);
+
+addSavedDays(
+  secondMonth
+);
 
 
     renderEverything();
@@ -2493,6 +2459,7 @@ async function toggleHabitDot(dot){
    SAVE DAY
 ========================================================= */
 
+
 async function saveDay(dateKeyValue){
 
   /*
@@ -2512,18 +2479,14 @@ async function saveDay(dateKeyValue){
 
 
   /*
-    Count how many habits
-    have been marked.
-
-    We don't allow accidentally
-    locking a completely empty day.
+    Count marked habits.
   */
 
   let marked = 0;
 
 
   habitsList.forEach(
-    habit=>{
+    habit => {
 
       const status =
         completionsMap[
@@ -2536,6 +2499,11 @@ async function saveDay(dateKeyValue){
     }
   );
 
+
+  /*
+    Don't accidentally save
+    a completely empty day.
+  */
 
   if(marked === 0){
 
@@ -2550,6 +2518,84 @@ async function saveDay(dateKeyValue){
   }
 
 
+  setSaveStatus(
+    'saving'
+  );
+
+
+  try{
+
+    /*
+      Permanently save the day
+      in PostgreSQL.
+    */
+
+    await api.post(
+      '/betterme/day/save',
+      {
+        entry_date:dateKeyValue
+      }
+    );
+
+
+    /*
+      Update UI immediately.
+    */
+
+    savedDaysMap[
+      dateKeyValue
+    ] = true;
+
+
+    renderTracker();
+
+    updateMotivation();
+
+    setSaveStatus(
+      'saved'
+    );
+
+
+  }catch(err){
+
+    console.error(
+      'Save day error:',
+      err
+    );
+
+
+    /*
+      If the backend says the day
+      was already saved, lock it
+      in the current UI as well.
+    */
+
+    if(
+      err &&
+      (
+        err.status === 409 ||
+        err.response?.status === 409
+      )
+    ){
+
+      savedDaysMap[
+        dateKeyValue
+      ] = true;
+
+      renderTracker();
+
+      updateMotivation();
+
+    }
+
+
+    setSaveStatus(
+      'error'
+    );
+
+  }
+
+}
   /*
     IMPORTANT:
 
