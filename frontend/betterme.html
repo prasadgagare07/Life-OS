@@ -2509,216 +2509,119 @@ function attachDotEvents(){
 async function toggleHabitDot(dot){
 
   const habitId =
-    Number(
-      dot.dataset.habit
-    );
+    Number(dot.dataset.habit);
 
   const date =
     dot.dataset.date;
 
-  /* =========================================================
-   ATTACH SAVE BUTTON EVENTS
-========================================================= */
-
-function attachSaveEvents(){
-
-  document
-    .querySelectorAll(
-      '[data-save-day]'
-    )
-    .forEach(button=>{
-
-      button.addEventListener(
-        'click',
-        ()=>{
-
-          saveDay(
-            button.dataset.saveDay
-          );
-
-        }
-      );
-
-    });
-
-}
-
-/* =========================================================
-   SAVE DAY
-========================================================= */
-
-
-async function saveDay(dateKeyValue){
 
   /*
-    Already saved?
-    Do nothing.
+    Day already saved?
+    It cannot be changed.
   */
 
-  if(
-    isDaySaved(
-      dateKeyValue
-    )
-  ){
-
+  if(isDaySaved(date)){
     return;
-
   }
 
 
   /*
-    Count marked habits.
+    Current status
   */
 
-  let marked = 0;
+  const key =
+    `${habitId}-${date}`;
 
-
-  habitsList.forEach(
-    habit => {
-
-      const status =
-        completionsMap[
-          `${habit.id}-${dateKeyValue}`
-        ];
-
-      if(status)
-        marked++;
-
-    }
-  );
+  const currentStatus =
+    completionsMap[key] || null;
 
 
   /*
-    Don't accidentally save
-    a completely empty day.
+    Cycle:
+
+    empty → done
+    done  → missed
+    missed → empty
   */
 
-  if(marked === 0){
+  let nextStatus = null;
 
-    const proceed =
-      confirm(
-        'No habits are marked for this day. Save it anyway?'
-      );
+  if(currentStatus === null){
 
-    if(!proceed)
-      return;
+    nextStatus = 'done';
+
+  }
+  else if(currentStatus === 'done'){
+
+    nextStatus = 'missed';
+
+  }
+  else if(currentStatus === 'missed'){
+
+    nextStatus = null;
 
   }
 
 
-  setSaveStatus(
-    'saving'
-  );
+  setSaveStatus('saving');
 
 
   try{
 
     /*
-      Permanently save the day
-      in PostgreSQL.
+      Empty status means remove
+      the completion for this habit/day.
     */
 
-    await api.post(
-      '/betterme/day/save',
-      {
-        entry_date:dateKeyValue
-      }
-    );
+    if(nextStatus === null){
+
+      await api.delete(
+        `/betterme/completions/${habitId}/${date}`
+      );
+
+      delete completionsMap[key];
+
+    }
+    else{
+
+      await api.post(
+        '/betterme/completions',
+        {
+          habit_id:habitId,
+          entry_date:date,
+          status:nextStatus
+        }
+      );
+
+      completionsMap[key] =
+        nextStatus;
+
+    }
 
 
     /*
-      Update UI immediately.
+      Refresh UI.
     */
-
-    savedDaysMap[
-      dateKeyValue
-    ] = true;
-
 
     renderTracker();
 
     updateMotivation();
 
-    setSaveStatus(
-      'saved'
-    );
+    setSaveStatus('saved');
 
 
   }catch(err){
 
     console.error(
-      'Save day error:',
+      'Toggle habit error:',
       err
     );
 
-
-    /*
-      If the backend says the day
-      was already saved, lock it
-      in the current UI as well.
-    */
-
-    if(
-      err &&
-      (
-        err.status === 409 ||
-        err.response?.status === 409
-      )
-    ){
-
-      savedDaysMap[
-        dateKeyValue
-      ] = true;
-
-      renderTracker();
-
-      updateMotivation();
-
-    }
-
-
-    setSaveStatus(
-      'error'
-    );
+    setSaveStatus('error');
 
   }
 
-}
-  /*
-    IMPORTANT:
-
-    Once this happens,
-    the day is permanently locked
-    in localStorage.
-  */
-
-  lockDay(
-    dateKeyValue
-  );
-
-
-  setSaveStatus(
-    'saving'
-  );
-
-
-  /*
-    The actual habit results were
-    already saved individually.
-
-    Here we only lock the day.
-  */
-
-  renderTracker();
-
-  updateMotivation();
-
-  setSaveStatus(
-    'saved'
-  );
-
-}
-
+  }
 
 /* =========================================================
    ATTACH SAVE BUTTON EVENTS
