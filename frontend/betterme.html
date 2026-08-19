@@ -849,6 +849,15 @@ body{
   border-radius:3px;
 }
 
+/* UPCOMING DAYS — faint connecting line */
+
+.day-column.future
+.dot-track::before{
+
+  opacity:.32;
+
+}
+
 
 /* =========================================================
    HABIT DOT ROW
@@ -1827,12 +1836,78 @@ function setSaveStatus(state){
    DATE HELPERS
 ========================================================= */
 
-const TODAY =
+let TODAY =
   new Date();
 
 TODAY.setHours(
   0,0,0,0
 );
+
+
+/*
+   Keep TODAY in sync with the
+   real calendar date. Without this,
+   a tab left open across midnight
+   keeps treating the previous day
+   as "today" until it's refreshed.
+*/
+
+function scheduleMidnightRollover(){
+
+  const now =
+    new Date();
+
+  const nextMidnight =
+    new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()+1,
+      0,0,1
+    );
+
+  const msUntilMidnight =
+    nextMidnight.getTime() -
+    now.getTime();
+
+  setTimeout(
+    async ()=>{
+
+      const wasOnTodaysWeek =
+        dateKey(currentWeekStart) ===
+        dateKey(startOfWeek(TODAY));
+
+      TODAY =
+        new Date();
+
+      TODAY.setHours(
+        0,0,0,0
+      );
+
+      /*
+        Only jump the visible week
+        forward if the user was
+        already looking at the week
+        containing "today" — don't
+        yank them away from a week
+        they navigated to manually.
+      */
+
+      if(wasOnTodaysWeek){
+
+        currentWeekStart =
+          startOfWeek(TODAY);
+
+      }
+
+      await loadWeek();
+
+      scheduleMidnightRollover();
+
+    },
+    msUntilMidnight
+  );
+
+}
 
 
 /*
@@ -2345,6 +2420,10 @@ function renderDayColumn(date){
     key ===
     dateKey(TODAY);
 
+  const future =
+    date.getTime() >
+    TODAY.getTime();
+
 
   let doneCount = 0;
 
@@ -2420,6 +2499,7 @@ function renderDayColumn(date){
         day-column
         ${today ? 'today' : ''}
         ${saved ? 'locked' : ''}
+        ${future ? 'future' : ''}
       "
       data-day-column="${key}"
     >
@@ -3164,6 +3244,8 @@ document
 (async function init(){
 
   await loadWeek();
+
+  scheduleMidnightRollover();
 
 })();
 /* =========================================================
