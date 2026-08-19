@@ -59,7 +59,7 @@ async function getSavedDaysForMonth(year, month) {
   const result = await pool.query(
     `
       SELECT
-        entry_date,
+        entry_date::text AS entry_date,
         saved_at
       FROM betterme_saved_days
       WHERE EXTRACT(YEAR FROM entry_date) = $1
