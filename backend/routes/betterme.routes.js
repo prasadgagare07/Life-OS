@@ -11,7 +11,8 @@ router.put('/habits/:id', controller.renameHabit);
 router.put('/habits/:id/position', controller.reorderHabit);
 router.delete('/habits/:id', controller.deleteHabit);
 
-router.post('/completion', controller.setCompletion);
+router.post('/completions', controller.setCompletion);
+router.delete('/completions/:habitId/:date', controller.deleteCompletion);
 router.post('/save-day', controller.saveDay);
 
 // List items (Learn / Master / Character)
