@@ -2655,7 +2655,7 @@ async function toggleHabitDot(dot){
 
     if(nextStatus === null){
 
-      await api.delete(
+      await api.del(
         `/betterme/completions/${habitId}/${date}`
       );
 
@@ -2702,6 +2702,49 @@ async function toggleHabitDot(dot){
   }
 
   }
+
+/* =========================================================
+   SAVE DAY
+========================================================= */
+
+async function saveDay(date){
+
+  if(isDaySaved(date)){
+    return;
+  }
+
+  setSaveStatus('saving');
+
+  try{
+
+    await api.post(
+      '/betterme/save-day',
+      {
+        entry_date:date
+      }
+    );
+
+    savedDaysMap[date] = true;
+
+    renderTracker();
+
+    updateMotivation();
+
+    setSaveStatus('saved');
+
+  }catch(err){
+
+    console.error(
+      'Save day error:',
+      err
+    );
+
+    setSaveStatus('error');
+
+  }
+
+}
+
 
 /* =========================================================
    ATTACH SAVE BUTTON EVENTS
@@ -3657,7 +3700,7 @@ async function deleteGoal(id){
 
   try{
 
-    await api.delete(
+    await api.del(
       `/betterme/goals/${id}`
     );
 
