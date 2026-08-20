@@ -301,6 +301,59 @@ async function setCompletion(req, res) {
 }
 
 
+async function deleteCompletion(req, res) {
+
+  try {
+
+    const {
+      habitId,
+      date
+    } = req.params;
+
+    if (!habitId || !date) {
+
+      return res.status(400).json({
+        error: 'habitId and date are required'
+      });
+
+    }
+
+    const alreadySaved =
+      await BetterMe.isDaySaved(
+        date
+      );
+
+    if (alreadySaved) {
+
+      return res.status(409).json({
+        error: 'This day has already been saved and can no longer be edited',
+        code: 'DAY_LOCKED'
+      });
+
+    }
+
+    const result =
+      await BetterMe.setCompletion(
+        Number(habitId),
+        date,
+        null
+      );
+
+    res.json(result);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Failed to remove completion'
+    });
+
+  }
+
+}
+
+
 // ==========================================
 // LIST ITEMS (Learn / Master / Character)
 // ==========================================
@@ -712,6 +765,7 @@ module.exports = {
   reorderHabit,
   deleteHabit,
   setCompletion,
+  deleteCompletion,
   saveDay,
 
   // List items
