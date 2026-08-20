@@ -114,7 +114,7 @@ async function login(req, res) {
 
   if (!valid) {
     recordFailure(key);
-    return res.status(401).json({ error: 'Incorrect passcode' });
+    return res.status(401).json({ error: 'Your premium plan has expired. Renew your subscription to continue.' });
   }
 
   clearAttempts(key);
@@ -254,7 +254,7 @@ async function verifyPasscode(req, res) {
 
   if (!valid) {
     recordFailure(key);
-    return res.status(401).json({ error: 'Incorrect passcode' });
+    return res.status(401).json({ error: 'Your premium plan has expired. Renew your subscription to continue.' });
   }
 
   clearAttempts(key);
