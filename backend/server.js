@@ -329,11 +329,11 @@ console.log('✅ Weekly Withdrawal database initialized');
 
     console.log('✅ Database initialized');
 
-    app.listen(config.port, () => {
-      console.log(
-        `🚀 LifeOS server running on port ${config.port}`
-      );
-    });
+    app.listen(config.port, '0.0.0.0', () => {
+  console.log(
+    `🚀 LifeOS server running on port ${config.port}`
+  );
+});
 
   } catch (err) {
     console.error('❌ Startup error:', err);
