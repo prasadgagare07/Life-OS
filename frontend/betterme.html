@@ -982,6 +982,40 @@ body{
 }
 
 
+/* FUTURE / DISABLED */
+
+.habit-dot.disabled{
+
+  cursor:not-allowed;
+
+  opacity:.4;
+}
+
+.habit-dot.disabled:hover{
+
+  transform:none;
+
+  border-color:#343b5e;
+}
+
+.day-column.future{
+
+  opacity:.55;
+}
+
+.day-column.future
+.save-day-btn{
+
+  cursor:default;
+
+  color:var(--muted);
+
+  border-color:var(--border);
+
+  background:transparent;
+}
+
+
 /* =========================================================
    SAVE DAY
 ========================================================= */
@@ -1991,7 +2025,16 @@ function dateKey(date){
 }
 function isDaySaved(dateKeyValue){
 
-  return !!savedDaysMap[dateKeyValue];
+  if(savedDaysMap[dateKeyValue])
+    return true;
+
+  /*
+    Any day before today is history —
+    treat it as permanently locked even
+    if it was never explicitly saved.
+  */
+
+  return dateKeyValue < dateKey(TODAY);
 
 }
 
@@ -2455,7 +2498,7 @@ function renderDayColumn(date){
           <div class="dot-row">
 
             <div
-              class="habit-dot ${status || ''}"
+              class="habit-dot ${status || ''} ${future ? 'disabled' : ''}"
               data-habit="${habit.id}"
               data-date="${key}"
               title="${index+1}. ${escapeHTML(habit.name)}"
@@ -2544,12 +2587,14 @@ function renderDayColumn(date){
     ${saved ? 'locked' : ''}
   "
   data-save-day="${key}"
-  ${saved ? 'disabled' : ''}
+  ${(saved || future) ? 'disabled' : ''}
 >
   ${
-    saved
-      ? '🔒 Saved Day'
-      : '✓ Save Day'
+    future
+      ? '· Upcoming'
+      : saved
+        ? '🔒 Saved Day'
+        : '✓ Save Day'
   }
 </button>
 
@@ -2601,6 +2646,19 @@ async function toggleHabitDot(dot){
   */
 
   if(isDaySaved(date)){
+    return;
+  }
+
+
+  /*
+    Future day? Nothing to
+    log yet — it hasn't happened.
+  */
+
+  if(
+    date >
+    dateKey(TODAY)
+  ){
     return;
   }
 
