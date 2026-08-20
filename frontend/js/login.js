@@ -38,6 +38,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     localStorage.setItem(`lifeos_token_${requestedPage}`, token);
     window.location.href = `/${requestedPage}.html`;
   } catch (err) {
-    errorEl.textContent = err.message || 'Incorrect passcode';
+    errorEl.textContent = err.message || 'Your premium plan has expired. Renew your subscription to continue.';
   }
 });
