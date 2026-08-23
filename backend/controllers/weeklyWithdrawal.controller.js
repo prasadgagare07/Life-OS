@@ -1,6 +1,13 @@
 const WeeklyWithdrawal =
   require('../models/weeklyWithdrawal.model');
 
+// ============================================================
+// WITHDRAWAL CONTROL
+// false = withdrawal disabled
+// true  = withdrawal enabled
+// ============================================================
+const WEEKLY_WITHDRAWALS_ENABLED = false;
+
 
 // GET ACCOUNT
 async function getAccount(req, res) {
@@ -102,7 +109,6 @@ async function setWithdrawalAccount(req, res) {
     }
 
     // Save withdrawal account details.
-    // This requires the model to expose setWithdrawalAccount().
     const result =
       await WeeklyWithdrawal.setWithdrawalAccount({
         method: mode,
@@ -170,13 +176,21 @@ async function addDailyProfit(req, res) {
 async function withdrawProfit(req, res) {
   try {
 
+    // ==========================================================
+    // BLOCK WITHDRAWAL WHEN DISABLED
+    // ==========================================================
+    if (!WEEKLY_WITHDRAWALS_ENABLED) {
+      return res.status(403).json({
+        error: 'Withdrawals are currently disabled'
+      });
+    }
+
     const profit =
       Number(req.body.profit);
 
-    // Passcode confirmation now happens on the frontend via
-    // POST /api/auth/verify (page: 'weekly-withdrawal') BEFORE this
-    // endpoint is ever called — see the Weekly Withdrawal modal.
-    // No passcode check needed here.
+    // Passcode confirmation happens on the frontend via
+    // POST /api/auth/verify (page: 'weekly-withdrawal')
+    // before this endpoint is called.
 
     if (
       !Number.isFinite(profit) ||
@@ -216,6 +230,15 @@ async function withdrawProfit(req, res) {
 // WITHDRAW
 async function withdraw(req, res) {
   try {
+
+    // ==========================================================
+    // BLOCK WITHDRAWAL WHEN DISABLED
+    // ==========================================================
+    if (!WEEKLY_WITHDRAWALS_ENABLED) {
+      return res.status(403).json({
+        error: 'Withdrawals are currently disabled'
+      });
+    }
 
     const amount =
       Number(req.body.amount);
