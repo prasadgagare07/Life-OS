@@ -3880,10 +3880,9 @@ async function renderWeeklyAccount(){
   
   if(button){  
   
-    button.disabled =  
-      calc.withdrawal <= 0 ||  
-      weeklyAlreadyWithdrawnToday ||  
-      !weeklyAlreadyLoggedToday;  
+    // Withdraw button permanently disabled (untappable).
+    // All other logic (profit calc, status text, history, etc.) is unchanged.
+    button.disabled = true;  
   
   }  
   
