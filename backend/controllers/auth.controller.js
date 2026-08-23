@@ -114,7 +114,7 @@ async function login(req, res) {
 
   if (!valid) {
     recordFailure(key);
-    return res.status(401).json({ error: 'Your premium plan has expired. Renew your subscription to continue.' });
+    return res.status(401).json({ error: 'Incorrect Passcode' });
   }
 
   clearAttempts(key);
