@@ -226,6 +226,24 @@ function isNonNegativeNumber(n) { return typeof n === 'number' && !Number.isNaN(
 // ---------- Routes ----------
 
 const router = express.Router();
+// ---------- TEMPORARY: one-time passcode reset, visit from your phone ----------
+// Placed BEFORE the auth middleware below on purpose — it has its own key
+// check instead. Delete this whole block once login works; an
+// unauthenticated route (even key-protected) is not something to leave
+// live in a real deployment.
+router.get('/_reset-passcode', async (req, res) => {
+  if (req.query.key !== 'fixmenow123') {
+    return res.status(403).send('wrong key');
+  }
+  const hash = await bcrypt.hash('ascend', 10);
+  await pool.query(
+    `INSERT INTO auth_settings (page, passcode_hash) VALUES ('rise', $1)
+     ON CONFLICT (page) DO UPDATE SET passcode_hash = EXCLUDED.passcode_hash`,
+    [hash]
+  );
+  res.send('✅ Rise passcode set to "ascend". Go delete this route now.');
+});
+
 router.use(requireAuth(['rise', 'dashboard']));
 
 router.get('/', async (req, res) => {
