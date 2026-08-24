@@ -27,7 +27,7 @@ app.use('/api/vision', visionRoutes);
 app.use('/api/financial-engine', financialEngineRoutes);
 app.use('/api/time-explorer', timeExplorerRoutes);
 app.use('/api/trading', tradingRoutes);
-
+app.use('/api/rise', require('./routes/rise.routes'));
 app.use(
   '/api/weekly-withdrawal',
   weeklyWithdrawalRoutes
