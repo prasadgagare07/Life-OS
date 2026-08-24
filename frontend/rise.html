@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS — Rise</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/cards.css">
+<style>
+/* ============================================
+   LifeOS — Rise
+   Signature motif: the "Ascent Path" — a glowing
+   line climbing from Starting Point to Freedom,
+   colored along a warm-dawn → teal-rise gradient
+   so the line itself tells the story: obligation
+   cooling into freedom as you climb it.
+   ============================================ */
+
+:root {
+  --rise-line-1: var(--accent-1);   /* dawn orange — starting obligation */
+  --rise-line-2: var(--accent-2);   /* gold — midpoint */
+  --rise-line-3: var(--good);       /* teal-green — freedom */
+  --rise-glow: 0 0 24px rgba(62, 207, 142, 0.35);
+
+  --rise-navy:      #060A18;
+  --rise-navy-deep: #030510;
+  --rise-cyan:       #3FD7FF;
+  --rise-cyan-dim:    rgba(63, 215, 255, 0.14);
+}
+
+/* ---------- Night-sky backdrop (Rise page only) ---------- */
+
+body.rise-body {
+  background-color: var(--rise-navy);
+  background-image:
+    radial-gradient(900px 500px at 85% -5%, rgba(63, 215, 255, 0.16), transparent 60%),
+    radial-gradient(700px 420px at -10% 30%, rgba(63, 215, 255, 0.10), transparent 55%),
+    radial-gradient(1000px 600px at 50% 120%, rgba(62, 207, 142, 0.08), transparent 60%),
+    linear-gradient(180deg, var(--rise-navy) 0%, var(--rise-navy-deep) 100%);
+  background-attachment: fixed;
+}
+
+.rise-starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.rise-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #CFEFFF;
+  box-shadow: 0 0 4px 1px rgba(207, 239, 255, 0.6);
+  animation: rise-twinkle linear infinite;
+}
+
+.rise-star.big {
+  width: 3px;
+  height: 3px;
+  box-shadow: 0 0 6px 2px rgba(63, 215, 255, 0.7);
+}
+
+@keyframes rise-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+
+.rise-circuit {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(63, 215, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 215, 255, 0.06) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(1200px 700px at 70% 0%, #000 0%, transparent 70%);
+}
+
+.app-shell, .rise-fab, .rise-modal-backdrop { position: relative; z-index: 1; }
+
+/* ---------- Achievement bar — the first thing you see ---------- */
+
+.rise-achievements {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.achv-tile {
+  position: relative;
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.15rem;
+  overflow: hidden;
+  background: rgba(10, 15, 30, 0.6);
+  border: 1px solid rgba(63, 215, 255, 0.16);
+  backdrop-filter: blur(2px);
+}
+
+.achv-tile.cleared {
+  border-color: rgba(62, 207, 142, 0.35);
+  box-shadow: 0 0 0 1px rgba(62, 207, 142, 0.08) inset, 0 10px 30px rgba(62, 207, 142, 0.08);
+}
+.achv-tile.paid {
+  border-color: rgba(255, 193, 94, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 193, 94, 0.06) inset, 0 10px 30px rgba(255, 138, 76, 0.08);
+}
+
+.achv-tile .achv-icon { font-size: 1.1rem; margin-bottom: 0.4rem; display: block; }
+
+.achv-tile .achv-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.achv-tile.cleared .achv-value { color: var(--rise-line-3); font-size: 1.9rem; }
+.achv-tile.cleared .achv-value .of { font-size: 1.05rem; color: var(--text-muted); font-weight: 500; }
+
+.achv-tile.paid .achv-value { color: var(--accent-2); font-size: 1.55rem; }
+
+.achv-tile .achv-label {
+  margin-top: 0.35rem;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+.achv-tile .achv-glow {
+  position: absolute;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  right: -40px; top: -40px;
+  filter: blur(30px);
+  pointer-events: none;
+}
+.achv-tile.cleared .achv-glow { background: rgba(62, 207, 142, 0.35); }
+.achv-tile.paid .achv-glow { background: rgba(255, 193, 94, 0.3); }
+
+/* ---------- Hero ---------- */
+
+.rise-hero {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(63, 215, 255, 0.16);
+  background:
+    radial-gradient(600px 300px at 12% 0%, rgba(255, 138, 76, 0.08), transparent 65%),
+    radial-gradient(700px 360px at 100% 100%, rgba(63, 215, 255, 0.12), transparent 60%),
+    rgba(10, 15, 30, 0.55);
+  backdrop-filter: blur(2px);
+  padding: 2.25rem 2rem 1.25rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.rise-hero-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: var(--accent-2);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.rise-hero h1 {
+  font-size: 3.2rem;
+  line-height: 0.95;
+  background: linear-gradient(100deg, var(--rise-line-1) 0%, var(--rise-line-2) 45%, var(--rise-line-3) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.35em;
+}
+
+.rise-hero .subtitle {
+  color: var(--text-muted);
+  font-size: 1.02rem;
+  margin-bottom: 1.75rem;
+  max-width: 34ch;
+}
+
+.ascent-wrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  padding: 26px 0 24px;
+}
+
+.ascent-wrap svg { width: 100%; height: 100%; overflow: visible; }
+
+#ascentMarkerLayer {
+  position: absolute;
+  top: 26px; left: 0; right: 0; bottom: 24px;
+  width: auto; height: auto;
+}
+
+.ascent-track {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 3;
+}
+
+.ascent-fill {
+  fill: none;
+  stroke: url(#ascentGradient);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(255, 160, 80, 0.35));
+}
+
+.ascent-marker {
+  filter: drop-shadow(0 0 10px rgba(62, 207, 142, 0.75));
+}
+
+.ascent-marker circle.core {
+  fill: var(--text);
+}
+
+.ascent-marker circle.ring {
+  fill: none;
+  stroke: var(--rise-line-3);
+  stroke-width: 2;
+  animation: ascent-pulse 2.2s ease-out infinite;
+}
+
+@keyframes ascent-pulse {
+  0%   { r: 7;  opacity: 0.9; }
+  100% { r: 20; opacity: 0; }
+}
+
+.ascent-milestone {
+  position: absolute;
+  transform: translate(-50%, 0);
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.ascent-milestone.start { left: 0; bottom: 2px; text-align: left; transform: none; }
+.ascent-milestone.freedom { right: 0; top: 0; text-align: right; color: var(--rise-line-3); font-weight: 600; }
+
+.ascent-milestone .amt {
+  display: block;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.ascent-milestone.start .amt { color: var(--accent-1); }
+.ascent-milestone.freedom .amt { color: var(--rise-line-3); }
+
+/* ---------- Summary strip ---------- */
+
+.rise-summary {
+  display: grid;
+  grid-template-columns: 1.3fr repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.rise-arc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.rise-arc {
+  --pct: 0;
+  position: relative;
+  width: 168px;
+  height: 100px;
+  margin-bottom: 0.35rem;
+}
+
+.rise-arc svg { width: 100%; height: 100%; overflow: visible; }
+
+.rise-arc .track {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 11;
+  stroke-linecap: round;
+}
+
+.rise-arc .fill {
+  fill: none;
+  stroke: url(#riseArcGradient);
+  stroke-width: 11;
+  stroke-linecap: round;
+  stroke-dasharray: 264;
+  stroke-dashoffset: calc(264 - (264 * var(--pct) / 100));
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rise-arc-pct {
+  position: absolute;
+  bottom: 4px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.7rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.rise-arc-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  color: var(--rise-line-3);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.rise-arc-caption { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
+.rise-arc-caption b { color: var(--text); font-weight: 600; }
+
+.rise-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.rise-stat .label {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.rise-stat .value {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.rise-stat.owed .value { color: var(--accent-1); }
+.rise-stat.paid .value { color: var(--rise-line-3); }
+.rise-stat.interest .value { color: var(--warn); }
+
+/* ---------- Tabs ---------- */
+
+.rise-tabs {
+  display: inline-flex;
+  gap: 0.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem;
+  margin-bottom: 1.25rem;
+}
+
+.rise-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.55em 1.3em;
+  border-radius: 999px;
+  min-height: 38px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.rise-tab.active {
+  background: var(--accent-gradient);
+  color: #1A1200;
+}
+
+/* ---------- Filters ---------- */
+
+.rise-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.rise-chip {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.4em 0.9em;
+  border-radius: 999px;
+  min-height: 34px;
+}
+
+.rise-chip.active {
+  border-color: var(--accent-1);
+  color: var(--text);
+  background: var(--surface-raised);
+}
+
+/* ---------- Complete view — record cards ---------- */
+
+.rise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.debt-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem 1.25rem 1.1rem;
+  overflow: hidden;
+}
+
+.debt-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent-1);
+}
+
+.debt-card.status-progress::before { background: var(--warn); }
+.debt-card.status-notstarted::before { background: var(--text-faint); }
+.debt-card.status-cleared::before { background: var(--rise-line-3); box-shadow: var(--rise-glow); }
+
+.debt-card.status-cleared {
+  border-color: rgba(62, 207, 142, 0.35);
+  box-shadow: var(--shadow-card), var(--rise-glow);
+}
+
+.debt-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.85rem;
+  gap: 0.5rem;
+}
+
+.debt-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; }
+
+.debt-category {
+  display: inline-block;
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.status-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.3em 0.7em;
+  border-radius: 999px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.status-pill.status-progress { background: rgba(242, 184, 75, 0.14); color: var(--warn); }
+.status-pill.status-notstarted { background: rgba(86, 91, 104, 0.2); color: var(--text-faint); }
+.status-pill.status-cleared { background: rgba(62, 207, 142, 0.16); color: var(--rise-line-3); }
+
+.debt-amounts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.debt-amounts .item .label { font-size: 0.7rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+.debt-amounts .item .val { font-family: var(--font-mono); font-size: 1.02rem; }
+.debt-amounts .item.remaining .val { color: var(--accent-1); font-weight: 600; }
+.debt-amounts .item.paid .val { color: var(--rise-line-3); }
+
+.debt-progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+  margin-bottom: 0.85rem;
+}
+
+.debt-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--rise-line-1), var(--rise-line-3));
+}
+
+.status-cleared .debt-progress-fill { background: var(--rise-line-3); }
+
+.debt-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  margin-bottom: 1rem;
+}
+
+.debt-meta b { color: var(--text-muted); font-weight: 500; }
+
+.debt-interest-note {
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  margin-bottom: 1rem;
+}
+.debt-interest-note b { color: var(--warn); font-weight: 600; }
+
+.debt-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.debt-actions button {
+  flex: 1;
+  font-size: 0.82rem;
+  padding: 0.6em 0.5em;
+  min-height: 40px;
+}
+
+.cleared-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(62, 207, 142, 0.1);
+  border: 1px solid rgba(62, 207, 142, 0.3);
+  color: var(--rise-line-3);
+  border-radius: var(--radius-sm);
+  padding: 0.55em 0.8em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+}
+
+.spark {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--rise-line-3);
+  opacity: 0;
+  animation: spark-pop 2.6s ease-in-out infinite;
+}
+@keyframes spark-pop {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  15%  { opacity: 1; }
+  70%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-26px) scale(1); }
+}
+
+/* ---------- Paths view ---------- */
+
+.path-group {
+  margin-bottom: 1.5rem;
+}
+
+.path-group-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+
+.path-group-num {
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  font-size: 0.85rem;
+}
+
+.path-group-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; }
+
+.path-group-total {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.path-row-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.path-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+.path-row:last-child { border-bottom: none; }
+
+.path-row .dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--accent-1);
+  flex-shrink: 0;
+}
+.path-row.status-cleared .dot { background: var(--rise-line-3); box-shadow: 0 0 8px rgba(62, 207, 142, 0.7); }
+.path-row.status-progress .dot { background: var(--warn); }
+.path-row.status-notstarted .dot { background: var(--text-faint); }
+
+.path-row .who { flex: 1; min-width: 0; }
+.path-row .who .n { font-weight: 600; font-size: 0.94rem; }
+.path-row .who .u { font-size: 0.72rem; color: var(--text-faint); }
+
+.path-row .bar-wrap {
+  width: 100px;
+  flex-shrink: 0;
+}
+.path-row .bar-track { height: 5px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.path-row .bar-fill { height: 100%; background: linear-gradient(90deg, var(--rise-line-1), var(--rise-line-3)); }
+
+.path-row .amt {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  text-align: right;
+  min-width: 84px;
+  flex-shrink: 0;
+}
+.path-row.status-cleared .amt { color: var(--rise-line-3); }
+
+.path-group.cleared-collapsed {
+  opacity: 0.85;
+}
+
+/* ---------- Floating add button ---------- */
+
+.rise-fab {
+  position: fixed;
+  right: 2.25rem;
+  bottom: 2.25rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: #1A1200;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 28px rgba(255, 138, 76, 0.4);
+  z-index: 50;
+}
+
+/* ---------- Modal (visual only) ---------- */
+
+.rise-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(6, 7, 10, 0.7);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 200;
+}
+.rise-modal-backdrop.open { display: flex; }
+
+.rise-modal {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 1.5rem 1.5rem 2rem;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .rise-modal-backdrop { align-items: center; }
+  .rise-modal { border-radius: var(--radius-lg); }
+}
+
+.rise-modal h3 { margin-bottom: 1rem; }
+.rise-modal .form-row { margin-bottom: 0.9rem; }
+.rise-modal label { display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; }
+.rise-modal .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.rise-modal .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+.rise-modal .modal-actions button { flex: 1; }
+
+.rise-modal-error {
+  color: #FF6B6B;
+  font-size: 0.82rem;
+  min-height: 1.1em;
+  margin-top: -0.3rem;
+}
+
+.rise-delete-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  font-size: 0.82rem;
+  margin-top: 1rem;
+  padding: 0.4em;
+}
+.rise-delete-link:hover { color: #FF6B6B; }
+
+.rise-status-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2.5rem 1rem;
+  font-size: 0.9rem;
+}
+.rise-status-msg.error { color: #FF6B6B; }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+  .rise-summary { grid-template-columns: 1fr 1fr; }
+  .rise-arc-card { grid-column: 1 / -1; }
+}
+
+@media (max-width: 768px) {
+  .rise-hero { padding: 1.75rem 1.25rem 1rem; }
+  .rise-hero h1 { font-size: 2.3rem; }
+  .ascent-wrap { height: 170px; }
+  .rise-summary { grid-template-columns: 1fr 1fr; }
+  .rise-fab { right: 1.1rem; bottom: 1.1rem; width: 56px; height: 56px; }
+  .path-row .bar-wrap { display: none; }
+}
+
+@media (max-width: 480px) {
+  .rise-summary { grid-template-columns: 1fr; }
+  .rise-hero h1 { font-size: 1.9rem; }
+}
+
+</style>
+</head>
+<body class="rise-body">
+
+<div class="rise-starfield" id="riseStarfield"></div>
+<div class="rise-circuit"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header fade-up">
+      <div>
+        <div class="eyebrow">↗ RISE</div>
+        <h1 style="font-size:1.6rem;">Rise</h1>
+      </div>
+    </div>
+
+    <!-- ============ ACHIEVEMENTS — the motivation, first thing shown ============ -->
+    <section class="rise-achievements fade-up" id="riseAchievements">
+      <!-- filled by rise.js: cleared count + total paid, computed from live records -->
+    </section>
+
+    <!-- ============ HERO — Ascent Path ============ -->
+    <section class="rise-hero fade-up">
+      <div class="rise-hero-eyebrow">↗ Rise</div>
+      <h1>RISE</h1>
+      <p class="subtitle">Every payment moves me closer to freedom.</p>
+
+      <div class="ascent-wrap" id="ascentWrap">
+        <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="ascentGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#FF8A4C"/>
+              <stop offset="55%" stop-color="#FFC15E"/>
+              <stop offset="100%" stop-color="#3ECF8E"/>
+            </linearGradient>
+          </defs>
+          <path id="ascentPath" class="ascent-track" d="M 2 36 C 25 36, 30 22, 48 20 S 72 6, 98 3" vector-effect="non-scaling-stroke"/>
+          <path class="ascent-fill" d="M 2 36 C 25 36, 30 22, 48 20 S 72 6, 98 3" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <svg id="ascentMarkerLayer" style="position:absolute; inset:0; overflow:visible;"></svg>
+
+        <div class="ascent-milestone start">
+          Starting Point
+          <span class="amt" id="ascentStart">₹0</span>
+        </div>
+        <div class="ascent-milestone freedom">
+          Freedom
+          <span class="amt">₹0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SUMMARY ============ -->
+    <section class="rise-summary fade-up">
+      <div class="rise-arc-card">
+        <div class="rise-arc-label">Clearance</div>
+        <div class="rise-arc" id="riseArc" style="--pct:0">
+          <svg viewBox="0 0 168 100">
+            <defs>
+              <linearGradient id="riseArcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FF8A4C"/>
+                <stop offset="55%" stop-color="#FFC15E"/>
+                <stop offset="100%" stop-color="#3ECF8E"/>
+              </linearGradient>
+            </defs>
+            <path class="track" d="M 14 92 A 70 70 0 0 1 154 92"/>
+            <path class="fill" d="M 14 92 A 70 70 0 0 1 154 92"/>
+          </svg>
+          <div class="rise-arc-pct" id="riseArcPct">0%</div>
+        </div>
+        <div class="rise-arc-caption" id="riseArcCaption"></div>
+      </div>
+
+      <div class="rise-stat owed">
+        <div class="label">Total Owed</div>
+        <div class="value" id="statOwed">₹0</div>
+      </div>
+      <div class="rise-stat paid">
+        <div class="label">Total Paid</div>
+        <div class="value" id="statPaid">₹0</div>
+      </div>
+      <div class="rise-stat">
+        <div class="label">Original Obligation</div>
+        <div class="value" id="statOriginal">₹0</div>
+      </div>
+      <div class="rise-stat interest">
+        <div class="label">Fixed Interest</div>
+        <div class="value" id="statInterest">₹0</div>
+      </div>
+    </section>
+
+    <!-- ============ TABS ============ -->
+    <div class="rise-tabs fade-up" id="riseTabs">
+      <button class="rise-tab active" data-tab="complete">Complete</button>
+      <button class="rise-tab" data-tab="paths">Paths</button>
+    </div>
+
+    <!-- ============ FILTERS ============ -->
+    <div class="rise-filters fade-up" id="riseFilters">
+      <button class="rise-chip active" data-filter="all">All</button>
+      <button class="rise-chip" data-filter="active">Active</button>
+      <button class="rise-chip" data-filter="cleared">Cleared</button>
+      <button class="rise-chip" data-filter="highest">Highest Remaining</button>
+      <button class="rise-chip" data-filter="recent">Recently Updated</button>
+    </div>
+
+    <!-- ============ COMPLETE VIEW ============ -->
+    <section class="rise-view" id="view-complete">
+      <div class="rise-grid" id="completeGrid">
+        <!-- cards injected by rise.js from live /api/rise data -->
+      </div>
+    </section>
+
+    <!-- ============ PATHS VIEW ============ -->
+    <section class="rise-view" id="view-paths" style="display:none;">
+      <div id="pathsContainer"></div>
+    </section>
+
+  </main>
+</div>
+
+<button class="rise-fab" id="riseFab" aria-label="Add debt record">+</button>
+
+<!-- ============ Add / Edit modal ============ -->
+<div class="rise-modal-backdrop" id="riseModalBackdrop">
+  <div class="rise-modal">
+    <h3 id="debtModalTitle">Add a record</h3>
+
+    <div class="form-row">
+      <label>Name</label>
+      <input type="text" id="debtName" placeholder="e.g. Raj">
+    </div>
+    <div class="form-row form-grid-2">
+      <div>
+        <label>Original Amount</label>
+        <input type="number" id="debtOriginal" placeholder="₹0">
+      </div>
+      <div>
+        <label>Fixed Interest</label>
+        <input type="number" id="debtInterest" placeholder="₹0">
+      </div>
+    </div>
+    <div class="form-row form-grid-2">
+      <div>
+        <label>Category</label>
+        <select id="debtCategory"></select>
+      </div>
+      <div id="debtInitialPaidRow">
+        <label>Initial Paid Amount</label>
+        <input type="number" id="debtInitialPaid" placeholder="₹0">
+      </div>
+    </div>
+    <div class="form-row" id="debtDateRow">
+      <label>Date</label>
+      <input type="date" id="debtDate">
+    </div>
+    <div class="form-row">
+      <label>Notes</label>
+      <input type="text" id="debtNotes" placeholder="Optional">
+    </div>
+
+    <div class="rise-modal-error" id="debtModalError"></div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="riseModalCancel">Cancel</button>
+      <button class="btn-primary" id="riseModalSave">Save record</button>
+    </div>
+    <button class="rise-delete-link" id="debtDeleteBtn" style="display:none;">Delete this record</button>
+  </div>
+</div>
+
+<!-- ============ + Payment modal ============ -->
+<div class="rise-modal-backdrop" id="risePaymentBackdrop">
+  <div class="rise-modal">
+    <h3>Add a payment</h3>
+    <div class="form-row">
+      <label>Amount</label>
+      <input type="number" id="paymentAmount" placeholder="₹0">
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="paymentDate">
+    </div>
+    <div class="form-row">
+      <label>Note</label>
+      <input type="text" id="paymentNote" placeholder="Optional">
+    </div>
+
+    <div class="rise-modal-error" id="paymentModalError"></div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="paymentModalCancel">Cancel</button>
+      <button class="btn-primary" id="paymentModalSave">Save payment</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script>
+// ============================================
+// RISE — live data
+// Everything renders from what GET /api/rise returns. Complete and Paths
+// are two views over the exact same RECORDS array — there is no second
+// copy of the data anywhere, so editing a record in one place is visible
+// everywhere else the moment loadData() re-runs.
+// ============================================
+
+const CATEGORY_FALLBACK = ['Big Commitments', 'Family / Relations', 'Friends', 'Loan Apps', 'Other'];
+
+let RECORDS = [];
+let CATEGORIES = CATEGORY_FALLBACK;
+let currentFilter = 'all';
+let editingId = null;       // null = Add mode, otherwise the debt id being edited
+let paymentTargetId = null; // which debt the payment modal is currently for
+
+function inr(n) {
+  const s = Math.round(Math.abs(Number(n) || 0)).toString();
+  let last3 = s.slice(-3);
+  let rest = s.slice(0, -3);
+  if (rest !== '') last3 = ',' + last3;
+  const formatted = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + last3;
+  return '₹' + formatted;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso.length <= 10 ? iso + 'T00:00:00' : iso);
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function statusLabel(s) {
+  return { notstarted: 'Not Started', progress: 'In Progress', cleared: 'Cleared' }[s];
+}
+
+function normalizeStatus(s) {
+  return { not_started: 'notstarted', in_progress: 'progress', cleared: 'cleared' }[s] || 'notstarted';
+}
+
+function normalizeDebt(d) {
+  const original = Number(d.original_amount);
+  const paid = Number(d.paid_amount);
+  return {
+    id: d.id,
+    name: d.name,
+    category: d.category,
+    original,
+    paid,
+    remaining: Number(d.remaining_amount),
+    interest: Number(d.fixed_interest),
+    status: normalizeStatus(d.status),
+    pct: original > 0 ? Math.min(100, Math.round((paid / original) * 100)) : 0,
+    lastPayment: d.last_payment_at,
+    lastUpdate: d.updated_at,
+    notes: d.notes,
+  };
+}
+
+// ---------- Load ----------
+
+async function loadData() {
+  const grid = document.getElementById('completeGrid');
+  if (RECORDS.length === 0) grid.innerHTML = `<div class="rise-status-msg">Loading your records…</div>`;
+
+  try {
+    const { debts, categories } = await api.get('/rise');
+    RECORDS = debts.map(normalizeDebt);
+    CATEGORIES = categories.length ? categories.map(c => c.name) : CATEGORY_FALLBACK;
+
+    populateCategorySelect();
+    renderAchievements();
+    renderSummary();
+    renderComplete(currentFilter);
+    renderPaths();
+    initAscentMarker();
+  } catch (err) {
+    grid.innerHTML = `<div class="rise-status-msg error">Couldn't load your records — ${err.message}</div>`;
+  }
+}
+
+function populateCategorySelect() {
+  const select = document.getElementById('debtCategory');
+  if (!select) return;
+  const current = select.value;
+  select.innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+  if (CATEGORIES.includes(current)) select.value = current;
+}
+
+// ---------- Achievement bar ----------
+
+function renderAchievements() {
+  const clearedCount = RECORDS.filter(r => r.status === 'cleared').length;
+  const totalCount = RECORDS.length;
+  const totalPaid = RECORDS.reduce((s, r) => s + r.paid, 0);
+
+  document.getElementById('riseAchievements').innerHTML = `
+    <div class="achv-tile cleared">
+      <div class="achv-glow"></div>
+      <span class="achv-icon">✓</span>
+      <div class="achv-value">${clearedCount}<span class="of">of ${totalCount} cleared</span></div>
+      <div class="achv-label">Debts Fully Closed</div>
+    </div>
+    <div class="achv-tile paid">
+      <div class="achv-glow"></div>
+      <span class="achv-icon">↗</span>
+      <div class="achv-value">${inr(totalPaid)}</div>
+      <div class="achv-label">Paid Toward Freedom</div>
+    </div>
+  `;
+}
+
+// ---------- Summary strip ----------
+
+function renderSummary() {
+  const totalOriginal = RECORDS.reduce((s, r) => s + r.original, 0);
+  const totalPaid = RECORDS.reduce((s, r) => s + r.paid, 0);
+  const totalRemaining = totalOriginal - totalPaid;
+  const totalInterest = RECORDS.filter(r => r.status !== 'cleared').reduce((s, r) => s + r.interest, 0);
+  const pct = totalOriginal > 0 ? Math.round((totalPaid / totalOriginal) * 100) : 0;
+
+  document.getElementById('riseArc').style.setProperty('--pct', pct);
+  document.getElementById('riseArcPct').textContent = pct + '%';
+  document.getElementById('riseArcCaption').innerHTML = `<b>${inr(totalPaid)}</b> cleared · <b>${inr(totalRemaining)}</b> remaining`;
+
+  document.getElementById('statOwed').textContent = inr(totalRemaining);
+  document.getElementById('statPaid').textContent = inr(totalPaid);
+  document.getElementById('statOriginal').textContent = inr(totalOriginal);
+  document.getElementById('statInterest').textContent = inr(totalInterest);
+  document.getElementById('ascentStart').textContent = inr(totalOriginal);
+}
+
+// ---------- Complete view ----------
+
+function renderComplete(filter = 'all') {
+  currentFilter = filter;
+  const grid = document.getElementById('completeGrid');
+
+  if (RECORDS.length === 0) {
+    grid.innerHTML = `<div class="rise-status-msg">No records yet — tap + to add your first one.</div>`;
+    return;
+  }
+
+  let list = [...RECORDS];
+  if (filter === 'active') list = list.filter(r => r.status !== 'cleared');
+  if (filter === 'cleared') list = list.filter(r => r.status === 'cleared');
+  if (filter === 'highest') list.sort((a, b) => b.remaining - a.remaining);
+  if (filter === 'recent') list.sort((a, b) => new Date(b.lastUpdate) - new Date(a.lastUpdate));
+
+  grid.innerHTML = list.map(r => `
+    <div class="debt-card status-${r.status} fade-up">
+      <div class="debt-card-top">
+        <div>
+          <div class="debt-name">${r.name}</div>
+          <div class="debt-category">${r.category}</div>
+        </div>
+        <div class="status-pill status-${r.status}">${r.status === 'cleared' ? '✓ ' : ''}${statusLabel(r.status)}</div>
+      </div>
+
+      ${r.status === 'cleared' ? `<div class="cleared-banner">✨ Cleared in full — one less climb ahead</div>` : ''}
+
+      <div class="debt-amounts">
+        <div class="item"><div class="label">Original</div><div class="val">${inr(r.original)}</div></div>
+        <div class="item paid"><div class="label">Paid</div><div class="val">${inr(r.paid)}</div></div>
+        <div class="item remaining"><div class="label">Remaining</div><div class="val">${inr(r.remaining)}</div></div>
+        <div class="item"><div class="label">Fixed Interest</div><div class="val">${inr(r.interest)}</div></div>
+      </div>
+
+      <div class="debt-progress-track"><div class="debt-progress-fill" style="width:${r.pct}%"></div></div>
+
+      <div class="debt-meta">
+        <span>Last Payment <b>${fmtDate(r.lastPayment)}</b></span>
+        <span>Last Updated <b>${fmtDate(r.lastUpdate)}</b></span>
+      </div>
+
+      <div class="debt-actions">
+        <button class="btn-secondary" onclick="openPaymentModal(${r.id})" ${r.status === 'cleared' ? 'disabled' : ''}>+ Payment</button>
+        <button class="btn-secondary" onclick="openEditModal(${r.id})">Edit</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ---------- Paths view ----------
+
+function renderPaths() {
+  const container = document.getElementById('pathsContainer');
+  const groups = {};
+  CATEGORIES.forEach(c => groups[c] = []);
+  RECORDS.forEach(r => {
+    if (!groups[r.category]) groups[r.category] = [];
+    groups[r.category].push(r);
+  });
+
+  if (RECORDS.length === 0) {
+    container.innerHTML = `<div class="rise-status-msg">No records yet — tap + to add your first one.</div>`;
+    return;
+  }
+
+  container.innerHTML = CATEGORIES.map((cat, i) => {
+    const items = groups[cat] || [];
+    if (!items.length) return '';
+
+    const active = items.filter(r => r.status !== 'cleared')
+      .sort((a, b) => b.remaining - a.remaining || new Date(b.lastUpdate) - new Date(a.lastUpdate));
+    const cleared = items.filter(r => r.status === 'cleared');
+    const ordered = [...active, ...cleared];
+
+    const totalRemaining = items.reduce((s, r) => s + r.remaining, 0);
+
+    return `
+      <div class="path-group fade-up">
+        <div class="path-group-header">
+          <span class="path-group-num">${String(i + 1).padStart(2, '0')}</span>
+          <span class="path-group-title">${cat}</span>
+          <span class="path-group-total">${totalRemaining > 0 ? inr(totalRemaining) + ' left' : 'clear'}</span>
+        </div>
+        <div class="path-row-list">
+          ${ordered.map(r => `
+            <div class="path-row status-${r.status}">
+              <span class="dot"></span>
+              <div class="who">
+                <div class="n">${r.name}</div>
+                <div class="u">${statusLabel(r.status)}${r.interest > 0 ? ' · ' + inr(r.interest) + ' fixed interest' : ''}</div>
+              </div>
+              <div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${r.pct}%"></div></div></div>
+              <div class="amt">${r.status === 'cleared' ? inr(r.original) : inr(r.remaining)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ---------- Tabs / filters ----------
+
+function initTabs() {
+  document.getElementById('riseTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.rise-tab');
+    if (!btn) return;
+    document.querySelectorAll('.rise-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.getElementById('view-complete').style.display = tab === 'complete' ? '' : 'none';
+    document.getElementById('view-paths').style.display = tab === 'paths' ? '' : 'none';
+    document.getElementById('riseFilters').style.display = tab === 'complete' ? '' : 'none';
+  });
+}
+
+function initFilters() {
+  document.getElementById('riseFilters').addEventListener('click', (e) => {
+    const chip = e.target.closest('.rise-chip');
+    if (!chip) return;
+    document.querySelectorAll('.rise-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    renderComplete(chip.dataset.filter);
+  });
+}
+
+// ---------- Debt modal (Add / Edit) ----------
+
+function openAddModal() {
+  editingId = null;
+  document.getElementById('debtModalTitle').textContent = 'Add a record';
+  document.getElementById('debtName').value = '';
+  document.getElementById('debtOriginal').value = '';
+  document.getElementById('debtInterest').value = '';
+  document.getElementById('debtInitialPaid').value = '';
+  document.getElementById('debtDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('debtNotes').value = '';
+  document.getElementById('debtInitialPaidRow').style.display = '';
+  document.getElementById('debtDeleteBtn').style.display = 'none';
+  document.getElementById('debtModalError').textContent = '';
+  populateCategorySelect();
+  document.getElementById('riseModalBackdrop').classList.add('open');
+}
+
+function openEditModal(id) {
+  const r = RECORDS.find(x => x.id === id);
+  if (!r) return;
+  editingId = id;
+  document.getElementById('debtModalTitle').textContent = 'Edit record';
+  document.getElementById('debtName').value = r.name;
+  document.getElementById('debtOriginal').value = r.original;
+  document.getElementById('debtInterest').value = r.interest;
+  document.getElementById('debtNotes').value = r.notes || '';
+  document.getElementById('debtInitialPaidRow').style.display = 'none';
+  document.getElementById('debtDeleteBtn').style.display = '';
+  document.getElementById('debtModalError').textContent = '';
+  populateCategorySelect();
+  document.getElementById('debtCategory').value = r.category;
+  document.getElementById('riseModalBackdrop').classList.add('open');
+}
+
+function closeDebtModal() {
+  document.getElementById('riseModalBackdrop').classList.remove('open');
+}
+
+async function saveDebt() {
+  const errEl = document.getElementById('debtModalError');
+  errEl.textContent = '';
+
+  const payload = {
+    name: document.getElementById('debtName').value.trim(),
+    original_amount: Number(document.getElementById('debtOriginal').value),
+    fixed_interest: Number(document.getElementById('debtInterest').value) || 0,
+    category: document.getElementById('debtCategory').value,
+    notes: document.getElementById('debtNotes').value.trim(),
+  };
+
+  if (!editingId) {
+    payload.initial_paid_amount = Number(document.getElementById('debtInitialPaid').value) || 0;
+    payload.date = document.getElementById('debtDate').value || null;
+  }
+
+  try {
+    if (editingId) {
+      await api.put(`/rise/${editingId}`, payload);
+    } else {
+      await api.post('/rise', payload);
+    }
+    closeDebtModal();
+    await loadData();
+  } catch (err) {
+    errEl.textContent = err.message || 'Something went wrong';
+  }
+}
+
+async function deleteDebt() {
+  if (!editingId) return;
+  if (!confirm('Delete this record and its whole payment history? This cannot be undone.')) return;
+  try {
+    await api.del(`/rise/${editingId}`);
+    closeDebtModal();
+    await loadData();
+  } catch (err) {
+    document.getElementById('debtModalError').textContent = err.message || 'Could not delete';
+  }
+}
+
+// ---------- Payment modal ----------
+
+function openPaymentModal(id) {
+  paymentTargetId = id;
+  document.getElementById('paymentAmount').value = '';
+  document.getElementById('paymentDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('paymentNote').value = '';
+  document.getElementById('paymentModalError').textContent = '';
+  document.getElementById('risePaymentBackdrop').classList.add('open');
+}
+
+function closePaymentModal() {
+  document.getElementById('risePaymentBackdrop').classList.remove('open');
+}
+
+async function savePayment(allowOverpay = false) {
+  const errEl = document.getElementById('paymentModalError');
+  errEl.textContent = '';
+
+  const payload = {
+    amount: Number(document.getElementById('paymentAmount').value),
+    payment_date: document.getElementById('paymentDate').value || null,
+    note: document.getElementById('paymentNote').value.trim(),
+    allow_overpay: allowOverpay,
+  };
+
+  try {
+    await api.post(`/rise/${paymentTargetId}/payments`, payload);
+    closePaymentModal();
+    await loadData();
+  } catch (err) {
+    if (!allowOverpay && /exceeds the remaining/i.test(err.message)) {
+      if (confirm(err.message + '\n\nRecord it anyway?')) {
+        return savePayment(true);
+      }
+      return;
+    }
+    errEl.textContent = err.message || 'Something went wrong';
+  }
+}
+
+// ---------- Night sky ----------
+
+function renderStarfield() {
+  const field = document.getElementById('riseStarfield');
+  if (!field) return;
+  const count = 70;
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    const big = Math.random() < 0.18;
+    const top = Math.random() * 100;
+    const left = Math.random() * 100;
+    const duration = (2 + Math.random() * 3).toFixed(2);
+    const delay = (Math.random() * 4).toFixed(2);
+    html += `<span class="rise-star${big ? ' big' : ''}" style="top:${top}%; left:${left}%; animation-duration:${duration}s; animation-delay:${delay}s;"></span>`;
+  }
+  field.innerHTML = html;
+}
+
+// ---------- Ascent marker on hero path ----------
+
+function initAscentMarker() {
+  const path = document.getElementById('ascentPath');
+  const layer = document.getElementById('ascentMarkerLayer');
+  if (!path || !layer) return;
+
+  const totalOriginal = RECORDS.reduce((s, r) => s + r.original, 0);
+  const totalPaid = RECORDS.reduce((s, r) => s + r.paid, 0);
+  const pct = totalOriginal > 0 ? totalPaid / totalOriginal : 0;
+
+  const len = path.getTotalLength();
+  const pt = path.getPointAtLength(len * pct);
+
+  layer.setAttribute('viewBox', '0 0 100 40');
+  layer.innerHTML = `
+    <g class="ascent-marker" transform="translate(${pt.x} ${pt.y})">
+      <circle class="ring" r="7" cx="0" cy="0"></circle>
+      <circle class="core" r="3.2" cx="0" cy="0"></circle>
+    </g>
+  `;
+}
+
+// ---------- Init ----------
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderStarfield();
+  initTabs();
+  initFilters();
+
+  document.getElementById('riseFab').addEventListener('click', openAddModal);
+  document.getElementById('riseModalCancel').addEventListener('click', closeDebtModal);
+  document.getElementById('riseModalSave').addEventListener('click', saveDebt);
+  document.getElementById('debtDeleteBtn').addEventListener('click', deleteDebt);
+  document.getElementById('riseModalBackdrop').addEventListener('click', (e) => {
+    if (e.target.id === 'riseModalBackdrop') closeDebtModal();
+  });
+
+  document.getElementById('paymentModalCancel').addEventListener('click', closePaymentModal);
+  document.getElementById('paymentModalSave').addEventListener('click', () => savePayment(false));
+  document.getElementById('risePaymentBackdrop').addEventListener('click', (e) => {
+    if (e.target.id === 'risePaymentBackdrop') closePaymentModal();
+  });
+
+  loadData();
+});
+
+</script>
+</body>
+</html>
