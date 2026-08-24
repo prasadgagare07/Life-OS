@@ -5,6 +5,7 @@
 const NAV_ITEMS = [
   { href: 'dashboard.html', icon: '🏠', label: 'Dashboard' },
   { href: 'daily-standards.html', icon: '🌱', label: 'Daily Standards' },
+  { href: 'rise.html', icon: '↗', label: 'Rise' },
   { href: 'finance.html', icon: '💰', label: 'Finance' },
   { href: 'financial-time-explorer.html', icon: '⏳', label: 'Financial Time Explorer' },
   { href: 'fitness.html', icon: '💪', label: 'Fitness' },
